@@ -1,85 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-
-    <h1> CADASTRO </h1>
-    
-</body>
-</html>
-
 <?php
 
-// Isso impede o PHP de tentar ler o POST se o formulário não foi enviado
+if(isset($_POST['email']) && isset($_POST['senha'])){
 
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-   echo "<br>email: ".$email;
-   echo "<br>senha: ".$senha;
+}else{
+    echo "Acesso inválido!";
+    exit;
+}
 
+try{
 
-   try{
+    $servername = "localhost";
+    $username = "root";
+    $password = "Home@spSENAI2025!";
+    $dbname = "phronesis";
 
-        //conexão com banco de dados
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "phronesis";
+    if ($conn->connect_error) {
+        die("Erro na conexão: " . $conn->connect_error);
+    }
 
-        // Cria a conexão
+    echo "Conectado com sucesso! <br>";
 
-        $conn = new mysqli($servername, $username, $password,$dbname);
+    $sql = "INSERT INTO usuario (email, senha) VALUES (?, ?)";
 
-    
-        if ($conn->connect_error) {
-            die("<br>Erro na conexão com o banco de dados: " . $conn->connect_error);
+    $stmt = $conn->prepare($sql);
 
-            }
-        else{
+    $stmt->bind_param("ss", $email, $senha);
 
-                echo "<br>OK! Conexão estabelecida com banco de dados.";
+    if ($stmt->execute()) {
+        echo "Cadastro realizado com sucesso!";
+    } else {
+        echo "Erro ao cadastrar.";
+    }
 
-                 // SQL de inserção
-                $sql = "INSERT INTO usuario (email, senha) VALUES (?, ?)";
+    $stmt->close();
+    $conn->close();
 
-
-                // Prepara a query
-                $stmt = $conn->prepare($sql);
-
-
-                // Associa os parâmetros
-
-                $stmt->bind_param("ss", $email, $senha);
-                // s = string | d = double (decimal)
-
-
-                // Executa
-
-                if ($stmt->execute()) {
-                    echo "<br>Funcionário cadastrado com sucesso!";
-
-                } else {
-                    echo "Erro ao cadastrar funcionário.";
-                }
-
-
-                $stmt->close();
-                $conn->close();
-
-               
-
-         }
-
-   }catch(mysqli_sql_exception $erro){
-       echo "<br>Erro de acesso ao Banco de dados";
-   }
-
- 
+}catch(mysqli_sql_exception $erro){
+    echo "Erro no banco de dados.";
+}
 
 ?>
