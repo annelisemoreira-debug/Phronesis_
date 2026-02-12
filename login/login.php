@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+
+    <script>
+        <?php
+include('conexao.php');
+session_start();
+
+if(isset($_POST['email'])) {
+    $email = $conn->real_escape_string($_POST['email']);
+    $senha = $_POST['senha'];
+
+    $sql = "SELECT * FROM usuario WHERE email = '$email'";
+    $query = $conn->query($sql);
+
+    if($query->num_rows > 0) {
+        $usuario = $query->fetch_assoc();
+        
+        // Verifica a senha criptografada
+        if(password_verify($senha, $usuario['senha'])) {
+            $_SESSION['id'] = $usuario['id_usuario'];
+            $_SESSION['nome'] = $usuario['nome'];
+            
+            header("Location: painel.php"); // Redireciona para a área logada
+        } else {
+            echo "Senha incorreta!";
+        }
+    } else {
+        echo "E-mail não encontrado!";
+    }
+}
+?>
+    </script>
 </head>
 <body>
 

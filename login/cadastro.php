@@ -13,18 +13,22 @@
     
 
             <h1>Faça seu login!</h1>
-            <p>Não tem uma conta? <a rel="stylesheet" href="index.html"  text-decoration="none"> Cadastre-se </a></p>
+            <p>Não tem uma conta? <a rel="stylesheet" href="cadastro.php"  text-decoration="none"> Cadastre-se </a></p>
 
 
         <form method="POST" action="cad.php">
             <hr><br><br>
 
+            <label>Nome: </label> <input type="text" name="nome" id="nome" placeholder="Insira o seu nome"><br>
+
+             <label>E-mail: </label> <input type="email" name="email" id="email" placeholder="Insira o seu email"><br>
+
             <div class="linha_dupla">
                 <div class="campo">
-                <label>E-mail: </label> <input type="email" name="email" id="email" placeholder="Insira o seu email"><br>
+                <label>Senha: </label> <input type="text" name="senha" id="senha" placeholder="Insira o seu senha"><br>
             </div>
                 <div class="campo">
-            <label>Senha: </label> <input type="text" name="senha" id="senha" placeholder="Insira o seu senha"><br>
+            <label>telefone: </label> <input type="text" name="senha" id="senha" placeholder="Insira o seu senha"><br>
                 </div>
             </div>
             
