@@ -11,10 +11,10 @@
         <div class="logoMarca"><img src="img/phronesisLogo.webp" alt="Logo oficial da Phronesis"></div>
         <nav class="menuNav">
             <ul class="menu">
-                <li class="sobre"><a href="#">Sobre</a></li>
-                <li class="materiais"><a href="#">Materiais</a></li>
-                <li class="livros"><a href="#">Livros</a></li>
-                <li class="cronogramas"><a href="#">Cronogramas</a></li>
+                <li class="sobre"><a href="sobre.php">Sobre</a></li>
+                <li class="materiais"><a href="materiais.php">Materiais</a></li>
+                <li class="livros"><a href="livros.php">Livros</a></li>
+                <li class="cronogramas"><a href="cronogramas.php">Cronogramas</a></li>
                 <li class="entrar"><a href="#">Entrar</a></li>
             </ul>
         </nav>
@@ -27,6 +27,8 @@
                 quibusdam atque ex perspiciatis commodi numquam!
                 Minus molestiae iste earum? Aut, aperiam maxime.</p>
             <h2>Faça parte da nossa comunidade de estudos!</h2>
+        </section>
+        <section class="slider">
         </section>
     </main>
 </body>

@@ -6,11 +6,11 @@
 
 header{
     background-color: #8654f3;
-    padding: 15px 5%;
+    padding: 25px 5% 15px 5%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border-radius: 0 0 15px 15px;
-    overflow: hidden;
 }
 
 body {
@@ -38,15 +38,14 @@ body {
 .menu {
     display: flex;
     list-style: none;
-    width: 100%;
     padding: 0;
     align-items: center;
     gap: 15px;
 }
 
 .menu li {
-    height: 100%;
     display: flex;
+    align-items: center;
 }
 
 .menu li a{
@@ -91,9 +90,10 @@ body {
     transform: scale(1.05);
 }
 
-/*section introduçã*/
+/*section introdução*/
 .introducao {
     padding: 50px 5%;
     text-align: justify;
     background-color: #ffff;
+    border-radius: 15px;
 }
