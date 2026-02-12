@@ -30,7 +30,7 @@
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname = "empresa_ti";
+        $dbname = "phronesis";
 
         // Cria a conexão
 
@@ -55,7 +55,7 @@
 
                 // Associa os parâmetros
 
-                $stmt->bind_param("ssdsisss", $nome, $cargo, $salario, $endereco, $numero, $bairro, $cidade, $estado);
+                $stmt->bind_param("ss", $email, $senha);
                 // s = string | d = double (decimal)
 
 
