@@ -18,7 +18,7 @@
                     <label>Senha: </label> <input type="password" name="senha" required><br>
                 </div>
                 <div class="campo">
-                    <label>Telefone: </label> <input type="text" name="telefone"><br>
+                    <label>Telefone: </label> <input type="text" name="telefone" required><br>
                 </div>
             </div>
             

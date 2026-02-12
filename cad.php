@@ -55,7 +55,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "login") {
         if (password_verify($senha, $user['senha'])) {
             session_start();
             $_SESSION['id'] = $user['id_cadastro'];
-            echo "Login realizado com sucesso! <a href='painel.php'>Ir para painel</a>";
+            echo "Login realizado com sucesso! <a href='index.php'>Ir para painel</a>";
         } else {
             echo "Senha incorreta!";
         }
