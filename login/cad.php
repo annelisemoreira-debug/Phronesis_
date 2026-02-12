@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($acao)) {
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
     // Ajustei para inserir nome e telefone também, já que estão no form
-    $sql = "INSERT INTO usuario (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssss", $nome, $email, $senhaHash, $telefone);
 
@@ -44,7 +44,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "login") {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-    $sql = "SELECT id_usuario, senha FROM usuario WHERE email=?";
+    $sql = "SELECT id_cadastro, senha FROM cadastro WHERE email=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -54,7 +54,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "login") {
         $user = $result->fetch_assoc();
         if (password_verify($senha, $user['senha'])) {
             session_start();
-            $_SESSION['id'] = $user['id_usuario'];
+            $_SESSION['id'] = $user['id_cadastro'];
             echo "Login realizado com sucesso! <a href='painel.php'>Ir para painel</a>";
         } else {
             echo "Senha incorreta!";
@@ -70,7 +70,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "nova_senha") {
     $senha = $_POST['senha'];
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-    $sql = "UPDATE usuario SET senha=? WHERE email=?";
+    $sql = "UPDATE cadastro SET senha=? WHERE email=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $senhaHash, $email);
 
