@@ -13,7 +13,7 @@
     
 
             <h1>Faça seu login!</h1>
-            <p>Não tem uma conta? <a rel="stylesheet" href="index.html"  text-decoration="none"> Cadastre-se </a></p>
+            <p>Não tem uma conta? <a rel="stylesheet" href="cadastro.php"  text-decoration="none"> Cadastre-se </a></p>
 
 
         <form method="POST" action="cad.php">
