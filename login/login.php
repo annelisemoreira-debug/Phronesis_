@@ -10,7 +10,6 @@
 
 
   <main>
-        <section class="sessao_1">
     
 
             <h1>Faça seu login!</h1>
@@ -32,15 +31,10 @@
 
             <button type="submit" name="button"> Enviar </button>
 
-            <a rel="stylesheet" href="index.html"  text-decoration="none"> Deseja voltar? </a>
+            <a rel="stylesheet" href="index.html"  text-decoration="none"> Esqueceu sua senha? </a>
         </form>
     
 </div>
-</section>
-
-<section class="sessao_2">
-
-    
 </section>
   </main>
 
