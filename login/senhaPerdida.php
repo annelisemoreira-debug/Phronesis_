@@ -12,7 +12,6 @@ if ($conn->connect_error) {
 }
 
 
-/   RECUPERAR SENHA/
 if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
 
     ?>
@@ -38,7 +37,6 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
 }
 
 
-/ ATUALIZAR SENHA /
 if(isset($_POST['acao']) && $_POST['acao'] == "nova_senha"){
 
     $email = $_POST['email'];
@@ -61,7 +59,6 @@ if(isset($_POST['acao']) && $_POST['acao'] == "nova_senha"){
 }
 
 
-/  LOGIN /
 if(isset($_POST['email']) && isset($_POST['senha'])){
 
     $email = $_POST['email'];
@@ -95,3 +92,4 @@ if(isset($_POST['email']) && isset($_POST['senha'])){
 echo "Acesso inválido!";
 
 ?>
+
