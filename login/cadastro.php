@@ -12,9 +12,7 @@
   <main>
     
 
-            <h1>Faça seu login!</h1>
-            <p>Não tem uma conta? <a rel="stylesheet" href="cadastro.php"  text-decoration="none"> Cadastre-se </a></p>
-
+            <h1>Faça seu Cadastro!</h1>
 
         <form method="POST" action="cad.php">
             <hr><br><br>
@@ -35,7 +33,7 @@
 
             <button type="submit" name="button"> Enviar </button>
 
-            <a rel="stylesheet" href="index.html"  text-decoration="none"> Esqueceu sua senha? </a>
+            <a rel="stylesheet" href="senhaPerdida.php"  text-decoration="none"> Esqueceu sua senha? </a>
         </form>
     
 </div>
