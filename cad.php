@@ -2,7 +2,7 @@
 // Conexão com o banco
 $servername = "localhost";
 $username = "root";
-$password = "Home@spSENAI2025!";
+$password = "";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -80,7 +80,32 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "nova_senha") {
         echo "Erro ao atualizar.";
     }
     $stmt->close();
+<<<<<<< Updated upstream
 } else {
+=======
+}
+
+// --- AÇÃO: EXCLUIR ---
+elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "delete") {
+    $idusuario = $_POST['idusuario'] ?? '';
+
+    if (empty($idusuario)) {
+        die("ID do usuário é obrigatório para exclusão.");
+    }
+
+    $sql = "DELETE FROM usuario WHERE id_usuarioc = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $idusuario);
+
+    if ($stmt->execute()) {
+        echo "Funcionário excluído com sucesso! <a href='index.php'>Voltar ao painel</a>";
+    } else {
+        echo "Erro ao excluir: " . $conn->error;
+    }
+    $stmt->close();
+}
+else {
+>>>>>>> Stashed changes
     echo "Acesso inválido!";
 }
 
