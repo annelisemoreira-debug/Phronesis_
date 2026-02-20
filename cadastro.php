@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Cadastro</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <main>
+    <main>
         <h1>Faça seu Cadastro!</h1>
         <form method="POST" action="cad.php">
             <hr><br><br>
@@ -21,10 +23,11 @@
                     <label>Telefone: </label> <input type="text" name="telefone" required><br>
                 </div>
             </div>
-            
+
             <button type="submit"> Cadastrar </button>
             <a href="senhaPerdida.php?acao=recuperar" style="text-decoration:none"> Esqueceu sua senha? </a>
         </form>
-  </main>
+    </main>
 </body>
+
 </html>

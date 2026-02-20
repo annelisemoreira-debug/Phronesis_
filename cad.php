@@ -80,10 +80,8 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "nova_senha") {
         echo "Erro ao atualizar.";
     }
     $stmt->close();
-}
-else {
+} else {
     echo "Acesso inválido!";
 }
 
 $conn->close();
-?>
