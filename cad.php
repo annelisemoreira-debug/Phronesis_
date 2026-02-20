@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
 
 // --- AÇÃO: CADASTRAR ---
-if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($acao)) {
+if (empty($acao)) {
     $email = $_POST['email'] ?? '';
     $senha = $_POST['senha'] ?? '';
     $nome = $_POST['nome'] ?? '';
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($acao)) {
     $stmt->close();
 }
 // --- AÇÃO: LOGAR ---
-elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "login") {
+elseif ($acao == "login") {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
@@ -65,7 +65,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "login") {
     $stmt->close();
 }
 // --- AÇÃO: ATUALIZAR SENHA ---
-elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "nova_senha") {
+elseif ($acao == "nova_senha") {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
@@ -80,33 +80,73 @@ elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "nova_senha") {
         echo "Erro ao atualizar.";
     }
     $stmt->close();
-<<<<<<< Updated upstream
-} else {
-=======
 }
+// --- AÇÃO: ATUALIZAR ---
+elseif ($acao == "update") {
+    $id = $_POST['id_cadastro'] ?? 0;
+    $email = $_POST['email'];
+    $senha = $_POST['senha'];
 
-// --- AÇÃO: EXCLUIR ---
-elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $acao == "delete") {
-    $idusuario = $_POST['idusuario'] ?? '';
-
-    if (empty($idusuario)) {
-        die("ID do usuário é obrigatório para exclusão.");
-    }
-
-    $sql = "DELETE FROM usuario WHERE id_usuarioc = ?";
+    $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+    $sql = "UPDATE cadastro SET email=?, senha=? WHERE id_cadastro=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $idusuario);
+    $stmt->bind_param("ssi", $email, $senhaHash, $id);
 
     if ($stmt->execute()) {
-        echo "Funcionário excluído com sucesso! <a href='index.php'>Voltar ao painel</a>";
+        echo "Atualizado com sucesso!";
     } else {
-        echo "Erro ao excluir: " . $conn->error;
+        echo "Erro ao atualizar.";
     }
     $stmt->close();
 }
-else {
->>>>>>> Stashed changes
-    echo "Acesso inválido!";
+// --- AÇÃO: DELETAR ---
+elseif ($acao == "delete") {
+    $id = $_POST['id_cadastro'];
+    $sql = "DELETE FROM cadastro WHERE id_cadastro=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo "Excluído com sucesso!";
+    } else {
+        echo "Erro ao excluir.";
+    }
+    $stmt->close();
+}
+// --- AÇÃO: AUTO-DELETAR ---
+elseif ($acao == "self_delete") {
+    $email = $_POST['email'];
+    $senha = $_POST['senha'];
+
+    $sql = "SELECT id_cadastro, senha FROM cadastro WHERE email=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        $user = $result->fetch_assoc();
+        if (password_verify($senha, $user['senha'])) {
+            $sql_del = "DELETE FROM cadastro WHERE id_cadastro=?";
+            $stmt_del = $conn->prepare($sql_del);
+            $stmt_del->bind_param("i", $user['id_cadastro']);
+            if ($stmt_del->execute()) {
+                echo "Conta excluída com sucesso! <a href='index.php'>Clique aqui para voltar</a>";
+                session_start();
+                session_destroy();
+            } else {
+                echo "Erro ao excluir. <a href='index.php'>Clique aqui para voltar</a>";
+            }
+            $stmt_del->close();
+        } else {
+            echo "Senha ou E-mail incorretos! <a href='index.php'>Clique aqui para voltar</a>";
+        }
+    } else {
+        echo "Senha ou E-mail incorretos! <a href='index.php'>Clique aqui para voltar</a>";
+    }
+    $stmt->close();
+} else {
+    echo "Acesso inválido! <a href='index.php'>Clique aqui para voltar</a>";
 }
 
 $conn->close();
