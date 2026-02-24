@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fbd84e;
+}
+
+/*Fontes*/
+.yeseva-one-regular {
+  font-family: "Yeseva One", serif;
+  font-weight: vold;
+  font-style: normal;
+}
+
+
+/*Parte do login*/
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inserirInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mainContainer{
+    font-weight: bold;
+    max-width: 400px;
+    padding: 60px;
+    margin-top: 250px;    
+    margin-bottom: 100px; 
+    margin-left: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/*<h1>*/
+.mainContainer h1{
+    font-size: 40px;
+    color: #001a8b;
+}
+
+/*<p>*/
+.mainContainer p{
+    color: #001a8b;
+}
+
+/*<a>*/
+.botaoCadastro{
+    color: #34bfff;
+}
+
+.esqueceuSenha{
+    color: #8f7200;
+}
+
+
+/*<label>*/
+.mainContainer label{
+    font-size: 20px;
+    color: #001a8b;
+}
+
+/*<input>*/
+.mainContainer input{
+    border: none;
+    padding: 5px;
+    border-radius: 25px;
+}
+
+/*<button>*/
+.entrarLogin{
+    border: none;
+    background-color: #001a8b;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 10px 25px;
+    width: fit-content;
+    align-self: center;
+}
+
+.entrarLogin:hover{
+    background-color: #031768;
+    transition: 0.5s;
+    cursor: pointer;
+}
