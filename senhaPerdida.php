@@ -1,6 +1,6 @@
 <?php
 // Verifica se o parâmetro de ação existe na URL
-if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
+if(isset($_GET['acao']) == "recuperar"){ // Se a acao do GET 
 ?>
     <h2>Recuperar Senha</h2>
     <form method="POST" action="cad.php">
