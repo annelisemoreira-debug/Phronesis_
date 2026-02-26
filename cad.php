@@ -183,10 +183,11 @@ elseif ($acao == "self_delete") {
         } else {
             echo "Senha ou E-mail incorretos! <a href='index.php'>Clique aqui para voltar</a>";
         }
-    }
+    
     $stmt->close(); //fecha a conexão do SELECT
 } else {
-    echo "Acesso inválido! <a href='index.php'>Clique aqui para voltar</a>";
+    echo "Senha ou E-mail incorretos! <a href='index.php'>Clique aqui para voltar</a>";
+}
 }
 
 $conn->close();
