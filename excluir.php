@@ -10,7 +10,7 @@
     <h2>Excluir Conta</h2>
     <p>Para excluir sua conta, insira seu e-mail e senha.</p>
     <form action="cad.php" method="POST">
-        <input type="hidden" name="acao" value="self_delete">
+        <input type="hidden" name="acao" value="self_delete"> <!-- A ação é definida como self_delete -->
         
         <label>E-mail:</label>
         <input type="email" name="email" required><br><br>

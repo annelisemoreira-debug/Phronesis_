@@ -34,9 +34,12 @@ if (empty($acao)) { // Se o login, atulização e delete estiverem vazios, é po
 
     if ($stmt->execute()) { //vai executar se os dados forem inseridos corretamente
         echo "Cadastro realizado com sucesso! <a href='login.php'>Clique aqui para logar</a>";
+
     } else { //Se os dados não forem inseridos corretamente, mostra a menssagem de erro
         echo "Erro ao cadastrar: " . $conn->error;
     }
+
+
     $stmt->close(); //fecha a conexão
 }
 
