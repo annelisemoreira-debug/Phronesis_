@@ -114,7 +114,8 @@ form{
     padding: 60px;
     margin-top: 250px;    
     margin-bottom: 100px; 
-    margin-left: 500px;
+    margin-left: 200px;
+    margin-top: 25px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -153,7 +154,22 @@ form{
     padding: 5px;
     border-radius: 25px;
 }
+.container {
+    display: flex; /* Habilita Flexbox */
+    align-items: center; /* Alinha verticalmente no centro */
+    gap: 5px; /* Espaçamento entre a imagem e o form */
 
+    
+  }
+
+.container img {
+    max-width: 100%;
+    height: auto;
+    width: 400px;
+    margin-left: 28%;
+    margin-top: -5%;/* Ajuste o tamanho da imagem */
+    border-radius: 5%;
+  }
 /*<button>*/
 .entrarLogin{
     border: none;

@@ -2,7 +2,7 @@
 // Conexão com o banco
 $servername = "localhost";
 $username = "root";
-$password = "Home@spSENAI2025!";
+$password = "";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
