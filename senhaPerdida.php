@@ -14,9 +14,9 @@ if(isset($_GET['acao'])  == "recuperar"){ // Se a acao do GET
         <nav class="menuNav">
             <ul class="menu">
                 <li class="sobre"><a href="sobre.php">Sobre</a></li>
-                <li class="materiais"><a href="materiais.php">Materiais</a></li>
+                <li class="materiais"><a href="material.php">Materiais</a></li>
                 <li class="livros"><a href="livros.php">Livros</a></li>
-                <li class="cronogramas"><a href="cronogramas.php">Cronogramas</a></li>
+                <li class="cronogramas"><a href="cronograma.php">Cronogramas</a></li>
                 <li class="entrar"><a href="login.php">Entrar</a></li>
             </ul>
         </nav>
