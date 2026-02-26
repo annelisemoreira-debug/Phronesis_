@@ -27,7 +27,6 @@ if (empty($acao)) { // Se o login, atulização e delete estiverem vazios, é po
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT); //deixa a senha criptografada / password_default serve para proteção da senha
 
-    // Ajustei para inserir nome e telefone também, já que estão no form
     $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES (?, ?, ?, ?)"; //vai verificar o banco de dados da tabela cadastro
     $stmt = $conn->prepare($sql); //vai preparar a conexão com o banco
     $stmt->bind_param("ssss", $nome, $email, $senhaHash, $telefone); //vai alterar os tipos de dados para string (ssss) deixando valores reais, seguros
@@ -78,10 +77,12 @@ elseif ($acao == "nova_senha") {
     // Recebe a nova senha digitada pelo usuário
     $senha = $_POST['senha'];
 
+    
     // Criptografa a senha usando um método seguro(envolve a transformação de uma senha em texto simples em uma sequência de caracteres de comprimento fixo usando um algoritmo de hash)
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
     // Cria o comando SQL para atualizar a senha do usuário pelo e-mail
     $sql = "UPDATE cadastro SET senha=? WHERE email=?";
+    
     // Prepara o comando SQL para evitar ataques (SQL Injection)
     $stmt = $conn->prepare($sql);
      // Substitui os "?" do SQL pelos valores reais
@@ -90,8 +91,10 @@ elseif ($acao == "nova_senha") {
 
     if ($stmt->execute()) { // Vai executar o comando no banco para ver se o email existe
         echo "Senha atualizada com sucesso! <a href='login.php'>Clique aqui para logar</a>";
-    } else { //se não, menssagem de erro
+    } else {
         echo "E-mail inválido.";
+    } else {
+         echo "E-mail inválido.";
     }
     $stmt->close(); //fecha a conexão
 }
@@ -101,6 +104,7 @@ elseif ($acao == "nova_senha") {
 // Verifica se a ação recebida é "update"
 elseif ($acao == "update") {
         // Recebe o ID do usuário (se não existir, usa 0 como padrão)
+        
     $id = $_POST['id_cadastro'] ?? 0;
         // Recebe o e-mail enviado pelo formulário
     $email = $_POST['email'];
@@ -172,19 +176,17 @@ elseif ($acao == "self_delete") {
             if ($stmt_del->execute()) {
                 echo "Conta excluída com sucesso! <a href='index.php'>Clique aqui para voltar</a>";
                  // Encerra a sessão do usuário
-                session_start();
-                session_destroy();
+                session_start(); // Inicia a sessão para poder destruí-la
+                session_destroy(); // Destroi a sessão, desconectando o usuário
             } else {
                 echo "Erro ao excluir. <a href='index.php'>Clique aqui para voltar</a>";
             }
-            $stmt_del->close();
+            $stmt_del->close(); // Fecha a conexão do DELETE
         } else {
             echo "Senha ou E-mail incorretos! <a href='index.php'>Clique aqui para voltar</a>";
         }
-    } else {
-        echo "Senha ou E-mail incorretos! <a href='index.php'>Clique aqui para voltar</a>";
     }
-    $stmt->close();
+    $stmt->close(); //fecha a conexão do SELECT
 } else {
     echo "Acesso inválido! <a href='index.php'>Clique aqui para voltar</a>";
 }
