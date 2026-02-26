@@ -21,6 +21,8 @@
         </nav>
     </header>
     <main>
+        <div class="container">
+        <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
        <div class="mainContainer">
             <h1 class="mainTitulo, yeseva-one-regular">Faça seu login!</h1>
             <p>Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p><br>
@@ -43,6 +45,7 @@
                 <button class="entrarLogin" type="submit"> Entrar </button>
             </form>
        </div>
+    </div>
     </main>
 </body>
 
