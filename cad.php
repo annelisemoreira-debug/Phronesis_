@@ -2,6 +2,7 @@
 // Conexão com o banco
 $servername = "localhost";
 $username = "root";
+$password = "";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
