@@ -93,8 +93,6 @@ elseif ($acao == "nova_senha") {
         echo "Senha atualizada com sucesso! <a href='login.php'>Clique aqui para logar</a>";
     } else {
         echo "E-mail inválido.";
-    } else {
-         echo "E-mail inválido.";
     }
     $stmt->close(); //fecha a conexão
 }
