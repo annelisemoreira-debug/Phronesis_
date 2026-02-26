@@ -94,8 +94,9 @@ elseif ($acao == "nova_senha") {
     if ($stmt->execute()) { // Vai executar o comando no banco para ver se o email existe
         echo "Senha atualizada com sucesso! <a href='login.php'>Clique aqui para logar</a>";
     } else {
-        echo "E-mail inválido.";
+        echo "E-mail inválido. <a href='login.php'>Clique aqui para logar</a>";
     }
+
     $stmt->close(); //fecha a conexão
 }
 
