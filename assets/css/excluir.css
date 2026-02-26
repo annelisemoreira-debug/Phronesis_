@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -16,6 +17,24 @@ header{
 body {
     background-color: #fbd84e;
 }
+
+.logoMarca {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoMarca img {
+    width: 100%;  
+    height: 100%; 
+    object-fit: cover;
+}
+
+/*Menu*/
 .menu {
     display: flex;
     list-style: none;
@@ -70,6 +89,47 @@ body {
     color: white;
     transform: scale(1.05);
 }
+
+.linha_dupla {
+ display: flex;
+ gap: 15px;
+ width: 100%;
+}
+
+.campo {
+ display: flex;
+ flex-direction: column;
+ flex: 1;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.inserirInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.container {
+    display: flex; /* Habilita Flexbox */
+    align-items: center; /* Alinha verticalmente no centro */
+    gap: 10px; /* Espaçamento entre a imagem e o form */
+
+    
+  }
+
+.container img {
+    max-width: 100%;
+    height: auto;
+    width: 500px;
+    margin-left: 28%;
+    margin-top: -5%;/* Ajuste o tamanho da imagem */
+    border-radius: 5%;
+  }
+
 .mainContainer{
     font-weight: bold;
     max-width: 485px;
@@ -100,16 +160,6 @@ body {
     padding: 5px;
     border-radius: 25px;
 }
-form{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-.inserirInfo{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
 
 .entrarLogin{
     border: none;
@@ -127,9 +177,4 @@ form{
     background-color: #031768;
     transition: 0.5s;
     cursor: pointer;
-}
-.yeseva-one-regular {
-  font-family: "Yeseva One", serif;
-  font-weight: vold;
-  font-style: normal;
 }
