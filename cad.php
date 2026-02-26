@@ -11,21 +11,21 @@ if ($conn->connect_error) {
     die("Erro na conexão: " . $conn->connect_error);
 }
 
-// Verifica qual ação foi enviada via POST ou GET
+// Verifica qual ação foi enviada via POST ou GET (POST para cadastro/login, GET para update/delete)
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
 
 // --- AÇÃO: CADASTRAR ---
-if (empty($acao)) {
+if (empty($acao)) { 
     $email = $_POST['email'] ?? '';
     $senha = $_POST['senha'] ?? '';
     $nome = $_POST['nome'] ?? '';
     $telefone = $_POST['telefone'] ?? '';
 
-    if (empty($email) || empty($senha)) {
+    if (empty($email) || empty($senha)) { //Se o email e senha estiverem vazios, não é possivel cadastrar
         die("E-mail e senha são obrigatórios.");
     }
 
-    $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+    $senhaHash = password_hash($senha, PASSWORD_DEFAULT); //deixa a senha criptografada / password_default serve para proteção 
 
     // Ajustei para inserir nome e telefone também, já que estão no form
     $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
@@ -39,6 +39,8 @@ if (empty($acao)) {
     }
     $stmt->close();
 }
+
+
 // --- AÇÃO: LOGAR ---
 elseif ($acao == "login") {
     $email = $_POST['email'];
@@ -64,14 +66,23 @@ elseif ($acao == "login") {
     }
     $stmt->close();
 }
+
+
 // --- AÇÃO: ATUALIZAR SENHA ---
 elseif ($acao == "nova_senha") {
+    // Recebe o e-mail enviado pelo formulário via POST
     $email = $_POST['email'];
+    // Recebe a nova senha digitada pelo usuário
     $senha = $_POST['senha'];
 
+    // Criptografa a senha usando um método seguro(envolve a transformação de uma senha em texto simples em uma sequência de caracteres de comprimento fixo usando um algoritmo de hash)
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+    // Cria o comando SQL para atualizar a senha do usuário pelo e-mail
     $sql = "UPDATE cadastro SET senha=? WHERE email=?";
+    // Prepara o comando SQL para evitar ataques (SQL Injection)
     $stmt = $conn->prepare($sql);
+     // Substitui os "?" do SQL pelos valores reais
+    // "ss" significa: dois valores do tipo string
     $stmt->bind_param("ss", $senhaHash, $email);
 
     if ($stmt->execute()) {
@@ -81,17 +92,25 @@ elseif ($acao == "nova_senha") {
     }
     $stmt->close();
 }
+
+
 // --- AÇÃO: ATUALIZAR ---
+// Verifica se a ação recebida é "update"
 elseif ($acao == "update") {
+        // Recebe o ID do usuário (se não existir, usa 0 como padrão)
     $id = $_POST['id_cadastro'] ?? 0;
+        // Recebe o e-mail enviado pelo formulário
     $email = $_POST['email'];
+    // Recebe a nova senha digitada pelo usuário
     $senha = $_POST['senha'];
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+    // Comando SQL para atualizar email e senha pelo ID
     $sql = "UPDATE cadastro SET email=?, senha=? WHERE id_cadastro=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssi", $email, $senhaHash, $id);
 
+    // Executa o comando no banco
     if ($stmt->execute()) {
         echo "Atualizado com sucesso!";
     } else {
@@ -99,6 +118,8 @@ elseif ($acao == "update") {
     }
     $stmt->close();
 }
+
+
 // --- AÇÃO: DELETAR ---
 elseif ($acao == "delete") {
     $id = $_POST['id_cadastro'];
@@ -113,6 +134,8 @@ elseif ($acao == "delete") {
     }
     $stmt->close();
 }
+
+
 // --- AÇÃO: AUTO-DELETAR ---
 elseif ($acao == "self_delete") {
     $email = $_POST['email'];
