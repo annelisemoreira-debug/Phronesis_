@@ -21,6 +21,7 @@
         </nav>
     </header>
     <main>
+        
         <div class="container">
 
         <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">

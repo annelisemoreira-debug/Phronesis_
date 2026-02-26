@@ -62,8 +62,10 @@ elseif ($acao == "login") { //vai verificar se a ação foi preenchida com login
             echo "Login realizado com sucesso! <a href='index.php'>Ir para painel</a>";
         } else { //se der erro, vai aparecer Senha ou E-mail incorretos
             echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
-        }
+            }
     }
+    
+    echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
 
     $stmt->close(); //fecha a conexão
 
@@ -175,7 +177,6 @@ elseif ($acao == "self_delete") {
                 echo "Conta excluída com sucesso! <a href='index.php'>Clique aqui para voltar</a>";
                  // Encerra a sessão do usuário
                 session_start(); // Inicia a sessão para poder destruí-la
-                session_destroy(); // Destroi a sessão, desconectando o usuário
             } else {
                 echo "Erro ao excluir. <a href='index.php'>Clique aqui para voltar</a>";
             }
