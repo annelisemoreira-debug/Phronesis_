@@ -1,0 +1,132 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header{
+    background-color: #8654f3;
+    padding: 25px 5% 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 15px 15px;
+}
+
+body {
+    background-color: #fbd84e;
+}
+
+.logoMarca {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoMarca img {
+    width: 100%;  
+    height: 100%; 
+    object-fit: cover;
+}
+
+/*Menu*/
+.menu {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    align-items: center;
+    gap: 15px;
+}
+
+.menu li {
+    display: flex;
+    align-items: center;
+}
+
+.menu li a{
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+    color: black;
+    font-weight: bold;
+}
+
+.menuNav{
+    height: 100%;
+    display: flex;
+}
+
+.menu li.sobre,.menu li.cronogramas {
+    background-color:#bfa2ff;}
+
+.menu li.materiais {
+    background-color: #8dd4ff;}
+
+.menu li.livros {
+    background-color: #ffe57e;}
+
+
+
+/*Menu botão Entrar*/
+.menu li.entrar {
+    background-color: #47b1f2;
+    border-radius: 25px;
+ }
+
+.menu li.entrar a {
+    display: block;
+    border-radius: 25px;
+    color: black;
+}
+
+.menu li.entrar a:hover {
+    background-color: rgb(32, 96, 216);
+    color: white;
+    transform: scale(1.05);
+}
+
+.linha_dupla {
+ display: flex;
+ gap: 15px;
+ width: 100%;
+}
+
+.campo {
+ display: flex;
+ flex-direction: column;
+ flex: 1;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.inserirInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mainContainer{
+    font-weight: bold;
+    max-width: 400px;
+    padding: 60px;
+    margin-top: 250px;    
+    margin-bottom: 100px; 
+    margin-left: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/*<h1>*/
+.mainContainer h1{
+    font-size: 40px;
+    color: #001a8b;
+}

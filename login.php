@@ -21,6 +21,7 @@
                     <input type="email" name="email" required>
                 </div>
                 
+                
                <div class="inserirInfo">
                     <label>Senha: </label>
                     <input type="password" name="senha" required>

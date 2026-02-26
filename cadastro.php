@@ -4,29 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/cadastro.css">
 </head>
 
 <body>
+    <header>
+        <div class="logoMarca"><img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis"></div>
+        <nav class="menuNav">
+            <ul class="menu">
+                <li class="sobre"><a href="sobre.php">Sobre</a></li>
+                <li class="materiais"><a href="materiais.php">Materiais</a></li>
+                <li class="livros"><a href="livros.php">Livros</a></li>
+                <li class="cronogramas"><a href="cronogramas.php">Cronogramas</a></li>
+                <li class="entrar"><a href="login.php">Entrar</a></li>
+            </ul>
+        </nav>
+    </header>
     <main>
-        <h1>Faça seu Cadastro!</h1>
+        <div class="mainContainer">
+        <h1 class="mainTitulo yeseva-one-regular">Faça seu Cadastro!</h1>
         <form method="POST" action="cad.php">
             <hr><br><br>
-            <label>Nome: </label> <input type="text" name="nome" required><br>
-            <label>E-mail: </label> <input type="email" name="email" required><br>
 
+            <div class="inserirInfo">
+                <label>Nome: </label> <input type="text" name="nome" required><br>
+            </div>
+
+            <div class="inserirInfo">
+                <label>Senha: </label> <input type="password" name="senha" required><br>
+            </div>
+           
             <div class="linha_dupla">
-                <div class="campo">
-                    <label>Senha: </label> <input type="password" name="senha" required><br>
+                <div class="inserirInfo">
+                    <div class="campo">
+                         <label>E-mail: </label> <input type="email" name="email" required><br>
+                    </div>
                 </div>
-                <div class="campo">
-                    <label>Telefone: </label> <input type="text" name="telefone" required><br>
+
+                <div class="inserirInfo">
+                    <div class="campo">
+                        <label>Telefone: </label> <input type="text" name="telefone" required><br>
+                    </div>
                 </div>
             </div>
 
             <button type="submit"> Cadastrar </button>
-            <a href="senhaPerdida.php?acao=recuperar" style="text-decoration:none"> Esqueceu sua senha? </a>
         </form>
+        </div>
     </main>
 </body>
 
