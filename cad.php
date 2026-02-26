@@ -60,6 +60,7 @@ elseif ($acao == "login") { //vai verificar se a ação foi preenchida com login
         } else { //se der erro, vai aparecer Senha ou E-mail incorretos
             echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
         }
+    }
 
     $stmt->close(); //fecha a conexão
 }
