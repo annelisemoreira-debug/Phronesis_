@@ -90,6 +90,12 @@ body {
     transform: scale(1.05);
 }
 
+.imgLogo{
+    display: ;
+    justify-content: center;
+    align-items: left;   
+    margin-top: 450px;
+}
 .linha_dupla {
  display: flex;
  gap: 15px;
@@ -113,20 +119,68 @@ form{
     gap: 20px;
 }
 
+.container {
+    display: flex; /* Habilita Flexbox */
+    align-items: center; /* Alinha verticalmente no centro */
+    gap: 10px; /* Espaçamento entre a imagem e o form */
+    
+    
+  }
+
+.container img {
+    max-width: 100%;
+    height: auto;
+    width: 500px;
+    margin-left: 28%;
+    margin-top: -5%;/* Ajuste o tamanho da imagem */
+    border-radius: 5%;
+  }
+
 .mainContainer{
     font-weight: bold;
-    max-width: 400px;
+    max-width: 485px;
     padding: 60px;
-    margin-top: 250px;    
+    margin-top: 0.5%;    
     margin-bottom: 100px; 
-    margin-left: 500px;
+   
     display: flex;
     flex-direction: column;
     gap: 10px;
+    
 }
 
 /*<h1>*/
 .mainContainer h1{
     font-size: 40px;
     color: #001a8b;
+}
+
+.mainContainer label{
+    font-size: 20px;
+    color: #001a8b;
+}
+
+/*<input>*/
+.mainContainer input{
+    border: none;
+    padding: 5px;
+    border-radius: 25px;
+}
+
+.entrarLogin{
+    border: none;
+    background-color: #001a8b;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 10px 25px;
+    width: fit-content;
+    align-self: center;
+}
+
+.entrarLogin:hover{
+    background-color: #031768;
+    transition: 0.5s;
+    cursor: pointer;
 }

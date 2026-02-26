@@ -21,17 +21,20 @@
         </nav>
     </header>
     <main>
+        <div class="container">
+
+        <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
         <div class="mainContainer">
-        <h1 class="mainTitulo yeseva-one-regular">Faça seu Cadastro!</h1>
+    
+        <h1 class="mainTitulo yeseva-one-regular">Faça seu cadastro!</h1>
         <form method="POST" action="cad.php">
-            <hr><br><br>
 
             <div class="inserirInfo">
-                <label>Nome: </label> <input type="text" name="nome" required><br>
+                <label>Nome: </label> <input type="text" name="nome" required>
             </div>
 
             <div class="inserirInfo">
-                <label>Senha: </label> <input type="password" name="senha" required><br>
+                <label>Senha: </label> <input type="password" name="senha" required>
             </div>
            
             <div class="linha_dupla">
@@ -48,8 +51,9 @@
                 </div>
             </div>
 
-            <button type="submit"> Cadastrar </button>
+            <button class="entrarLogin" type="submit"> Cadastrar </button>
         </form>
+        </div>
         </div>
     </main>
 </body>
