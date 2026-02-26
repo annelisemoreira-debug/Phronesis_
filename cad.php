@@ -27,6 +27,7 @@ if (empty($acao)) { // Se o login, atulização e delete estiverem vazios, é po
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT); //deixa a senha criptografada / password_default serve para proteção da senha
 
+    // Ajustei para inserir nome e telefone também, já que estão no form
     $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES (?, ?, ?, ?)"; //vai verificar o banco de dados da tabela cadastro
     $stmt = $conn->prepare($sql); //vai preparar a conexão com o banco
     $stmt->bind_param("ssss", $nome, $email, $senhaHash, $telefone); //vai alterar os tipos de dados para string (ssss) deixando valores reais, seguros
@@ -63,6 +64,7 @@ elseif ($acao == "login") { //vai verificar se a ação foi preenchida com login
     }
 
     $stmt->close(); //fecha a conexão
+
 }
 
 
@@ -83,12 +85,12 @@ elseif ($acao == "nova_senha") {
     // "ss" significa: dois valores do tipo string
     $stmt->bind_param("ss", $senhaHash, $email);
 
-    if ($stmt->execute()) {
+    if ($stmt->execute()) { // Vai executar o comando no banco para ver se o email existe
         echo "Senha atualizada com sucesso! <a href='login.php'>Clique aqui para logar</a>";
-    } else {
-        echo "Erro ao atualizar.";
+    } else { //se não, menssagem de erro
+        echo "E-mail inválido.";
     }
-    $stmt->close();
+    $stmt->close(); //fecha a conexão
 }
 
 
