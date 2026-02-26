@@ -120,9 +120,12 @@ elseif ($acao == "update") {
 
 // --- AÇÃO: DELETAR ---
 elseif ($acao == "delete") {
+     // Recebe o ID do usuário enviado pelo formulário
     $id = $_POST['id_cadastro'];
+     // Comando SQL para apagar o usuário pelo ID
     $sql = "DELETE FROM cadastro WHERE id_cadastro=?";
     $stmt = $conn->prepare($sql);
+    // Substitui o ? pelo valor do ID (i = inteiro)
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
@@ -135,24 +138,35 @@ elseif ($acao == "delete") {
 
 
 // --- AÇÃO: AUTO-DELETAR ---
+// Verifica se a ação é "self_delete"
 elseif ($acao == "self_delete") {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
+     // Busca o usuário no banco pelo e-mail
     $sql = "SELECT id_cadastro, senha FROM cadastro WHERE email=?";
     $stmt = $conn->prepare($sql);
+    // Substitui o ? pelo e-mail
     $stmt->bind_param("s", $email);
+    // Executa a consulta
     $stmt->execute();
+    // Guarda o resultado
     $result = $stmt->get_result();
 
+    // Verifica se encontrou exatamente 1 usuário
     if ($result->num_rows == 1) {
+        // Pega os dados do usuário
         $user = $result->fetch_assoc();
+        // Confere se a senha digitada é igual à do banco
         if (password_verify($senha, $user['senha'])) {
+            // Se a senha estiver correta, prepara o DELETE
             $sql_del = "DELETE FROM cadastro WHERE id_cadastro=?";
             $stmt_del = $conn->prepare($sql_del);
+            // Substitui o ? pelo ID do usuário
             $stmt_del->bind_param("i", $user['id_cadastro']);
             if ($stmt_del->execute()) {
                 echo "Conta excluída com sucesso! <a href='index.php'>Clique aqui para voltar</a>";
+                 // Encerra a sessão do usuário
                 session_start();
                 session_destroy();
             } else {
