@@ -11,60 +11,57 @@ if ($conn->connect_error) {
     die("Erro na conexão: " . $conn->connect_error);
 }
 
-// Verifica qual ação foi enviada via POST ou GET (POST para cadastro/login, GET para update/delete)
+// Vai pegar a ação POST e GET (POST {login, cadastro} / GET {atualização, delete})
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
 
 // --- AÇÃO: CADASTRAR ---
-if (empty($acao)) { 
-    $email = $_POST['email'] ?? '';
-    $senha = $_POST['senha'] ?? '';
-    $nome = $_POST['nome'] ?? '';
-    $telefone = $_POST['telefone'] ?? '';
+if (empty($acao)) { // Se o login, atulização e delete estiverem vazios, é possivel cadastrar no sistema
+    $email = $_POST['email'] ?? ''; // Recebe o e-mail enviado pelo formulário via POST
+    $senha = $_POST['senha'] ?? ''; // Recebe o senha enviado pelo formulário via POST
+    $nome = $_POST['nome'] ?? ''; // Recebe nome enviado pelo formulário via POST
+    $telefone = $_POST['telefone'] ?? ''; // Recebe o telefone enviado pelo formulário via POST
 
     if (empty($email) || empty($senha)) { //Se o email e senha estiverem vazios, não é possivel cadastrar
         die("E-mail e senha são obrigatórios.");
     }
 
-    $senhaHash = password_hash($senha, PASSWORD_DEFAULT); //deixa a senha criptografada / password_default serve para proteção 
+    $senhaHash = password_hash($senha, PASSWORD_DEFAULT); //deixa a senha criptografada / password_default serve para proteção da senha
 
-    // Ajustei para inserir nome e telefone também, já que estão no form
-    $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssss", $nome, $email, $senhaHash, $telefone);
+    $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES (?, ?, ?, ?)"; //vai verificar o banco de dados da tabela cadastro
+    $stmt = $conn->prepare($sql); //vai preparar a conexão com o banco
+    $stmt->bind_param("ssss", $nome, $email, $senhaHash, $telefone); //vai alterar os tipos de dados para string (ssss) deixando valores reais, seguros
 
-    if ($stmt->execute()) {
+    if ($stmt->execute()) { //vai executar se os dados forem inseridos corretamente
         echo "Cadastro realizado com sucesso! <a href='login.php'>Clique aqui para logar</a>";
-    } else {
+    } else { //Se os dados não forem inseridos corretamente, mostra a menssagem de erro
         echo "Erro ao cadastrar: " . $conn->error;
     }
-    $stmt->close();
+    $stmt->close(); //fecha a conexão
 }
 
 
 // --- AÇÃO: LOGAR ---
-elseif ($acao == "login") {
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+elseif ($acao == "login") { //vai verificar se a ação foi preenchida com login, se sim, é possivel logar no sistema
+    $email = $_POST['email']; // Recebe o e-mail enviado pelo formulário via POST
+    $senha = $_POST['senha']; // Recebe o senha enviado pelo formulário via POST
 
-    $sql = "SELECT id_cadastro, senha FROM cadastro WHERE email=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $sql = "SELECT id_cadastro, senha FROM cadastro WHERE email=?"; // Vai selecionar o id_cadastro e senha para confirmar se realmente existem
+    $stmt = $conn->prepare($sql); //prepara a conexão com o banco
+    $stmt->bind_param("s", $email); //altera o valor do email para STRING, deixando o valor real, seguro
+    $stmt->execute(); //vai executar a consulta no banco
+    $result = $stmt->get_result(); //vai pegar o valor da consulta se realmente existir no banco 
 
-    if ($result->num_rows == 1) {
-        $user = $result->fetch_assoc();
-        if (password_verify($senha, $user['senha'])) {
-            session_start();
-            $_SESSION['id'] = $user['id_cadastro'];
+    if ($result->num_rows == 1) { //vai verificar se realmente existe a consulta, se for 1 (verdadeiro), se for 0 (falso), mostrando uma menssagem de usuário não encontrado
+        $user = $result->fetch_assoc(); //vai pegar o valor da consulta 
+        if (password_verify($senha, $user['senha'])) { //vai transformar a senha em hash e vai comparar a senha com a senha cadastrada
+            session_start(); //Vai buscar manter a conexão com o banco
+            $_SESSION['id'] = $user['id_cadastro']; //Vai procurar o id do usuário para confirmar sua existencia
             echo "Login realizado com sucesso! <a href='index.php'>Ir para painel</a>";
-        } else {
-            echo "Senha incorreta!";
+        } else { //se der erro, vai aparecer Senha ou E-mail incorretos
+            echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
         }
-    } else {
-        echo "Usuário não encontrado!";
-    }
-    $stmt->close();
+
+    $stmt->close(); //fecha a conexão
 }
 
 
