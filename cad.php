@@ -3,7 +3,6 @@
 $servername = "localhost";
 $username = "root";
 $password = "Home@spSENAI2025!";
-
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname); //Vai ver se os dados foram conectados
