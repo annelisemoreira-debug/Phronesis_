@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
+
 }
 
 body {
@@ -13,8 +13,6 @@ body {
 /* --- CLASSE DE FONTE (MANTIDA) --- */
 .yeseva-one-regular {
     font-family: "Yeseva One", serif;
-    /* Corrigi 'vold' para 'bold' se for o caso, 
-       mas mantive a lógica original abaixo */
     font-weight: bold; 
     font-style: normal;
 }
@@ -86,7 +84,6 @@ header {
     max-width: 500px;
     height: auto;
     border-radius: 5%;
-    /* Removido o margin-left fixo para centralização automática */
 }
 
 
