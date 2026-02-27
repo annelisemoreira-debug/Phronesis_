@@ -1,3 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phronesis</title>
+    <link rel="stylesheet" href="../assets/css/index.css">
+</head>
+<body>
+    <header>
+        <div class="logoMarca"><img src="../assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis"></div>
+        <nav class="menuNav">
+            <ul class="menu">
+                <li class="sobre"><a href="../pages/sobre.php">Sobre</a></li>
+                <li class="materiais"><a href="../pages/material.php">Materiais</a></li>
+                <li class="livros"><a href="../pages/livros.php">Livros</a></li>
+                <li class="cronogramas"><a href="../pages/cronograma.php">Cronogramas</a></li>
+                <li class="entrar"><a href="../login.php">Entrar</a></li>
+            </ul>
+        </nav>
+    </header>
+</body>
+</html>
+
 <?php
 // Conexão com o banco
 $servername = "localhost";
@@ -14,6 +39,7 @@ if ($conn->connect_error) {
 
 // Vai pegar a ação POST e GET (POST {login, cadastro} / GET {atualização, delete})
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
+
 
 // --- AÇÃO: CADASTRAR ---
 if (empty($acao)) { // Se não estiver pedindo o valor do delete, atualizar e fazer login, é possivel cadastrar no sistema
