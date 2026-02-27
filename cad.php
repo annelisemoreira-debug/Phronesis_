@@ -3,6 +3,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "Home@spSENAI2025!";
+
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname); //vai ver se os dados foram conectados
@@ -39,7 +40,6 @@ if (empty($acao)) { // Se não estiver pedindo o valor do delete, atualizar e fa
         echo "Erro ao cadastrar: " . $conn->error;
     }
 
-
     $stmt->close(); //fecha a conexão
 }
 
@@ -64,8 +64,9 @@ elseif ($acao == "login") { //vai verificar se a ação foi preenchida com login
         } else { //se der erro, vai aparecer Senha ou E-mail incorretos
             echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
             }
+    } else {
+        echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
     }
-
 
     $stmt->close(); //fecha a conexão
 
@@ -98,6 +99,7 @@ elseif ($acao == "nova_senha") {
     }
 
     $stmt->close(); //fecha a conexão
+    
 }
 
 
