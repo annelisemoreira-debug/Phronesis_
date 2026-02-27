@@ -5,8 +5,9 @@ $username = "root";
 $password = "";
 $dbname = "phronesis";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $dbname); //vai ver se os dados foram conectados
 
+// Se a conexão estiver algum dado inválido, menssagem de erro
 if ($conn->connect_error) {
     die("Erro na conexão: " . $conn->connect_error);
 }
@@ -15,7 +16,7 @@ if ($conn->connect_error) {
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
 
 // --- AÇÃO: CADASTRAR ---
-if (empty($acao)) { // Se o login, atulização e delete estiverem vazios, é possivel cadastrar no sistema
+if (empty($acao)) { // Se não estiver pedindo o valor do delete, atualizar e fazer login, é possivel cadastrar no sistema
     $email = $_POST['email'] ?? ''; // Recebe o e-mail enviado pelo formulário via POST
     $senha = $_POST['senha'] ?? ''; // Recebe o senha enviado pelo formulário via POST
     $nome = $_POST['nome'] ?? ''; // Recebe nome enviado pelo formulário via POST
