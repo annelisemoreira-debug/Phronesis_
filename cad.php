@@ -5,7 +5,7 @@ $username = "root";
 $password = "Home@spSENAI2025!";
 $dbname = "phronesis";
 
-$conn = new mysqli($servername, $username, $password, $dbname); //vai ver se os dados foram conectados
+$conn = new mysqli($servername, $username, $password, $dbname); //Vai ver se os dados foram conectados
 
 // Se a conexão estiver algum dado inválido, menssagem de erro
 if ($conn->connect_error) {
