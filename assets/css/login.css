@@ -1,3 +1,4 @@
+/* Reset e Base */
 * {
     margin: 0;
     padding: 0;
@@ -6,185 +7,164 @@
 
 body {
     background-color: #fbd84e;
+    font-family: sans-serif; /* Fallback caso a Yeseva não carregue */
 }
-header{
+
+/* Header */
+header {
     background-color: #8654f3;
-    padding: 25px 5% 15px 5%;
+    padding: 15px 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-radius: 0 0 15px 15px;
+    flex-wrap: wrap; /* Permite que o menu quebre linha em telas pequenas */
 }
 
-/*Fontes*/
 .yeseva-one-regular {
-  font-family: "Yeseva One", serif;
-  font-weight: vold;
-  font-style: normal;
+background-color: #fbd84e;
+font-family: 'Yeseva One', serif;
+font-weight: bold;
+font-style: normal;
 }
 
 .logoMarca {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .logoMarca img {
-    width: 100%;  
-    height: 100%; 
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
-/*Menu*/
+/* Menu */
 .menu {
     display: flex;
     list-style: none;
-    padding: 0;
-    align-items: center;
-    gap: 15px;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .menu li {
-    display: flex;
-    align-items: center;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-.menu li a{
+.menu li a {
     text-decoration: none;
     display: block;
-    padding: 10px 20px;
+    padding: 8px 15px;
     color: black;
     font-weight: bold;
+    font-size: 14px;
 }
 
-.menuNav{
-    height: 100%;
-    display: flex;
-}
-
-.menu li.sobre,.menu li.cronogramas {
-    background-color:#bfa2ff;}
-
-.menu li.materiais {
-    background-color: #8dd4ff;}
-
-.menu li.livros {
-    background-color: #ffe57e;}
-
-
-
-/*Menu botão Entrar*/
-.menu li.entrar {
-    background-color: #47b1f2;
-    border-radius: 25px;
- }
-
-.menu li.entrar a {
-    display: block;
-    border-radius: 25px;
-    color: black;
-}
+/* Cores do Menu */
+.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.materiais { background-color: #8dd4ff; }
+.menu li.livros { background-color: #ffe57e; }
+.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
 
 .menu li.entrar a:hover {
-    background-color: rgb(32, 96, 216);
+    background-color: #2060d8;
     color: white;
-    transform: scale(1.05);
+    transition: 0.3s;
 }
 
-/*Parte do login*/
-form{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.inserirInfo{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.mainContainer{
-    font-weight: bold;
-    max-width: 400px;
-    padding: 60px;
-    margin-top: 250px;    
-    margin-bottom: 100px; 
-    margin-left: 200px;
-    margin-top: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/*<h1>*/
-.mainContainer h1{
-    font-size: 40px;
-    color: #001a8b;
-}
-
-/*<p>*/
-.mainContainer p{
-    color: #001a8b;
-}
-
-/*<a>*/
-.botaoCadastro{
-    color: #34bfff;
-}
-
-.esqueceuSenha{
-    color: #8f7200;
-}
-
-
-/*<label>*/
-.mainContainer label{
-    font-size: 20px;
-    color: #001a8b;
-}
-
-/*<input>*/
-.mainContainer input{
-    border: none;
-    padding: 5px;
-    border-radius: 25px;
-}
+/* Container Principal (O Segredo da Responsividade) */
 .container {
-    display: flex; /* Habilita Flexbox */
-    align-items: center; /* Alinha verticalmente no centro */
-    gap: 5px; /* Espaçamento entre a imagem e o form */
-
-    
-  }
+    display: flex;
+    flex-wrap: wrap; /* Faz os itens ficarem um embaixo do outro no celular */
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 20px;
+    gap: 40px;
+}
 
 .container img {
-    max-width: 100%;
+    width: 100%;
+    max-width: 400px; /* Tamanho máximo da imagem */
     height: auto;
-    width: 400px;
-    margin-left: 28%;
-    margin-top: -5%;/* Ajuste o tamanho da imagem */
     border-radius: 5%;
-  }
-/*<button>*/
-.entrarLogin{
+}
+
+.mainContainer {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inserirInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mainContainer h1 {
+    font-size: 36px;
+    color: #001a8b;
+}
+
+.mainContainer label {
+    font-weight: bold;
+    color: #001a8b;
+}
+
+.mainContainer input {
+    border: none;
+    padding: 12px 15px;
+    border-radius: 25px;
+    width: 100%;
+}
+
+/* Botões e Links */
+.entrarLogin {
     border: none;
     background-color: #001a8b;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     border-radius: 10px;
-    padding: 10px 25px;
-    width: fit-content;
-    align-self: center;
+    padding: 12px 40px;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: 0.3s;
 }
 
-.entrarLogin:hover{
+.entrarLogin:hover {
     background-color: #031768;
-    transition: 0.5s;
-    cursor: pointer;
+    transform: scale(1.05);
+}
+
+/* Media Queries para ajuste fino */
+@media (max-width: 768px) {
+    header {
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .container {
+        flex-direction: column; /* Imagem em cima, form embaixo */
+        text-align: center;
+    }
+
+    .entrarLogin {
+        align-self: center; /* Centraliza o botão no celular */
+        width: 100%;
+    }
 }
