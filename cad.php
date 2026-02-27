@@ -2,7 +2,7 @@
 // Conexão com o banco
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "Home@spSENAI2025!";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -59,13 +59,12 @@ elseif ($acao == "login") { //vai verificar se a ação foi preenchida com login
         if (password_verify($senha, $user['senha'])) { //vai transformar a senha em hash e vai comparar a senha com a senha cadastrada
             session_start(); //Vai buscar manter a conexão com o banco
             $_SESSION['id'] = $user['id_cadastro']; //Vai procurar o id do usuário para confirmar sua existencia
-            echo "Login realizado com sucesso! <a href='index.php'>Ir para painel</a>";
+            echo "Login realizado com sucesso! <a href='../pages/index.php'>Ir para painel</a>";
         } else { //se der erro, vai aparecer Senha ou E-mail incorretos
             echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
             }
     }
-    
-    echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
+
 
     $stmt->close(); //fecha a conexão
 

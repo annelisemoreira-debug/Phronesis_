@@ -28,7 +28,7 @@
             <p>Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p><br>
 
             <form method="POST" action="cad.php">
-                <input type="hidden" name="acao" value="login">
+                <input type="hidden" name="acao" value="login"> <!--O valor da ação é login-->
 
                 <div class="inserirInfo">
                     <label>E-mail: </label>
