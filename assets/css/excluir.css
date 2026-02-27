@@ -1,26 +1,38 @@
-
+/* Reset e Base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-header{
-    background-color: #8654f3;
-    padding: 25px 5% 15px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 0 0 15px 15px;
-}
-
 body {
     background-color: #fbd84e;
 }
 
+/* --- CLASSE DE FONTE (MANTIDA) --- */
+.yeseva-one-regular {
+    font-family: "Yeseva One", serif;
+    /* Corrigi 'vold' para 'bold' se for o caso, 
+       mas mantive a lógica original abaixo */
+    font-weight: bold; 
+    font-style: normal;
+}
+
+/* Header */
+header {
+    background-color: #8654f3;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 15px 15px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
 .logoMarca {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;
@@ -29,152 +41,150 @@ body {
 }
 
 .logoMarca img {
-    width: 100%;  
-    height: 100%; 
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
-/*Menu*/
+/* Menu */
 .menu {
     display: flex;
     list-style: none;
-    padding: 0;
-    align-items: center;
-    gap: 15px;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.menu li {
-    display: flex;
-    align-items: center;
-}
-
-.menu li a{
+.menu li a {
     text-decoration: none;
     display: block;
-    padding: 10px 20px;
+    padding: 10px 15px;
     color: black;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.materiais { background-color: #8dd4ff; }
+.menu li.livros { background-color: #ffe57e; }
+.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
+
+/* Container e Layout Principal */
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; 
+    gap: 20px;
+    padding: 40px 5%;
+    min-height: 80vh;
+}
+
+.container img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border-radius: 5%;
+    /* Removido o margin-left fixo para centralização automática */
+}
+
+
+.mainContainer {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    margin-top: 70px;
+    margin-left: 100px;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+/* Tipografia */
+.mainContainer h1 {
+    font-size: clamp(30px, 5vw, 40px); /* Tamanho fluido */
+    color: #001a8b;
+}
+
+.mainContainer label {
+    font-size: 18px;
+    color: #001a8b;
     font-weight: bold;
 }
 
-.menuNav{
-    height: 100%;
+/* Formulário e Inputs */
+form {
     display: flex;
-}
-
-.menu li.sobre,.menu li.cronogramas {
-    background-color:#bfa2ff;}
-
-.menu li.materiais {
-    background-color: #8dd4ff;}
-
-.menu li.livros {
-    background-color: #ffe57e;}
-
-
-
-/*Menu botão Entrar*/
-.menu li.entrar {
-    background-color: #47b1f2;
-    border-radius: 25px;
- }
-
-.menu li.entrar a {
-    display: block;
-    border-radius: 25px;
-    color: black;
-}
-
-.menu li.entrar a:hover {
-    background-color: rgb(32, 96, 216);
-    color: white;
-    transform: scale(1.05);
+    flex-direction: column;
+    gap: 20px;
 }
 
 .linha_dupla {
- display: flex;
- gap: 15px;
- width: 100%;
+    display: flex;
+    gap: 15px;
+    width: 100%;
 }
 
-.campo {
- display: flex;
- flex-direction: column;
- flex: 1;
-}
-
-form{
+.campo, .inserirInfo {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-}
-.inserirInfo{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    gap: 8px;
+    flex: 1;
 }
 
-.container {
-    display: flex; /* Habilita Flexbox */
-    align-items: center; /* Alinha verticalmente no centro */
-    gap: 10px; /* Espaçamento entre a imagem e o form */
-
-    
-  }
-
-.container img {
-    max-width: 100%;
-    height: auto;
-    width: 500px;
-    margin-left: 28%;
-    margin-top: -5%;/* Ajuste o tamanho da imagem */
-    border-radius: 5%;
-  }
-
-.mainContainer{
-    font-weight: bold;
-    max-width: 485px;
-    padding: 60px;
-    margin-top: 0.5%;    
-    margin-bottom: 100px; 
-   
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    
-}
-
-/*<h1>*/
-.mainContainer h1{
-    font-size: 40px;
-    color: #001a8b;
-}
-
-.mainContainer label{
-    font-size: 20px;
-    color: #001a8b;
-}
-
-/*<input>*/
-.mainContainer input{
+.mainContainer input {
     border: none;
-    padding: 5px;
+    padding: 12px 15px;
     border-radius: 25px;
+    width: 100%;
+    font-size: 16px;
 }
 
-.entrarLogin{
+/* Botão */
+.entrarLogin {
     border: none;
     background-color: #001a8b;
     color: white;
     font-size: 20px;
     font-weight: bold;
     border-radius: 10px;
-    padding: 10px 25px;
+    padding: 12px 35px;
     width: fit-content;
     align-self: center;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.entrarLogin:hover{
+.entrarLogin:hover {
     background-color: #031768;
-    transition: 0.5s;
-    cursor: pointer;
+    transform: scale(1.05);
+}
+
+/* --- RESPONSIVIDADE (MEDIA QUERIES) --- */
+
+@media (max-width: 850px) {
+    .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .linha_dupla {
+        flex-direction: column; /* Campos empilhados no mobile */
+    }
+
+    .container img {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 15px 2%;
+    }
+    
+    .menu li a {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
 }
