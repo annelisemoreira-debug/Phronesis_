@@ -21,10 +21,10 @@ header {
 }
 
 .yeseva-one-regular {
-background-color: #fbd84e;
-font-family: 'Yeseva One', serif;
-font-weight: bold;
-font-style: normal;
+    background-color: #fbd84e;
+    font-family: 'Yeseva One', serif;
+    font-weight: bold;
+    font-style: normal;
 }
 
 .logoMarca {
@@ -75,7 +75,7 @@ font-style: normal;
     transition: 0.3s;
 }
 
-/* Container Principal (O Segredo da Responsividade) */
+/*Container Principal*/
 .container {
     display: flex;
     flex-wrap: wrap; /* Faz os itens ficarem um embaixo do outro no celular */

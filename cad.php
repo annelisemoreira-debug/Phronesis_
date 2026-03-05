@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cad</title>
     <link rel="stylesheet" href="assets/css/cadastro.css">
 </head>
 <body>
@@ -26,7 +26,7 @@
 // Conexão com o banco
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "Home@spSENAI2025!";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname); //Vai ver se os dados foram conectados
@@ -139,6 +139,7 @@ elseif ($acao == "update") {
     $senha = $_POST['senha'];
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
     // Comando SQL para atualizar email e senha pelo ID
     $sql = "UPDATE cadastro SET email=?, senha=? WHERE id_cadastro=?";
     $stmt = $conn->prepare($sql);

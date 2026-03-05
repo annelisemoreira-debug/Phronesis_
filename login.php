@@ -9,7 +9,11 @@
 
 <body>
     <header>
-        <div class="logoMarca"><img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis"></div>
+        <div class="logoMarca">
+            <a href="index.php">
+                 <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
+            </a>
+        </div>
         <nav class="menuNav">
             <ul class="menu">
                 <li class="sobre"><a href="sobre.php">Sobre</a></li>
@@ -22,30 +26,29 @@
     </header>
     <main>
         <div class="container">
-        <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
-       <div class="mainContainer">
-            <h1 class="mainTitulo, yeseva-one-regular">Faça seu login!</h1>
-            <p>Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p><br>
+            <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
+            <div class="mainContainer">
+                <h1 class="mainTitulo, yeseva-one-regular">Faça seu login!</h1>
+                <p>Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p><br>
 
-            <form method="POST" action="cad.php">
-                <input type="hidden" name="acao" value="login"> <!--O valor da ação é login-->
+                <form method="POST" action="cad.php">
+                     <input type="hidden" name="acao" value="login"> <!--O valor da ação é login-->
 
-                <div class="inserirInfo">
-                    <label>E-mail: </label>
-                    <input type="email" name="email" required>
-                </div>
-                
+                     <div class="inserirInfo">
+                         <label>E-mail: </label>
+                         <input type="email" name="email" required>
+                     </div>                    
 
-               <div class="inserirInfo">
-                    <label>Senha: </label>
-                    <input type="password" name="senha" required>
-               </div>
+                     <div class="inserirInfo">
+                         <label>Senha: </label>
+                         <input type="password" name="senha" required>
+                     </div>
 
-                <a class="esqueceuSenha" href="senhaPerdida.php?acao=recuperar" style="text-decoration:none"> Esqueceu sua senha? </a>
-                <button class="entrarLogin" type="submit"> Entrar </button>
-            </form>
-       </div>
-    </div>
+                     <a class="esqueceuSenha" href="senhaPerdida.php?acao=recuperar" style="text-decoration:none"> Esqueceu sua senha? </a>
+                     <button class="entrarLogin" type="submit"> Entrar </button>
+                </form>
+            </div>
+        </div>
     </main>
 </body>
 

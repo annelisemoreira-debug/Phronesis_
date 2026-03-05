@@ -10,7 +10,11 @@
 
 <body>
     <header>
-        <div class="logoMarca"><img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis"></div>
+        <div class="logoMarca">
+            <a href="index.php">
+                 <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
+            </a>
+        </div>
         <nav class="menuNav">
             <ul class="menu">
                 <li class="sobre"><a href="pages/sobre.php">Sobre</a></li>
