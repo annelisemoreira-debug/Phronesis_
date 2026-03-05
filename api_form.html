@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Funcionário</title>
+</head>
+
+<body>
+
+    <h2>Cadastro de Funcionário</h2>
+
+    <input type="hidden" id="id_cadastro">
+
+    Nome: <input type="text" id="nome"><br><br>
+    E-mail: <input type="text" id="email"><br><br>
+    Senha: <input type="password" id="senha"><br><br>
+    Telefone: <input type="text" id="telefone"><br><br>
+
+    <button onclick="salvar()">Salvar</button>
+    <button onclick="listar()">Listar</button>
+
+    <h2>Lista de Funcionários</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Senha</th>
+                <th>Telefone</th>
+            </tr>
+        </thead>
+        <tbody id="tabela"></tbody>
+    </table>
+
+    <script>
+        const api = "api.php";
+
+        function salvar() {
+            const id = document.getElementById("id_cadastro").value;
+            const dados = {
+                nome: document.getElementById("nome").value,
+                email: document.getElementById("email").value,
+                senha: document.getElementById("senha").value,
+                telefone: document.getElementById("telefone").value
+            };
+
+            if (id) {
+                dados.id_cadastro = id;
+                // executa requisião http chamando a api e retornando resultado 
+                // da resposta da API (servidor)
+                fetch(api, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados)
+                }).then(r => r.json())// resposta chegou ao cliente
+                    .then(d => {
+                        alert(d.mensagem);
+                        listar();
+                        limpar();
+                    });
+
+            } else {
+
+                fetch(api, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados)
+                }).then(r => r.json())
+                    .then(d => {
+                        alert(d.mensagem);
+                        listar();
+                        limpar();
+                    });
+            }
+        }
+
+        function listar() {
+            fetch(api)
+                .then(r => r.json())
+                .then(dados => {
+                    let tabela = document.getElementById("tabela");
+                    tabela.innerHTML = "";
+
+                    dados.forEach(f => {
+                        tabela.innerHTML += `
+                <tr>
+                    <td>${f.id_cadastro}</td>
+                    <td>${f.nome}</td>
+                    <td>${f.email}</td>
+                    <td>${f.senha}</td>
+                    <td>${f.telefone}</td>
+                    <td>
+                        <button onclick="editar(${f.id_cadastro},'${f.nome}','${f.email}','${f.senha}','${f.telefone}')">Editar</button>
+                        <button onclick="excluir(${f.id_cadastro})">Excluir</button>
+                    </td>
+                </tr>
+            `;
+                    });
+                });
+        }
+
+        function editar(nome, email, senha, telefone) {
+            document.getElementById("nome").value = nome;
+            document.getElementById("email").value = email;
+            document.getElementById("senha").value = senha;
+            document.getElementById("telefone").value = telefone;
+        }
+
+        function excluir(id) {
+            if (confirm("Deseja excluir?")) {
+                fetch(api, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id_cadastro: id })
+                }).then(r => r.json())
+                    .then(d => {
+                        alert(d.mensagem);
+                        listar();
+                    });
+            }
+        }
+
+        function limpar() {
+            document.getElementById("id_cadastro").value = "";
+            document.getElementById("nome").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("senha").value = "";
+            document.getElementById("telefone").value = "";
+        }
+    </script>
+
+</body>
+
+</html>
