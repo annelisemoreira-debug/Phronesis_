@@ -19,18 +19,15 @@ body {
 
 /*Logo Phronesis*/
 .logoMarca {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .logoMarca img {
-    width: 100%;  
-    height: 100%; 
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
