@@ -1,0 +1,169 @@
+/* Paleta de Cores e Definições Gerais */
+:root {
+    --amarelo-bg: #f9d949;
+    --roxo-header: #6735b8;
+    --roxo-input-texto: #1a1a8b;
+    --azul-claro: #50c8ff;
+    --branco: #ffffff;
+    --azul-botao: #12128e;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: var(--amarelo-bg);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--roxo-input-texto);
+}
+
+/* Header / Navbar */
+.navbar {
+    background-color: var(--roxo-header);
+    width: 100%;
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.navbar button {
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    color: var(--roxo-input-texto);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.navbar button:hover {
+    background: var(--branco);
+}
+
+/* Layout Principal */
+.main-container {
+    width: 90%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding-bottom: 60px;
+}
+
+/* Seção de Formulário */
+.form-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 30px;
+}
+
+.logo-placeholder {
+    width: 300px;
+    height: 300px;
+    background: white;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.form-container {
+    flex: 1;
+    max-width: 450px;
+}
+
+h2 {
+    font-size: 3rem;
+    margin: 0 0 10px 0;
+    font-weight: 800;
+}
+
+.subtitle {
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+input[type="text"], 
+input[type="password"] {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 30px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Botões de Ação */
+.btn-salvar {
+    background-color: var(--azul-botao);
+    color: white;
+    border: none;
+    padding: 15px 50px;
+    border-radius: 35px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+    margin-top: 10px;
+}
+
+.btn-salvar:hover {
+    transform: scale(1.05);
+    background-color: #0a0a5e;
+}
+
+/* Tabela de Listagem */
+.table-section {
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid var(--amarelo-bg);
+    color: var(--roxo-header);
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit { background: var(--azul-claro); border:none; padding: 6px 12px; border-radius: 8px; cursor:pointer; font-weight: bold;}
+.btn-del { background: #ff4d4d; color: white; border:none; padding: 6px 12px; border-radius: 8px; cursor:pointer; font-weight: bold;}
