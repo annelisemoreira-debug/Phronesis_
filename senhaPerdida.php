@@ -14,7 +14,6 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){ // Se a acao do GET fo
         <div class="logoMarca"><img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis"></div>
         <nav class="menuNav">
             <ul class="menu">
-                <li class="sobre"><a href="sobre.php">Sobre</a></li>
                 <li class="materiais"><a href="material.php">Materiais</a></li>
                 <li class="livros"><a href="livros.php">Livros</a></li>
                 <li class="cronogramas"><a href="cronograma.php">Cronogramas</a></li>

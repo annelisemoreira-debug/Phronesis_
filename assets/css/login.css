@@ -20,13 +20,6 @@ header {
     flex-wrap: wrap; /* Permite que o menu quebre linha em telas pequenas */
 }
 
-.yeseva-one-regular {
-background-color: #fbd84e;
-font-family: 'Yeseva One', serif;
-font-weight: bold;
-font-style: normal;
-}
-
 .logoMarca {
     width: 60px;
     height: 60px;

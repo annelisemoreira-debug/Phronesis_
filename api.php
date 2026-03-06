@@ -3,98 +3,93 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
-//configuração conexão
+
 $host = "localhost";
 $user = "root";
 $pass = "Home@spSENAI2025!";
 $db   = "projetofinal";
-//conexão
+
 $conn = new mysqli($host, $user, $pass, $db);
+
 if ($conn->connect_error) {
-    die(json_encode(["erro" => "Falha na conexão"]));
+    echo json_encode(["erro" => "Falha na conexão: " . $conn->connect_error]);
+    exit;
 }
-//obtém método POST (CAD), GET (CONS), PUT (ALT) E DELETE (REMOVER)
+
 $method = $_SERVER['REQUEST_METHOD'];
-// executa ação de acordo com o método indicado pelo usuário no formulário
-switch($method){
-    // 🔹 LISTAR TODOS ou UM
+
+switch($method) {
     case 'GET':
         if(isset($_GET['id'])){
-            $id = intval($_GET['id']);// id de consulta
-            $sql = "SELECT * FROM cadastro WHERE idcadastro = $id";// consulta
+            $id = intval($_GET['id']);
+            // Ajustado para id_cadastro
+            $sql = "SELECT * FROM cadastro WHERE id_cadastro = $id";
         } else {
-            $sql = "SELECT * FROM cadastro";//mostra todos
+            $sql = "SELECT * FROM cadastro";
         }
-        $result = $conn->query($sql);// executa consulta
-        $dados = [];// obtém dados
-        // percorre resposta
-        while($row = $result->fetch_assoc()){
-            $dados[] = $row;
+        
+        $result = $conn->query($sql);
+        $dados = [];
+
+        if ($result) {
+            while($row = $result->fetch_assoc()){
+                $dados[] = $row;
+            }
         }
-        // envia resposta (codifica para Json)
         echo json_encode($dados);
         break;
 
-
-    // 🔹 INSERIR
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
+        
+        if(!empty($data)){
+            $nome = $conn->real_escape_string($data['nome']);
+            $email = $conn->real_escape_string($data['email']);
+            $senha = $conn->real_escape_string($data['senha']);
+            $telefone = $conn->real_escape_string($data['telefone']);
 
-        $nome = $conn->real_escape_string($data['nome']);
-        $email = $conn->real_escape_string($data['email']);
-        $senha = $conn->real_escape_string($data['senha']);
-        $telefone = $conn->real_escape_string($data['telefone']);
+            $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES ('$nome', '$email', '$senha', '$telefone')";
 
-        $sql = "INSERT INTO cadastro (nome, email, senha, telefone)
-                VALUES ('$nome', '$email', '$senha', '$telefone')";
-
-        if($conn->query($sql)){
-            echo json_encode(["mensagem" => "Funcionário inserido com sucesso"]);
-        } else {
-            echo json_encode(["erro" => "Erro ao inserir"]);
+            if($conn->query($sql)){
+                echo json_encode(["mensagem" => "Inserido com sucesso"]);
+            } else {
+                echo json_encode(["erro" => "Erro ao inserir: " . $conn->error]);
+            }
         }
         break;
 
-
-    // 🔹 ATUALIZAR
     case 'PUT':
         $data = json_decode(file_get_contents("php://input"), true);
-
-        $id = intval($data['idcadastro']);
+        // Padronizado para id_cadastro
+        $id = intval($data['id_cadastro']); 
         $nome = $conn->real_escape_string($data['nome']);
         $email = $conn->real_escape_string($data['email']);
         $senha = $conn->real_escape_string($data['senha']);
         $telefone = $conn->real_escape_string($data['telefone']);
 
-        $sql = "UPDATE cadastro SET 
-                nome='$nome',
-                email='$email',
-                senha='$senha',
-                telefone='$telefone'
-                WHERE idcadastro=$id";
+        $sql = "UPDATE cadastro SET nome='$nome', email='$email', senha='$senha', telefone='$telefone' WHERE id_cadastro=$id";
 
         if($conn->query($sql)){
-            echo json_encode(["mensagem" => "Funcionário atualizado"]);
+            echo json_encode(["mensagem" => "Atualizado com sucesso"]);
         } else {
-            echo json_encode(["erro" => "Erro ao atualizar"]);
+            echo json_encode(["erro" => "Erro ao atualizar: " . $conn->error]);
         }
         break;
 
-
-    // 🔹 EXCLUIR
     case 'DELETE':
         $data = json_decode(file_get_contents("php://input"), true);
-        $id = intval($data['idcadastro']);
+        // Padronizado para id_cadastro
+        $id = intval($data['id_cadastro']);
 
-        $sql = "DELETE FROM cadastro WHERE idcadastro=$id";
+        $sql = "DELETE FROM cadastro WHERE id_cadastro=$id";
 
         if($conn->query($sql)){
-            echo json_encode(["mensagem" => "Funcionário excluído"]);
+            echo json_encode(["mensagem" => "Excluído com sucesso"]);
         } else {
-            echo json_encode(["erro" => "Erro ao excluir"]);
+            echo json_encode(["erro" => "Erro ao excluir: " . $conn->error]);
         }
         break;
-}
+} // Faltava este fechamento do switch
 
 $conn->close();
 ?>
