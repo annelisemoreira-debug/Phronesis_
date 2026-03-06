@@ -6,7 +6,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 $host = "localhost";
 $user = "root";
-$pass = "Home@spSENAI2025!";
+$pass = "";
 $db   = "projetofinal";
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -70,7 +70,7 @@ switch($method) {
         $sql = "UPDATE cadastro SET nome='$nome', email='$email', senha='$senha', telefone='$telefone' WHERE id_cadastro=$id";
 
         if($conn->query($sql)){
-            echo json_encode(["mensagem" => "Atualizado com sucesso"]);
+            echo json_encode(value: ["mensagem" => "Atualizado com sucesso"]);
         } else {
             echo json_encode(["erro" => "Erro ao atualizar: " . $conn->error]);
         }
