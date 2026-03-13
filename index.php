@@ -2,7 +2,7 @@
 session_start(); 
 // Aqui você poderia buscar o caminho da foto no banco de dados se tiver uma coluna para isso.
 // Por enquanto, usaremos uma imagem padrão.
-$fotoPerfil = "assets/img/default-user.webp"; 
+$fotoPerfil = "assets/img/user.jpg"; 
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

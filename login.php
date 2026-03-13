@@ -20,7 +20,7 @@
     </header>
     <main>
         <div class="container">
-            <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
+            <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis" style="width: 800px; height: auto;">
             <div class="mainContainer">
                 <h1 class="mainTitulo">Faça seu login!</h1>
                 <p>Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p><br>
