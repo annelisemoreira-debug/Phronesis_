@@ -6,7 +6,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 $host = "localhost";
 $user = "root";
-$pass = "";
+$pass = "Home@spSENAI2025!";
 $db   = "projetofinal";
 
 $conn = new mysqli($host, $user, $pass, $db);
