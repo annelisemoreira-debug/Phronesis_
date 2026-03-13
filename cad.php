@@ -127,29 +127,34 @@ elseif ($acao == "nova_senha") {
 }
 
 
-// --- AÇÃO: ATUALIZAR ---
-// Verifica se a ação recebida é "update"
-elseif ($acao == "update") {
-        // Recebe o ID do usuário (se não existir, usa 0 como padrão)
-        
-    $id = $_POST['id_cadastro'] ?? 0;
-        // Recebe o e-mail enviado pelo formulário
+// --- AÇÃO: NOVA SENHA ---
+// Mudei para "nova_senha" para bater exatamente com o <input name="acao"> do seu formulário
+if ($acao == "nova_senha") {
+    
+    // Recebe os dados do formulário
     $email = $_POST['email'];
-    // Recebe a nova senha digitada pelo usuário
     $senha = $_POST['senha'];
 
+    // Cria o hash da nova senha
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-    // Comando SQL para atualizar email e senha pelo ID
-    $sql = "UPDATE cadastro SET email=?, senha=? WHERE id_cadastro=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $email, $senhaHash, $id);
 
-    // Executa o comando no banco
-    if ($stmt->execute()) {
-        echo "Atualizado com sucesso!";
+    // SQL: Atualizamos a senha onde o e-mail for igual ao digitado
+    $sql = "UPDATE cadastro SET senha=? WHERE email=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $senhaHash, $email);
+
+    // Executa o comando
+    $stmt->execute();
+
+    // VERIFICAÇÃO DE SUCESSO REAL:
+    // Se affected_rows for maior que 0, significa que o e-mail existia e foi alterado.
+    if ($stmt->affected_rows > 0) {
+        echo "<script>alert('Senha atualizada com sucesso!'); window.location.href='login.php';</script>";
     } else {
-        echo "Erro ao atualizar.";
+        // Se cair aqui, o comando rodou, mas o e-mail não foi encontrado no banco de dados.
+        echo "<script>alert('Erro: O e-mail informado não existe em nosso sistema.'); window.history.back();</script>";
     }
+
     $stmt->close();
 }
 

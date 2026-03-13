@@ -1,40 +1,75 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>CRUD Funcionário</title>
-    <link rel="stylesheet" href="assets/css/api.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Funcionário - Phronesis</title>
+    <link rel="stylesheet" href="api.css">
 </head>
-
 <body>
-    
-    <h2>Cadastro de Funcionário</h2>
 
-    <input type="hidden" id="id_cadastro">
+    <header class="navbar">
+        <button>Início</button>
+        <button>Materiais</button>
+        <button>Livros</button>
+        <button>Cronogramas</button>
+    </header>
 
-    Nome: <input type="text" id="nome"><br><br>
-    E-mail: <input type="text" id="email"><br><br>
-    Senha: <input type="password" id="senha"><br><br>
-    Telefone: <input type="text" id="telefone"><br><br>
+    <main class="main-container">
+        
+        <section class="form-section">
+            <div class="logo-placeholder">
+                <img src="https://via.placeholder.com/200x200?text=PHRONESIS" alt="Logo" style="width:80%">
+            </div>
 
-    <button onclick="salvar()">Salvar</button>
-    <button onclick="listar()">Listar</button>
-    
+            <div class="form-container">
+                <h2>Faça seu login!</h2>
+                <p class="subtitle">Não tem uma conta? <span style="color: var(--azul-claro); cursor:pointer">Cadastre-se</span></p>
 
-    <h2>Lista de Funcionários</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Senha</th>
-                <th>Telefone</th>
-            </tr>
-        </thead>
-        <tbody id="tabela"></tbody>
-    </table>
+                <input type="hidden" id="id_cadastro">
+
+                <div class="input-group">
+                    <label>Nome:</label>
+                    <input type="text" id="nome">
+                </div>
+
+                <div class="input-group">
+                    <label>E-mail:</label>
+                    <input type="text" id="email">
+                </div>
+
+                <div class="input-group">
+                    <label>Senha:</label>
+                    <input type="password" id="senha">
+                </div>
+
+                <div class="input-group">
+                    <label>Telefone:</label>
+                    <input type="text" id="telefone">
+                </div>
+
+                <button class="btn-salvar" onclick="salvar()">Entrar</button>
+                <button onclick="listar()" style="background:none; border:none; cursor:pointer; color: var(--roxo-input-texto); text-decoration: underline; margin-left: 15px;">Listar cadastros</button>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <h3>Funcionários Registrados</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela"></tbody>
+            </table>
+        </section>
+
+    </main>
 
     <script>
         const api = "api.php";
@@ -48,34 +83,19 @@
                 telefone: document.getElementById("telefone").value
             };
 
-            if (id) {
-                dados.id_cadastro = id;
-                // executa requisião http chamando a api e retornando resultado 
-                // da resposta da API (servidor)
-                fetch(api, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(dados)
-                }).then(r => r.json())// resposta chegou ao cliente
-                    .then(d => {
-                        alert(d.mensagem);
-                        listar();
-                        limpar();
-                    });
+            const metodo = id ? "PUT" : "POST";
+            if (id) dados.id_cadastro = id;
 
-            } else {
-
-                fetch(api, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(dados)
-                }).then(r => r.json())
-                    .then(d => {
-                        alert(d.mensagem);
-                        listar();
-                        limpar();
-                    });
-            }
+            fetch(api, {
+                method: metodo,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            }).then(r => r.json())
+              .then(d => {
+                  alert(d.mensagem || d.erro);
+                  listar();
+                  limpar();
+              });
         }
 
         function listar() {
@@ -84,43 +104,42 @@
                 .then(dados => {
                     let tabela = document.getElementById("tabela");
                     tabela.innerHTML = "";
-
                     dados.forEach(f => {
                         tabela.innerHTML += `
-                <tr>
-                    <td>${f.id_cadastro}</td>
-                    <td>${f.nome}</td>
-                    <td>${f.email}</td>
-                    <td>${f.senha}</td>
-                    <td>${f.telefone}</td>
-                    <td>
-                        <button onclick="editar(${f.id_cadastro},'${f.nome}','${f.email}','${f.senha}','${f.telefone}')">Editar</button>
-                        <button onclick="excluir(${f.id_cadastro})">Excluir</button>
-                    </td>
-                </tr>
-            `;
+                        <tr>
+                            <td>${f.id_cadastro}</td>
+                            <td>${f.nome}</td>
+                            <td>${f.email}</td>
+                            <td>${f.telefone}</td>
+                            <td class="actions">
+                                <button class="btn-edit" onclick="editar('${f.id_cadastro}','${f.nome}','${f.email}','${f.senha}','${f.telefone}')">Editar</button>
+                                <button class="btn-del" onclick="excluir(${f.id_cadastro})">Excluir</button>
+                            </td>
+                        </tr>`;
                     });
                 });
         }
 
-        function editar(nome, email, senha, telefone) {
+        function editar(id, nome, email, senha, telefone) {
+            document.getElementById("id_cadastro").value = id;
             document.getElementById("nome").value = nome;
             document.getElementById("email").value = email;
             document.getElementById("senha").value = senha;
             document.getElementById("telefone").value = telefone;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function excluir(id) {
-            if (confirm("Deseja excluir?")) {
+            if (confirm("Deseja realmente excluir este funcionário?")) {
                 fetch(api, {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ id_cadastro: id })
                 }).then(r => r.json())
-                    .then(d => {
-                        alert(d.mensagem);
-                        listar();
-                    });
+                  .then(d => {
+                      alert(d.mensagem);
+                      listar();
+                  });
             }
         }
 
@@ -132,7 +151,5 @@
             document.getElementById("telefone").value = "";
         }
     </script>
-
 </body>
-
 </html>
