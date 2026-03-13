@@ -49,6 +49,7 @@ if (empty($acao)) { // Se não estiver pedindo o valor do delete, atualizar e fa
 
     if (empty($email) || empty($senha)) { //Se o email e senha estiverem vazios, não é possivel cadastrar
         die("E-mail e senha são obrigatórios.");
+        
     }
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT); //deixa a senha criptografada / password_default serve para proteção da senha
@@ -59,6 +60,12 @@ if (empty($acao)) { // Se não estiver pedindo o valor do delete, atualizar e fa
 
     if ($stmt->execute()) { //vai executar se os dados forem inseridos corretamente
         echo "Cadastro realizado com sucesso! <a href='login.php'>Clique aqui para logar</a>";
+        // exibir informações do usuário cadastradas
+        echo "<h1>Bem vindo! $nome</h1>";
+        echo "<br>";
+        echo "<p>Senha: $senha</p>"; // em produção normalmente não mostramos a senha em texto claro
+        echo "<p>E-mail: $email</p>";
+        echo "<p>Telefone: $telefone</p>";
 
     } else { //Se os dados não forem inseridos corretamente, mostra a menssagem de erro
         echo "Erro ao cadastrar: " . $conn->error;
