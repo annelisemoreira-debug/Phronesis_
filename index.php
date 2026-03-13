@@ -49,6 +49,19 @@ $fotoPerfil = "assets/img/default-user.webp";
         </nav>
     </header>
 
+    <main>
+        <section class="introducao">
+            <div class="introducao-texto">
+                <h1>Bem-vindo ao Phronesis!</h1>
+                <p>Seu portal de estudos para concursos públicos. Encontre materiais, livros e cronogramas personalizados para alcançar seus objetivos.</p>
+                <a href="cadastro.php" class="botaoCadastro">Cadastre-se Agora</a>
+            </div>
+            <div class="introducao-imagem">
+                <img src="assets/img/estudo.webp" alt="Imagem de estudo">
+            </div>
+        </section>
+    </main>
+    
     <script>
         // Função para abrir/fechar o menu ao clicar na foto
         function toggleMenu() {
