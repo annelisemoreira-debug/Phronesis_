@@ -47,8 +47,11 @@ switch($method) {
             $email = $conn->real_escape_string($data['email']);
             $senha = $conn->real_escape_string($data['senha']);
             $telefone = $conn->real_escape_string($data['telefone']);
+            $observacao = $conn->real_escape_string($data['observacao']);
+        
+        
 
-            $sql = "INSERT INTO cadastro (nome, email, senha, telefone) VALUES ('$nome', '$email', '$senha', '$telefone')";
+            $sql = "INSERT INTO cadastro (nome, email, senha, telefone, observacao) VALUES ('$nome', '$email', '$senha', '$telefone', '$observacao')";
 
             if($conn->query($sql)){
                 echo json_encode(["mensagem" => "Inserido com sucesso"]);
@@ -66,8 +69,10 @@ switch($method) {
         $email = $conn->real_escape_string($data['email']);
         $senha = $conn->real_escape_string($data['senha']);
         $telefone = $conn->real_escape_string($data['telefone']);
+        $observacao = $conn->real_escape_string($data['observacao']);
 
-        $sql = "UPDATE cadastro SET nome='$nome', email='$email', senha='$senha', telefone='$telefone' WHERE id_cadastro=$id";
+
+        $sql = "UPDATE cadastro SET nome='$nome', email='$email', senha='$senha', telefone='$telefone', observacao='$observacao' WHERE id_cadastro=$id";
 
         if($conn->query($sql)){
             echo json_encode(value: ["mensagem" => "Atualizado com sucesso"]);

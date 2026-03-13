@@ -48,6 +48,11 @@
                     <input type="text" id="telefone">
                 </div>
 
+                <div class="input-group">
+                    <label>Observação:</label>
+                    <input type="text" id="observacao">
+                </div>
+
                 <button class="btn-salvar" onclick="salvar()">Entrar</button>
                 <button onclick="listar()" style="background:none; border:none; cursor:pointer; color: var(--roxo-input-texto); text-decoration: underline; margin-left: 15px;">Listar cadastros</button>
             </div>
@@ -63,6 +68,7 @@
                         <th>E-mail</th>
                         <th>Telefone</th>
                         <th>Ações</th>
+                        <th>Observações</th>
                     </tr>
                 </thead>
                 <tbody id="tabela"></tbody>
@@ -80,7 +86,8 @@
                 nome: document.getElementById("nome").value,
                 email: document.getElementById("email").value,
                 senha: document.getElementById("senha").value,
-                telefone: document.getElementById("telefone").value
+                telefone: document.getElementById("telefone").value,
+                observacao: document.getElementById("observacao").value
             };
 
             const metodo = id ? "PUT" : "POST";
@@ -111,8 +118,9 @@
                             <td>${f.nome}</td>
                             <td>${f.email}</td>
                             <td>${f.telefone}</td>
+                            <td>${f.observacao}</td>
                             <td class="actions">
-                                <button class="btn-edit" onclick="editar('${f.id_cadastro}','${f.nome}','${f.email}','${f.senha}','${f.telefone}')">Editar</button>
+                                <button class="btn-edit" onclick="editar('${f.id_cadastro}','${f.nome}','${f.email}','${f.senha}','${f.telefone}','${f.observacao}')">Editar</button>
                                 <button class="btn-del" onclick="excluir(${f.id_cadastro})">Excluir</button>
                             </td>
                         </tr>`;
@@ -120,12 +128,13 @@
                 });
         }
 
-        function editar(id, nome, email, senha, telefone) {
+        function editar(id, nome, email, senha, telefone, observacao) {
             document.getElementById("id_cadastro").value = id;
             document.getElementById("nome").value = nome;
             document.getElementById("email").value = email;
             document.getElementById("senha").value = senha;
             document.getElementById("telefone").value = telefone;
+            document.getElementById("observacao").value = observacao;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -149,6 +158,7 @@
             document.getElementById("email").value = "";
             document.getElementById("senha").value = "";
             document.getElementById("telefone").value = "";
+            document.getElementById("observacao").value = "";
         }
     </script>
 </body>
