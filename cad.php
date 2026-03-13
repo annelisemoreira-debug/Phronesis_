@@ -23,10 +23,12 @@
 </body>
 </html>
 <?php
+session_start();//Inicia a sessão
+
 // Conexão com o banco
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "Home@spSENAI2025!";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname); //Vai ver se os dados foram conectados
@@ -48,7 +50,9 @@ if (empty($acao)) { // Se não estiver pedindo o valor do delete, atualizar e fa
     $telefone = $_POST['telefone'] ?? ''; // Recebe o telefone enviado pelo formulário via POST
 
     if (empty($email) || empty($senha)) { //Se o email e senha estiverem vazios, não é possivel cadastrar
-        die("E-mail e senha são obrigatórios.");
+        $_SESSION['erro_cad'] = "E-mail e senha são obrigatórios.";
+        header("Location: cadastro.php");
+        exit();
     }
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT); //deixa a senha criptografada / password_default serve para proteção da senha
@@ -58,10 +62,13 @@ if (empty($acao)) { // Se não estiver pedindo o valor do delete, atualizar e fa
     $stmt->bind_param("ssss", $nome, $email, $senhaHash, $telefone); //vai alterar os tipos de dados para string (ssss) deixando valores reais, seguros
 
     if ($stmt->execute()) { //vai executar se os dados forem inseridos corretamente
-        echo "Cadastro realizado com sucesso! <a href='login.php'>Clique aqui para logar</a>";
-
+        $_SESSION['sucesso_login'] = "Cadastro realizado com sucesso! Faça seu login.";
+        header("Location: login.php");
+        exit();
     } else { //Se os dados não forem inseridos corretamente, mostra a menssagem de erro
-        echo "Erro ao cadastrar: " . $conn->error;
+        $_SESSION['erro_cad'] = "Erro ao cadastrar: " . $conn->error;
+        header("Location: cadastro.php");
+        exit();
     }
 
     $stmt->close(); //fecha a conexão
@@ -82,14 +89,18 @@ elseif ($acao == "login") { //vai verificar se a ação foi preenchida com login
     if ($result->num_rows == 1) { //vai verificar se realmente existe a consulta, se for 1 (verdadeiro), se for 0 (falso), mostrando uma menssagem de usuário não encontrado
         $user = $result->fetch_assoc(); //vai pegar o valor da consulta 
         if (password_verify($senha, $user['senha'])) { //vai transformar a senha em hash e vai comparar a senha com a senha cadastrada
-            session_start(); //Vai buscar manter a conexão com o banco
             $_SESSION['id'] = $user['id_cadastro']; //Vai procurar o id do usuário para confirmar sua existencia
-            echo "Login realizado com sucesso! <a href='index.php'>Ir para painel</a>";
+            header("Location: index.php"); // Redireciona para o painel em caso de sucesso
+            exit();
         } else { //se der erro, vai aparecer Senha ou E-mail incorretos
-            echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
+            $_SESSION['erro_login'] = "Senha ou E-mail incorretos!";
+            header("Location: login.php");
+            exit();
             }
     } else {
-        echo "Senha ou E-mail incorretos! <a href='login.php'>Clique aqui para tentar novamente</a>";
+        $_SESSION['erro_login'] = "Senha ou E-mail incorretos!";
+        header("Location: login.php");
+        exit();
     }
 
     $stmt->close(); //fecha a conexão
