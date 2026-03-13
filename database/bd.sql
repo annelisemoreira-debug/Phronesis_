@@ -1,5 +1,4 @@
 --Database antigo
-
 CREATE DATABASE phronesis;
 USE phronesis;
 
@@ -57,7 +56,6 @@ CREATE TABLE livro (
 CREATE DATABASE phronesis;
 USE phronesis;
 
-select*from cadastro;
 drop database phronesis;
 
 CREATE TABLE usuario (
@@ -65,17 +63,25 @@ CREATE TABLE usuario (
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    telefone VARCHAR(20),
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    telefone VARCHAR(20)
 );
 
 CREATE TABLE materia (
     id_materia INT AUTO_INCREMENT PRIMARY KEY,
-    nome_materia VARCHAR(255) NOT NULL,
+    nome_materia VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE usuario_materia (
+	id_usuario_materia int auto_increment primary key,
     id_usuario INT NOT NULL,
+    id_materia INT NOT NULL,
 
     FOREIGN KEY (id_usuario)
         REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (id_materia)
+        REFERENCES materia(id_materia)
         ON DELETE CASCADE
 );
 
@@ -105,7 +111,8 @@ CREATE TABLE cronograma_item (
     id_cronograma INT NOT NULL,
     id_materia INT NOT NULL,
     data_estudo DATE NOT NULL,
-    tempo_estudo INT, -- tempo em minutos
+    tempo_estudo INT,
+    status_estudo varchar (99) not null,
 
     FOREIGN KEY (id_cronograma)
         REFERENCES cronograma(id_cronograma)
@@ -119,11 +126,20 @@ CREATE TABLE livro (
     id_livro INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     autor VARCHAR(255),
-    vestibular VARCHAR(255), -- exemplo: FUVEST, UNICAMP, ENEM
-    ano_vestibular INT,
-    id_usuario INT,
+    vestibular VARCHAR(255),
+    ano_vestibular INT
+);
+
+CREATE TABLE usuario_livro (
+	id_usuario_livro int auto_increment primary key,
+    id_usuario INT NOT NULL,
+    id_livro INT NOT NULL,
 
     FOREIGN KEY (id_usuario)
         REFERENCES usuario(id_usuario)
-        ON DELETE SET NULL
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (id_livro)
+        REFERENCES livro(id_livro)
+        ON DELETE CASCADE
 );
