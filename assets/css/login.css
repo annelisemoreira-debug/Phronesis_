@@ -75,11 +75,6 @@ header {
     transition: 0.3s;
 }
 
-<<<<<<< Updated upstream
-/*Container Principal*/
-=======
-/* Container Principal*/
->>>>>>> Stashed changes
 .container {
     display: flex;
     flex-wrap: wrap; /* Faz os itens ficarem um embaixo do outro no celular */
