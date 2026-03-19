@@ -2,8 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
 }
 
+/* Fontes */
 /* Header */
 header {
     background-color: #8654f3;
