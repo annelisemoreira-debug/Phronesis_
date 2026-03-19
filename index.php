@@ -50,6 +50,7 @@ $fotoPerfil = "assets/img/default-user.webp";
     </header>
 
     <main>
+        
         <section class="introducao">
             <div class="introducao-texto">
                 <h1>Bem-vindo ao Phronesis!</h1>
@@ -63,6 +64,7 @@ $fotoPerfil = "assets/img/default-user.webp";
     </main>
     
     <script>
+        // Conteúdo principal da página
         // Função para abrir/fechar o menu ao clicar na foto
         function toggleMenu() {
             document.getElementById("dropdownPerfil").classList.toggle("show");
