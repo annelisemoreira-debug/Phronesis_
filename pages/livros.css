@@ -1,0 +1,204 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fbd84e;
+}
+
+/* Wrapper */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7d358;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Sidebar */
+.menuSidebar {
+  width: 300px; 
+  background: white;
+  border-radius: 15px;
+  padding: 35px 30px; 
+  display: flex; 
+  flex-direction: column;
+  gap: 30px;
+  min-width: auto;
+}
+
+/* Menu Lateral - Alinhamento dos links em coluna */
+.menuSidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menuSidebar nav a {
+    text-decoration: none;
+    color: #000; /* Cor preta como na sua imagem */
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;    
+}
+
+/*Logo menuSidebar*/
+.logoMarca {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoMarca a {
+    width: 100%; /* Ajustado para ocupar a sidebar toda */
+    display: block;
+}
+
+.logoMarca img {
+    width: 100%;
+    height: auto; /* Mantém a proporção e evita o corte */
+    display: block;
+    object-fit: contain; 
+}
+
+/* Conteúdo Principal */
+.principalContent {
+  flex: 1; /* Faz essa parte ocupar todo o resto do espaço */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 18px 50px;
+}
+
+/* Menu Superior */
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center; /* Alinha os itens verticalmente */
+}
+
+.header menu{
+    display: flex;
+    gap: 10px;
+}
+
+.menu li {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.menu li a {
+    text-decoration: none;
+    display: block;
+    padding: 12px 25px; 
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+
+/* Cores do Menu */
+.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.materiais { background-color: #8dd4ff; }
+.menu li.home { background-color: #ffe57e; }
+
+/* Botão Entrar */
+.menu li.entrar {
+    background-color: #47b1f2;
+    border-radius: 25px;
+    margin-left: auto;
+}
+
+.menu li.entrar a:hover {
+    background-color: #2060d8;
+    color: white;
+    transition: 0.3s;
+}
+
+/*Main section*/
+.areaContent {
+    border-radius: 15px;
+    padding: 20px;
+    flex: 1;
+}
+
+.banner{
+    background-color: #47b1f2;
+    width: 100%;
+    height: 130px;
+    border-radius: 20px;
+}
+
+/*Section main vestibulares*/
+.listaLivros {
+    width: 100%; 
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
+    gap: 20px;
+    padding: 40px 0;
+    flex-direction: column;
+}
+
+.listaLivros div {
+    flex: 0 0 auto; 
+    min-width: 150px; 
+    max-width: 250px; 
+    display: flex;
+    justify-content: center;
+}
+
+.listaLivros img {
+    width: 100%;        
+    height: 180px;
+    object-fit: contain;
+    background-color: white;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.listaLivros {
+    width: 100%;
+    display: flex;
+    flex-direction: column; 
+    gap: 40px;
+    padding: 20px 0;
+}
+
+.containerVest {
+    width: 100%;
+    display: flex;
+    align-items: center; 
+    gap: 30px; 
+}
+
+.descricaoVest {
+    flex: 1; 
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+}
+
+.descricaoVest p {
+    font-size: 16px;
+    color: black;
+    line-height: 1.5; 
+    max-width: 600px; 
+}
+
+.nome {
+    background-color: #8A2BE2; 
+    color: white;
+    padding: 8px 30px; 
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    text-transform: uppercase; 
+}
