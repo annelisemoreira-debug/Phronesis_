@@ -12,7 +12,7 @@
         <nav class="menuNav">
             <ul class="menu">
                 <li class="materiais"><a href="material.php">Materiais</a></li>
-                <li class="livros"><a href="livros.php">Livros</a></li>
+                <li class="livros"><a href="pages/livros.php">Livros</a></li>
                 <li class="cronogramas"><a href="cronograma.php">Cronogramas</a></li>
                 <li class="entrar"><a href="login.php">Entrar</a></li>
             </ul>
