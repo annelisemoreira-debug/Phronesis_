@@ -128,74 +128,7 @@ body {
     border-radius: 20px;
 }
 
-/*Section main vestibulares*/
-.listaLivros {
-    width: 100%;
-    display: flex;
-    flex-direction: column; 
-    gap: 50px;
-    padding: 40px 0;
-}
-
-.listaLivros img {
-    width: 100%;        
-    height: 200px;
-    object-fit: contain;
-    background-color: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
+/*Section main videos*/
 
 
-/* Container de cada vestibular */
-.containerVest {
-    width: 100%;
-    display: flex;
-    align-items: center; 
-    gap: 40px; 
-    transition: 0.3s;
-}
-
-.containerVest:nth-child(even) {
-    flex-direction: row-reverse;
-    text-align: right;
-}
-
-.containerVest:nth-child(even) .descricaoVest {
-    align-items: flex-end;
-}
-
-/* Cards das Imagens */
-.fuvestImg, .vunestImg, .unicampImg, .enemImg {
-    flex: 0 0 280px;
-}
-
-/* Descrição e Tags */
-.descricaoVest {
-    flex: 1; 
-    display: flex;
-    flex-direction: column; 
-    gap: 15px;
-}
-
-.descricaoVest p {
-    font-size: 16px;
-    color: #333;
-    line-height: 1.6; 
-    max-width: 700px; 
-}
-
-.nome {
-    background-color: #8A2BE2;
-    color: white;
-    padding: 8px 30px; 
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 16px;
-    display: inline-block; 
-    width: fit-content;
-    
-    text-transform: uppercase; 
-}
 

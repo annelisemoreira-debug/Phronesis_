@@ -39,6 +39,12 @@
                 <section class="banner">
                     <div></div>
                 </section>
+
+                <section class="videos">
+                    <aside>
+                        
+                    </aside>
+                </section>
             </main>
         </div>
     </div>
