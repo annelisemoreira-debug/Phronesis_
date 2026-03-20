@@ -11,12 +11,19 @@
 </head>
 <body>
 
+    
+
     <header class="navbar">
         <button>Início</button>
         <button>Materiais</button>
         <button>Livros</button>
         <button>Cronogramas</button>
     </header>
+
+    <div class="test-panel">
+        <button class="btn-config" onclick="toggleTestButton()" title="Configurações de Teste">⚙️</button>
+        <button id="btn-auto-fill" onclick="autoPreencher()">Preencher Automaticamente</button>
+    </div>
 
     <main class="main-container">
         
@@ -71,7 +78,6 @@
                         <th>E-mail</th>
                         <th>Telefone</th>
                         <th>Observações</th>
-                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="tabela"></tbody>
@@ -82,6 +88,33 @@
 
     <script>
         const api = "api.php";
+
+        // --- FUNCIONALIDADES DE TESTE (AGILIZANDO TESTES) ---
+        
+        function toggleTestButton() {
+            const btn = document.getElementById("btn-auto-fill");
+            btn.style.display = (btn.style.display === "none" || btn.style.display === "") ? "block" : "none";
+        }
+
+        function autoPreencher() {
+            const id = document.getElementById("id_cadastro").value;
+            
+            if (!id) {
+                // MODO CADASTRO: Preenche tudo
+                const numAleatorio = Math.floor(Math.random() * 1000);
+                document.getElementById("nome").value = "Desenvolvedor Teste " + numAleatorio;
+                document.getElementById("email").value = `teste${numAleatorio}@email.com`;
+                document.getElementById("senha").value = "senha123";
+                document.getElementById("telefone").value = "11988887777";
+                document.getElementById("observacao").value = "Auto-preenchido para teste de POST";
+            } else {
+                // MODO ATUALIZAÇÃO: Altera campos mantendo o ID
+                document.getElementById("nome").value += " [EDITADO]";
+                document.getElementById("observacao").value = "Atualizado via automação às " + new Date().toLocaleTimeString();
+            }
+        }
+
+        // --- FUNÇÕES CRUD ---
 
         function salvar() {
             const id = document.getElementById("id_cadastro").value;
@@ -138,6 +171,7 @@
             document.getElementById("senha").value = senha;
             document.getElementById("telefone").value = telefone;
             document.getElementById("observacao").value = observacao;
+            document.getElementById("form-title").innerText = "Atualizar Cadastro";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -162,6 +196,7 @@
             document.getElementById("senha").value = "";
             document.getElementById("telefone").value = "";
             document.getElementById("observacao").value = "";
+            document.getElementById("form-title").innerText = "Faça seu login!";
         }
     </script>
 </body>
