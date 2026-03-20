@@ -30,7 +30,7 @@ $fotoPerfil = "assets/img/default-user.webp";
         <nav class="menuNav">
             <ul class="menu">
                 <li class="materiais"><a href="pages/material.php">Materiais</a></li>
-                <li class="livros"><a href="pages/livros.php">Livros</a></li>
+                <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
                 <li class="cronogramas"><a href="pages/cronograma.php">Cronogramas</a></li>
                 
                 <?php if (isset($_SESSION['id'])): ?>
