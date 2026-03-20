@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leituras obrigatórias</title>
-    <link rel="stylesheet" href="livros.css">
+    <link rel="stylesheet" href="../assets/css/livros.css">
 </head>
 <body>
     
