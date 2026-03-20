@@ -1,0 +1,201 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fbd84e;
+}
+
+/* Wrapper */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f7d358;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Sidebar */
+.menuSidebar {
+  width: 350px;
+  background: white;
+  border-radius: 15px;
+  padding: 35px 30px; 
+  display: flex; 
+  flex-direction: column;
+  gap: 30px;
+  min-width: 250px;
+}
+
+.menuSidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menuSidebar nav a {
+    text-decoration: none;
+    color: #000; 
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;    
+}
+
+/*Logo menuSidebar*/
+.logoMarca {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoMarca a {
+    width: 100%; 
+    display: block;
+}
+
+.logoMarca img {
+    width: 100%;
+    height: auto; 
+    display: block;
+    object-fit: contain; 
+}
+
+/* Conteúdo Principal */
+.principalContent {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 18px 50px;
+}
+
+/* Menu Superior */
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center; 
+}
+
+.menu li {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.menu li a {
+    text-decoration: none;
+    display: block;
+    padding: 12px 25px; 
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Cores do Menu */
+.menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.livros { background-color: #8dd4ff; }
+.menu li.home { background-color: #ffe57e; }
+
+/* Botão Entrar */
+.menu li.entrar {
+    background-color: #47b1f2;
+    border-radius: 25px;
+    margin-left: auto;
+}
+
+.menu li.entrar a:hover {
+    background-color: #2060d8;
+    color: white;
+    transition: 0.3s;
+}
+
+/*Main section*/
+.areaContent {
+    border-radius: 15px;
+    padding: 20px;
+    flex: 1;
+}
+
+.banner {
+    background-color: #47b1f2;
+    width: 100%;
+    height: 130px;
+    border-radius: 20px;
+}
+
+/*Section main vestibulares*/
+.listaLivros {
+    width: 100%;
+    display: flex;
+    flex-direction: column; 
+    gap: 50px;
+    padding: 40px 0;
+}
+
+.listaLivros img {
+    width: 100%;        
+    height: 200px;
+    object-fit: contain;
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+
+/* Container de cada vestibular */
+.containerVest {
+    width: 100%;
+    display: flex;
+    align-items: center; 
+    gap: 40px; 
+    transition: 0.3s;
+}
+
+.containerVest:nth-child(even) {
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.containerVest:nth-child(even) .descricaoVest {
+    align-items: flex-end;
+}
+
+/* Cards das Imagens */
+.fuvestImg, .vunestImg, .unicampImg, .enemImg {
+    flex: 0 0 280px;
+}
+
+/* Descrição e Tags */
+.descricaoVest {
+    flex: 1; 
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+}
+
+.descricaoVest p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6; 
+    max-width: 700px; 
+}
+
+.nome {
+    background-color: #8A2BE2;
+    color: white;
+    padding: 8px 30px; 
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block; 
+    width: fit-content;
+    
+    text-transform: uppercase; 
+}
+

@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../assets/css/livros.css">
 </head>
 <body>
-    
     <div class="wrapper">
         <aside class="menuSidebar">
             <div class="logoMarca">

@@ -97,7 +97,7 @@ body {
 }
 
 /* Cores do Menu */
-.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.cronogramas { background-color: #bfa2ff; }
 .menu li.materiais { background-color: #8dd4ff; }
 .menu li.home { background-color: #ffe57e; }
 
