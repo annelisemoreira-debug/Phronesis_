@@ -23,7 +23,7 @@
             <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
             <div class="mainContainer">
                 <h1 class="mainTitulo">Faça seu login!</h1>
-                <p>Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p><br>
+                <p>Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p>
 
                 <?php if(isset($_SESSION['erro_login'])): ?>
                     <p style="color: #ff4d4d; font-weight: bold;"><?php echo $_SESSION['erro_login']; unset($_SESSION['erro_login']); ?></p>
