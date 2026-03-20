@@ -57,15 +57,15 @@
                                 <h3>Leituras Obrigatórias</h3>
                                 <h3>Fuvest 2027</h3>
                                 <p>
-                                    Opúsculo Humanitário (1853) – Nísia Floresta
-                                    Nebulosas (1872) – Narcisa Amália
-                                    Memórias de Martha (1899) – Julia Lopes de Almeida
-                                    Caminho de Pedras (1937) – Rachel de Queiroz
-                                    O Cristo Cigano (1961) – Sophia de Mello Breyner Andresen
-                                    As Meninas (1973) – Lygia Fagundes Telles
-                                    Balada de Amor ao Vento (1990) – Paulina Chiziane
-                                    Canção para Ninar Menino Grande (2018) – Conceição Evaristo
-                                    A Visão das Plantas (2019) – Djaimilia Pereira de Almeida
+                                    <b>Opúsculo Humanitário (1853)</b>– Nísia Floresta
+                                    <b>Nebulosas (1872)</b> – Narcisa Amália
+                                    <b>Memórias de Martha (1899)</b>– Julia Lopes de Almeida
+                                    <b>Caminho de Pedras (1937)</b>– Rachel de Queiroz
+                                    <b>O Cristo Cigano (1961)</b>– Sophia de Mello Breyner Andresen
+                                    <b>As Meninas (1973) </b>– Lygia Fagundes Telles
+                                    <b>Balada de Amor ao Vento (1990)</b>– Paulina Chiziane
+                                    <b>Canção para Ninar Menino Grande (2018)</b>– Conceição Evaristo
+                                    <b>A Visão das Plantas (2019)</b>– Djaimilia Pereira de Almeida
                                 </p>
                             </dialog>
 
@@ -82,9 +82,10 @@
                             </div>
 
                             <dialog id="modal">
-                            <h2>Título da Modal</h2>
+                            <h2>VUNESP</h2>
+                            <h3>Leituras Obrigatórias</h3>
+                            <h3>Fuvest 2027</h3>
                             <p>Conteúdo da janela modal.</p>
-                            <button id="closeModal">Fechar</button>
                             </dialog>
                         </article>
 
@@ -99,11 +100,32 @@
                             </div>
 
                             <dialog id="modal">
-                            <h2>Título da Modal</h2>
-                            <p>Conteúdo da janela modal.</p>
-                            <button id="closeModal">Fechar</button>
+                            <h2>UNICAMP</h2>
+                            <h3>Leituras Obrigatórias</h3>
+                            <h3>UNICAMP 2027</h3>
+                            <p>
+                                <b>A vida não é util</b>- Ailton Krenak
+                                <b>Prosas seguidas de odes mínimas</b>- José Paulo Paes
+                                <b>Morangos mofados (contos escolhidos*)</b>- Caio Fernando Abreu
+                                <b>Vida e morde de M.J. Gonzaga de Sá</b>- Lima Barreto
+                                <b>No seu pescoço </b>- Chimamanda Ngozi Adichie
+                                <b>Olhos d’água </b>- Conceição Evaristo
+                                <b>Memórias Póstumas de Brás Cubas</b>- Machado de Assis
+                                <b>Canções escolhidas**</b>- Paulo César Pinheiro
+                                <b>Gabriel García Márquez</b>- Os funerais da Mamãe Grande
+                            </p>
                             </dialog>
                         </article>
+
+                        <!-- Caio Fernando Abreu e Paulo César Pinheiro
+                            * Seis contos escolhidos: “Diálogo”, “Além do Ponto”, “Terça-Feira Gorda”, “Pêra, uva ou maçã?”, “O dia em Júpiter encontrou Saturno”, “Aqueles dois”.
+                            ** Canções escolhidas: “Canto das três raças” (com Mauro Duarte); “Cordilheira” (com Sueli Costa);
+                            “Desenredo” (com Dori Caymmi); “​Estrela da terra” (com Dori Caymmi); “Evangelho” (com Dori Caymmi); “Mordaça” (com Eduardo Gudin);
+                            “​Na volta que o mundo dá” (com Vicente Barreto); “Navio fantasma” (com Francis Hime);
+                            “O dia em que o morro descer e não for carnaval” (com Wilson das Neves);
+                            “Pesadelo” (com Maurício Tapajós); “Velho arvoredo” (com Hélio Delmiro); “Vento bravo” (com Edu Lobo);
+                            “Viagem” (com João de Aquino); “Vontade de chorar” (com Ivor Lancelotti).
+                        -->
 
                         <article class="containerVest">
                             <div class="enemImg">
@@ -116,9 +138,8 @@
                             </div>
 
                             <dialog id="modal">
-                            <h2>Título da Modal</h2>
+                            <h2>ENEM</h2>
                             <p>Conteúdo da janela modal.</p>
-                            <button id="closeModal">Fechar</button>
                             </dialog>
                         </article>
                     </section>

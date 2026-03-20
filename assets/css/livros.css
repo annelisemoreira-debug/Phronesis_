@@ -201,11 +201,11 @@ body {
 
 /* Estilo Base para todos os Dialogs */
 .containerVest dialog {
-    position: fixed; /* Fixa em relação à janela do navegador */
-    inset: 0;        /* Atalho para top, bottom, left, right: 0 */
+    position: fixed;
+    inset: 0;  
     margin: auto;
     border: none;
-    border-radius: 30px;
+    border-radius: 15px;
     padding: 40px;
     width: 90%;
     max-width: 480px;
@@ -232,7 +232,7 @@ body {
 
 /* Subtítulos (LEITURAS OBRIGATÓRIAS) */
 .containerVest dialog h3 {
-    font-size: 14px;
+    font-size: 15px;
     letter-spacing: 3px;
     margin-bottom: 10px;
     color: #333;
@@ -241,42 +241,23 @@ body {
 
 /* Parágrafo com os nomes dos livros */
 .containerVest dialog p {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.8;
-    text-align: left; /* Lista de livros fica melhor alinhada à esquerda */
+    text-align: left; 
     margin: 20px 0;
     color: #444;
-    white-space: pre-line; /* Mantém as quebras de linha se houver */
+    white-space: pre-line;
 }
 
-/* Botão de Fechar interno */
-#closeModal {
-    background: #fff;
-    color: #fff;
-}
-
-/* --- CORES ESPECÍFICAS PARA CADA MODAL --- */
-
-/* FUVEST - Roxo */
+/*FUVEST*/
 .containerVest:nth-child(1) dialog h2 { background-color: #8A2BE2; }
 
-/* VUNESP - Vermelho (Ajuste conforme sua cor) */
+/*VUNESP*/
 .containerVest:nth-child(2) dialog h2 { background-color: #ff4d4d; }
 
-/* UNICAMP - Laranja/Roxo */
+/*UNICAMP*/
 .containerVest:nth-child(3) dialog h2 { background-color: #9b6dff; }
 
-/* ENEM - Azul */
+/*ENEM*/
 .containerVest:nth-child(4) dialog h2 { background-color: #47b1f2; }
-
-/*MODAL FUVEST*/
-
-
-/*MODAL VUNESP*/
-
-
-/*MODAL UNICAMP*/
-
-
-/*MODAL ENEM*/
 
