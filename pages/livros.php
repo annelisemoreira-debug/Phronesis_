@@ -29,7 +29,7 @@
                 <nav class="menuNav">
                     <ul class="menu">
                         <li class="materiais"><a href="material.php">Materiais</a></li>
-                        <li class="home"><a href="index.php">Início</a></li>
+                        <li class="home"><a href="../index.php">Início</a></li>
                         <li class="cronogramas"><a href="cronograma.php">Cronogramas</a></li>
                         <li class="entrar"><a href="../login.php">Entrar</a></li>
                     </ul>
