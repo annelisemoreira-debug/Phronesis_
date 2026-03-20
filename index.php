@@ -13,7 +13,7 @@ $fotoPerfil = "assets/img/default-user.webp";
     <link rel="stylesheet" href="assets/css/index.css">
     <style>
         /* Estilos rápidos para o menu de perfil */
-        .perfil-container { position: relative; cursor: pointer; }
+        .perfil-container { position: flex; cursor: pointer; }
         .foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; object-fit: cover; }
         .menu-dropdown { 
             display: none; position: absolute; right: 0; background: white; 
@@ -32,15 +32,18 @@ $fotoPerfil = "assets/img/default-user.webp";
                 <li class="materiais"><a href="pages/material.php">Materiais</a></li>
                 <li class="livros"><a href="pages/livros.php">Livros</a></li>
                 <li class="cronogramas"><a href="pages/cronograma.php">Cronogramas</a></li>
+    
                 
                 <?php if (isset($_SESSION['id'])): ?>
                     <li class="perfil-container" onclick="toggleMenu()">
+                        
                         <img src="<?php echo $fotoPerfil; ?>" alt="Perfil" class="foto-perfil">
                         <div id="dropdownPerfil" class="menu-dropdown">
                             <a href="perfil.php">Meu Perfil</a>
                             <a href="configuracoes.php">Configurações</a>
                             <a href="logout.php" style="color: red;">Sair</a>
                         </div>
+                    
                     </li>
                 <?php else: ?>
                     <li class="entrar"><a href="login.php">Entrar</a></li>
