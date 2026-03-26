@@ -211,9 +211,9 @@ body {
     border-radius: 15px;
     padding: 40px;
     width: 90%;
-    max-width: 480px;
+    max-width: 520px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    text-align: center; /* Centraliza títulos */
+    text-align: center;
     outline: none;
 }
 

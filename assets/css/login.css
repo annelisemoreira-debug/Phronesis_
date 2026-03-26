@@ -5,19 +5,40 @@
     box-sizing: border-box;
 }
 
-body {
-    background-color: #fbd84e;
+/*Imagem de fundo*/
+.bg-html {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;  
 }
 
-/* Header */
-header {
-    background-color: #8654f3;
-    padding: 15px 5%;
+.glass-card {
     display: flex;
-    justify-content: space-between;
+    background-color: rgba(180, 150, 255, 0.85);
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 950px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/*Logo*/
+.logo-section {
+    background-color: white;
+    flex: 1;
+    display: flex;
     align-items: center;
-    border-radius: 0 0 15px 15px;
-    flex-wrap: wrap; /* Permite que o menu quebre linha em telas pequenas */
+    justify-content: center;
+    padding: 60px;
+}
+
+.logo-section img {
+    width: 100%;
+    max-width: 350px;
 }
 
 .yeseva-one-regular {
@@ -77,24 +98,21 @@ header {
 
 .container {
     display: flex;
-    flex-wrap: wrap; /* Faz os itens ficarem um embaixo do outro no celular */
+    flex-wrap: wrap; 
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
+    min-height: 100vh;
     padding: 20px;
     gap: 40px;
 }
 
 .container img {
-    width: 100%;
-    max-width: 400px; /* Tamanho máximo da imagem */
     height: auto;
-    border-radius: 5%;
 }
 
 .mainContainer {
-    width: 100%;
-    max-width: 450px;
+    flex: 1;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -137,10 +155,10 @@ form {
     color: white;
     font-size: 18px;
     font-weight: bold;
-    border-radius: 10px;
-    padding: 12px 40px;
+    border-radius: 20px; 
+    padding: 12px 60px;
     cursor: pointer;
-    align-self: flex-start;
+    align-self: center;
     transition: 0.3s;
 }
 
@@ -149,20 +167,24 @@ form {
     transform: scale(1.05);
 }
 
-/* Media Queries para ajuste fino */
+.botaoCadastro {
+    color: #47b1f2;
+    font-weight: bold;
+}
+
+/*Responsividade*/
 @media (max-width: 768px) {
-    header {
-        justify-content: center;
-        gap: 20px;
+    .glass-card {
+        flex-direction: column;
     }
     
     .container {
-        flex-direction: column; /* Imagem em cima, form embaixo */
+        flex-direction: column;
         text-align: center;
     }
 
     .entrarLogin {
-        align-self: center; /* Centraliza o botão no celular */
+        align-self: center;
         width: 100%;
     }
 }
