@@ -17,10 +17,10 @@
             </div>
 
             <nav>
-                <a>CH</a>
-                <a>CN</a>
-                <a>LINGUAGENS</a>
-                <a>MATEMÁTICA</a>
+                <a>Ciências Humanas</a>
+                <a>Ciências da Natureza</a>
+                <a>Linguagens</a>
+                <a>Matemática</a>
             </nav>
         </aside>
     
@@ -49,7 +49,11 @@
 
                             <div class="descricaoVest">
                                 <h2 class="nome">FUVEST</h2>
-                                <p>Description for FUVEST.</p>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
                             </div>
 
                             <dialog id="modal">
@@ -78,7 +82,11 @@
 
                             <div class="descricaoVest">
                                 <h2 class="nome">VUNESP</h2>
-                                <p>Description for VUNESP.</p>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
                             </div>
 
                             <dialog id="modal">
@@ -96,7 +104,11 @@
 
                             <div class="descricaoVest">
                                 <h2 class="nome">UNICAMP</h2>
-                                <p>Description for UNICAMP.</p>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
                             </div>
 
                             <dialog id="modal">
@@ -134,7 +146,11 @@
 
                             <div class="descricaoVest">
                                 <h2 class="nome">ENEM</h2>
-                                <p>Description for ENEM.</p>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
                             </div>
 
                             <dialog id="modal">

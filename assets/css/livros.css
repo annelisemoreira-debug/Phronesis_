@@ -10,24 +10,27 @@ body {
 
 /* Wrapper */
 .wrapper {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f7d358;
-  padding: 20px;
-  gap: 20px;
+    display: flex;
+    min-height: 100vh;
+    background-color: #f7d358;
+    padding: 20px;
+    gap: 20px;
 }
 
 
 /* Sidebar */
 .menuSidebar {
-  width: 350px;
-  background: white;
-  border-radius: 15px;
-  padding: 35px 30px; 
-  display: flex; 
-  flex-direction: column;
-  gap: 30px;
-  min-width: 250px;
+    position: sticky;
+    top: 20px;          
+    height: calc(100vh - 40px);
+    width: 350px;
+    background: white;
+    border-radius: 15px;
+    padding: 35px 30px; 
+    display: flex; 
+    flex-direction: column;
+    gap: 30px;
+    min-width: 250px;
 }
 
 .menuSidebar nav {
@@ -40,7 +43,7 @@ body {
     text-decoration: none;
     color: #6837af; 
     font-weight: bold;
-    font-size: 14px;
+    font-size: 20px;
     cursor: pointer;    
 }
 
