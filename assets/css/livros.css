@@ -190,7 +190,7 @@ body {
 }
 
 .nome {
-    background-color: #8A2BE2;
+    background-color: #8654f3;
     color: white;
     padding: 8px 30px; 
     border-radius: 20px;
@@ -253,7 +253,7 @@ body {
 }
 
 /*FUVEST*/
-.containerVest:nth-child(1) dialog h2 { background-color: #8A2BE2; }
+.containerVest:nth-child(1) dialog h2 { background-color: #8654f3; }
 
 /*VUNESP*/
 .containerVest:nth-child(2) dialog h2 { background-color: #ff4d4d; }
