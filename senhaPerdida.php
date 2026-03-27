@@ -10,20 +10,14 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){ // Se a acao do GET fo
     <link rel="stylesheet" href="assets/css/senha.css">
 </head>
 <body>
-    <header>
-        <div class="logoMarca"><img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis"></div>
-        <nav class="menuNav">
-            <ul class="menu">
-                <li class="sobre"><a href="sobre.php">Sobre</a></li>
-                <li class="materiais"><a href="material.php">Materiais</a></li>
-                <li class="livros"><a href="livros.php">Livros</a></li>
-                <li class="cronogramas"><a href="cronograma.php">Cronogramas</a></li>
-                <li class="entrar"><a href="login.php">Entrar</a></li>
-            </ul>
-        </nav>
-    </header>
+    <img src="assets/img/loginBackground.png" class="bg-html" alt="Fundo">
 
-    <div class="mainContainer">
+    <div class="container">
+        <div class="logo-section">
+            <img src="assets/img/phronesisLogo.png" alt="Logo oficial da Phronesis">
+        </div>
+
+        <div class="mainContainer">
         <h2 class="mainTitulo, yeseva-one-regular">Recuperar Senha</h2>
         <form method="POST" action="cad.php">
             <input type="hidden" name="acao" value="nova_senha"> <!--O valor da ação é nova_senha-->
@@ -34,8 +28,9 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){ // Se a acao do GET fo
             <label>Nova senha:</label>
             <input type="password" name="senha" required><br>
 
-            <button  class="entrarLogin" type="submit">Atualizar</button>
+            <button class="entrarLogin" type="submit">Atualizar</button>
         </form>
+    </div>
     </div>
 </body>
 </html>

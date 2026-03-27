@@ -17,11 +17,11 @@
                 </div>
                 
                 <div class="mainContainer">
-                    <h1 class="mainTitulo yeseva-one-regular">Faça seu cadastro!</h1>
-                    <p>Já possui uma conta? <a href="login.php" style="text-decoration:none; color: #47b1f2; font-weight: bold;"> Entrar </a></p>
+                    <h1 class="mainTitulo">Faça seu cadastro!</h1>
+                    <p style="color: #031768">Já possui uma conta? <a class="botaoLogin" href="login.php"> Entrar </a></p>
 
                     <?php if(isset($_SESSION['erro_cad'])): ?>
-                        <p style="color: #ff4d4d; font-weight: bold;"><?php echo $_SESSION['erro_cad']; unset($_SESSION['erro_cad']); ?></p>
+                        <p style="color: #ff4d4d; font-weight: bold; font-family: Arial, Helvetica, sans-serif"><?php echo $_SESSION['erro_cad']; unset($_SESSION['erro_cad']); ?></p>
                     <?php endif; ?>
 
                     <form method="POST" action="cad.php">

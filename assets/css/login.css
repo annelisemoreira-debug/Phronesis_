@@ -1,4 +1,4 @@
-/* Reset e Base */
+/*Reset e Base*/
 * {
     margin: 0;
     padding: 0;
@@ -40,12 +40,6 @@
 .logo-section img {
     width: 100%;
     max-width: 350px;
-}
-
-.yeseva-one-regular {
-    font-family: 'Yeseva One', serif;
-    font-weight: bold;
-    font-style: normal;
 }
 
 .logoMarca {
@@ -129,10 +123,34 @@
 }
 
 .mainContainer input {
-    border: none;
-    padding: 12px 15px;
+    border: 2px solid transparent; /* Adiciona uma borda invisível de 2px no estado normal */
+    padding: 12px 15px; /* Mantém o padding interno que você já tinha */
     border-radius: 25px;
     width: 100%;
+    font-size: 16px;
+    background-color: white; /* Garante que o fundo seja branco */
+    transition: all 0.3s ease;
+}
+
+.mainContainer input:focus {
+    outline: none;
+    border: 2px solid #4fd6ff;
+    box-shadow: 0 0 5px rgba(146, 79, 255, 0.5)
+}
+
+/*Mensagens de erro e sucesso*/
+
+.erroLogin {
+    color: #ff1e1e;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.cadastroSucesso {
+    color: #2ecc71;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 0 0 8px rgba(97, 44, 167, 0.514);    
 }
 
 /* Formulário */
@@ -174,6 +192,7 @@ form {
 .botaoCadastro {
     color: #FFD700;
     font-weight: bolder;
+    text-decoration: none;
 }
 
 .botaoCadastro:hover {

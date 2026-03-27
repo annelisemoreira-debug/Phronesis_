@@ -18,14 +18,14 @@
 
                 <div class="mainContainer">
                     <h1 class="mainTitulo">Faça seu login!</h1>
-                    <p style="color: #031768">Não tem uma conta? <a class="botaoCadastro" href="cadastro.php" style="text-decoration:none"> Cadastre-se </a></p>
+                    <p style="color: #031768">Não tem uma conta? <a class="botaoCadastro" href="cadastro.php"> Cadastre-se </a></p>
 
                     <?php if(isset($_SESSION['erro_login'])): ?>
-                        <p style="color: #ff4d4d; font-weight: bold;"><?php echo $_SESSION['erro_login']; unset($_SESSION['erro_login']); ?></p>
+                        <p class="erroLogin"><?php echo $_SESSION['erro_login']; unset($_SESSION['erro_login']); ?></p>
                     <?php endif; ?>
                         
                     <?php if(isset($_SESSION['sucesso_login'])): ?>
-                        <p style="color: #2ecc71; font-weight: bold;"><?php echo $_SESSION['sucesso_login']; unset($_SESSION['sucesso_login']); ?></p>
+                        <p class="cadastroSucesso"><?php echo $_SESSION['sucesso_login']; unset($_SESSION['sucesso_login']); ?></p>
                     <?php endif; ?>
 
                     <form method="POST" action="cad.php">

@@ -5,40 +5,16 @@
     box-sizing: border-box;
 }
 
-body {
-    background-color: #fbd84e;
-    font-family: sans-serif;
-}
-
-/* Header */
-header {
-    background-color: #8654f3;
-    padding: 15px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 0 0 15px 15px;
-    flex-wrap: wrap; /* Permite que o menu quebre linha em telas pequenas */
-}
-
-.yeseva-one-regular {
-background-color: #fbd84e;
-font-family: 'Yeseva One', serif;
-font-weight: bold;
-font-style: normal;
-}
-
-.logoMarca {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.logoMarca img {
+/*Imagem de fundo*/
+.bg-html {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    z-index: -1;
+    filter: brightness(85%);
 }
 
 /* Menu */
