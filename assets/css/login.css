@@ -128,11 +128,6 @@
     font-family: Arial, Helvetica, sans-serif;    
 }
 
-.mainContainer label {
-    font-weight: bold;
-    color: #001a8b;
-}
-
 .mainContainer input {
     border: none;
     padding: 12px 15px;
@@ -151,6 +146,9 @@ form {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    font-weight: bold;
+    color: #001a8b;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 
@@ -175,10 +173,25 @@ form {
 
 .botaoCadastro {
     color: #FFD700;
+    font-weight: bolder;
+}
+
+.botaoCadastro:hover {
+    color: #ffc700;
+    transition: color 0.3s ease;
+    text-shadow: 0 0 8px rgba(97, 44, 167, 0.514);
 }
 
 .esqueceuSenha {
-    color: #fff;
+    color: #7fd5ff;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.esqueceuSenha:hover{
+    color: #ffff;
+    transition: color 0.3s ease;
+    text-shadow: 0 0 8px rgba(155, 79, 255, 0.281);
 }
 
 /*Responsividade*/
