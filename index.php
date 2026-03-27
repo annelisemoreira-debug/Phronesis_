@@ -31,7 +31,7 @@ $fotoPerfil = "assets/img/default-user.webp";
             <ul class="menu">
                 <li class="materiais"><a href="pages/material.php">Materiais</a></li>
                 <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
-                <li class="cronogramas"><a href="pages/cronograma.php">Cronogramas</a></li>
+                <li class="cronogramas"><a href="pages/planejar.php">Cronogramas</a></li>
     
                 
                 <?php if (isset($_SESSION['id'])): ?>
