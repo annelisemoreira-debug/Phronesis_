@@ -78,13 +78,18 @@ body {
     display: flex;
     flex-wrap: wrap; /* Faz os itens ficarem um embaixo do outro no celular */
     margin-top: 10%;
-    padding: 15px;
+    padding: 30px;
     background-color: #ffffff;
     border-radius: 15px;
-    max-width: 450px;
+    text-align: left;
+    margin-left: 40px;
+    width: 450px;
+}   
+.introducao {
+    display: flex;
 }
 
-.container img {
+.introducao img {
     width: 100%;
     max-width: 400px; /* Tamanho máximo da imagem */
     height: auto;
@@ -97,4 +102,5 @@ body {
     background-color: #ffff;
     border-radius: 15px;
 }
+
 
