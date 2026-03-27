@@ -13,7 +13,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -1;  
+    z-index: -1;
+    filter: brightness(85%);
 }
 
 .glass-card {
@@ -42,7 +43,6 @@
 }
 
 .yeseva-one-regular {
-    background-color: #fbd84e;
     font-family: 'Yeseva One', serif;
     font-weight: bold;
     font-style: normal;
@@ -118,22 +118,14 @@
     gap: 20px;
 }
 
-/* Formulário */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.inserirInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
 .mainContainer h1 {
     font-size: 36px;
     color: #001a8b;
+
+}
+
+.mainContainer p {
+    font-family: Arial, Helvetica, sans-serif;    
 }
 
 .mainContainer label {
@@ -147,6 +139,20 @@ form {
     border-radius: 25px;
     width: 100%;
 }
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inserirInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 
 /* Botões e Links */
 .entrarLogin {
@@ -168,8 +174,11 @@ form {
 }
 
 .botaoCadastro {
-    color: #47b1f2;
-    font-weight: bold;
+    color: #FFD700;
+}
+
+.esqueceuSenha {
+    color: #fff;
 }
 
 /*Responsividade*/
