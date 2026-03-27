@@ -4,6 +4,8 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+
+
 $client = new Google\Client();
 $client->setAuthConfig(__DIR__ . '/../credentials.json');
 // A URL abaixo deve ser IGUAL à que você colocou no Google Cloud

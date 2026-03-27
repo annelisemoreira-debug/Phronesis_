@@ -143,3 +143,7 @@ CREATE TABLE usuario_livro (
         REFERENCES livro(id_livro)
         ON DELETE CASCADE
 );
+
+
+
+ALTER TABLE usuarios ADD COLUMN google_token TEXT NULL;
