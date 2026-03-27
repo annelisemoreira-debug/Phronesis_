@@ -1,6 +1,5 @@
-# Pasta de bibliotecas (muito pesada para o Git)
 /vendor/
-
-# ARQUIVOS SECRETOS (NUNCA suba esses!)
 credentials.json
 token.json
+.DS_Store
+*.log
