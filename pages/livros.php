@@ -7,20 +7,199 @@
     <link rel="stylesheet" href="../assets/css/livros.css">
 </head>
 <body>
-    <header>
-        <div class="logoMarca">
-            <a href="index.php">
-                 <img src="../assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
-            </a>
+    
+<div class="wrapper">
+        <aside class="menuSidebar">
+            <div class="logoMarca">
+                <a href="../index.php">
+                    <img src="../assets/img/logoSidebar.webp" alt="Logo oficial da Phronesis">
+                </a>
+            </div>
+
+            <nav>
+                <a>Ciências Humanas</a>
+                <a>Ciências da Natureza</a>
+                <a>Linguagens</a>
+                <a>Matemática</a>
+            </nav>
+        </aside>
+    
+        <div class="principalContent">
+            <header>
+                <nav class="menuNav">
+                    <ul class="menu">
+                        <li class="materiais"><a href="material.php">Materiais</a></li>
+                        <li class="home"><a href="../index.php">Início</a></li>
+                        <li class="cronogramas"><a href="cronograma.php">Cronogramas</a></li>
+                        <li class="entrar"><a href="../login.php">Entrar</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <main class="areaContent">
+                <section class="banner">
+                    <div></div>
+                </section>
+
+                    <section class="listaLivros">
+                        <article class="containerVest">
+                            <div class="fuvestImg">
+                                <img id="openModalF" src="../assets/img/fuvestLogo.webp" alt="FUVEST">
+                            </div>
+
+                            <div class="descricaoVest">
+                                <h2 class="nome">FUVEST</h2>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
+                            </div>
+
+                            <dialog id="modal">
+                                <h2>FUVEST</h2>
+                                <h3>Leituras Obrigatórias</h3>
+                                <h3>Fuvest 2027</h3>
+                                <p>
+                                    <b>Opúsculo Humanitário (1853)</b>– Nísia Floresta
+                                    <b>Nebulosas (1872)</b> – Narcisa Amália
+                                    <b>Memórias de Martha (1899)</b>– Julia Lopes de Almeida
+                                    <b>Caminho de Pedras (1937)</b>– Rachel de Queiroz
+                                    <b>O Cristo Cigano (1961)</b>– Sophia de Mello Breyner Andresen
+                                    <b>As Meninas (1973) </b>– Lygia Fagundes Telles
+                                    <b>Balada de Amor ao Vento (1990)</b>– Paulina Chiziane
+                                    <b>Canção para Ninar Menino Grande (2018)</b>– Conceição Evaristo
+                                    <b>A Visão das Plantas (2019)</b>– Djaimilia Pereira de Almeida
+                                </p>
+                            </dialog>
+
+                        </article>
+
+                        <article class="containerVest">
+                            <div class="vunestImg">
+                                <img id="openModalV" src="../assets/img/vunespLogo.webp" alt="VUNESP">
+                            </div>
+
+                            <div class="descricaoVest">
+                                <h2 class="nome">VUNESP</h2>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
+                            </div>
+
+                            <dialog id="modal">
+                            <h2>VUNESP</h2>
+                            <h3>Leituras Obrigatórias</h3>
+                            <h3>Fuvest 2027</h3>
+                            <p>Conteúdo da janela modal.</p>
+                            </dialog>
+                        </article>
+
+                        <article class="containerVest">
+                            <div class="unicampImg">
+                                <img id="openModalU" src="../assets/img/unicampLogo.webp" alt="UNICAMP">
+                            </div>
+
+                            <div class="descricaoVest">
+                                <h2 class="nome">UNICAMP</h2>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
+                            </div>
+
+                            <dialog id="modal">
+                            <h2>UNICAMP</h2>
+                            <h3>Leituras Obrigatórias</h3>
+                            <h3>UNICAMP 2027</h3>
+                            <p>
+                                <b>A vida não é util</b>- Ailton Krenak
+                                <b>Prosas seguidas de odes mínimas</b>- José Paulo Paes
+                                <b>Morangos mofados (contos escolhidos*)</b>- Caio Fernando Abreu
+                                <b>Vida e morde de M.J. Gonzaga de Sá</b>- Lima Barreto
+                                <b>No seu pescoço </b>- Chimamanda Ngozi Adichie
+                                <b>Olhos d’água </b>- Conceição Evaristo
+                                <b>Memórias Póstumas de Brás Cubas</b>- Machado de Assis
+                                <b>Canções escolhidas**</b>- Paulo César Pinheiro
+                                <b>Gabriel García Márquez</b>- Os funerais da Mamãe Grande
+                            </p>
+                            </dialog>
+                        </article>
+
+                        <!-- Caio Fernando Abreu e Paulo César Pinheiro
+                            * Seis contos escolhidos: “Diálogo”, “Além do Ponto”, “Terça-Feira Gorda”, “Pêra, uva ou maçã?”, “O dia em Júpiter encontrou Saturno”, “Aqueles dois”.
+                            ** Canções escolhidas: “Canto das três raças” (com Mauro Duarte); “Cordilheira” (com Sueli Costa);
+                            “Desenredo” (com Dori Caymmi); “​Estrela da terra” (com Dori Caymmi); “Evangelho” (com Dori Caymmi); “Mordaça” (com Eduardo Gudin);
+                            “​Na volta que o mundo dá” (com Vicente Barreto); “Navio fantasma” (com Francis Hime);
+                            “O dia em que o morro descer e não for carnaval” (com Wilson das Neves);
+                            “Pesadelo” (com Maurício Tapajós); “Velho arvoredo” (com Hélio Delmiro); “Vento bravo” (com Edu Lobo);
+                            “Viagem” (com João de Aquino); “Vontade de chorar” (com Ivor Lancelotti).
+                        -->
+
+                        <article class="containerVest">
+                            <div class="enemImg">
+                                <img id="openModalE" src="../assets/img/enemLogo.webp" alt="ENEM">
+                            </div>
+
+                            <div class="descricaoVest">
+                                <h2 class="nome">ENEM</h2>
+                                <p>
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
+                                    Non fugit vitae dolore?.
+                                </p>
+                            </div>
+
+                            <dialog id="modal">
+                            <h2>ENEM</h2>
+                            <p>Conteúdo da janela modal.</p>
+                            </dialog>
+                        </article>
+                    </section>
+            </main>
         </div>
-        <nav class="menuNav">
-            <ul class="menu">
-                <li class="materiais"><a href="material.php">Materiais</a></li>
-                <li class="livros"><a href="livros.php">Livros</a></li>
-                <li class="cronogramas"><a href="cronograma.php">Cronogramas</a></li>
-                <li class="entrar"><a href="login.php">Entrar</a></li>
-            </ul>
-        </nav>
-    </header>
+    </div>
+
+   <script>
+        // Selecionamos todos os containers de vestibulares
+        const containersVest = document.querySelectorAll('.containerVest');
+
+        containersVest.forEach(container => {
+            // Para cada container, buscamos o botão (imagem) e o modal específicos dele
+            const btnOpen = container.querySelector('img[id^="openModal"]');
+            const modal = container.querySelector('dialog');
+            const btnClose = container.querySelector('#closeModal');
+
+            // Abre o modal referente a este container
+            if (btnOpen && modal) {
+                btnOpen.addEventListener("click", () => {
+                    modal.showModal();
+                });
+            }
+
+            // Fecha o modal referente a este container
+            if (btnClose && modal) {
+                btnClose.addEventListener("click", () => {
+                    modal.close();
+                });
+            }
+
+            // FECHAR AO CLICAR FORA: Se clicar no fundo escuro (backdrop), o modal fecha
+            modal.addEventListener("click", (e) => {
+                const dialogDimensions = modal.getBoundingClientRect();
+                if (
+                    e.clientX < dialogDimensions.left ||
+                    e.clientX > dialogDimensions.right ||
+                    e.clientY < dialogDimensions.top ||
+                    e.clientY > dialogDimensions.bottom
+                ) {
+                    modal.close();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -21,6 +21,7 @@ body {
     background-color: #fbd84e;
 }
 
+
 /*Logo Phronesis*/
 .logoMarca {
     width: 60px;
@@ -35,6 +36,7 @@ body {
     object-fit: cover;
 }
 
+
 /*Menu*/
 .menu {
     display: flex;
@@ -48,6 +50,7 @@ body {
     border-radius: 5px;
     overflow: hidden;
 }
+
 
 .menu li a {
     text-decoration: none;

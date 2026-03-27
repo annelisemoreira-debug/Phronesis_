@@ -5,125 +5,74 @@
     box-sizing: border-box;
 }
 
-body {
-    background-color: #fbd84e;
-}
-
-/* --- CLASSE DE FONTE (MANTIDA) --- */
-.yeseva-one-regular {
-    font-family: "Yeseva One", serif;
-    font-weight: bold; 
-    font-style: normal;
-}
-
-/* Header */
-header {
-    background-color: #8654f3;
-    padding: 15px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 0 0 15px 15px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.logoMarca {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logoMarca img {
+/* Imagem de Fundo (Fixa na tela toda) */
+.bg-html {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    z-index: -1;  
 }
 
-/* Menu */
-.menu {
-    display: flex;
-    list-style: none;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.menu li a {
-    text-decoration: none;
-    display: block;
-    padding: 10px 15px;
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
-.menu li.materiais { background-color: #8dd4ff; }
-.menu li.livros { background-color: #ffe57e; }
-.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
-
-/* Container e Layout Principal */
 .container {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap; 
-    gap: 20px;
-    padding: 40px 5%;
-    min-height: 80vh;
-}
-
-.container img {
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    border-radius: 5%;
-}
-
-.mainContainer {
-    width: 100%;
-    max-width: 485px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    min-height: 100vh;
     padding: 20px;
 }
 
-/* Tipografia */
+/* O Cartão de Vidro (Onde a mágica acontece) */
+.glass-card {
+    display: flex; /* Alinha logo e form lado a lado */
+    background-color: rgba(180, 150, 255, 0.85); /* Roxo transparente */
+    border-radius: 15px;
+    overflow: hidden;
+    max-width: 950px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Coluna Branca da Logo */
+.logo-section {
+    background-color: white;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+}
+
+.logo-section img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+}
+
+/* Coluna do Formulário */
+.mainContainer {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.yeseva-one-regular {
+    font-family: "Yeseva One", serif;
+    color: #001a8b;
+}
+
 .mainContainer h1 {
-    font-size: clamp(30px, 5vw, 40px); /* Tamanho fluido */
+    font-size: 32px;
     color: #001a8b;
 }
 
 .mainContainer label {
-    font-size: 18px;
-    color: #001a8b;
     font-weight: bold;
-}
-
-/* Formulário e Inputs */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.linha_dupla {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-}
-
-.campo, .inserirInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
+    color: #001a8b;
 }
 
 .mainContainer input {
@@ -134,18 +83,31 @@ form {
     font-size: 16px;
 }
 
-/* Botão */
+/* Campos lado a lado */
+.linha_dupla {
+    display: flex;
+    gap: 15px;
+}
+
+.inserirInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+}
+
+/* Botão Cadastrar */
 .entrarLogin {
     border: none;
     background-color: #001a8b;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
-    border-radius: 10px;
-    padding: 12px 35px;
-    width: fit-content;
-    align-self: center;
+    border-radius: 25px; 
+    padding: 12px 60px;
     cursor: pointer;
+    align-self: center; /* Centraliza no fundo roxo */
+    margin-top: 15px;
     transition: 0.3s;
 }
 
@@ -154,31 +116,12 @@ form {
     transform: scale(1.05);
 }
 
-/* --- RESPONSIVIDADE (MEDIA QUERIES) --- */
-
+/* Responsividade para Celular */
 @media (max-width: 850px) {
-    .container {
-        flex-direction: column;
-        text-align: center;
+    .glass-card {
+        flex-direction: column; /* Empilha no celular */
     }
-
     .linha_dupla {
-        flex-direction: column; /* Campos empilhados no mobile */
-    }
-
-    .container img {
-        max-width: 350px;
-        margin: 0 auto;
-    }
-}
-
-@media (max-width: 480px) {
-    header {
-        padding: 15px 2%;
-    }
-    
-    .menu li a {
-        padding: 8px 10px;
-        font-size: 12px;
+        flex-direction: column;
     }
 }

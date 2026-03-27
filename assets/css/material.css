@@ -1,0 +1,253 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fbd84e;
+}
+
+/* Wrapper */
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f7d358;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Sidebar */
+.menuSidebar {
+    position: sticky;
+    top: 20px;          
+    height: calc(100vh - 40px);
+    width: 350px;
+    background: white;
+    border-radius: 15px;
+    padding: 35px 30px; 
+    display: flex; 
+    flex-direction: column;
+    gap: 30px;
+    min-width: 250px;
+}
+
+.menuSidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menuSidebar nav a {
+    text-decoration: none;
+    color: #6837af;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;    
+}
+
+/*Logo menuSidebar*/
+.logoMarca {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoMarca a {
+    width: 100%; 
+    display: block;
+}
+
+.logoMarca img {
+    width: 100%;
+    height: auto; 
+    display: block;
+    object-fit: contain; 
+}
+
+/* Conteúdo Principal */
+.principalContent {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 18px 50px;
+}
+
+/* Menu Superior */
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center; 
+}
+
+.menu li {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.menu li a {
+    text-decoration: none;
+    display: block;
+    padding: 12px 25px; 
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Cores do Menu */
+.menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.livros { background-color: #8dd4ff; }
+.menu li.home { background-color: #ffe57e; }
+
+/* Botão Entrar */
+.menu li.entrar {
+    background-color: #47b1f2;
+    border-radius: 25px;
+    margin-left: auto;
+}
+
+.menu li.entrar a:hover {
+    background-color: #2060d8;
+    color: white;
+    transition: 0.3s;
+}
+
+/*Main section*/
+.areaContent {
+    border-radius: 15px;
+    padding: 20px;
+    flex: 1;
+}
+
+.banner {
+    background-color: #47b1f2;
+    width: 100%;
+    height: 130px;
+    border-radius: 20px;
+}
+
+/*Section main videos*/
+.video-container-white {
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.video-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.video-title {
+    color: #6837af;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Área de Pesquisa */
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 2px solid #bfa2ff;
+    border-radius: 50px;
+    padding: 5px 15px;
+    width: 300px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.search-box button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* Grade de Vídeos (CSS Grid) */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Cria 4 colunas de tamanhos iguais */
+    gap: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.video-grid::-webkit-scrollbar {
+    width: 8px;
+}
+.video-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.video-grid::-webkit-scrollbar-thumb {
+    background: #ffe57e;
+    border-radius: 10px;
+}
+
+/* Os Quadradinhos Roxos */
+.video-card {
+    background-color: #bfa2ff;
+    aspect-ratio: 1 / 1;
+    border-radius: 15px;
+    transition: transform 0.2s;
+    cursor: pointer;
+    max-width: 270px;
+    max-height: auto;
+}
+
+.video-card:hover {
+    transform: scale(1.03);
+    background-color: #a685ff;
+}
+
+/* Container pai para colocar a galeria e a sidebar lado a lado */
+.container-materiais {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+/* Ajuste na largura do container de vídeos */
+.video-container-white {
+    flex: 3; /* Ocupa a maior parte do espaço */
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* O novo campo branco (sidebar lateral) */
+.sidebar-complementar {
+    flex: 1; /* Ocupa o espaço menor à direita */
+    background-color: white;
+    border-radius: 20px;
+    min-height: 400px; 
+    align-self: stretch; /* Estica para ter a mesma altura da galeria */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Ajuste da Grid para comportar a nova lateral */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas ficam melhores com a sidebar */
+    gap: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
