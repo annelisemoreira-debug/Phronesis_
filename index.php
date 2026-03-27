@@ -67,7 +67,6 @@ $fotoPerfil = "assets/img/default-user.webp";
     </main>
     
     <script>
-        // Conteúdo principal da página
         // Função para abrir/fechar o menu ao clicar na foto
         function toggleMenu() {
             document.getElementById("dropdownPerfil").classList.toggle("show");
