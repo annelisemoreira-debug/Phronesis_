@@ -42,54 +42,6 @@
     max-width: 350px;
 }
 
-.logoMarca {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.logoMarca img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Menu */
-.menu {
-    display: flex;
-    list-style: none;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.menu li {
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.menu li a {
-    text-decoration: none;
-    display: block;
-    padding: 8px 15px;
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-/* Cores do Menu */
-.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
-.menu li.materiais { background-color: #8dd4ff; }
-.menu li.livros { background-color: #ffe57e; }
-.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
-
-.menu li.entrar a:hover {
-    background-color: #2060d8;
-    color: white;
-    transition: 0.3s;
-}
-
 .container {
     display: flex;
     flex-wrap: wrap; 
@@ -139,15 +91,16 @@
 }
 
 /*Mensagens de erro e sucesso*/
-
 .erroLogin {
     color: #ff1e1e;
+    background-color: rgba(177, 28, 28, 0.176);
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .cadastroSucesso {
     color: #2ecc71;
+    background-color:  rgba(46, 204, 113, 0.176);
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
     text-shadow: 0 0 8px rgba(97, 44, 167, 0.514);    
@@ -202,15 +155,16 @@ form {
 }
 
 .esqueceuSenha {
-    color: #7fd5ff;
+    color: #7fe5ff;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 0 0 8px rgba(155, 79, 255, 0.281);
+
 }
 
 .esqueceuSenha:hover{
     color: #ffff;
     transition: color 0.3s ease;
-    text-shadow: 0 0 8px rgba(155, 79, 255, 0.281);
 }
 
 /*Responsividade*/

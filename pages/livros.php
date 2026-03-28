@@ -6,9 +6,10 @@
     <title>Leituras obrigatórias</title>
     <link rel="stylesheet" href="../assets/css/livros.css">
 </head>
-<body>
-    
-<div class="wrapper">
+<body> 
+    <div class="wrapper">
+        <img src="../assets/img/fundoAmarelo02.png" class="bg-html" alt="Fundo"> 
+
         <aside class="menuSidebar">
             <div class="logoMarca">
                 <a href="../index.php">
@@ -50,9 +51,8 @@
                             <div class="descricaoVest">
                                 <h2 class="nome">FUVEST</h2>
                                 <p>
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
-                                    Non fugit vitae dolore?.
+                                    A Fuvest é o principal exame de ingresso para a USP, sendo considerada uma das provas mais tradicionais e exigentes do Brasil.
+                                    Ela serve para selecionar alunos com alto nível de domínio acadêmico em diversas áreas do conhecimento.
                                 </p>
                             </div>
 
@@ -61,7 +61,7 @@
                                 <h3>Leituras Obrigatórias</h3>
                                 <h3>Fuvest 2027</h3>
                                 <p>
-                                    <b>Opúsculo Humanitário (1853)</b>– Nísia Floresta
+                                    <b>Opúsculo Humanitário (1853)</b> – Nísia Floresta
                                     <b>Nebulosas (1872)</b> – Narcisa Amália
                                     <b>Memórias de Martha (1899)</b>– Julia Lopes de Almeida
                                     <b>Caminho de Pedras (1937)</b>– Rachel de Queiroz
@@ -83,9 +83,9 @@
                             <div class="descricaoVest">
                                 <h2 class="nome">VUNESP</h2>
                                 <p>
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
-                                    Non fugit vitae dolore?.
+                                    A fundação Vunesp organiza o vestibular da Universidade Estadual Paulista.
+                                    O exame busca avaliar a capacidade de análise crítica e a base de conhecimentos gerais do candidato,
+                                    mantendo um equilíbrio entre o conteúdo teórico e a aplicação prática.
                                 </p>
                             </div>
 
@@ -105,9 +105,9 @@
                             <div class="descricaoVest">
                                 <h2 class="nome">UNICAMP</h2>
                                 <p>
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
-                                    Non fugit vitae dolore?.
+                                    O vestibular da Unicamp é conhecido por sua abordagem interdisciplinar e humanizada.
+                                    Ele serve para selecionar estudantes para uma das universidades de maior prestígio em pesquisa na América Latina,
+                                    valorizando a capacidade de leitura e a interpretação de textos complexos.
                                 </p>
                             </div>
 
@@ -147,9 +147,9 @@
                             <div class="descricaoVest">
                                 <h2 class="nome">ENEM</h2>
                                 <p>
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                    Delectus culpa, deleniti totam sit aut beatae voluptates ipsam nulla dolorum atque vel quis optio quidem amet praesentium!
-                                    Non fugit vitae dolore?.
+                                    O ENEM é a maior porta de entrada para o ensino superior no Brasil.
+                                    Ele serve para o ingresso em universidades federais e estaduais via Sisu,
+                                    além de dar acesso a bolsas pelo ProUni e financiamentos pelo Fies.
                                 </p>
                             </div>
 

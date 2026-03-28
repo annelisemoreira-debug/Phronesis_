@@ -1,4 +1,4 @@
-/* Reset e Base */
+/*Reset e Base*/
 * {
     margin: 0;
     padding: 0;
@@ -17,50 +17,77 @@
     filter: brightness(85%);
 }
 
-/* Menu */
-.menu {
+.glass-card {
     display: flex;
-    list-style: none;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.menu li {
-    border-radius: 5px;
+    background-color: rgba(180, 150, 255, 0.85);
+    border-radius: 10px;
     overflow: hidden;
+    max-width: 950px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.menu li a {
-    text-decoration: none;
-    display: block;
-    padding: 8px 15px;
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
+/*Logo*/
+.logo-section {
+    background-color: white;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
 }
 
-/* Cores do Menu */
-.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
-.menu li.materiais { background-color: #8dd4ff; }
-.menu li.livros { background-color: #ffe57e; }
-.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
-
-.menu li.entrar a:hover {
-    background-color: #2060d8;
-    color: white;
-    transition: 0.3s;
+.logo-section img {
+    width: 100%;
+    max-width: 350px;
 }
 
+.container {
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 40px;
+}
+
+.container img {
+    height: auto;
+}
 
 .mainContainer {
-    width: 100%;
-    max-width: 450px;
+    flex: 1;
+    padding: 40px;
     display: flex;
-    margin-top: 70px;
-    margin-left: 100px;
     flex-direction: column;
     gap: 20px;
+}
+
+.mainContainer h1 {
+    font-size: 36px;
+    color: #001a8b;
+
+}
+
+.mainContainer p {
+    font-family: Arial, Helvetica, sans-serif;    
+}
+
+.mainContainer input {
+    border: 2px solid transparent; /* Adiciona uma borda invisível de 2px no estado normal */
+    padding: 12px 15px; /* Mantém o padding interno que você já tinha */
+    border-radius: 25px;
+    width: 100%;
+    font-size: 16px;
+    background-color: white; /* Garante que o fundo seja branco */
+    transition: all 0.3s ease;
+}
+
+.mainContainer input:focus {
+    outline: none;
+    border: 2px solid #4fd6ff;
+    box-shadow: 0 0 5px rgba(146, 79, 255, 0.5)
 }
 
 /* Formulário */
@@ -74,23 +101,9 @@ form {
     display: flex;
     flex-direction: column;
     gap: 8px;
-}
-
-.mainContainer h1 {
-    font-size: 36px;
-    color: #001a8b;
-}
-
-.mainContainer label {
     font-weight: bold;
     color: #001a8b;
-}
-
-.mainContainer input {
-    border: none;
-    padding: 12px 15px;
-    border-radius: 25px;
-    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Botões e Links */

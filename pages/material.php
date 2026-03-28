@@ -8,6 +8,8 @@
 </head>
 <body>
     <div class="wrapper">
+        <img src="../assets/img/fundoAmarelo02.png" class="bg-html" alt="Fundo"> 
+
         <aside class="menuSidebar">
             <div class="logoMarca">
                 <a href="../index.php">

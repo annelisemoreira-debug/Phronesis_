@@ -3,11 +3,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro - Phronesis</title>
+    <title>Faça parte do Phronesis!</title>
     <link rel="stylesheet" href="assets/css/cadastro.css">
 </head>
 <body>
-    <img src="assets/img/loginBackground.png" class="bg-html" alt="Fundo">
+    <img src="assets/img/fundoRoxo.png" class="bg-html" alt="Fundo">
 
     <main>
         <div class="container">

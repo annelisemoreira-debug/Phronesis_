@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body>
-    <img src="assets/img/loginBackground.png" class="bg-html" alt="Fundo">
+    <img src="assets/img/fundoRoxo.png" class="bg-html" alt="Fundo">
 
     <main>
         <div class="container">
