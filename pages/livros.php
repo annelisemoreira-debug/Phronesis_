@@ -8,7 +8,6 @@
 </head>
 <body> 
     <div class="wrapper">
-        <img src="../assets/img/fundoAmarelo02.png" class="bg-html" alt="Fundo"> 
 
         <aside class="menuSidebar">
             <div class="logoMarca">
@@ -39,7 +38,7 @@
 
             <main class="areaContent">
                 <section class="banner">
-                    <div></div>
+                    <img src="../assets/img/bannerLivros02.png" class="bg-html" alt="Fundo">
                 </section>
 
                     <section class="listaLivros">
