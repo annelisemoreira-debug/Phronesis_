@@ -17,10 +17,13 @@
             </div>
 
             <nav>
-                <a>Ciências Humanas</a>
-                <a>Ciências da Natureza</a>
                 <a>Linguagens</a>
                 <a>Matemática</a>
+                <a>Física</a>
+                <a>Biologia</a>
+                <a>Química</a>
+                <a>História</a>
+                <a>Geografia</a>
             </nav>
         </aside>
     
