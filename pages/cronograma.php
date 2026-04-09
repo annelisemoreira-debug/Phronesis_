@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // 1. Lógica de Logout
 if (isset($_GET['logout'])) {

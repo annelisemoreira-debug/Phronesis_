@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new Google\Client();
 $client->setAuthConfig('../credentials.json');
@@ -14,7 +14,7 @@ $client->setRedirectUri($redirect_uri);
 
 // Se o Google enviou o código de volta
 if (isset($_GET['code'])) {
-    try {
+    try {   
         $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
         $_SESSION['upload_token'] = $token;
         header('Location: cronograma.php');
