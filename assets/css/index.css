@@ -8,7 +8,7 @@
 /* Fontes */
 /* Header */
 header {
-    background-color: #8654f3;
+    background-color: #8c52ff;
     padding: 15px 5%;
     display: flex;
     justify-content: space-between;
@@ -18,7 +18,7 @@ header {
 }
 
 body {
-    background-color: #fbd84e;
+    background-color:#bfa2ff;
 }
 
 
@@ -62,7 +62,7 @@ body {
 }
 
 /* Cores do Menu */
-.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
 .menu li.materiais { background-color: #8dd4ff; }
 .menu li.livros { background-color: #ffe57e; }
 .menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
@@ -72,35 +72,8 @@ body {
     color: white;
     transition: 0.3s;
 }
-
-/*section introdução*/
-.container {
-    display: flex;
-    flex-wrap: wrap; /* Faz os itens ficarem um embaixo do outro no celular */
-    margin-top: 10%;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 15px;
-    text-align: left;
-    margin-left: 40px;
-    width: 450px;
-}   
-.introducao {
-    display: flex;
+.banner {
+    width: 1400px;
+    height: 130px;
+    border-radius: 20px;
 }
-
-.introducao img {
-    width: 100%;
-    max-width: 400px; /* Tamanho máximo da imagem */
-    height: auto;
-    border-radius: 5%;
-}
-
-.introducao {
-    padding: 50px 5%;
-    text-align: justify;
-    background-color: #ffff;
-    border-radius: 15px;
-}
-
-
