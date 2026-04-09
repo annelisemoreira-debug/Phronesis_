@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #fbd84e;
+    background-color: #9274ff;
 }
 
 /* Wrapper */
@@ -122,6 +122,7 @@ body {
     border-radius: 15px;
     padding: 20px;
     flex: 1;
+    background-color: white;
 }
 
 .banner {
