@@ -8,7 +8,7 @@
 /* Fontes */
 /* Header */
 header {
-    background-color: #8654f3;
+    background-color: #ffffff;
     padding: 15px 5%;
     display: flex;
     justify-content: space-between;
@@ -18,7 +18,7 @@ header {
 }
 
 body {
-    background-color: #fbd84e;
+    background-color: ##9274ff;
 }
 
 
@@ -62,7 +62,7 @@ body {
 }
 
 /* Cores do Menu */
-.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
 .menu li.materiais { background-color: #8dd4ff; }
 .menu li.livros { background-color: #ffe57e; }
 .menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
