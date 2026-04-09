@@ -54,14 +54,10 @@ $fotoPerfil = "assets/img/default-user.webp";
 
     <main>
         
-        <div class="container">
-        <section class="introducao">
-                <h1>Bem-vindo ao Phronesis!</h1>
-                <p>Seu portal de estudos para concursos públicos. Encontre materiais, livros e cronogramas personalizados para alcançar seus objetivos.</p>
-                <a href="cadastro.php" class="botaoCadastro">Cadastre-se Agora</a>
-                <img src="assets/img/estudo.webp" alt="Imagem de estudo">
-        </section>
-        </div>
+             <section class="banner">
+                    <img src="../assets/img/bannerInicio.png" class="bg-html" alt="Fundo">
+                </section>
+        
     </main>
     
     <script>
