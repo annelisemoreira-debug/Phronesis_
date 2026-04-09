@@ -1,5 +1,5 @@
-/vendor/
-credentials.json
-token.json
-.DS_Store
-*.log
+# Ignorar as credenciais reais do Google
+
+
+# Ignorar o arquivo de variáveis de ambiente com senhas reais
+.env
