@@ -53,11 +53,9 @@ $fotoPerfil = "assets/img/default-user.webp";
     </header>
 
     <main>
-        
-             <section class="banner">
-                    <img src="../assets/img/bannerInicio.png" class="bg-html" alt="Fundo">
-                </section>
-        
+           <div class="banner">
+                    <img src="bannerInicio.png"  alt="Fundo">
+            </div>
     </main>
     
     <script>
