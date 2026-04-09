@@ -8,8 +8,7 @@
 /* Fontes */
 /* Header */
 header {
-    background-color: #9274ff;
-;
+    background-color: #8c52ff;
     padding: 15px 5%;
     display: flex;
     justify-content: space-between;
@@ -19,7 +18,7 @@ header {
 }
 
 body {
-    background-color: #9274ff;
+    background-color:#bfa2ff;
 }
 
 
