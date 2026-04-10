@@ -6,7 +6,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 $host = "localhost";
 $user = "root";
-$pass = "Home@spSENAI2025!";
+$pass = "";
 $db   = "PhronesisLista"; // Nome do banco conforme seu SQL
 
 $conn = new mysqli($host, $user, $pass, $db);
