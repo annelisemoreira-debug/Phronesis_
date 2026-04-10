@@ -76,4 +76,5 @@ body {
     width: 1400px;
     height: 130px;
     border-radius: 20px;
+    align-items: center;
 }
