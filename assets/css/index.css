@@ -73,8 +73,9 @@ body {
     transition: 0.3s;
 }
 .banner {
-    width: 1400px;
+    width: 1200px;
     height: 130px;
     border-radius: 20px;
-    align-items: center;
+    margin-left: 13%;
+    margin-top: 60px;
 }

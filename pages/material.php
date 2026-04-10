@@ -73,7 +73,7 @@ try {
                     <ul class="menu">
                         <li class="livros"><a href="livros.php">Obras Obrigatórias</a></li>
                         <li class="home"><a href="../index.php">Início</a></li>
-                        <li class="cronogramas"><a href="planejar.php">Cronogramas</a></li>
+                        <li class="cronogramas"><a href="meu_calendario.php">Cronogramas</a></li>
                         <li class="entrar"><a href="../login.php">Entrar</a></li>
                     </ul>
                 </nav>

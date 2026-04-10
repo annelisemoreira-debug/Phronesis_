@@ -54,7 +54,7 @@ $fotoPerfil = "assets/img/default-user.webp";
 
     <main>
            <div class="banner">
-                    <img src="./assets/img/bannerInicio.png"  alt="Fundo">
+                    <img src="./assets/img/bannerInicio.png" alt="Fundo">
             </div>
     </main>
     
