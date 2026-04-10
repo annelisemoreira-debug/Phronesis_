@@ -144,6 +144,4 @@ CREATE TABLE usuario_livro (
         ON DELETE CASCADE
 );
 
-
-
-ALTER TABLE usuarios ADD COLUMN google_token TEXT NULL;
+ALTER TABLE usuario ADD COLUMN google_token TEXT NULL;
