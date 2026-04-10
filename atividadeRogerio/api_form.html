@@ -2,142 +2,166 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro Relacional - Estados</title>
-    <style>
-        /* (Mantenha seu CSS original aqui) */
-        select { width: 100%; padding: 8px; margin-bottom: 10px; }
-        .container { width: 800px; margin: auto; background: rgb(206, 164, 255); padding: 20px; border-radius: 8px; font-family: sans-serif;}
-    </style>
+    <link rel="stylesheet" href="apiAtiv.css">
 </head>
-<body style="background: #f4f4f4;">
+<body>
+    <img src="assets/img/fundoRoxo.png" class="bg-html" alt="Fundo">
 
-<div class="container">
-    <h2>Cadastro de Usuário</h2>
-    <input type="hidden" id="id_usuario">
+    <div class="container">
+        <div class="glass-card">
+            <div class="mainContainer">
+                <h2>Cadastro de Usuário</h2>
+                <input type="hidden" id="id_usuario">
+                
+                <div class="inserirInfo">
+                    <label>Nome:</label>
+                    <input type="text" id="nome" placeholder="Digite o nome completo">
+                </div>
 
-    Nome: <input type="text" id="nome" style="width:97%; padding:8px; margin-bottom:10px;">
-    E-mail: <input type="text" id="email" style="width:97%; padding:8px; margin-bottom:10px;">
-    Senha: <input type="password" id="senha" style="width:97%; padding:8px; margin-bottom:10px;">
-    Telefone: <input type="text" id="telefone" style="width:97%; padding:8px; margin-bottom:10px;">
+                <div class="inserirInfo">
+                    <label>E-mail:</label>
+                    <input type="text" id="email" placeholder="exemplo@email.com">
+                </div>
 
-    Estado (Entidade Forte):
-    <select id="fk_id_estado">
-        <option value="">Selecione um estado...</option>
-    </select>
+                <div class="inserirInfo">
+                    <label>Senha:</label>
+                    <input type="password" id="senha" placeholder="Digite sua senha">
+                </div>
 
-    <button onclick="salvar()" >Salvar Usuário</button>
-    <button onclick="listar()" >Atualizar Lista</button>
+                <div class="inserirInfo">
+                    <label>Telefone:</label>
+                    <input type="text" id="telefone" placeholder="(00) 00000-0000">
+                </div>
 
-    <h2>Usuários Cadastrados</h2>
-    <table border="1" width="100%" style="border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Estado (FK)</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody id="tabela"></tbody>
-    </table>
-</div>
+                <div class="inserirInfo">
+                    <label>Estado (Entidade Forte):</label>
+                    <select id="fk_id_estado">
+                        <option value="">Selecione um estado...</option>
+                    </select>
+                </div>
 
-<script>
-const api = "api.php";
+                <div class="button-group">
+                    <button onclick="salvar()" class="entrarLogin">Salvar Usuário</button>
+                    <button onclick="listar()" class="entrarLogin secondary">Atualizar Lista</button>
+                </div>
+            </div>
+        </div>
 
-// 1. Carrega os estados assim que a página abre
-window.onload = () => {
-    carregarEstados();
-    listar();
-};
+        <div class="table-container">
+            <h2>Usuários Cadastrados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Estado (FK)</th>
+                        <th style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela">
+                    </tbody>
+            </table>
+        </div>
+    </div>
 
-function carregarEstados() {
-    fetch(api + "?buscar_estados=true")
-    .then(r => r.json())
-    .then(estados => {
-        const select = document.getElementById("fk_id_estado");
-        estados.forEach(est => {
-            let opt = document.createElement("option");
-            opt.value = est.id_estado; // Aqui está a Chave Primária
-            opt.text = `${est.nome} (${est.sigla})`;
-            select.appendChild(opt);
-        });
-    });
-}
+    <script>
+        const api = "api.php";
 
-function salvar() {
-    const id = document.getElementById("id_usuario").value;
-    const dados = {
-        nome: document.getElementById("nome").value,
-        email: document.getElementById("email").value,
-        senha: document.getElementById("senha").value,
-        telefone: document.getElementById("telefone").value,
-        fk_id_estado: document.getElementById("fk_id_estado").value
-    };
+        window.onload = () => {
+            carregarEstados();
+            listar();
+        };
 
-    const metodo = id ? "PUT" : "POST";
-    if(id) dados.id_usuario = id;
+        function carregarEstados() {
+            fetch(api + "?buscar_estados=true")
+            .then(r => r.json())
+            .then(estados => {
+                const select = document.getElementById("fk_id_estado");
+                estados.forEach(est => {
+                    let opt = document.createElement("option");
+                    opt.value = est.id_estado;
+                    opt.text = `${est.nome} (${est.sigla})`;
+                    select.appendChild(opt);
+                });
+            });
+        }
 
-    fetch(api, {
-        method: metodo,
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(dados)
-    })
-    .then(r => r.json())
-    .then(d => {
-        alert(d.mensagem || d.erro);
-        listar();
-        limpar();
-    });
-}
+        function salvar() {
+            const id = document.getElementById("id_usuario").value;
+            const dados = {
+                nome: document.getElementById("nome").value,
+                email: document.getElementById("email").value,
+                senha: document.getElementById("senha").value,
+                telefone: document.getElementById("telefone").value,
+                fk_id_estado: document.getElementById("fk_id_estado").value
+            };
 
-function listar() {
-    fetch(api)
-    .then(r => r.json())
-    .then(dados => {
-        let tabela = document.getElementById("tabela");
-        tabela.innerHTML = "";
-        dados.forEach(u => {
-            tabela.innerHTML += `
-            <tr>
-                <td>${u.id_usuario}</td>
-                <td>${u.nome}</td>
-                <td>${u.nome_estado} (ID: ${u.fk_id_estado})</td>
-                <td>
-                    <button onclick="editar(${u.id_usuario},'${u.nome}','${u.email}','${u.telefone}',${u.fk_id_estado})">Editar</button>
-                    <button onclick="excluir(${u.id_usuario})">Excluir</button>
-                </td>
-            </tr>`;
-        });
-    });
-}
+            const metodo = id ? "PUT" : "POST";
+            if(id) dados.id_usuario = id;
 
-function editar(id, nome, email, telefone, id_estado) {
-    document.getElementById("id_usuario").value = id;
-    document.getElementById("nome").value = nome;
-    document.getElementById("email").value = email;
-    document.getElementById("telefone").value = telefone;
-    document.getElementById("fk_id_estado").value = id_estado;
-}
+            fetch(api, {
+                method: metodo,
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(dados)
+            })
+            .then(r => r.json())
+            .then(d => {
+                alert(d.mensagem || d.erro);
+                listar();
+                limpar();
+            });
+        }
 
-function excluir(id) {
-    if(confirm("Excluir usuário?")) {
-        fetch(api, {
-            method: "DELETE",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({id_usuario: id})
-        }).then(() => listar());
-    }
-}
+        function listar() {
+            fetch(api)
+            .then(r => r.json())
+            .then(dados => {
+                let tabela = document.getElementById("tabela");
+                tabela.innerHTML = "";
+                dados.forEach(u => {
+                    tabela.innerHTML += `
+                    <tr>
+                        <td>${u.id_usuario}</td>
+                        <td>${u.nome}</td>
+                        <td>${u.nome_estado} (ID: ${u.fk_id_estado})</td>
+                        <td style="text-align: center;">
+                            <button class="btn-edit" onclick="editar(${u.id_usuario},'${u.nome}','${u.email}','${u.telefone}',${u.fk_id_estado})">Editar</button>
+                            <button class="btn-delete" onclick="excluir(${u.id_usuario})">Excluir</button>
+                        </td>
+                    </tr>`;
+                });
+            });
+        }
 
-function limpar() {
-    document.getElementById("id_usuario").value = "";
-    document.getElementById("nome").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("senha").value = "";
-    document.getElementById("telefone").value = "";
-    document.getElementById("fk_id_estado").value = "";
-}
-</script>
+        function editar(id, nome, email, telefone, id_estado) {
+            document.getElementById("id_usuario").value = id;
+            document.getElementById("nome").value = nome;
+            document.getElementById("email").value = email;
+            document.getElementById("telefone").value = telefone;
+            document.getElementById("fk_id_estado").value = id_estado;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function excluir(id) {
+            if(confirm("Excluir usuário?")) {
+                fetch(api, {
+                    method: "DELETE",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({id_usuario: id})
+                }).then(() => listar());
+            }
+        }
+
+        function limpar() {
+            document.getElementById("id_usuario").value = "";
+            document.getElementById("nome").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("senha").value = "";
+            document.getElementById("telefone").value = "";
+            document.getElementById("fk_id_estado").value = "";
+        }
+    </script>
 </body>
 </html>
