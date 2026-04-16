@@ -27,10 +27,29 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-/*Logo*/
-.logo-section {
-    background-color: white;
-    flex: 1;
+.menu li a {
+    text-decoration: none;
+    display: block;
+    padding: 8px 15px;
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Cores do Menu */
+.menu li.sobre, .menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.materiais { background-color: #8dd4ff; }
+.menu li.livros { background-color: #ffe57e; }
+.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
+
+.menu li.entrar a:hover {
+    background-color: #2060d8;
+    color: white;
+    transition: 0.3s;
+}
+
+/* Container Principal*/
+.container {
     display: flex;
     align-items: center;
     justify-content: center;
