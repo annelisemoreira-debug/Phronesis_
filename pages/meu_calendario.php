@@ -43,7 +43,9 @@ $authUrl = $client->createAuthUrl();
         <h2>Phronesis</h2>
         <p>Conecte sua conta para gerar seu cronograma</p>
         <br>
-        <a class="btn-google" href="<?= $authUrl ?>">Entrar com Google</a>
+        <a class="btn-google" href="<?= $authUrl ?>">Entrar com Google</a><br><br><br>
+        <a href="../index.php">Deseja Voltar?</a>
     </div>
+        
 </body>
 </html>

@@ -20,6 +20,7 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){ // Se a acao do GET fo
 
             <div class="mainContainer">
                 <h1 class="mainTitulo">Recuperar Senha</h1>
+                <p style="color: #031768">Pronto para voltar? Redefina a senha!</p>
                 <form method="POST" action="cad.php">
                     <input type="hidden" name="acao" value="nova_senha"> <!--O valor da ação é nova_senha-->
 

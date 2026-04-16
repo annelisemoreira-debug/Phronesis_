@@ -66,10 +66,10 @@ CREATE TABLE usuario (
     telefone VARCHAR(20)
 );
 
-CREATE TABLE materia (
-    id_materia INT AUTO_INCREMENT PRIMARY KEY,
-    nome_materia VARCHAR(255) NOT NULL
-);
+    CREATE TABLE materia (
+        id_materia INT AUTO_INCREMENT PRIMARY KEY,
+        nome_materia VARCHAR(255) NOT NULL
+    );
 
 CREATE TABLE usuario_materia (
 	id_usuario_materia int auto_increment primary key,
@@ -145,3 +145,62 @@ CREATE TABLE usuario_livro (
 );
 
 ALTER TABLE usuario ADD COLUMN google_token TEXT NULL;
+
+
+
+
+
+
+-- Database novo 16/04
+
+CREATE DATABASE phronesis;
+USE phronesis;
+
+drop database phronesis;
+
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    telefone VARCHAR(20)
+);
+
+-- 1. TABELA FORTE: Materia
+-- Centraliza as matérias que o usuário pode escolher.
+CREATE TABLE materia (
+    id_materia INT AUTO_INCREMENT PRIMARY KEY,
+    nome_materia VARCHAR(100) NOT NULL UNIQUE,
+    cor_hex VARCHAR(7) DEFAULT '#4285F4'
+);
+
+-- 2. CABEÇALHO: Cronograma
+-- Liga o plano ao usuário e à agenda do Google.
+CREATE TABLE cronograma (
+    id_cronograma INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    titulo_cronograma VARCHAR(255) NOT NULL,
+    google_calendar_id VARCHAR(255), 
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Mantemos o id_usuario para garantir que o plano pertença a alguém no banco
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+);
+
+-- 3. ITENS: Cronograma_item
+-- Onde as matérias (FK) são relacionadas aos horários e eventos do Google.
+CREATE TABLE cronograma_item (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_cronograma INT NOT NULL,
+    id_materia INT NOT NULL, -- Relacionamento com a Tabela Forte
+    google_event_id VARCHAR(255),
+    data_estudo DATETIME NOT NULL,
+    data_fim DATETIME NOT NULL,
+    status_estudo VARCHAR(50) DEFAULT 'pendente',
+
+    -- Se o cronograma pai for apagado, os itens somem.
+    FOREIGN KEY (id_cronograma) REFERENCES cronograma(id_cronograma) ON DELETE CASCADE,
+    
+    -- Impede apagar uma matéria que está sendo usada em um cronograma.
+    FOREIGN KEY (id_materia) REFERENCES materia(id_materia) ON DELETE RESTRICT
+);

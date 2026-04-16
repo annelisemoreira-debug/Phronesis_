@@ -53,9 +53,44 @@ $fotoPerfil = "assets/img/default-user.webp";
     </header>
 
     <main>
-           <div class="banner">
-                    <img src="bannerInicio.png"  alt="Fundo">
-            </div>
+           <section class="banner">
+                    <img src="./assets/img/bannerInicio.png" alt="Fundo">
+            </section>
+             <h1> O que oferecemos? </h1>
+             <h3>Conheça nosso serviços e melhore nos estudos!</h3>
+       <div class="carousel-wrapper">
+  <button class="arrow prev" onclick="scrollCarousel(-1)">❮</button>
+  
+  <div class="carousel-container" id="carousel">
+    <div class="card card-blue">
+      <div class="tab-decorator"></div>
+      <h2>Materiais</h2>
+      <div class="card-content">
+        <p>Conteúdo sobre materiais de estudo aqui...</p>
+      </div>
+    </div>
+
+    <div class="card card-purple">
+      <div class="tab-decorator"></div>
+      <h2>Cronograma</h2>
+      <div class="card-content">
+        <p><strong>• Cronograma personalizado:</strong></p>
+        <p>Nosso site também oferece geração de cronograma personalizado de estudos de forma equilibrada.</p>
+      </div>
+    </div>
+
+    <div class="card card-yellow">
+      <div class="tab-decorator"></div>
+      <h2>Livros</h2>
+      <div class="card-content">
+        <p>Acesse nossa biblioteca de livros obrigatórios...</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="arrow next" onclick="scrollCarousel(1)">❯</button>
+</div>
+            </section>
     </main>
     
     <script>
@@ -76,6 +111,43 @@ $fotoPerfil = "assets/img/default-user.webp";
                 }
             }
         }
+
+        const container = document.getElementById('carousel');
+const cards = document.querySelectorAll('.card');
+
+function updateActiveCard() {
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+
+    cards.forEach(card => {
+        const cardRect = card.getBoundingClientRect();
+        const cardCenter = cardRect.left + cardRect.width / 2;
+
+        // Se o card estiver no centro do container, ele ganha o foco
+        if (Math.abs(containerCenter - cardCenter) < 100) {
+            card.classList.add('active');
+        } else {
+            card.classList.remove('active');
+        }
+    });
+}
+
+// Ativa a verificação durante a rolagem
+container.addEventListener('scroll', updateActiveCard);
+
+// Garante que o card central comece com foco ao carregar a página
+window.onload = updateActiveCard;
+
+function scrollCarousel(direction) {
+    const step = cards[0].offsetWidth + 30; // Largura do card + margens
+    container.scrollBy({
+        left: direction * step,
+        behavior: 'smooth'
+    });
+    // Pequeno atraso para atualizar o foco após o movimento
+    setTimeout(updateActiveCard, 400);
+}
+
     </script>
     </body>
 </html>

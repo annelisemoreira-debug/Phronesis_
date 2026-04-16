@@ -180,11 +180,8 @@ body {
 /* Grade de Vídeos (CSS Grid) */
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Cria 4 colunas de tamanhos iguais */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 10px;
 }
 
 .video-grid::-webkit-scrollbar {
@@ -201,18 +198,14 @@ body {
 
 /* Os Quadradinhos Roxos */
 .video-card {
-    background-color: #bfa2ff;
-    aspect-ratio: 1 / 1;
+    background-color: #B39DDB; /* Cor roxa da sua representação */
     border-radius: 15px;
-    transition: transform 0.2s;
-    cursor: pointer;
-    max-width: 270px;
-    max-height: auto;
+    padding: 10px;
+    transition: transform 0.3s;
 }
 
 .video-card:hover {
-    transform: scale(1.03);
-    background-color: #a685ff;
+    transform: scale(1.05);
 }
 
 /* Container pai para colocar a galeria e a sidebar lado a lado */
@@ -251,3 +244,4 @@ body {
     overflow-y: auto;
     padding-right: 10px;
 }
+

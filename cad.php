@@ -16,10 +16,11 @@
 session_start();
 
 // --- CONFIGURAÇÃO DE CONEXÃO ---
-// senha para conexão: Home@spSENAI2025!
+// --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
+
 $servername = "localhost";
 $username = "root";
-$password = "Home@spSENAI2025!";
+$password = "";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);

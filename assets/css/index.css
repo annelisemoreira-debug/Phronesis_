@@ -1,12 +1,10 @@
+/* --- MANTEVE SEU CÓDIGO ORIGINAL ATÉ O BANNER --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
 }
 
-/* Fontes */
-/* Header */
 header {
     background-color: #8c52ff;
     padding: 15px 5%;
@@ -14,15 +12,14 @@ header {
     justify-content: space-between;
     align-items: center;
     border-radius: 0 0 15px 15px;
-    flex-wrap: wrap; /* Permite que o menu quebre linha em telas pequenas */
+    flex-wrap: wrap;
 }
 
 body {
     background-color:#bfa2ff;
+    overflow-x: hidden; /* Evita barra de rolagem na página toda */
 }
 
-
-/*Logo Phronesis*/
 .logoMarca {
     width: 60px;
     height: 60px;
@@ -36,8 +33,6 @@ body {
     object-fit: cover;
 }
 
-
-/*Menu*/
 .menu {
     display: flex;
     list-style: none;
@@ -51,7 +46,6 @@ body {
     overflow: hidden;
 }
 
-
 .menu li a {
     text-decoration: none;
     display: block;
@@ -61,7 +55,6 @@ body {
     font-size: 14px;
 }
 
-/* Cores do Menu */
 .menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
 .menu li.materiais { background-color: #8dd4ff; }
 .menu li.livros { background-color: #ffe57e; }
@@ -72,8 +65,106 @@ body {
     color: white;
     transition: 0.3s;
 }
+
 .banner {
-    width: 1400px;
+    width: 90%; /* Ajustado para ser responsivo */
+    max-width: 1200px;
     height: 130px;
     border-radius: 20px;
+    margin: 60px auto 20px auto; /* Centralizado */
+    display: block;
 }
+/* Container que limita a visualização e alinha com o banner */
+.carousel-wrapper {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    display: flex;
+    align-items: center;
+}
+
+/* Área de rolagem dos cards */
+.carousel-container {
+    display: flex;
+    gap: 0; 
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 80px 0; /* Espaço para o card crescer no topo */
+    width: 100%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    align-items: center;
+}
+
+.carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Configuração de Cards Idênticos */
+.card {
+    flex: 0 0 380px; /* Largura fixa */
+    height: 480px;  /* Altura fixa para todos */
+    background-color: #ffffff;
+    border-radius: 40px;
+    padding: 35px;
+    margin: 0 15px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    
+    /* Efeito de Foco Inicial (Menor e mais transparente) */
+    transform: scale(0.85); 
+    opacity: 0.5;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Card em Destaque (Foco Central) */
+.card.active {
+    transform: scale(1.05);
+    opacity: 1;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+/* Decoração das Abas Superiores */
+.tab-decorator {
+    width: 120px;
+    height: 35px;
+    border-radius: 20px;
+    position: absolute;
+    top: -17px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+.card-blue .tab-decorator { background-color: #a5f3fc; border-bottom: 6px solid #8b5cf6; }
+.card-purple .tab-decorator { background-color: #8b5cf6; border-left: 6px solid #fde047; border-right: 6px solid #a5f3fc; }
+.card-yellow .tab-decorator { background-color: #fde047; border-left: 6px solid #8b5cf6; border-right: 6px solid #a5f3fc; }
+
+/* Setas de Navegação */
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: none;
+    color: #8c52ff;
+    font-size: 28px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev { left: -30px; }
+.next { right: -30px; }
