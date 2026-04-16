@@ -1,11 +1,12 @@
-<?php 
-session_start(); 
+<?php
+session_start();
 // Aqui você poderia buscar o caminho da foto no banco de dados se tiver uma coluna para isso.
 // Por enquanto, usaremos uma imagem padrão.
-$fotoPerfil = "assets/img/default-user.webp"; 
+$fotoPerfil = "assets/img/default-user.webp";
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,17 +14,48 @@ $fotoPerfil = "assets/img/default-user.webp";
     <link rel="stylesheet" href="assets/css/index.css">
     <style>
         /* Estilos rápidos para o menu de perfil */
-        .perfil-container { position: flex; cursor: pointer; }
-        .foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; object-fit: cover; }
-        .menu-dropdown { 
-            display: none; position: absolute; right: 0; background: white; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 5px; min-width: 150px; z-index: 100;
+        .perfil-container {
+            position: flex;
+            cursor: pointer;
         }
-        .menu-dropdown a { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
-        .menu-dropdown a:hover { background: #f4f4f4; }
-        .show { display: block; }
+
+        .foto-perfil {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            object-fit: cover;
+        }
+
+        .menu-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            min-width: 150px;
+            z-index: 100;
+        }
+
+        .menu-dropdown a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu-dropdown a:hover {
+            background: #f4f4f4;
+        }
+
+        .show {
+            display: block;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="logoMarca"><img src="assets/img/phronesisIndex.png" alt="Logo oficial da Phronesis"></div>
@@ -32,18 +64,18 @@ $fotoPerfil = "assets/img/default-user.webp";
                 <li class="materiais"><a href="pages/material.php">Materiais</a></li>
                 <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
                 <li class="cronogramas"><a href="pages/planejar.php">Cronogramas</a></li>
-    
-                
+
+
                 <?php if (isset($_SESSION['id'])): ?>
                     <li class="perfil-container" onclick="toggleMenu()">
-                        
+
                         <img src="<?php echo $fotoPerfil; ?>" alt="Perfil" class="foto-perfil">
                         <div id="dropdownPerfil" class="menu-dropdown">
                             <a href="perfil.php">Meu Perfil</a>
                             <a href="configuracoes.php">Configurações</a>
                             <a href="logout.php" style="color: red;">Sair</a>
                         </div>
-                    
+
                     </li>
                 <?php else: ?>
                     <li class="entrar"><a href="login.php">Entrar</a></li>
@@ -53,46 +85,39 @@ $fotoPerfil = "assets/img/default-user.webp";
     </header>
 
     <main>
-           <section class="banner">
-                    <img src="./assets/img/bannerInicio.png" alt="Fundo">
-            </section>
-             <h1> O que oferecemos? </h1>
-             <h3>Conheça nosso serviços e melhore nos estudos!</h3>
-       <div class="carousel-wrapper">
-  <button class="arrow prev" onclick="scrollCarousel(-1)">❮</button>
-  
-  <div class="carousel-container" id="carousel">
-    <div class="card card-blue">
-      <div class="tab-decorator"></div>
+        <section class="banner">
+            <img src="./assets/img/bannerInicio.png" alt="Fundo">
+        </section>
+        <h1> O que oferecemos? </h1>
+        <h3>Conheça nosso serviços e melhore nos estudos!</h3>
+       <div class="carousel-container">
+  <div class="carousel-track">
+    <div class="card active">
+      <div class="top-tab blue"></div>
       <h2>Materiais</h2>
-      <div class="card-content">
-        <p>Conteúdo sobre materiais de estudo aqui...</p>
-      </div>
+      <div class="bottom-tab blue"></div>
     </div>
 
-    <div class="card card-purple">
-      <div class="tab-decorator"></div>
+    <div class="card">
+      <div class="top-tab purple"></div>
       <h2>Cronograma</h2>
-      <div class="card-content">
-        <p><strong>• Cronograma personalizado:</strong></p>
-        <p>Nosso site também oferece geração de cronograma personalizado de estudos de forma equilibrada.</p>
-      </div>
+      <p><b>• Cronograma personalizado:</b> Nosso site oferece...</p>
+      <div class="bottom-tab purple"></div>
     </div>
 
-    <div class="card card-yellow">
-      <div class="tab-decorator"></div>
+    <div class="card">
+      <div class="top-tab yellow"></div>
       <h2>Livros</h2>
-      <div class="card-content">
-        <p>Acesse nossa biblioteca de livros obrigatórios...</p>
-      </div>
+      <div class="bottom-tab yellow"></div>
     </div>
   </div>
 
-  <button class="arrow next" onclick="scrollCarousel(1)">❯</button>
+  <button class="btn prev">❮</button>
+  <button class="btn next">❯</button>
 </div>
-            </section>
+        </section>
     </main>
-    
+
     <script>
         // Função para abrir/fechar o menu ao clicar na foto
         function toggleMenu() {
@@ -111,43 +136,36 @@ $fotoPerfil = "assets/img/default-user.webp";
                 }
             }
         }
+        const track = document.querySelector('.carousel-track');
+        const cards = document.querySelectorAll('.card');
+        const nextBtn = document.querySelector('.next');
+        const prevBtn = document.querySelector('.prev');
 
-        const container = document.getElementById('carousel');
-const cards = document.querySelectorAll('.card');
+        let index = 0;
 
-function updateActiveCard() {
-    const containerRect = container.getBoundingClientRect();
-    const containerCenter = containerRect.left + containerRect.width / 2;
+        function updateCarousel() {
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === index);
+            });
 
-    cards.forEach(card => {
-        const cardRect = card.getBoundingClientRect();
-        const cardCenter = cardRect.left + cardRect.width / 2;
-
-        // Se o card estiver no centro do container, ele ganha o foco
-        if (Math.abs(containerCenter - cardCenter) < 100) {
-            card.classList.add('active');
-        } else {
-            card.classList.remove('active');
+            // Move o track para centralizar o card ativo
+            const moveAmount = index * -220; // Largura do card + margin
+            track.style.transform = `translateX(${moveAmount}px)`;
         }
-    });
-}
 
-// Ativa a verificação durante a rolagem
-container.addEventListener('scroll', updateActiveCard);
+        // Evento de clique
+        nextBtn.addEventListener('click', () => {
+            index = (index + 1) % cards.length;
+            updateCarousel();
+        });
 
-// Garante que o card central comece com foco ao carregar a página
-window.onload = updateActiveCard;
+        prevBtn.addEventListener('click', () => {
+            index = (index - 1 + cards.length) % cards.length;
+            updateCarousel();
+        });
 
-function scrollCarousel(direction) {
-    const step = cards[0].offsetWidth + 30; // Largura do card + margens
-    container.scrollBy({
-        left: direction * step,
-        behavior: 'smooth'
-    });
-    // Pequeno atraso para atualizar o foco após o movimento
-    setTimeout(updateActiveCard, 400);
-}
-
+      
     </script>
-    </body>
+</body>
+
 </html>
