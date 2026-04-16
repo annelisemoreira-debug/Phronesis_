@@ -3,8 +3,8 @@ session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // --- DEFINIÇÃO DO FUSO HORÁRIO PADRÃO DO PHP ---
-// Isso garante que qualquer função de data/hora use Brasília como base.
 date_default_timezone_set('America/Sao_Paulo');
+$hoje = date('Y-m-d'); 
 
 // --- 1. CONEXÃO COM O BANCO DE DADOS ---
 try {
@@ -65,7 +65,8 @@ if (isset($_GET['editar'])) {
     $id_ed = $_GET['editar'];
     if (isset($_SESSION['meus_cronogramas'][$id_ed])) {
         $dados_edicao = $_SESSION['meus_cronogramas'][$id_ed]['params'] ?? null;
-        $id_visualizacao = null; // Esconde o iframe se estiver editando
+        $_SESSION['editando_id'] = $id_ed; // Salva quem estamos editando
+        $id_visualizacao = null; 
     }
 }
 
@@ -127,10 +128,17 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
         $pdo->beginTransaction(); 
         $id_usuario_logado = $_SESSION['id_usuario'] ?? 1;
 
+        // Se for edição, removemos a agenda antiga do Google antes de criar a nova (opcional, mas evita lixo no Google)
+        if (isset($_SESSION['editando_id'])) {
+            $old_id = $_SESSION['editando_id'];
+            $old_calendar_id = $_SESSION['meus_cronogramas'][$old_id]['calendar_id'] ?? null;
+            if ($old_calendar_id && $old_calendar_id !== 'primary') {
+                try { $service->calendars->delete($old_calendar_id); } catch (Exception $e) {}
+            }
+        }
+
         $newCalendar = new Google\Service\Calendar\Calendar();
         $newCalendar->setSummary('Phronesis: ' . $_SESSION['ultimo_nome']);
-        
-        // CORREÇÃO NO GOOGLE: Definindo explicitamente o timezone da nova agenda
         $newCalendar->setTimeZone('America/Sao_Paulo');
         
         $createdCalendar = $service->calendars->insert($newCalendar);
@@ -143,7 +151,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
         foreach ($_SESSION['temp_cronograma'] as $evento) {
             $event = new Google\Service\Calendar\Event([
                 'summary' => 'Estudo: ' . $evento['materia'],
-                // CORREÇÃO NOS EVENTOS: Usando o timezone correto para os horários de início e fim
                 'start' => ['dateTime' => $evento['inicio_iso'], 'timeZone' => 'America/Sao_Paulo'],
                 'end'   => ['dateTime' => $evento['fim_iso'], 'timeZone' => 'America/Sao_Paulo'],
             ]);
@@ -155,15 +162,25 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
         $pdo->commit();
 
-        // CORREÇÃO NO HISTÓRICO: date() agora usará o timezone de Brasília definido no topo
-        $_SESSION['meus_cronogramas'][] = [
+        $novo_dado = [
             'titulo' => $_SESSION['ultimo_nome'], 
             'data' => date('d/m/Y H:i'), 
             'calendar_id' => $newCalendarId,
             'params' => $_SESSION['temp_params']
         ];
+
+        // CORREÇÃO: Verifica se deve substituir ou adicionar
+        if (isset($_SESSION['editando_id'])) {
+            $idx = $_SESSION['editando_id'];
+            $_SESSION['meus_cronogramas'][$idx] = $novo_dado;
+            unset($_SESSION['editando_id']);
+        } else {
+            $_SESSION['meus_cronogramas'][] = $novo_dado;
+            $idx = count($_SESSION['meus_cronogramas']) - 1;
+        }
+
         unset($_SESSION['temp_cronograma'], $_SESSION['temp_params']);
-        header('Location: cronograma.php?ver=' . (count($_SESSION['meus_cronogramas']) - 1));
+        header('Location: cronograma.php?ver=' . $idx);
         exit;
     } catch (Exception $e) { 
         if ($pdo->inTransaction()) $pdo->rollBack();
@@ -247,11 +264,11 @@ if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visuali
                 </div>
                 <div>
                     <label>Data Início:</label>
-                    <input type="date" name="data_inicio" value="<?= $dados_edicao['data_inicio'] ?? '' ?>" required>
+                    <input type="date" name="data_inicio" min="<?= $hoje ?>" value="<?= $dados_edicao['data_inicio'] ?? $hoje ?>" required>
                 </div>
                 <div>
                     <label>Data Fim:</label>
-                    <input type="date" name="data_fim" value="<?= $dados_edicao['data_fim'] ?? '' ?>" required>
+                    <input type="date" name="data_fim" min="<?= $hoje ?>" value="<?= $dados_edicao['data_fim'] ?? '' ?>" required>
                 </div>
                 <div class="full-width">
                     <label>Dias da Semana:</label>
