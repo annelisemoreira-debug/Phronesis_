@@ -1,7 +1,9 @@
 <?php
 // Conexão com o banco (ajuste host, dbname, user e pass)
+// --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
+
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=phronesis", "root", "Home@spSENAI2025!");
+    $pdo = new PDO("mysql:host=localhost;dbname=phronesis", "root", "");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) { die("Erro: " . $e->getMessage()); }
 

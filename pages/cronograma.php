@@ -7,8 +7,10 @@ date_default_timezone_set('America/Sao_Paulo');
 $hoje = date('Y-m-d'); 
 
 // --- 1. CONEXÃO COM O BANCO DE DADOS ---
+// --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
+
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=phronesis;charset=utf8", "root", "Home@spSENAI2025!");
+    $pdo = new PDO("mysql:host=localhost;dbname=phronesis;charset=utf8", "root", "");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) { 
     die("Erro banco: " . $e->getMessage()); 

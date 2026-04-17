@@ -245,3 +245,82 @@ body {
     padding-right: 10px;
 }
 
+
+
+:root {
+            --primary-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-main: #6837af;
+            /* Cores dos Vestibulares */
+            --color-enem: #f1c40f;
+            --color-fuvest: #e74c3c;
+            --color-unicamp: #2ecc71;
+            --color-unesp: #9b59b6;
+            --color-uerj: #3498db;
+            --color-ita: #cf17e7;
+        }
+
+        .exam-widget {
+            background-color: var(--primary-bg);
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 320px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .widget-title {
+            color: var(--text-main);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .exam-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 5px solid #ccc;
+            transition: transform 0.2s ease;
+        }
+
+        .exam-card:hover { transform: translateX(5px); }
+
+        /* Cores Dinâmicas */
+        .enem { border-left-color: var(--color-enem); }
+        .fuvest { border-left-color: var(--color-fuvest); }
+        .unicamp { border-left-color: var(--color-unicamp); }
+        .unesp { border-left-color: var(--color-unesp); }
+        .uerj { border-left-color: var(--color-uerj); }
+        .ita { border-left-color: var(--color-ita); }
+
+        .exam-info { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .exam-name { color: var(--text-main); font-weight: bold; font-size: 0.85rem; }
+        .exam-status { color: ##6837af; font-size: 0.7rem; }
+
+        .countdown-clock {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+
+        /* Cores dos Timers */
+        .enem .countdown-clock { color: var(--color-enem); }
+        .fuvest .countdown-clock { color: var(--color-fuvest); }
+        .unicamp .countdown-clock { color: var(--color-unicamp); }
+        .unesp .countdown-clock { color: var(--color-unesp); }
+        .uerj .countdown-clock { color: var(--color-uerj); }
+        .ita .countdown-clock { color: var(--color-ita); }
+
+        .progress-bar { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+        .progress-fill { height: 100%; border-radius: 2px; }
+        .enem .progress-fill { background: var(--color-enem); }
+        .fuvest .progress-fill { background: var(--color-fuvest); }
+        .unicamp .progress-fill { background: var(--color-unicamp); }
+        .unesp .progress-fill { background: var(--color-unesp); }
+        .uerj .progress-fill { background: var(--color-uerj); }
+        .ita .progress-fill { background: var(--color-ita); }
