@@ -274,8 +274,8 @@ body {
     height: 30px;
     border-radius: 50%;
     border: none;
-    background-color: #f0f0f0; /* Cinza claro/branco */
-    color: #333; /* Cor do X */
+    background-color: #8654f3; /* Cinza claro/branco */
+    color: #ffffff; /* Cor do X */
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
@@ -287,7 +287,7 @@ body {
 }
 
 .close-button:hover {
-    background-color: #e0e0e0;
+    background-color: #47b1f2;
 }
 
 /* Garante que o conteúdo do modal não sobreponha o botão */
