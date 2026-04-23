@@ -10,7 +10,7 @@ $hoje = date('Y-m-d');
 // --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
 
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=phronesis;charset=utf8", "root", "");
+    $pdo = new PDO("mysql:host=localhost;dbname=phronesis;charset=utf8", "root", "Home@spSENAI2025!");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) { 
     die("Erro banco: " . $e->getMessage()); 

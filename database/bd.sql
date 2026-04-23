@@ -196,7 +196,6 @@ CREATE TABLE cronograma_item (
     google_event_id VARCHAR(255),
     data_estudo DATETIME NOT NULL,
     data_fim DATETIME NOT NULL,
-    status_estudo VARCHAR(50) DEFAULT 'pendente',
 
     -- Se o cronograma pai for apagado, os itens somem.
     FOREIGN KEY (id_cronograma) REFERENCES cronograma(id_cronograma) ON DELETE CASCADE,

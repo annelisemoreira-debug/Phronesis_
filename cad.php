@@ -20,7 +20,7 @@ session_start();
 
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "Home@spSENAI2025!";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
