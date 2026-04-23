@@ -271,7 +271,7 @@ body {
 
         .widget-title {
             color: var(--text-main);
-            margin-bottom: 20px;
+            margin-bottom: 50px;
             font-size: 1.2rem;
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -299,7 +299,7 @@ body {
 
         .exam-info { display: flex; justify-content: space-between; margin-bottom: 5px; }
         .exam-name { color: var(--text-main); font-weight: bold; font-size: 0.85rem; }
-        .exam-status { color: ##6837af; font-size: 0.7rem; }
+        .exam-status { color: #6837af; font-size: 0.7rem; }
 
         .countdown-clock {
             font-family: 'Courier New', Courier, monospace;
