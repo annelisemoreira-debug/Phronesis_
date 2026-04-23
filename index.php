@@ -90,31 +90,50 @@ $fotoPerfil = "assets/img/default-user.webp";
         </section>
         <h1> O que oferecemos? </h1>
         <h3>Conheça nosso serviços e melhore nos estudos!</h3>
-       <div class="carousel-container">
-  <div class="carousel-track">
-    <div class="card active">
-      <div class="top-tab blue"></div>
-      <h2>Materiais</h2>
-      <div class="bottom-tab blue"></div>
-    </div>
+        <div class="carousel-container">
+            <button class="btn prev">❮</button>
 
-    <div class="card">
-      <div class="top-tab purple"></div>
-      <h2>Cronograma</h2>
-      <p><b>• Cronograma personalizado:</b> Nosso site oferece...</p>
-      <div class="bottom-tab purple"></div>
-    </div>
+            <div class="carousel-track">
+                <div class="card blue-theme">
+                    <div class="top-tabs-container">
+                        <div class="tab blue"></div>
+                        <div class="tab yellow"></div>
+                        <div class="tab purple"></div>
+                    </div>
+                    <h2>Materiais</h2>
+                    <p><b>• Videoaulas:</b><br>
+                        Aulas em vídeo organizadas por disciplina, que permitem estudar no próprio ritmo, com teoria, prática e exercícios. Nosso site contém videoaulas ministradas por excelentes professores, com conteúdos planejados especialmente para os vestibulares das melhores universidades do país.</p>
+                    <div class="bottom-tab"></div>
+                </div>
 
-    <div class="card">
-      <div class="top-tab yellow"></div>
-      <h2>Livros</h2>
-      <div class="bottom-tab yellow"></div>
-    </div>
-  </div>
+                <div class="card purple-theme">
+                    <div class="top-tabs-container">
+                        <div class="tab purple"></div>
+                        <div class="tab blue"></div>
+                        <div class="tab yellow"></div>
+                    </div>
+                    <h2>Cronograma</h2>
+                    <p><b>• Cronograma personalizado:</b><br>
+                        Nosso site também oferece geração de cronograma personalizado de estudos.
+                        O aluno informa seus objetivos, o vestibular que deseja prestar e o tempo disponível para estudar, e a plataforma organiza automaticamente um plano estratégico, distribuindo disciplinas, revisões, exercícios e leituras obrigatórias de forma equilibrada.</p>
+                    <div class="bottom-tab"></div>
+                </div>
 
-  <button class="btn prev">❮</button>
-  <button class="btn next">❯</button>
-</div>
+                <div class="card yellow-theme">
+                    <div class="top-tabs-container">
+                        <div class="tab yellow"></div>
+                        <div class="tab purple"></div>
+                        <div class="tab blue"></div>
+                    </div>
+                    <h2>Livros</h2>
+                    <p><b>• Leituras obrigatórias:</b><br>
+                        Nosso site também contém materiais completos sobre as leituras obrigatórias dos principais vestibulares do país, com resumos, análises, contexto histórico, características literárias e possíveis temas de prova.</p>
+                    <div class="bottom-tab"></div>
+                </div>
+            </div>
+
+            <button class="btn next">❯</button>
+        </div>
         </section>
     </main>
 
@@ -137,34 +156,29 @@ $fotoPerfil = "assets/img/default-user.webp";
             }
         }
         const track = document.querySelector('.carousel-track');
-        const cards = document.querySelectorAll('.card');
         const nextBtn = document.querySelector('.next');
         const prevBtn = document.querySelector('.prev');
 
-        let index = 0;
-
-        function updateCarousel() {
-            cards.forEach((card, i) => {
-                card.classList.toggle('active', i === index);
-            });
-
-            // Move o track para centralizar o card ativo
-            const moveAmount = index * -220; // Largura do card + margin
-            track.style.transform = `translateX(${moveAmount}px)`;
+        // Função para mover para o próximo
+        function moveNext() {
+            const cards = document.querySelectorAll('.card');
+            // Pegamos o primeiro card e colocamos DEPOIS do último
+            track.appendChild(cards[0]);
         }
 
-        // Evento de clique
-        nextBtn.addEventListener('click', () => {
-            index = (index + 1) % cards.length;
-            updateCarousel();
-        });
+        // Função para mover para o anterior
+        function movePrev() {
+            const cards = document.querySelectorAll('.card');
+            // Pegamos o último card e colocamos ANTES do primeiro
+            track.insertBefore(cards[cards.length - 1], cards[0]);
+        }
 
-        prevBtn.addEventListener('click', () => {
-            index = (index - 1 + cards.length) % cards.length;
-            updateCarousel();
-        });
+        // Eventos de clique
+        nextBtn.addEventListener('click', moveNext);
+        prevBtn.addEventListener('click', movePrev);
 
-      
+        // Inicialização: Se você tiver apenas 3 cards, 
+        // o CSS :nth-child(2) já vai focar no do meio automaticamente.
     </script>
 </body>
 
