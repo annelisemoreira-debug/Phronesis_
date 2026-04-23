@@ -2,13 +2,10 @@
 session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// --- DEFINIÇÃO DO FUSO HORÁRIO PADRÃO DO PHP ---
 date_default_timezone_set('America/Sao_Paulo');
 $hoje = date('Y-m-d'); 
 
-// --- 1. CONEXÃO COM O BANCO DE DADOS ---
-// --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
-
+// 1. CONEXÃO COM O BANCO
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=phronesis;charset=utf8", "root", "Home@spSENAI2025!");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -16,7 +13,7 @@ try {
     die("Erro banco: " . $e->getMessage()); 
 }
 
-// --- 2. BUSCA DE MATÉRIAS ---
+// Busca matérias para o formulário
 $sql = "SELECT id_materia, nome_materia FROM materia ORDER BY nome_materia ASC";
 $consulta = $pdo->query($sql);
 $lista_materias_db = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -25,9 +22,9 @@ if (!isset($_SESSION['meus_cronogramas'])) {
     $_SESSION['meus_cronogramas'] = [];
 }
 
-// --- 3. LOGICA DE ACESSO E GOOGLE CLIENT ---
+// Logout e Limpeza
 if (isset($_GET['logout'])) {
-    unset($_SESSION['upload_token'], $_SESSION['form_data'], $_SESSION['temp_cronograma'], $_SESSION['temp_params'], $_SESSION['editando_id']);
+    unset($_SESSION['upload_token'], $_SESSION['temp_cronograma'], $_SESSION['editando_id']);
     header('Location: meu_calendario.php');
     exit;
 }
@@ -37,6 +34,7 @@ if (!isset($_SESSION['upload_token'])) {
     exit;
 }
 
+// Configuração Google
 $client = new Google\Client();
 $client->setAuthConfig('../credentials.json');
 $client->setAccessToken($_SESSION['upload_token']);
@@ -46,35 +44,47 @@ $msg_feedback = "";
 $id_visualizacao = $_GET['ver'] ?? null;
 $mostrar_modal = false;
 
-// --- 4. EXCLUSÃO ---
+// Variável para exibir o iframe
+$calendar_id_exibir = null;
+if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visualizacao])) {
+    $calendar_id_exibir = $_SESSION['meus_cronogramas'][$id_visualizacao]['calendar_id'];
+}
+
+// --- 2. EXCLUSÃO ---
 if (isset($_GET['deletar_salvo'])) {
     $id = $_GET['deletar_salvo'];
     if (isset($_SESSION['meus_cronogramas'][$id])) {
         $calendarId = $_SESSION['meus_cronogramas'][$id]['calendar_id'] ?? null;
         try {
-            if ($calendarId && $calendarId !== 'primary') $service->calendars->delete($calendarId);
-            $msg_feedback = "🗑️ Cronograma removido!";
-        } catch (Exception $e) { $msg_feedback = "⚠️ Erro ao remover agenda."; }
+            if ($calendarId && $calendarId !== 'primary') {
+                $service->calendars->delete($calendarId);
+            }
+            $stmtDel = $pdo->prepare("DELETE FROM `cronograma` WHERE `google_calendar_id` = ?");
+            $stmtDel->execute([$calendarId]);
+            $msg_feedback = "🗑️ Cronograma removido com sucesso!";
+        } catch (Exception $e) { 
+            $msg_feedback = "⚠️ Erro ao remover: " . $e->getMessage(); 
+        }
         unset($_SESSION['meus_cronogramas'][$id]);
     }
     header('Location: cronograma.php?msg=' . urlencode($msg_feedback));
     exit;
 }
 
-// --- 4.5. LÓGICA DE RECUPERAÇÃO DE DADOS PARA EDIÇÃO ---
+// Prepara edição
 $dados_edicao = null;
 if (isset($_GET['editar'])) {
     $id_ed = $_GET['editar'];
     if (isset($_SESSION['meus_cronogramas'][$id_ed])) {
         $dados_edicao = $_SESSION['meus_cronogramas'][$id_ed]['params'] ?? null;
-        $_SESSION['editando_id'] = $id_ed; // Salva quem estamos editando
+        $_SESSION['editando_id'] = $id_ed; // Guarda o índice que estamos editando
         $id_visualizacao = null; 
     }
 }
 
 if (isset($_GET['msg'])) $msg_feedback = $_GET['msg'];
 
-// --- 5. LÓGICA: GERAR CRONOGRAMA ---
+// --- 3. GERAÇÃO TEMPORÁRIA ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     $data_inicio = new DateTime($_POST['data_inicio']);
     $data_fim = new DateTime($_POST['data_fim']);
@@ -84,10 +94,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     if (empty($materias_selecionadas)) {
         $msg_feedback = "❌ Erro: Selecione ao menos uma matéria.";
     } elseif ($data_fim < $data_inicio) {
-        $msg_feedback = "❌ Erro: Data final inválida.";
+        $msg_feedback = "❌ Erro: Data final não pode ser menor que a inicial.";
     } else {
-        $_SESSION['ultimo_nome'] = !empty($_POST['nome_cronograma']) ? $_POST['nome_cronograma'] : ("Plano de Estudos - " . date('d/m'));
-
+        $_SESSION['ultimo_nome'] = !empty($_POST['nome_cronograma']) ? $_POST['nome_cronograma'] : "Plano de Estudos";
         $nomes_map = [];
         foreach($lista_materias_db as $mat) {
             if(in_array($mat['id_materia'], $materias_selecionadas)) {
@@ -105,9 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
                 $inicio_sessao = new DateTime($data_atual->format('Y-m-d') . ' ' . $_POST['hora_inicio']);
                 $fim_sessao = clone $inicio_sessao;
                 $fim_sessao->modify('+' . $_POST['horas_estudo'] . ' hours');
-
                 $id_da_vez = $materias_selecionadas[$materia_index % count($materias_selecionadas)];
-
                 $cronograma_gerado[] = [
                     'id_materia' => $id_da_vez,
                     'materia' => $nomes_map[$id_da_vez],
@@ -124,78 +131,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     }
 }
 
-// --- 6. LÓGICA: SINCRONIZAR ---
+// --- 4. SALVAR (CORREÇÃO DA DUPLICAÇÃO) ---
 if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     try {
         $pdo->beginTransaction(); 
         $id_usuario_logado = $_SESSION['id_usuario'] ?? 1;
+        $calendarIdParaUso = null;
+        $id_cronograma_existente = null;
 
-        // Se for edição, removemos a agenda antiga do Google antes de criar a nova (opcional, mas evita lixo no Google)
+        // VERIFICA SE ESTAMOS EDITANDO ALGO QUE JÁ EXISTE
         if (isset($_SESSION['editando_id'])) {
-            $old_id = $_SESSION['editando_id'];
-            $old_calendar_id = $_SESSION['meus_cronogramas'][$old_id]['calendar_id'] ?? null;
-            if ($old_calendar_id && $old_calendar_id !== 'primary') {
-                try { $service->calendars->delete($old_calendar_id); } catch (Exception $e) {}
-            }
+            $idx = $_SESSION['editando_id'];
+            $calendarIdParaUso = $_SESSION['meus_cronogramas'][$idx]['calendar_id'] ?? null;
+            
+            // Busca o ID primário no banco para este calendário
+            $stmt = $pdo->prepare("SELECT id_cronograma FROM cronograma WHERE google_calendar_id = ?");
+            $stmt->execute([$calendarIdParaUso]);
+            $id_cronograma_existente = $stmt->fetchColumn();
         }
 
-        $newCalendar = new Google\Service\Calendar\Calendar();
-        $newCalendar->setSummary('Phronesis: ' . $_SESSION['ultimo_nome']);
-        $newCalendar->setTimeZone('America/Sao_Paulo');
-        
-        $createdCalendar = $service->calendars->insert($newCalendar);
-        $newCalendarId = $createdCalendar->getId();
+        if ($id_cronograma_existente) {
+            // É UPDATE: Atualiza o título e limpa os itens antigos (evita duplicar itens)
+            $stmtUpd = $pdo->prepare("UPDATE `cronograma` SET `titulo_cronograma` = ? WHERE `id_cronograma` = ?");
+            $stmtUpd->execute([$_SESSION['ultimo_nome'], $id_cronograma_existente]);
+            
+            $pdo->prepare("DELETE FROM `cronograma_item` WHERE `id_cronograma` = ?")->execute([$id_cronograma_existente]);
+            $id_cronograma_db = $id_cronograma_existente;
 
-        $stmtCrono = $pdo->prepare("INSERT INTO cronograma (id_usuario, titulo_cronograma, google_calendar_id) VALUES (?, ?, ?)");
-        $stmtCrono->execute([$id_usuario_logado, $_SESSION['ultimo_nome'], $newCalendarId]);
-        $id_novo_cronograma = $pdo->lastInsertId();
+            // Limpa eventos antigos do Google Calendar
+            try {
+                $events = $service->events->listEvents($calendarIdParaUso);
+                foreach ($events->getItems() as $event) { $service->events->delete($calendarIdParaUso, $event->getId()); }
+            } catch (Exception $e) {}
 
+        } else {
+            // É NOVO: Cria novo calendário e faz INSERT
+            $newCalendar = new Google\Service\Calendar\Calendar();
+            $newCalendar->setSummary('Phronesis: ' . $_SESSION['ultimo_nome']);
+            $newCalendar->setTimeZone('America/Sao_Paulo');
+            $createdCalendar = $service->calendars->insert($newCalendar);
+            $calendarIdParaUso = $createdCalendar->getId();
+
+            $stmtCrono = $pdo->prepare("INSERT INTO `cronograma` (`id_usuario`, `titulo_cronograma`, `google_calendar_id`) VALUES (?, ?, ?)");
+            $stmtCrono->execute([$id_usuario_logado, $_SESSION['ultimo_nome'], $calendarIdParaUso]);
+            $id_cronograma_db = $pdo->lastInsertId();
+        }
+
+        // Insere os itens (Novos ou regerados da edição)
         foreach ($_SESSION['temp_cronograma'] as $evento) {
             $event = new Google\Service\Calendar\Event([
                 'summary' => 'Estudo: ' . $evento['materia'],
                 'start' => ['dateTime' => $evento['inicio_iso'], 'timeZone' => 'America/Sao_Paulo'],
                 'end'   => ['dateTime' => $evento['fim_iso'], 'timeZone' => 'America/Sao_Paulo'],
             ]);
-            $google_event = $service->events->insert($newCalendarId, $event);
+            $google_event = $service->events->insert($calendarIdParaUso, $event);
 
-            $stmtItem = $pdo->prepare("INSERT INTO cronograma_item (id_cronograma, id_materia, google_event_id, data_estudo, data_fim) VALUES (?, ?, ?, ?, ?)");
-            $stmtItem->execute([$id_novo_cronograma, $evento['id_materia'], $google_event->getId(), str_replace('T', ' ', $evento['inicio_iso']), str_replace('T', ' ', $evento['fim_iso'])]);
+            $stmtItem = $pdo->prepare("INSERT INTO `cronograma_item` (`id_cronograma`, `id_materia`, `google_event_id`, `data_estudo`, `data_fim`) VALUES (?, ?, ?, ?, ?)");
+            $stmtItem->execute([
+                $id_cronograma_db, 
+                $evento['id_materia'], 
+                $google_event->getId(), 
+                str_replace('T', ' ', $evento['inicio_iso']), 
+                str_replace('T', ' ', $evento['fim_iso'])
+            ]);
         }
 
         $pdo->commit();
 
+        // Atualiza a Sessão para o histórico lateral refletir a mudança
         $novo_dado = [
             'titulo' => $_SESSION['ultimo_nome'], 
             'data' => date('d/m/Y H:i'), 
-            'calendar_id' => $newCalendarId,
+            'calendar_id' => $calendarIdParaUso,
             'params' => $_SESSION['temp_params']
         ];
 
-        // CORREÇÃO: Verifica se deve substituir ou adicionar
         if (isset($_SESSION['editando_id'])) {
-            $idx = $_SESSION['editando_id'];
-            $_SESSION['meus_cronogramas'][$idx] = $novo_dado;
+            $_SESSION['meus_cronogramas'][$_SESSION['editando_id']] = $novo_dado;
+            $idx_final = $_SESSION['editando_id'];
             unset($_SESSION['editando_id']);
         } else {
             $_SESSION['meus_cronogramas'][] = $novo_dado;
-            $idx = count($_SESSION['meus_cronogramas']) - 1;
+            $idx_final = count($_SESSION['meus_cronogramas']) - 1;
         }
 
         unset($_SESSION['temp_cronograma'], $_SESSION['temp_params']);
-        header('Location: cronograma.php?ver=' . $idx);
+        header('Location: cronograma.php?ver=' . $idx_final . '&msg=' . urlencode("✅ Cronograma salvo com sucesso!"));
         exit;
     } catch (Exception $e) { 
         if ($pdo->inTransaction()) $pdo->rollBack();
-        $msg_feedback = "❌ Erro ao sincronizar: " . $e->getMessage(); 
+        $msg_feedback = "❌ Erro: " . $e->getMessage(); 
     }
 }
-
-$calendar_id_exibir = null;
-if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visualizacao])) {
-    $calendar_id_exibir = $_SESSION['meus_cronogramas'][$id_visualizacao]['calendar_id'] ?? null;
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -214,12 +242,11 @@ if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visuali
         .list-container { border: 1px solid #ddd; border-radius: 8px; max-height: 200px; overflow-y: auto; background: #fff; margin-top: 5px; }
         .row-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #f0f0f0; }
         .row-item:last-child { border-bottom: none; }
-        .row-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
         .btn-gen { background: #4285F4; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-sync { background: #34a853; color: white; border: none; font-weight: bold; cursor: pointer; padding: 15px; }
         .cronograma-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 10px; position: relative; border-left: 4px solid #4285F4; }
         .cronograma-actions { position: absolute; right: 10px; top: 12px; display: flex; gap: 10px; }
-        .btn-action { text-decoration: none; font-weight: bold; font-size: 16px; }
+        .btn-action { text-decoration: none; font-size: 16px; }
         .btn-del { color: #ea4335; }
         .btn-edit { color: #4285F4; }
         .calendar-embed { width: 100%; height: 600px; border: none; margin-top: 20px; border-radius: 8px; }
@@ -282,7 +309,7 @@ if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visuali
                             <label class="row-item">
                                 <span><?=$n?></span>
                                 <input type="checkbox" name="dias_semana[]" value="<?=$v?>" 
-                                       <?= in_array($v, $selecionados) ? 'checked' : '' ?>>
+                                       <?= in_array($v, $selecionados) ? 'checked' : '' ?> style="width:20px;">
                             </label>
                         <?php endforeach; ?>
                     </div>
@@ -304,13 +331,13 @@ if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visuali
                             <label class="row-item">
                                 <span><?= htmlspecialchars($m['nome_materia']) ?></span>
                                 <input type="checkbox" name="materias_id[]" value="<?= $m['id_materia'] ?>"
-                                       <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?>>
+                                       <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?> style="width:20px;">
                             </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
                 <button type="submit" name="gerar" class="btn-gen full-width">
-                    <?= isset($_GET['editar']) ? 'Regerar e Salvar Alterações' : 'Gerar e Visualizar' ?>
+                    <?= isset($_GET['editar']) ? 'Regerar e Atualizar' : 'Gerar Cronograma' ?>
                 </button>
             </form>
         <?php endif; ?>
@@ -318,6 +345,9 @@ if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visuali
 
     <div class="sidebar">
         <h3>Histórico</h3>
+        <?php if(empty($_SESSION['meus_cronogramas'])): ?>
+            <p style="font-size:12px; color:#777;">Nenhum cronograma salvo.</p>
+        <?php endif; ?>
         <?php foreach ($_SESSION['meus_cronogramas'] as $id => $cron): ?>
             <div class="cronograma-item">
                 <a href="?ver=<?= $id ?>" style="text-decoration:none; color:inherit; display:block; padding-right:45px;">
@@ -326,11 +356,12 @@ if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visuali
                 </a>
                 <div class="cronograma-actions">
                     <a href="?editar=<?= $id ?>" class="btn-action btn-edit" title="Editar">📝</a>
-                    <a href="?deletar_salvo=<?= $id ?>" class="btn-action btn-del" onclick="return confirm('Excluir?')">×</a>
+                    <a href="?deletar_salvo=<?= $id ?>" class="btn-action btn-del" onclick="return confirm('Tem certeza que deseja excluir do banco e da agenda?')">×</a>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
 </div>
+
 </body>
 </html>

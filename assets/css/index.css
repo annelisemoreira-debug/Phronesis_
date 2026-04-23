@@ -71,7 +71,8 @@ body {
     max-width: 1200px;
     height: 130px;
     border-radius: 20px;
-    margin: 60px auto 20px auto; /* Centralizado */
+    margin: 30px 20px 15px 20px;
+    align-self: center;
     display: block;
 }
 
@@ -80,71 +81,131 @@ h1, h3 {
       color: #4b0082;
        margin-top: 10px; }
 
+/* Container principal ajustado para dar espaço às setas nas laterais */
 .carousel-container {
-  position: relative;
-  width: 100%; /* Ou a largura que você desejar para a área dos cards */
-  max-width: 1000px; /* Evita que ele espalhe demais */
-  margin: 0 auto;
-  overflow: hidden; /* ESSENCIAL: Isso corta o que estiver fora da área central */
-  padding: 50px 0; /* Dá espaço para o card que cresce não cortar no topo */
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    margin: 50px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.carousel-track {
-  display: flex;
-  justify-content: center; /* Tenta manter o alinhamento inicial */
-  align-items: center;
-  transition: transform 0.6s ease-in-out;
-  will-change: transform; /* Melhora a performance da animação */
-}
+/* Estilo base dos cards (Laterais - mais estreitos) */
 .card {
-  min-width: 300px;
-  height: 450px;
-  background: white;
-  margin: 0 20px;
-  border-radius: 30px; /* Bordas bem redondas como na foto */
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
-  transition: all 0.5s ease;
-  transform: scale(0.85); /* Card lateral menor */
-  opacity: 0.9;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    /* Defina a largura que ele deve ter quando estiver na lateral */
+    width: 280px; 
+    min-width: 280px; 
+    height: 450px;
+    
+    background: white;
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    
+    /* Opacidade e escala menores para as laterais */
+    opacity: 0.5;
+  transform: scale(0.8) rotateY(15deg); /* Leve inclinação 3D */
+    filter: blur(1px);
+    
+    /* Transição suave para todas as propriedades, inclusive largura */
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    overflow: hidden; /* Importante para o texto não vazar quando o card encolher */
 }
 
-.card.active {
-  transform: scale(1.1); /* Card central maior */
-  opacity: 1;
-  z-index: 2;
+/* Card central (Largo e em destaque) */
+.card:nth-child(2) {
+    /* A largura total que você quer no centro */
+    width: 400px; 
+    min-width: 400px; 
+    
+    opacity: 1;
+    transform: scale(1.05); /* Um leve aumento de altura para destacar */
+    filter: blur(0);
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
 
-/* Abas coloridas (Top e Bottom) */
-.top-tab, .bottom-tab {
-  width: 150px;
-  height: 40px;
-  position: absolute;
-  border-radius: 20px;
+/* Ajuste do Track para não dar tranco no movimento */
+.carousel-track {
+    display: flex;
+    gap: 10px; 
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    /* Isso garante que o track se ajuste conforme os cards mudam de tamanho */
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.top-tab { top: -15px; }
-.bottom-tab { bottom: 0; width: 100%; border-radius: 0 0 30px 30px; height: 30px; }
+/* Títulos e Textos */
+.card h2 {
+    font-family: sans-serif;
+    color: #002b4e;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
 
-/* Cores das abas */
-.blue { background-color: #90DFFF; }
-.purple { background-color: #8B4DFF; }
-.yellow { background-color: #FCE686; }
+.card p {
+    color: #333;
+    line-height: 1.5;
+    text-align: left;
+    font-size: 0.95rem;
+}
 
-/* Setas brancas */
+/* --- AS ABAS (ESTILO FICHÁRIO) --- */
+.top-tabs-container {
+    position: absolute;
+    top: -20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Criando o efeito de abas sobrepostas */
+.tab {
+    width: 80px;
+    height: 35px;
+    border-radius: 15px 15px 0 0;
+    margin: 0 -10px; /* Sobreposição das abas */
+}
+
+.tab.blue { background-color: #90DFFF; z-index: 3; }
+.tab.yellow { background-color: #FCE686; z-index: 2; }
+.tab.purple { background-color: #8B4DFF; z-index: 1; }
+
+/* Aba inferior */
+.bottom-tab {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 25px;
+    border-radius: 0 0 25px 25px;
+}
+
+/* Cores das abas de baixo */
+.card.blue-theme .bottom-tab { background-color: #90DFFF; }
+.card.purple-theme .bottom-tab { background-color: #8B4DFF; }
+.card.yellow-theme .bottom-tab { background-color: #FCE686; }
+
+/* Setas brancas e grandes */
 .btn {
-  position: absolute;
-  top: 50%;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 3rem;
-  cursor: pointer;
-  z-index: 10;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 4rem;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    transition: 0.3s;
 }
-.prev { left: 10px; }
-.next { right: 10px; }
+.btn:hover { transform: translateY(-50%) scale(1.2); }
+.prev { left: -60px; }
+.next { right: -60px; }
