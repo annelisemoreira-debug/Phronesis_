@@ -342,6 +342,16 @@ try {
 
     </div>
 
-</body>
+    <script>
+        document.querySelectorAll('.menuSidebar nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                // Remove de outros (caso o clique falhe ou demore)
+                document.querySelectorAll('.menuSidebar nav a').forEach(l => l.classList.remove('loading'));
+                // Adiciona a animação no link clicado
+                this.classList.add('loading');
+            });
+        });
+    </script>
 
+</body>
 </html>
