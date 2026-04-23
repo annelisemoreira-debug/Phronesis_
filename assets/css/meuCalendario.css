@@ -1,0 +1,99 @@
+/*Reset e Base*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Importando uma fonte mais moderna e limpa */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/*Imagem de fundo*/
+.bg-html {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 80%;
+}
+
+body {
+    background-color: #fb9905;
+    font-family: 'Inter', sans-serif; /* Troquei Arial por Inter */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95); /* Leve transparência para estilo */
+    padding: 50px 40px; /* Mais espaço interno */
+    max-width: 550px;
+    border-radius: 20px; /* Bordas mais arredondadas (moderno) */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2); /* Sombra mais suave e profunda */
+    text-align: center;
+}
+
+.login-card h2 {
+    font-size: 32px;
+    color: #001a8b;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.login-card p {
+    font-size: 16px;
+    line-height: 1.6; /* Melhor leitura */
+    color: #444;
+    margin-bottom: 20px;
+}
+
+/* Cores do Google no texto */
+.google-brand {
+    font-weight: bold;
+    background: linear-gradient(to right, #EA4335, #FBBC05, #34A853, #4285F4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Botão Estilizado */
+.btn-google {
+    display: inline-block;
+    background-color: #001a8b; /* Azul escuro da logo */
+    color: white;
+    padding: 14px 40px;
+    text-decoration: none;
+    border-radius: 25px; /* Arredondado como o botão do login */
+    font-weight: bold;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+}
+
+.btn-google:hover {
+    background-color: #031768;
+    transform: scale(1.05);
+}
+
+.footer-link {
+    margin-top: 30px;
+}
+
+.footer-link a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid transparent;
+    transition: 0.3s;
+}
+
+.footer-link a:hover {
+    color: #001a8b;
+    border-bottom: 1px solid #001a8b;
+}

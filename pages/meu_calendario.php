@@ -32,20 +32,26 @@ $authUrl = $client->createAuthUrl();
 <head>
     <meta charset="UTF-8">
     <title>Login - Cronograma</title>
-    <style>
-        body { font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; }
-        .login-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        .btn-google { background: #4285F4; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="../assets/css/meuCalendario.css">
+
 </head>
 <body>
+    <img src="../assets/img/fundoAmarelo01.png" class="bg-html" alt="Fundo">
+
     <div class="login-card">
-        <h2>Phronesis</h2>
-        <p>Conecte sua conta para gerar seu cronograma</p>
-        <br>
-        <a class="btn-google" href="<?= $authUrl ?>">Entrar com Google</a><br><br><br>
+    <h2>Conectar para criar!</h2>
+    <p>Para facilitar a organização da sua rotina, o nosso site funciona de forma integrada com o <span class="google-brand">Google Agenda</span>.</p>
+    
+    <p>Para que você consiga montar e visualizar seu cronograma personalizado por aqui, você só precisa conectar a sua conta do Google. Assim que você fizer o login, sincronizamos tudo automaticamente para você.</p>
+    
+    <a class="btn-google" href="<?= $authUrl ?>">
+        Entrar com Google
+    </a>
+
+    <div class="footer-link">
         <a href="../index.php">Deseja Voltar?</a>
     </div>
+</div>
         
 </body>
 </html>

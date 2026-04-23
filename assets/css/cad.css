@@ -5,7 +5,15 @@
     box-sizing: border-box;
 }
 
-/*Imagem de fundo*/
+body {
+    background-color: #ffcb7e; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
 .bg-html {
     position: fixed;
     top: 0;
@@ -14,18 +22,19 @@
     height: 100%;
     object-fit: cover;
     z-index: -1;
-    
-    /* Configurações da transição */
-    animation: dissolverFundo 0.6s ease-in-out;
+    filter: brightness(100%); 
+ 
+    animation: dissolverFundo 0.8s ease-in-out;
     will-change: opacity;
 }
 
-/*Animação = dissolver*/
 @keyframes dissolverFundo {
     from {
-        opacity: 0.5;
+        opacity: 0;
+        transform: scale(1.05); 
     }
     to {
         opacity: 1;
+        transform: scale(1);
     }
 }

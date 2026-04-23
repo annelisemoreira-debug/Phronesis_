@@ -48,8 +48,10 @@
     transition: 0.3s;
 }
 
-/* Container Principal*/
-.container {
+/* Coluna Branca da Logo */
+.logo-section {
+    background-color: white;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -59,6 +61,15 @@
 .logo-section img {
     width: 100%;
     max-width: 350px;
+    height: auto;
+}
+
+/* Container Principal*/
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
 }
 
 .container {
@@ -178,7 +189,6 @@ form {
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
     text-shadow: 0 0 8px rgba(155, 79, 255, 0.281);
-
 }
 
 .esqueceuSenha:hover{

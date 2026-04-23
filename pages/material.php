@@ -144,193 +144,193 @@ try {
                         </div>
                     </div>
 
-<aside class="sidebar-complementar">
+    <aside class="sidebar-complementar">
 
-                            <div class="exam-widget">
+                                <div class="exam-widget">
 
-                                <h3 class="widget-title">Contagem Regressiva</h3>
+                                    <h3 class="widget-title">Contagem Regressiva</h3>
 
-                               
+                                
 
-                                <div class="exam-grid">
+                                    <div class="exam-grid">
 
-                                    <div class="exam-card enem">
+                                        <div class="exam-card enem">
 
-                                        <div class="exam-info">
+                                            <div class="exam-info">
 
-                                            <span class="exam-name">ENEM 2026</span>
+                                                <span class="exam-name">ENEM 2026</span>
 
-                                            <span class="exam-status">Nacional</span>
+                                                <span class="exam-status">Nacional</span>
 
-                                        </div>
+                                            </div>
 
-                                        <div id="timer-enem" class="countdown-clock">00d 00h 00m</div>
+                                            <div id="timer-enem" class="countdown-clock">00d 00h 00m</div>
 
-                                        <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
-
-                                    </div>
-
-
-
-                                    <div class="exam-card fuvest">
-
-                                        <div class="exam-info">
-
-                                            <span class="exam-name">FUVEST 2026</span>
-
-                                            <span class="exam-status">USP</span>
+                                            <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
 
                                         </div>
 
-                                        <div id="timer-fuvest" class="countdown-clock">00d 00h 00m</div>
-
-                                        <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
-
-                                    </div>
 
 
+                                        <div class="exam-card fuvest">
 
-                                    <div class="exam-card unicamp">
+                                            <div class="exam-info">
 
-                                        <div class="exam-info">
+                                                <span class="exam-name">FUVEST 2026</span>
 
-                                            <span class="exam-name">UNICAMP 2026</span>
+                                                <span class="exam-status">USP</span>
 
-                                            <span class="exam-status">Unicamp</span>
+                                            </div>
 
-                                        </div>
+                                            <div id="timer-fuvest" class="countdown-clock">00d 00h 00m</div>
 
-                                        <div id="timer-unicamp" class="countdown-clock">00d 00h 00m</div>
-
-                                        <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
-
-                                    </div>
-
-
-
-                                    <div class="exam-card unesp">
-
-                                        <div class="exam-info">
-
-                                            <span class="exam-name">UNESP 2026</span>
-
-                                            <span class="exam-status">Vunesp</span>
+                                            <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
 
                                         </div>
 
-                                        <div id="timer-unesp" class="countdown-clock">00d 00h 00m</div>
-
-                                        <div class="progress-bar"><div class="progress-fill" style="width: 35%;"></div></div>
-
-                                    </div>
 
 
+                                        <div class="exam-card unicamp">
 
-                                    <div class="exam-card uerj">
+                                            <div class="exam-info">
 
-                                        <div class="exam-info">
+                                                <span class="exam-name">UNICAMP 2026</span>
 
-                                            <span class="exam-name">UERJ 2027</span>
+                                                <span class="exam-status">Unicamp</span>
 
-                                            <span class="exam-status">1º EQ</span>
+                                            </div>
 
-                                        </div>
+                                            <div id="timer-unicamp" class="countdown-clock">00d 00h 00m</div>
 
-                                        <div id="timer-uerj" class="countdown-clock">00d 00h 00m</div>
-
-                                        <div class="progress-bar"><div class="progress-fill" style="width: 90%;"></div></div>
-
-                                    </div>
-
-
-
-                                    <div class="exam-card ita">
-
-                                        <div class="exam-info">
-
-                                            <span class="exam-name">ITA 2027</span>
-
-                                            <span class="exam-status">Militar</span>
+                                            <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
 
                                         </div>
 
-                                        <div id="timer-ita" class="countdown-clock">00d 00h 00m</div>
 
-                                        <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+
+                                        <div class="exam-card unesp">
+
+                                            <div class="exam-info">
+
+                                                <span class="exam-name">UNESP 2026</span>
+
+                                                <span class="exam-status">Vunesp</span>
+
+                                            </div>
+
+                                            <div id="timer-unesp" class="countdown-clock">00d 00h 00m</div>
+
+                                            <div class="progress-bar"><div class="progress-fill" style="width: 35%;"></div></div>
+
+                                        </div>
+
+
+
+                                        <div class="exam-card uerj">
+
+                                            <div class="exam-info">
+
+                                                <span class="exam-name">UERJ 2027</span>
+
+                                                <span class="exam-status">1º EQ</span>
+
+                                            </div>
+
+                                            <div id="timer-uerj" class="countdown-clock">00d 00h 00m</div>
+
+                                            <div class="progress-bar"><div class="progress-fill" style="width: 90%;"></div></div>
+
+                                        </div>
+
+
+
+                                        <div class="exam-card ita">
+
+                                            <div class="exam-info">
+
+                                                <span class="exam-name">ITA 2027</span>
+
+                                                <span class="exam-status">Militar</span>
+
+                                            </div>
+
+                                            <div id="timer-ita" class="countdown-clock">00d 00h 00m</div>
+
+                                            <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+
+                                        </div>
 
                                     </div>
 
                                 </div>
 
-                            </div>
+
+
+                            <script>
+
+                                function createTimer(id, targetDate) {
+
+                                    const target = new Date(targetDate).getTime();
+
+                                    const element = document.getElementById(id);
 
 
 
-                        <script>
+                                    const interval = setInterval(() => {
 
-                            function createTimer(id, targetDate) {
+                                        const now = new Date().getTime();
 
-                                const target = new Date(targetDate).getTime();
-
-                                const element = document.getElementById(id);
+                                        const diff = target - now;
 
 
 
-                                const interval = setInterval(() => {
+                                        if (diff <= 0) {
 
-                                    const now = new Date().getTime();
+                                            element.innerHTML = "PROVA EM ANDAMENTO";
 
-                                    const diff = target - now;
+                                            clearInterval(interval);
 
+                                            return;
 
-
-                                    if (diff <= 0) {
-
-                                        element.innerHTML = "PROVA EM ANDAMENTO";
-
-                                        clearInterval(interval);
-
-                                        return;
-
-                                    }
+                                        }
 
 
 
-                                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-                                    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
-                                    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-                                    const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-
-
-                                    element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
-
-                                }, 1000);
-
-                            }
+                                        const s = Math.floor((diff % (1000 * 60)) / 1000);
 
 
 
-                            // Chamadas das Funções com Datas Reais (ou estimadas conforme ciclo 2026/2027)
+                                        element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
 
-                            createTimer("timer-enem", "Nov 1, 2026 13:00:00");
+                                    }, 1000);
 
-                            createTimer("timer-fuvest", "Nov 15, 2026 13:00:00");
+                                }
 
-                            createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
 
-                            createTimer("timer-unesp", "Nov 15, 2026 13:00:00"); // Data prevista
 
-                            createTimer("timer-uerj", "Jun 7, 2026 09:00:00"); // 1º EQ
+                                // Chamadas das Funções com Datas Reais (ou estimadas conforme ciclo 2026/2027)
 
-                            createTimer("timer-ita", "Oct 13, 2026 08:00:00"); // Estimativa 1ª Fase
+                                createTimer("timer-enem", "Nov 1, 2026 13:00:00");
 
-                        </script>
+                                createTimer("timer-fuvest", "Nov 15, 2026 13:00:00");
 
-                    </aside>
+                                createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
+
+                                createTimer("timer-unesp", "Nov 15, 2026 13:00:00"); // Data prevista
+
+                                createTimer("timer-uerj", "Jun 7, 2026 09:00:00"); // 1º EQ
+
+                                createTimer("timer-ita", "Oct 13, 2026 08:00:00"); // Estimativa 1ª Fase
+
+                            </script>
+
+                        </aside>
 
 
 
