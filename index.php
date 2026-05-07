@@ -1,9 +1,36 @@
 <?php
 session_start();
-// Aqui você poderia buscar o caminho da foto no banco de dados se tiver uma coluna para isso.
-// Por enquanto, usaremos uma imagem padrão.
-$fotoPerfil = "assets/img/default-user.webp";
+
+// 1. CONEXÃO COM O BANCO
+$servername = "localhost";
+$username = "root";
+$password = "Home@spSENAI2025!";
+$dbname = "phronesis";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// 2. LÓGICA DA FOTO (Sincronizada com o Perfil)
+$fotoPerfil = "assets/img/default-user.webp"; // Boneco cinza padrão
+
+if (isset($_SESSION['id'])) {
+    $id_usuario = $_SESSION['id'];
+    
+    $stmt = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
+    $stmt->bind_param("i", $id_usuario);
+    $stmt->execute();
+    $res = $stmt->get_result()->fetch_assoc();
+
+    if (!empty($res['foto'])) {
+        // Na index, usamos o caminho puro do banco
+        $caminhoFoto = $res['foto']; 
+        
+        if (file_exists($caminhoFoto)) {
+            $fotoPerfil = $caminhoFoto;
+        }
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -68,8 +95,8 @@ $fotoPerfil = "assets/img/default-user.webp";
 
                 <?php if (isset($_SESSION['id'])): ?>
                     <li class="perfil-container" onclick="toggleMenu()">
-
-                        <img src="<?php echo $fotoPerfil; ?>" alt="Perfil" class="foto-perfil">
+                        
+                        <img src="<?php echo $fotoPerfil; ?>?t=<?php echo time(); ?>" alt="Perfil" class="foto-perfil">
                         <div id="dropdownPerfil" class="menu-dropdown">
                             <a href="perfil/configperfil.php">Meu Perfil</a>
                             <a href="configuracoes.php">Configurações</a>

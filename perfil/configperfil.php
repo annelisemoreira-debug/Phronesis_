@@ -18,29 +18,41 @@ if ($conn->connect_error) { die("Erro: " . $conn->connect_error); }
 
 $id_usuario = $_SESSION['id'];
 
-// 3. LÓGICA DE UPLOAD (SEM ACUMULAR ARQUIVOS)
+// 3. LÓGICA DE UPLOAD (AJUSTADA PARA SUBPASTA)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
-    $diretorio = "assets/img/perfis/";
-    if (!file_exists($diretorio)) { mkdir($diretorio, 0777, true); }
+    
+    // Precisamos de dois caminhos:
+    // 1. O físico para o PHP salvar o arquivo (precisa de ../ para sair da pasta atual)
+    // 2. O do banco para a index.php ler (caminho direto assets/...)
+    $diretorioFisico = "../assets/img/perfis/";
+    $diretorioBanco = "assets/img/perfis/";
 
-    // Busca foto antiga para deletar antes de subir a nova
+    if (!file_exists($diretorioFisico)) { mkdir($diretorioFisico, 0777, true); }
+
+    // Busca foto antiga para deletar
     $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
     $busca->bind_param("i", $id_usuario);
     $busca->execute();
     $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
 
-    if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && file_exists($fotoAntiga)) {
-        unlink($fotoAntiga);
+    // Deleta o arquivo antigo se ele existir fisicamente
+    if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+        $caminhoArquivoAntigo = "../" . $fotoAntiga;
+        if (file_exists($caminhoArquivoAntigo)) {
+            unlink($caminhoArquivoAntigo);
+        }
     }
 
     $extensao = strtolower(pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION));
     $novoNome = "user_" . $id_usuario . "_" . time() . "." . $extensao;
-    $caminhoCompleto = $diretorio . $novoNome;
+    
+    $caminhoCompletoFisico = $diretorioFisico . $novoNome;
+    $caminhoBanco = $diretorioBanco . $novoNome;
 
     if (in_array($extensao, ['jpg', 'jpeg', 'png', 'webp'])) {
-        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminhoCompleto)) {
+        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminhoCompletoFisico)) {
             $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
-            $upd->bind_param("si", $caminhoCompleto, $id_usuario);
+            $upd->bind_param("si", $caminhoBanco, $id_usuario);
             $upd->execute();
             header("Location: configperfil.php");
             exit();
@@ -54,8 +66,18 @@ $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
-// Esta linha garante que a imagem atual apareça ou a padrão caso não exista uma
-$fotoExibicao = (!empty($user['foto'])) ? $user['foto'] : "assets/img/default-user.webp";
+$caminhoPadrao = "../assets/img/default-user.webp"; 
+
+if (!empty($user['foto'])) {
+    // Como o banco guarda "assets/...", e estamos em uma subpasta, adicionamos "../"
+    $fotoExibicao = "../" . $user['foto']; 
+    
+    if (!file_exists($fotoExibicao)) {
+        $fotoExibicao = $caminhoPadrao;
+    }
+} else {
+    $fotoExibicao = $caminhoPadrao;
+}
 ?>
 
 <!DOCTYPE html>
@@ -89,17 +111,18 @@ $fotoExibicao = (!empty($user['foto'])) ? $user['foto'] : "assets/img/default-us
 
         <main class="content">
             <header class="profile-banner">
-                <img src="assets/img/bannerMeuPerfil.png" alt="Banner Meu Perfil" class="banner-img" style="width: 100%;">
+                <img src="../assets/img/bannerInicio.png" alt="Banner" style="width: 100%;">
             </header>
 
-            <section class="container-dados" style="padding: 20px;">
+             <section class="container-dados" style="padding: 20px;">
                 <div class="alert-info">
                     <div class="text">
                         <strong>Sua conta é gerenciada pela organização da qual você faz parte.</strong>
                         <p>Seu nome e e-mail são controlados pelo provedor de identidade. Entre em contato com o administrador para alterações.</p>
                     </div>
                 </div>
-                
+
+            <section class="container-dados" style="padding: 20px;">
                 <div class="profile-upload" style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
                     <div class="avatar-wrapper">
                         <img src="<?php echo $fotoExibicao; ?>?t=<?php echo time(); ?>" 
@@ -118,7 +141,7 @@ $fotoExibicao = (!empty($user['foto'])) ? $user['foto'] : "assets/img/default-us
                         </form>
                     </div>
                 </div>
-
+            
                 <div class="user-info-fields">
                     <div class="field" style="margin-bottom: 15px;">
                         <label><strong>Nome:</strong></label>
