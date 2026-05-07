@@ -1,4 +1,20 @@
 <?php
+
+// 1. Configurações de erro e Sessão
+session_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// CONEXÃO COM O BANCO (Necessário para pegar a foto)
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+
+$dadosUser = null;
+if (isset($_SESSION['id'])) {
+    $id = $_SESSION['id'];
+    $res = $conn->query("SELECT nome, foto FROM usuario WHERE id_usuario = $id");
+    $dadosUser = $res->fetch_assoc();
+}
+
 // 1. Configurações de erro para desenvolvimento
 ini_set('display_errors', 1);
 error_reporting(E_ALL);

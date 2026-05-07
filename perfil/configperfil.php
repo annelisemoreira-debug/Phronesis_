@@ -153,7 +153,8 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                 </ul>
                 <p class="nav-title">Voltar</p>
                 <ul>
-                    <li><a href="index.php">Início</a></li>
+                    <li><a href="../index.php">Início</a></li>
+                    <li><a href="../pages/livros.php">Livros</a></li>
                     <li><a href="../pages/material.php">Matérias</a></li>
                     <li><a href="../pages/cronograma.php">Cronograma</a></li>
                 </ul>
