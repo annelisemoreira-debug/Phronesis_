@@ -125,7 +125,7 @@ try {
                         <li class="entrar">
                             <div class="entrar-container">
                                 <?php if ($dadosUser): ?>
-                                    <a href="perfil.php">
+                                    <a href="../perfil/configperfil.php">
                                         <img src="../<?= !empty($dadosUser['foto']) ? $dadosUser['foto'] : 'assets/img/default-user.png' ?>" class="user-profile-top" alt="Perfil">
                                     </a>
                                 <?php else: ?>
