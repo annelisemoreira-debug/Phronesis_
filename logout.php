@@ -1,6 +1,25 @@
+
+
+
 <?php
 session_start();
-session_destroy(); // Mata todas as variáveis de sessão
-header("Location: index.php"); // Volta para a home
+
+// Limpa todas as variáveis de sessão
+$_SESSION = array();
+
+// Se desejar destruir completamente a sessão, apague também o cookie de sessão.
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
+// Destrói a sessão
+session_destroy();
+
+// Redireciona para o login
+header("Location: login.php");
 exit();
 ?>

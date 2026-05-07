@@ -71,7 +71,7 @@ $fotoPerfil = "assets/img/default-user.webp";
 
                         <img src="<?php echo $fotoPerfil; ?>" alt="Perfil" class="foto-perfil">
                         <div id="dropdownPerfil" class="menu-dropdown">
-                            <a href="perfil.php">Meu Perfil</a>
+                            <a href="./perfil/configperfil.php">Meu Perfil</a>
                             <a href="configuracoes.php">Configurações</a>
                             <a href="logout.php" style="color: red;">Sair</a>
                         </div>
