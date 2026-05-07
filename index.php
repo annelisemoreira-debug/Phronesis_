@@ -99,7 +99,6 @@ if (isset($_SESSION['id'])) {
                         <img src="<?php echo $fotoPerfil; ?>?t=<?php echo time(); ?>" alt="Perfil" class="foto-perfil">
                         <div id="dropdownPerfil" class="menu-dropdown">
                             <a href="perfil/configperfil.php">Meu Perfil</a>
-                            <a href="configuracoes.php">Configurações</a>
                             <a href="logout.php" style="color: red;">Sair</a>
                         </div>
 
