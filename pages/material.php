@@ -1,23 +1,18 @@
 <?php
-
 // 1. Configurações de erro e Sessão
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// CONEXÃO COM O BANCO (Necessário para pegar a foto)
+// CONEXÃO COM O BANCO (Para buscar a foto de perfil do usuário logado)
 $conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 
 $dadosUser = null;
 if (isset($_SESSION['id'])) {
     $id = $_SESSION['id'];
-    $res = $conn->query("SELECT nome, foto FROM usuario WHERE id_usuario = $id");
+    $res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
     $dadosUser = $res->fetch_assoc();
 }
-
-// 1. Configurações de erro para desenvolvimento
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 // 2. Importação do Google Client (Autoload)
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -32,7 +27,7 @@ $youtube = new Google\Service\YouTube($client);
 $termoBuscaOriginal = isset($_GET['search']) ? $_GET['search'] : (isset($_GET['materia']) ? $_GET['materia'] : 'Biologia');
 $termoBuscaAPI = $termoBuscaOriginal . ' aula vestibular';
 
-$videos = []; // Inicializa a variável
+$videos = []; 
 
 try {
     // 5. Chamada oficial da API do YouTube
@@ -46,8 +41,7 @@ try {
     $videos = $res['items'];
 
 } catch (Exception $e) {
-    // 6. BACKUP: Se a cota estourar (Erro 403), usamos vídeos fixos para não quebrar o site
-    // Cada busca economizada aqui poupa 100 unidades de cota
+    // 6. BACKUP: Se a cota estourar
     $videos = [
         [
             'id' => ['videoId' => '0P-fO8P9mSg'],
@@ -71,7 +65,6 @@ try {
             ]
         ]
     ];
-    // Opcional: log do erro para o desenvolvedor ver no console, sem assustar o usuário
     error_log("YouTube API Quota Exceeded. Using Mock Data.");
 }
 ?>
@@ -83,6 +76,25 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Materiais Complementares - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/material.css">
+    <style>
+        /* Estilos para a foto de perfil no topo */
+        .user-profile-top {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            transition: transform 0.2s;
+        }
+        .user-profile-top:hover {
+            transform: scale(1.1);
+        }
+        .entrar-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -110,7 +122,17 @@ try {
                         <li class="livros"><a href="livros.php">Obras Obrigatórias</a></li>
                         <li class="home"><a href="../index.php">Início</a></li>
                         <li class="cronogramas"><a href="meu_calendario.php">Cronogramas</a></li>
-                        <li class="entrar"><a href="../login.php">Entrar</a></li>
+                        <li class="entrar">
+                            <div class="entrar-container">
+                                <?php if ($dadosUser): ?>
+                                    <a href="perfil.php">
+                                        <img src="../<?= !empty($dadosUser['foto']) ? $dadosUser['foto'] : 'assets/img/default-user.png' ?>" class="user-profile-top" alt="Perfil">
+                                    </a>
+                                <?php else: ?>
+                                    <a href="../login.php">Entrar</a>
+                                <?php endif; ?>
+                            </div>
+                        </li>
                     </ul>
                 </nav>
             </header>
@@ -123,7 +145,7 @@ try {
                 <section class="container-materiais">
                     <div class="video-container-white">
                         <div class="video-header">
-                            <h2 class="video-title">Materiais Complementares</h2>
+                            <h2 class="video-title">Materiais Complementares (<?= htmlspecialchars($termoBuscaOriginal) ?>)</h2>
                             
                             <div class="search-box">
                                 <form action="" method="GET" style="display: flex; width: 100%; align-items: center;">
@@ -345,29 +367,19 @@ try {
                                 createTimer("timer-ita", "Oct 13, 2026 08:00:00"); // Estimativa 1ª Fase
 
                             </script>
-
-                        </aside>
-
-
-
+                    </aside>
                 </section>
-
             </main>
-
         </div>
-
     </div>
 
     <script>
         document.querySelectorAll('.menuSidebar nav a').forEach(link => {
             link.addEventListener('click', function() {
-                // Remove de outros (caso o clique falhe ou demore)
                 document.querySelectorAll('.menuSidebar nav a').forEach(l => l.classList.remove('loading'));
-                // Adiciona a animação no link clicado
                 this.classList.add('loading');
             });
         });
     </script>
-
 </body>
 </html>

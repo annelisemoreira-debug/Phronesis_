@@ -256,3 +256,8 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     </script>
 </body>
 </html>
+
+
+
+
+
