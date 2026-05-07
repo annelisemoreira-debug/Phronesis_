@@ -80,14 +80,16 @@ $fotoExibicao = (!empty($user['foto'])) ? $user['foto'] : "assets/img/default-us
                 </ul>
                 <p class="nav-title">Voltar</p>
                 <ul>
-                    <li><a href="index.php">Início</a></li>
+                    <li><a href="../index.php">Início</a></li>
+                    <li><a href="../pages/livros.php">Leituras Obrigatórias</a></li>
+                    <li><a href="../pages/material.php">Materiais</a></li>
                 </ul>
             </nav>
         </aside>
 
         <main class="content">
             <header class="profile-banner">
-                <img src="assets/img/banner_perfil.png" alt="Banner Meu Perfil" class="banner-img" style="width: 100%;">
+                <img src="assets/img/bannerMeuPerfil.png" alt="Banner Meu Perfil" class="banner-img" style="width: 100%;">
             </header>
 
             <section class="container-dados" style="padding: 20px;">
