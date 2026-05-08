@@ -304,4 +304,7 @@ CREATE TABLE IF NOT EXISTS cronograma_item (
 );
 
 
-UPDATE usuario SET tipo = 'admin' WHERE email = 'seu-email@aqui.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'manuella@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'annelise@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'dukye@phronesis.com';
