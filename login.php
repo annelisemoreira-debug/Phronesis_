@@ -60,12 +60,12 @@
                             
                         <div class="inserirInfo">
                             <label>Email: </label>
-                            <input type="email" name="email" required>
+                            <input type="email" name="email" placeholder="exemplo@email.com" required>
                         </div>
                             
                         <div class="inserirInfo">
                             <label>Senha: </label>
-                            <input type="password" name="senha" required>
+                            <input type="password" name="senha" placeholder="Digite sua senha" required>
                         </div>
 
                         <a class="esqueceuSenha" href="senhaPerdida.php?acao=recuperar" style="text-decoration:none"> Esqueceu sua senha? </a>
