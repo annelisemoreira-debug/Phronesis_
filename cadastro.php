@@ -45,7 +45,13 @@
 
                             <div class="inserirInfo">
                                 <label>Telefone: </label> 
-                                <input type="text" name="telefone" required>
+                                <input type="text" 
+                                    name="telefone" 
+                                    id="telefone" 
+                                    placeholder="(00) 00000-0000" 
+                                    maxlength="15" 
+                                    oninput="handleTelefone(event)"
+                                    required>
                             </div>
                         </div>
 
@@ -55,5 +61,35 @@
             </div>
         </div>
     </main>
+
+                            <script>
+                                function handleTelefone(event) {
+                                    let input = event.target;
+                                    input.value = telefoneMask(input.value);
+                                }
+
+                                function telefoneMask(value) {
+                                    if (!value) return "";
+                                    
+                                    // Remove tudo que não for número
+                                    value = value.replace(/\D/g, "");
+
+                                    // (00) 00000-0000
+                                    if (value.length > 0) {
+                                        // Adiciona o parêntese inicial e os dois primeiros dígitos
+                                        value = "(" + value;
+                                    }
+                                    if (value.length > 3) {
+                                        // Fecha o parêntese após o DDD
+                                        value = value.substring(0, 3) + ") " + value.substring(3);
+                                    }
+                                    if (value.length > 10) {
+                                        // Adiciona o hífen após os 5 dígitos do celular (formato 9 dígitos)
+                                        value = value.substring(0, 10) + "-" + value.substring(10, 14);
+                                    }
+                                    
+                                    return value;
+                                }
+                          </script>
 </body>
 </html>
