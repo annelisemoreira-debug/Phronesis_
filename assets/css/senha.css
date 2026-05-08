@@ -20,10 +20,10 @@
 .glass-card {
     display: flex;
     background-color: rgba(180, 150, 255, 0.85);
-    border-radius: 10px;
+    border-radius: 15px;
     overflow: hidden;
     max-width: 950px;
-    height: 600px;
+    height: 488px;
     width: 100%;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
