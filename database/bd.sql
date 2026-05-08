@@ -308,3 +308,4 @@ UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'manuella@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'annelise@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'dukye@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'miguelmig@phronesis.com';
