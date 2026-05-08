@@ -50,12 +50,12 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
 
                     <div class="inserirInfo">
                         <label>Email:</label>
-                        <input type="email" name="email" required>
+                        <input type="email" name="email" placeholder="exemplo@email.com" required>
                     </div>
 
                     <div class="inserirInfo">
                         <label>Nova senha:</label>
-                        <input type="password" name="senha" required>
+                        <input type="password" name="senha" placeholder="Digite sua nova senha" required>
                     </div>
 
                     <button class="entrarLogin" type="submit">Atualizar</button>
