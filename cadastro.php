@@ -33,14 +33,14 @@
                         </div>
 
                         <div class="inserirInfo">
-                            <label>Senha: </label> 
-                            <input type="password" name="senha" required>
+                            <label>E-mail: </label> 
+                            <input type="email" name="email" required>
                         </div>
                     
                         <div class="linha_dupla">
                             <div class="inserirInfo">
-                                <label>E-mail: </label> 
-                                <input type="email" name="email" required>
+                                <label>Senha: </label> 
+                                <input type="password" name="senha" required>
                             </div>
 
                             <div class="inserirInfo">
