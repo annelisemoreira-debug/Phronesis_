@@ -201,7 +201,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                 </div>
 
                 <div class="footer-actions" style="margin-top: 40px;">
-                    <a href="logout.php" style="color: red; text-decoration: none; font-weight: bold;">Desconectar</a>
+                    <a href="../logout.php" style="color: red; text-decoration: none; font-weight: bold;">Desconectar</a>
                 </div>
                 
             </section>

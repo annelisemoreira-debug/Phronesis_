@@ -29,43 +29,62 @@ $termoBuscaAPI = $termoBuscaOriginal . ' aula vestibular';
 
 $videos = []; 
 
+// === ADICIONAMOS ESTA TRAVA AQUI PARA ECONOMIZAR ===
+// Se houver uma busca real ou troca de matéria, ele gasta pontos. 
+// Se for apenas um F5 na página inicial, ele usa os FIXOS.
+$modoEconomico = true; 
+if (isset($_GET['search']) || isset($_GET['materia'])) {
+    $modoEconomico = false; 
+}
+
 try {
-    // 5. Chamada oficial da API do YouTube
-    $res = $youtube->search->listSearch('snippet', [
-        'q'             => $termoBuscaAPI, 
-        'maxResults'    => 12,           
-        'type'          => 'video',
-        'videoDuration' => 'medium',    
-        'relevanceLanguage' => 'pt'
-    ]);
-    $videos = $res['items'];
+    // Só chama a API se NÃO estiver no modo econômico
+    if (!$modoEconomico) {
+        $res = $youtube->search->listSearch('snippet', [
+            'q'             => $termoBuscaAPI, 
+            'maxResults'    => 12,           
+            'type'          => 'video',
+            'videoDuration' => 'medium',    
+            'relevanceLanguage' => 'pt'
+        ]);
+        $videos = $res['items'];
+    } else {
+        // Força a queda no "catch" para usar os vídeos fixos sem gastar pontos
+        throw new Exception("Modo Econômico Ativado");
+    }
 
 } catch (Exception $e) {
-    // 6. BACKUP: Se a cota estourar
+    // 6. VÍDEOS FIXOS (Sempre que a cota acabar ou estivermos apenas testando o layout)
     $videos = [
         [
             'id' => ['videoId' => '0P-fO8P9mSg'],
             'snippet' => [
-                'title' => '[MODO ECONÔMICO] Introdução à ' . $termoBuscaOriginal,
+                'title' => 'Introdução à ' . $termoBuscaOriginal . ' - Aula 01',
                 'thumbnails' => ['high' => ['url' => 'https://img.youtube.com/vi/0P-fO8P9mSg/hqdefault.jpg']]
             ]
         ],
         [
             'id' => ['videoId' => '9I86L8uWbYk'],
             'snippet' => [
-                'title' => '[MODO ECONÔMICO] Revisão Geral para Vestibular',
+                'title' => 'Revisão Geral de ' . $termoBuscaOriginal . ' para Vestibular',
                 'thumbnails' => ['high' => ['url' => 'https://img.youtube.com/vi/9I86L8uWbYk/hqdefault.jpg']]
             ]
         ],
         [
             'id' => ['videoId' => 'dQw4w9WgXcQ'],
             'snippet' => [
-                'title' => '[MODO ECONÔMICO] Dicas Extras de Estudo',
+                'title' => 'Dicas de ' . $termoBuscaOriginal . ' e Técnicas de Estudo',
                 'thumbnails' => ['high' => ['url' => 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg']]
+            ]
+        ],
+        [
+            'id' => ['videoId' => '8mS_E0-m7fU'], // Vídeo extra para preencher o grid
+            'snippet' => [
+                'title' => 'Como aprender ' . $termoBuscaOriginal . ' mais rápido',
+                'thumbnails' => ['high' => ['url' => 'https://img.youtube.com/vi/8mS_E0-m7fU/hqdefault.jpg']]
             ]
         ]
     ];
-    error_log("YouTube API Quota Exceeded. Using Mock Data.");
 }
 ?>
 
