@@ -16,56 +16,6 @@ body {
     gap: 20px;
 }
 
-
-/* Sidebar */
-.menuSidebar {
-    position: sticky;
-    top: 20px;          
-    height: calc(100vh - 40px);
-    width: 350px;
-    background: white;
-    border-radius: 15px;
-    padding: 35px 30px; 
-    display: flex; 
-    flex-direction: column;
-    gap: 30px;
-    min-width: 250px;
-}
-
-.menuSidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.menuSidebar nav a {
-    text-decoration: none;
-    color: #6837af; 
-    font-weight: bold;
-    font-size: 20px;
-    cursor: pointer;    
-}
-
-/*Logo menuSidebar*/
-.logoMarca {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logoMarca a {
-    width: 100%; 
-    display: block;
-}
-
-.logoMarca img {
-    width: 100%;
-    height: auto; 
-    display: block;
-    object-fit: contain; 
-}
-
 /* Conteúdo Principal */
 .principalContent {
   flex: 1; 

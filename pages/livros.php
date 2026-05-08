@@ -8,24 +8,6 @@
 </head>
 <body> 
     <div class="wrapper">
-
-        <aside class="menuSidebar">
-            <div class="logoMarca">
-                <a href="../index.php">
-                    <img src="../assets/img/logoSidebar.webp" alt="Logo oficial da Phronesis">
-                </a>
-            </div>
-
-            <nav>
-                <a>Linguagens</a>
-                <a>Matemática</a>
-                <a>Física</a>
-                <a>Biologia</a>
-                <a>Química</a>
-                <a>História</a>
-                <a>Geografia</a>
-            </nav>
-        </aside>
     
         <div class="principalContent">
             <header>
