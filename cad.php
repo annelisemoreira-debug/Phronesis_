@@ -32,18 +32,29 @@ if ($conn->connect_error) {
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
 
 // --- AÇÃO: CADASTRAR ---
-// AJUSTE AQUI: Verificamos se a ação é 'cadastro'
 if ($acao == "cadastro") { 
     $email = $_POST['email'] ?? '';
     $senha = $_POST['senha'] ?? '';
     $nome = $_POST['nome'] ?? '';
     $telefone = $_POST['telefone'] ?? '';
 
+    // Validação básica de campos vazios
     if (empty($email) || empty($senha)) {
         $_SESSION['erro_cad'] = "E-mail e senha são obrigatórios.";
         header("Location: cadastro.php");
         exit();
     }
+
+    // --- NOVA VALIDAÇÃO DE FORÇA DE SENHA ---
+    // Regra: Mínimo 6 caracteres, 1 letra, 1 número e 1 caractere especial
+    $regex = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/";
+
+    if (!preg_match($regex, $senha)) {
+        $_SESSION['erro_cad'] = "A senha não atende aos requisitos: mínimo de 6 dígitos, uma letra, um número e um símbolo.";
+        header("Location: cadastro.php");
+        exit();
+    }
+    // ----------------------------------------
 
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 

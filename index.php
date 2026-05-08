@@ -88,24 +88,24 @@ if (isset($_SESSION['id'])) {
         <div class="logoMarca"><img src="assets/img/phronesisIndex.png" alt="Logo oficial da Phronesis"></div>
         <nav class="menuNav">
             <ul class="menu">
-                <li class="materiais"><a href="pages/material.php">Materiais</a></li>
-                <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
-                <li class="cronogramas"><a href="pages/meu_calendario.php">Cronogramas</a></li>
-
-
+                
                 <?php if (isset($_SESSION['id'])): ?>
+                    <li class="materiais"><a href="pages/material.php">Materiais</a></li>
+                    <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
+                    <li class="cronogramas"><a href="pages/meu_calendario.php">Cronogramas</a></li>
+
                     <li class="perfil-container" onclick="toggleMenu()">
-                        
                         <img src="<?php echo $fotoPerfil; ?>?t=<?php echo time(); ?>" alt="Perfil" class="foto-perfil">
                         <div id="dropdownPerfil" class="menu-dropdown">
                             <a href="perfil/configperfil.php">Meu Perfil</a>
                             <a href="logout.php" style="color: red;">Sair</a>
                         </div>
-
                     </li>
+
                 <?php else: ?>
                     <li class="entrar"><a href="login.php">Entrar</a></li>
                 <?php endif; ?>
+
             </ul>
         </nav>
     </header>

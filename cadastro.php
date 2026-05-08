@@ -29,19 +29,24 @@
 
                         <div class="inserirInfo">
                             <label>Nome: </label> 
-                            <input type="text" name="nome" required>
+                            <input type="text" name="nome" placeholder="Digite seu nome completo" required>
                         </div>
 
                         <div class="inserirInfo">
                             <label>E-mail: </label> 
-                            <input type="email" name="email" required>
+                            <input type="email" name="email" placeholder="exemplo@email.com" required>
                         </div>
                     
                         <div class="linha_dupla">
                             <div class="inserirInfo">
                                 <label>Senha: </label> 
-                                <input type="password" name="senha" required>
+                                <input type="password" name="senha" 
+                                    placeholder="Mínimo 6 caracteres (letra, número e símbolo)" 
+                                    required
+                                    pattern="(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}"
+                                    title="A senha deve ter no mínimo 6 caracteres, contendo pelo menos uma letra, um número e um caractere especial (@, !, #, etc.)">
                             </div>
+                     
 
                             <div class="inserirInfo">
                                 <label>Telefone: </label> 
