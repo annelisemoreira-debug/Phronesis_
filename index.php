@@ -20,9 +20,11 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 
 
-// 2. LÓGICA DA FOTO (Sincronizada com o Perfil)
+// 2. LÓGICA DA FOTO E TIPO
 
-$fotoPerfil = "assets/img/default-user.webp"; // Boneco cinza padrão
+$fotoPerfil = "assets/img/default-user.webp"; 
+
+$usuarioTipo = "comum"; // Valor padrão caso não encontre
 
 
 
@@ -30,9 +32,11 @@ if (isset($_SESSION['id'])) {
 
     $id_usuario = $_SESSION['id'];
 
-   
+    
 
-    $stmt = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
+    // ADICIONADO 'tipo' na consulta abaixo
+
+    $stmt = $conn->prepare("SELECT foto, tipo FROM usuario WHERE id_usuario = ?");
 
     $stmt->bind_param("i", $id_usuario);
 
@@ -42,17 +46,21 @@ if (isset($_SESSION['id'])) {
 
 
 
-    if (!empty($res['foto'])) {
+    if ($res) {
 
-        // Na index, usamos o caminho puro do banco
+        $usuarioTipo = $res['tipo']; // Armazena se é 'admin' ou 'comum'
 
-        $caminhoFoto = $res['foto'];
+        
 
-       
+        if (!empty($res['foto'])) {
 
-        if (file_exists($caminhoFoto)) {
+            $caminhoFoto = $res['foto'];
 
-            $fotoPerfil = $caminhoFoto;
+            if (file_exists($caminhoFoto)) {
+
+                $fotoPerfil = $caminhoFoto;
+
+            }
 
         }
 
@@ -82,85 +90,25 @@ if (isset($_SESSION['id'])) {
 
     <style>
 
-        /* Estilos rápidos para o menu de perfil */
+        /* Seus estilos originais permanecem aqui */
 
-        .perfil-container {
+        .perfil-container { position: flex; cursor: pointer; }
 
-            position: flex;
+        .foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; object-fit: cover; }
 
-            cursor: pointer;
+        .menu-dropdown { display: none; position: absolute; right: 0; background: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 5px; min-width: 150px; z-index: 100; }
 
-        }
+        .menu-dropdown a { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
 
+        .menu-dropdown a:hover { background: #f4f4f4; }
 
+        .show { display: block; }
 
-        .foto-perfil {
+        
 
-            width: 40px;
+        /* Estilo para o item ADM não quebrar o layout */
 
-            height: 40px;
-
-            border-radius: 50%;
-
-            border: 2px solid #ccc;
-
-            object-fit: cover;
-
-        }
-
-
-
-        .menu-dropdown {
-
-            display: none;
-
-            position: absolute;
-
-            right: 0;
-
-            background: white;
-
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-            border-radius: 5px;
-
-            min-width: 150px;
-
-            z-index: 100;
-
-        }
-
-
-
-        .menu-dropdown a {
-
-            display: block;
-
-            padding: 10px;
-
-            color: #333;
-
-            text-decoration: none;
-
-            border-bottom: 1px solid #eee;
-
-        }
-
-
-
-        .menu-dropdown a:hover {
-
-            background: #f4f4f4;
-
-        }
-
-
-
-        .show {
-
-            display: block;
-
-        }
+        .menu .admin a { color: #ff4d4d; font-weight: bold; }
 
     </style>
 
@@ -178,7 +126,7 @@ if (isset($_SESSION['id'])) {
 
             <ul class="menu">
 
-               
+                
 
                 <?php if (isset($_SESSION['id'])): ?>
 
@@ -187,6 +135,14 @@ if (isset($_SESSION['id'])) {
                     <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
 
                     <li class="cronogramas"><a href="pages/meu_calendario.php">Cronogramas</a></li>
+
+
+
+                    <?php if ($usuarioTipo === 'admin'): ?>
+
+                        <li class="admin"><a href="pages/admin_materias.php">ADM</a></li>
+
+                    <?php endif; ?>
 
 
 
@@ -238,8 +194,6 @@ if (isset($_SESSION['id'])) {
 
             <button class="btn prev">❮</button>
 
-
-
             <div class="carousel-track">
 
                 <div class="card blue-theme">
@@ -256,9 +210,7 @@ if (isset($_SESSION['id'])) {
 
                     <h2>Materiais</h2>
 
-                    <p><b>• Videoaulas:</b><br>
-
-                        Aulas em vídeo organizadas por disciplina, que permitem estudar no próprio ritmo, com teoria, prática e exercícios. Nosso site contém videoaulas ministradas por excelentes professores, com conteúdos planejados especialmente para os vestibulares das melhores universidades do país.</p>
+                    <p><b>• Videoaulas:</b><br> Aulas em vídeo organizadas por disciplina, que permitem estudar no próprio ritmo...</p>
 
                     <div class="bottom-tab"></div>
 
@@ -280,11 +232,7 @@ if (isset($_SESSION['id'])) {
 
                     <h2>Cronograma</h2>
 
-                    <p><b>• Cronograma personalizado:</b><br>
-
-                        Nosso site também oferece geração de cronograma personalizado de estudos.
-
-                        O aluno informa seus objetivos, o vestibular que deseja prestar e o tempo disponível para estudar, e a plataforma organiza automaticamente um plano estratégico, distribuindo disciplinas, revisões, exercícios e leituras obrigatórias de forma equilibrada.</p>
+                    <p><b>• Cronograma personalizado:</b><br> O aluno informa seus objetivos e a plataforma organiza...</p>
 
                     <div class="bottom-tab"></div>
 
@@ -306,9 +254,7 @@ if (isset($_SESSION['id'])) {
 
                     <h2>Livros</h2>
 
-                    <p><b>• Leituras obrigatórias:</b><br>
-
-                        Nosso site também contém materiais completos sobre as leituras obrigatórias dos principais vestibulares do país, com resumos, análises, contexto histórico, características literárias e possíveis temas de prova.</p>
+                    <p><b>• Leituras obrigatórias:</b><br> Materiais completos sobre as leituras obrigatórias...</p>
 
                     <div class="bottom-tab"></div>
 
@@ -316,13 +262,9 @@ if (isset($_SESSION['id'])) {
 
             </div>
 
-
-
             <button class="btn next">❯</button>
 
         </div>
-
-        </section>
 
     </main>
 
@@ -330,7 +272,7 @@ if (isset($_SESSION['id'])) {
 
     <script>
 
-        // Função para abrir/fechar o menu ao clicar na foto
+        // SEU JAVASCRIPT ORIGINAL
 
         function toggleMenu() {
 
@@ -339,8 +281,6 @@ if (isset($_SESSION['id'])) {
         }
 
 
-
-        // Fecha o menu se o usuário clicar fora dele
 
         window.onclick = function(event) {
 
@@ -364,6 +304,8 @@ if (isset($_SESSION['id'])) {
 
         }
 
+
+
         const track = document.querySelector('.carousel-track');
 
         const nextBtn = document.querySelector('.next');
@@ -372,13 +314,9 @@ if (isset($_SESSION['id'])) {
 
 
 
-        // Função para mover para o próximo
-
         function moveNext() {
 
             const cards = document.querySelectorAll('.card');
-
-            // Pegamos o primeiro card e colocamos DEPOIS do último
 
             track.appendChild(cards[0]);
 
@@ -386,13 +324,9 @@ if (isset($_SESSION['id'])) {
 
 
 
-        // Função para mover para o anterior
-
         function movePrev() {
 
             const cards = document.querySelectorAll('.card');
-
-            // Pegamos o último card e colocamos ANTES do primeiro
 
             track.insertBefore(cards[cards.length - 1], cards[0]);
 
@@ -400,22 +334,12 @@ if (isset($_SESSION['id'])) {
 
 
 
-        // Eventos de clique
-
         nextBtn.addEventListener('click', moveNext);
 
         prevBtn.addEventListener('click', movePrev);
 
-
-
-        // Inicialização: Se você tiver apenas 3 cards,
-
-        // o CSS :nth-child(2) já vai focar no do meio automaticamente.
-
     </script>
 
 </body>
-
-
 
 </html>

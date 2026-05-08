@@ -144,6 +144,7 @@ try {
                             <?php foreach ($videos as $video): ?>
                                 <div class="video-card" style="background: #f9f9f9; padding: 10px; border-radius: 15px;">
                                     <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                                        
                                         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 10px;" src="https://www.youtube.com/embed/<?= $video['id']['videoId'] ?>" frameborder="0" allowfullscreen></iframe>
                                     </div>
                                     <p style="color: #4B0082; font-weight: bold; margin-top: 10px; font-size: 14px; text-align: center;">
