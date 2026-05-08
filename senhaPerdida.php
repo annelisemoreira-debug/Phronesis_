@@ -24,7 +24,7 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
 
             <div class="mainContainer">
                 <h1 class="mainTitulo">Recuperar Senha</h1>
-                <p style="color: #031768">Pronto para voltar? Redefina a senha!</p>
+                <p><a class="botaoVoltar" href="login.php">Pronto para voltar?</a></p>
 
                 <?php if(isset($_SESSION['erro_recuperacao'])): ?>
                     <script>
