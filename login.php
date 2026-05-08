@@ -22,26 +22,33 @@
                     <p style="color: #031768">Não tem uma conta? <a class="botaoCadastro" href="cadastro.php"> Cadastre-se </a></p>
 
                     <?php if(isset($_SESSION['erro_login'])): ?>
-                        <p class="erroLogin"><?php echo $_SESSION['erro_login']; unset($_SESSION['erro_login']); ?></p>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: '<?php echo $_SESSION['erro_login']; ?>',
+                                    showConfirmButton: false,
+                                    timer: 4000,
+                                    timerProgressBar: true
+                                });
+                            });
+                        </script>
+                        <?php unset($_SESSION['erro_login']); ?>
                     <?php endif; ?>
                         
                     <?php if(isset($_SESSION['sucesso_login'])): ?>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
-                                const Toast = Swal.mixin({
+                                Swal.fire({
                                     toast: true,
                                     position: 'top-end',
+                                    icon: 'success',
+                                    title: '<?php echo $_SESSION['sucesso_login']; ?>',
                                     showConfirmButton: false,
                                     timer: 4000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.onmouseenter = Swal.stopTimer;
-                                        toast.onmouseleave = Swal.resumeTimer;
-                                    }
-                                });
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: '<?php echo $_SESSION['sucesso_login']; ?>'
+                                    timerProgressBar: true
                                 });
                             });
                         </script>
