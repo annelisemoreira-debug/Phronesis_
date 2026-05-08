@@ -104,34 +104,23 @@ elseif ($acao == "nova_senha") {
     $senha = $_POST['senha'] ?? '';
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-    // CORREÇÃO: Tabela usuario
     $sql = "UPDATE usuario SET senha=? WHERE email=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $senhaHash, $email);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
-        echo "<script>
-            Swal.fire({
-                title: 'Sucesso!',
-                text: 'A sua senha foi alterada',
-                icon: 'success',
-                confirmButtonColor: '#001a8b'
-            }).then(() => {
-                window.location.href='login.php';
-            });
-        </script>";
+        // Sucesso: Mantemos o modal de confirmação ou usamos Toast se preferir
+        // Para consistência com seu pedido de aviso flutuante:
+        $_SESSION['sucesso_login'] = "Senha alterada com sucesso!";
+        header("Location: login.php");
+        exit();
     } else {
-        echo "<script>
-            Swal.fire({
-                title: 'Erro!',
-                text: 'E-mail não encontrado.',
-                icon: 'error',
-                confirmButtonColor: '#001a8b'
-            }).then(() => {
-                window.history.back();
-            });
-        </script>";
+        // ERRO: Aqui é onde estava aquela tela branca com o modal
+        // Agora salvamos na sessão e voltamos para a página anterior
+        $_SESSION['erro_recuperacao'] = "E-mail não encontrado ou senha igual à anterior.";
+        header("Location: senhaPerdida.php?acao=recuperar");
+        exit();
     }
 }
 
