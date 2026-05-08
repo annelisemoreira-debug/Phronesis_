@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Faça o seu login no Phronesis!</title>
     <link rel="stylesheet" href="assets/css/login.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <img src="assets/img/fundoRoxo.png" class="bg-html" alt="Fundo">
@@ -25,7 +26,26 @@
                     <?php endif; ?>
                         
                     <?php if(isset($_SESSION['sucesso_login'])): ?>
-                        <p class="cadastroSucesso"><?php echo $_SESSION['sucesso_login']; unset($_SESSION['sucesso_login']); ?></p>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 4000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.onmouseenter = Swal.stopTimer;
+                                        toast.onmouseleave = Swal.resumeTimer;
+                                    }
+                                });
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: '<?php echo $_SESSION['sucesso_login']; ?>'
+                                });
+                            });
+                        </script>
+                        <?php unset($_SESSION['sucesso_login']); ?>
                     <?php endif; ?>
 
                     <form method="POST" action="cad.php">
