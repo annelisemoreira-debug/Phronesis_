@@ -2,6 +2,14 @@
 // Conexão com o banco (ajuste host, dbname, user e pass)
 // --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
 
+session_start();
+
+// SEGURANÇA MÁXIMA: Se não estiver logado OU não for admin, manda para a index
+if (!isset($_SESSION['id']) || $_SESSION['tipo'] !== 'admin') {
+    header("Location: index.php");
+    exit();
+}
+
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=phronesis", "root", "Home@spSENAI2025!");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
