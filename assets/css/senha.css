@@ -23,6 +23,7 @@
     border-radius: 10px;
     overflow: hidden;
     max-width: 950px;
+    height: 600px;
     width: 100%;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
@@ -123,6 +124,18 @@ form {
 .entrarLogin:hover {
     background-color: #031768;
     transform: scale(1.05);
+}
+
+.botaoVoltar {
+    color: #FFD700;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+.botaoVoltar:hover {
+    color: #ffc700;
+    transition: color 0.3s ease;
+    text-shadow: 0 0 8px rgba(97, 44, 167, 0.514);
 }
 
 /* Media Queries para ajuste fino */
