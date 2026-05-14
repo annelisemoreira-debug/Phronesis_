@@ -66,22 +66,13 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Materiais Complementares - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/material.css">
-    <style>
-        .fav-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: 0.3s; padding: 0; margin-left: 8px; vertical-align: middle; }
-        .star-on { color: #FFD700; } 
-        .star-off { color: #ccc; }
-        
-        /* ESTILO PARA A SEÇÃO SEPARADA ABAIXO */
-        .caixa-favoritos-nova { 
-            margin-top: 40px; 
-            background: #fff; 
-            padding: 25px; 
-            border-radius: 20px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/header.css">
 </head>
 <body>
+    <?php include '../interface/header.php'; ?>
+
+    <section class="banner"><img src="../assets/img/bannerAzul.webp" alt=""></section>
+
     <div class="wrapper">
         <aside class="menuSidebar">
             <div class="logoMarca">
@@ -107,29 +98,7 @@ try {
         </aside>
 
         <div class="principalContent">
-            <header>
-                <nav class="menuNav">
-                    <ul class="menu">
-                        <li class="livros"><a href="livros.php">Obras Obrigatórias</a></li>
-                        <li class="home"><a href="../index.php">Início</a></li>
-                        <li class="cronogramas"><a href="meu_calendario.php">Cronogramas</a></li>
-                        <li class="entrar">
-                            <div class="entrar-container">
-                                <?php if ($dadosUser): 
-                                    $fotoPerfil = !empty($dadosUser['foto']) ? $dadosUser['foto'] : 'assets/img/default-user.webp'; ?>
-                                    <a href="../perfil/configperfil.php" style="display: flex; align-items: center; justify-content: center;">
-                                        <img src="../<?= $fotoPerfil ?>" class="user-profile-top" alt="Perfil" onerror="this.src='../assets/img/default-user.webp';">
-                                    </a>
-                                <?php endif; ?>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-            </header>
-
             <main class="areaContent">
-                <section class="banner"><div></div></section>
-
                 <section class="container-materiais">
                     <div class="video-container-white">
                         <div class="video-header">
