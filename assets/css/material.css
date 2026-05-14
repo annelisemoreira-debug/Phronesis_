@@ -257,20 +257,31 @@ body {
 }
 
 /* Container pai para colocar a galeria e a sidebar lado a lado */
+/* Troque o display:flex antigo por este que força coluna */
 .container-materiais {
     display: flex;
-    gap: 20px;
-    align-items: flex-start;
+    flex-direction: column; /* Isso joga os Favoritos para baixo */
+    gap: 30px;
+    width: 100%;
     margin-top: 30px;
 }
 
-/* Ajuste na largura do container de vídeos */
+/* Garante que o container de vídeos ocupe a largura total */
 .video-container-white {
-    flex: 3; /* Ocupa a maior parte do espaço */
+    width: 100%; 
     background-color: white;
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Ajuste a Grid para ser responsiva e ocupar o espaço novo */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    max-height: none; /* Removemos o scroll interno para o layout fluir melhor */
+    overflow-y: visible;
 }
 
 /* O novo campo branco (sidebar lateral) */

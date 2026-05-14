@@ -1,11 +1,27 @@
 <?php
 session_start();
 
-// --- TRAVA DE SEGURANÇA ---
+// 1. Verifica se a variável de sessão existe
 if (!isset($_SESSION['id'])) {
     header("Location: ../login.php");
     exit();
 }
+
+// --- CONEXÃO ---
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+
+// 2. Verifica se o ID da sessão ainda é válido no banco de dados
+$id = $_SESSION['id'];
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$dadosUser = $res->fetch_assoc();
+
+// Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
+if (!$dadosUser) {
+    session_destroy(); // Destrói a sessão inválida
+    header("Location: ../login.php");
+    exit();
+}
+
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
