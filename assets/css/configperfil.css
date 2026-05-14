@@ -47,25 +47,73 @@ body {
     margin-bottom: 10px;
 }
 
+/* --- SIDEBAR (Esquerda) --- */
+.sidebar {
+    width: 250px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px 15px; /* Ajustado padding lateral */
+    display: flex;
+    flex-direction: column;
+}
+
+.logo img {
+    width: 150px;
+    margin-bottom: 40px;
+    padding-left: 10px;
+    display: block;
+}
+
+.nav-title {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #9274ff; /* Cor mais sutil para o título da seção */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
 .sidebar ul {
     list-style: none;
 }
 
 .sidebar ul li {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 }
 
 .sidebar ul li a {
     text-decoration: none;
     color: #555;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    transition: all 0.3s ease; /* Transição suave */
+}
+
+/* Efeito ao passar o mouse e item ativo */
+.sidebar ul li a:hover, 
+.sidebar ul li a.active {
+    background-color: #f0ecff; /* Fundo lilás bem clarinho */
+    color: #7B61FF; /* Cor roxa Phronesis */
+    transform: translateX(5px); /* Move levemente para a direita */
+    font-weight: 600;
+}
+
+/* Estilo do emoji */
+.sidebar ul li a span {
+    margin-right: 12px;
+    font-size: 1.2rem;
+    filter: grayscale(100%); /* Deixa o emoji cinza por padrão */
     transition: 0.3s;
 }
 
-.sidebar ul li a:hover, 
-.sidebar ul li a.active {
-    color: #000;
-    font-weight: 500;
+.sidebar ul li a:hover span,
+.sidebar ul li a.active span {
+    filter: grayscale(0%); /* Deixa colorido no hover */
 }
 
 /* --- CONTEÚDO PRINCIPAL (Direita) --- */

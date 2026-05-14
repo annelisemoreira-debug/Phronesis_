@@ -141,25 +141,25 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 </head>
 <body>
    <div class="main-wrapper">
-        <aside class="sidebar">
-            <div class="logo">
-                <img src="../assets/img/logoSite.webp" alt="Phronesis">
-            </div>
-            <nav>
-                <p class="nav-title">Conta Pessoal</p>
-                <ul>
-                    <li><a href="configperfil.php" class="active">Meu perfil</a></li>
-                    <li><a href="#">Acessibilidade</a></li>
-                </ul>
-                <p class="nav-title">Voltar</p>
-                <ul>
-                    <li><a href="../index.php">Início</a></li>
-                    <li><a href="../pages/livros.php">Livros</a></li>
-                    <li><a href="../pages/material.php">Matérias</a></li>
-                    <li><a href="../pages/cronograma.php">Cronograma</a></li>
-                </ul>
-            </nav>
-        </aside>
+            <aside class="sidebar">
+                <div class="logo">
+                    <img src="../assets/img/logoSite.webp" alt="Phronesis">
+                </div>
+                <nav>
+                    <p class="nav-title">Conta Pessoal</p>
+                    <ul>
+                        <li><a href="configperfil.php" class="active"><span>👤</span> Meu perfil</a></li>
+                        <li><a href="#"><span>♿</span> Acessibilidade</a></li>
+                    </ul>
+                    <p class="nav-title">Voltar</p>
+                    <ul>
+                        <li><a href="../index.php"><span>🏠</span> Início</a></li>
+                        <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
+                        <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
+                        <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
+                    </ul>
+                </nav>
+            </aside>
 
         <main class="content">
             <header class="profile-banner">
