@@ -1,0 +1,75 @@
+/* Estilos do Header e Menu */
+header {
+    background-color: #8c52ff;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 15px 15px;
+    flex-wrap: wrap;
+}
+
+.logoMarca {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.logoMarca img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.menu li {
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.menu li a {
+    text-decoration: none;
+    display: block;
+    padding: 8px 15px;
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
+.menu li.materiais { background-color: #8dd4ff; }
+.menu li.livros { background-color: #ffe57e; }
+.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
+
+.menu li.entrar a:hover {
+    background-color: #2060d8;
+    color: white;
+    transition: 0.3s;
+}
+
+.menu .admin a { color: #ff4d4d; font-weight: bold; }
+
+/* Estilos do Dropdown de Perfil */
+.perfil-container { position: relative; cursor: pointer; }
+.foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; object-fit: cover; }
+.menu-dropdown { display: none; position: absolute; right: 0; background: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 5px; min-width: 150px; z-index: 100; }
+.menu-dropdown a { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
+.menu-dropdown a:hover { background: #f4f4f4; }
+.show { display: block; }
+
+/* No header.css ou no final do livros.css */
+.menu li.perfil-container {
+    overflow: visible !important; 
+    position: relative;
+}
+.menu-dropdown.show {
+    display: block !important;
+}

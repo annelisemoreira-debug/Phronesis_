@@ -59,6 +59,7 @@ $authUrl = $client->createAuthUrl();
 
 </head>
 <body>
+    
     <img src="../assets/img/fundoAmarelo02.webp" class="bg-html" alt="Fundo">
 
     <div class="login-card">
