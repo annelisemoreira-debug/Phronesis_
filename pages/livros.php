@@ -1,5 +1,28 @@
+<?php
+session_start();
+
+// --- TRAVA DE SEGURANÇA ---
+// Se não existir a sessão de ID, redireciona imediatamente para o login
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit(); // Encerra a execução para que o restante da página não seja carregado
+}
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// --- CONEXÃO E BUSCA DO USUÁRIO ---
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+$dadosUser = null;
+
+// Como a trava acima já garante que o ID existe, podemos buscar direto
+$id = $_SESSION['id'];
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$dadosUser = $res->fetch_assoc();
+
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +39,20 @@
                         <li class="materiais"><a href="material.php">Materiais</a></li>
                         <li class="home"><a href="../index.php">Início</a></li>
                         <li class="cronogramas"><a href="meu_calendario.php">Cronogramas</a></li>
-                        <li class="entrar"><a href="../login.php">Entrar</a></li>
+                        <li class="entrar">
+                            <div class="entrar-container">
+                                <?php if ($dadosUser): ?>
+                                    <a href="../perfil/configperfil.php">
+                                        <?php 
+                                            $fotoPerfil = !empty($dadosUser['foto']) ? $dadosUser['foto'] : 'assets/img/default-user.webp';
+                                        ?>
+                                        <img src="../<?= $fotoPerfil ?>" class="user-profile-top" alt="Perfil" onerror="this.src='../assets/img/default-user.webp';">
+                                    </a>
+                                <?php else: ?>
+                                    <a href="../login.php">Entrar</a>
+                                <?php endif; ?>
+                            </div>
+                        </li>
                     </ul>
                 </nav>
             </header>

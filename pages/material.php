@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+// --- TRAVA DE SEGURANÇA ---
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 

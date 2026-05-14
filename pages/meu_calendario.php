@@ -1,5 +1,13 @@
 <?php
+
 session_start();
+
+// --- TRAVA DE SEGURANÇA ---
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new Google\Client();

@@ -59,11 +59,37 @@ body {
     background-color: #47b1f2;
     border-radius: 25px;
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px; 
+    height: 50px;    
+    padding: 0 10px;
+    isolation: isolate; /* Impede mistura de cores com o fundo */
+}
+
+.user-profile-top {
+    width: 40px;      
+    height: 40px;     
+    border-radius: 50%; 
+    object-fit: cover;  
+    border: 2px solid white; 
+    display: block;
+    opacity: 1 !important; /* Foto 100% visível */
+    mix-blend-mode: normal !important; /* Sem mistura com o azul */
+    filter: none !important;
+}
+
+.entrar-container a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    text-decoration: none;
 }
 
 .menu li.entrar a:hover {
-    background-color: #2060d8;
-    color: white;
+    filter: brightness(1.1);
     transition: 0.3s;
 }
 
