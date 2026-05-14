@@ -87,7 +87,7 @@ try {
                         <div id="timer-enem" class="countdown-mini">00d 00h 00m</div>
                     </div>
                     <div class="exam-card-mini mini-fuvest">
-                        <span class="exam-name-mini">FUVEST 2026</span>
+                        <span class="exam-name-mini">FUVEST 2027</span>
                         <div id="timer-fuvest" class="countdown-mini">00d 00h 00m</div>
                     </div>
                     <div class="exam-card-mini mini-unicamp">
@@ -95,7 +95,7 @@ try {
                         <div id="timer-unicamp" class="countdown-mini">00d 00h 00m</div>
                     </div>
                     <div class="exam-card-mini mini-unesp">
-                        <span class="exam-name-mini">UNESP 2026</span>
+                        <span class="exam-name-mini">UNESP 2027</span>
                         <div id="timer-unesp" class="countdown-mini">00d 00h 00m</div>
                     </div>
                 </div>
