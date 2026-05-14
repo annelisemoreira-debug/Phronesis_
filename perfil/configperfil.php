@@ -165,7 +165,14 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                     <p class="nav-title">Conta Pessoal</p>
                     <ul>
                         <li><a href="configperfil.php" class="active"><span>👤</span> Meu perfil</a></li>
-                        <li><a href="#"><span>♿</span> Acessibilidade</a></li>
+                            <li>
+                                <a href="#" class="nav-link-acessibilidade">
+                                    <img src="../assets/img/acessibilidade.webp" 
+                                        alt="Acessibilidade" 
+                                        class="icon-acessibilidade">
+                                    <span>Acessibilidade</span>
+                                </a>
+                            </li>
                     </ul>
                     <p class="nav-title">Voltar</p>
                     <ul>
