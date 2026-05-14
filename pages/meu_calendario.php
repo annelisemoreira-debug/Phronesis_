@@ -36,7 +36,7 @@ $authUrl = $client->createAuthUrl();
 
 </head>
 <body>
-    <img src="../assets/img/fundoAmarelo01.png" class="bg-html" alt="Fundo">
+    <img src="../assets/img/fundoAmarelo02.webp" class="bg-html" alt="Fundo">
 
     <div class="login-card">
     <h2>Conectar para criar!</h2>
