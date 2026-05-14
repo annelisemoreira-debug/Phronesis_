@@ -143,7 +143,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
    <div class="main-wrapper">
         <aside class="sidebar">
             <div class="logo">
-                <img src="assets/img/phronesisLogo.png" alt="Phronesis">
+                <img src="../assets/img/logoSite.webp" alt="Phronesis">
             </div>
             <nav>
                 <p class="nav-title">Conta Pessoal</p>
@@ -163,7 +163,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/bannerInicio.png" alt="Banner" style="width: 100%;">
+                <img src="../assets/img/bannerInicio.webp" alt="Banner" style="width: 100%;">
             </header>
 
              <section class="container-dados" style="padding: 20px;">

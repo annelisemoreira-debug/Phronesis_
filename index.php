@@ -85,7 +85,7 @@ if (isset($_SESSION['id'])) {
 
     <main>
         <section class="banner">
-            <img src="./assets/img/bannerInicio.png" alt="Fundo">
+            <img src="./assets/img/bannerInicio.webp" alt="Fundo">
         </section>
         <h1> O que oferecemos? </h1>
         <h3>Conheça nosso serviços e melhore nos estudos!</h3>

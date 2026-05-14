@@ -21,11 +21,11 @@
                 </nav>
             </header>
 
-            <main class="areaContent">
-                <section class="banner">
-                    <img src="../assets/img/bannerLivros02.png" class="bg-html" alt="Fundo">
-                </section>
+            <section class="banner">
+                <img src="../assets/img/bannerLivros02.webp" class="bg-html" alt="Fundo">
+            </section>
 
+            <main class="areaContent">
                     <section class="listaLivros">
                         <article class="containerVest">
                             <div class="fuvestImg">

@@ -61,7 +61,7 @@ try {
         <aside class="menuSidebar">
             <div class="logoMarca">
                 <a href="../index.php">
-                    <img src="../assets/img/logoSidebar.webp" alt="Logo oficial da Phronesis">
+                    <img src="../assets/img/logoSite.webp" alt="Logo oficial da Phronesis">
                 </a>
             </div>
             <nav>
