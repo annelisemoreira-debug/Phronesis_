@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #9274ff;
+    background-color: #bfa2ff;
 }
 
 /* Wrapper */
@@ -21,7 +21,7 @@ body {
   flex: 1; 
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 50px;
   padding: 18px 50px;
 }
 
@@ -96,15 +96,27 @@ body {
 /*Main section*/
 .areaContent {
     border-radius: 15px;
-    padding: 20px;
+    padding: 50px 70px;
+    width: 1600px;
     flex: 1;
     background-color: white;
+    margin-left: 90px;
 }
 
 .banner {
-    width: 1400px;
-    height: 130px;
-    border-radius: 20px;
+    margin-top: 20px;
+    width: 90%;             /* Ocupa toda a largura do container pai */
+    max-width: 1700px;       /* Mesma largura máxima do areaContent */
+    height: 150px;           /* Aumentado levemente para melhor proporção */
+    margin-left: 90px;       /* Mesma margem que você deu ao .areaContent */
+    overflow: hidden;        /* Garante que a imagem não saia da borda arredondada */
+}
+
+.banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;       /* Faz a imagem preencher o espaço sem distorcer */
+    display: block;
 }
 
 /*Section main vestibulares*/
@@ -122,8 +134,6 @@ body {
     object-fit: contain;
     background-color: white;
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 /* Container de cada vestibular */
@@ -158,7 +168,7 @@ body {
 }
 
 .descricaoVest p {
-    font-size: 16px;
+    font-size: 17px;
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.6; 
@@ -171,7 +181,7 @@ body {
     padding: 8px 30px; 
     border-radius: 20px;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 20px;
     display: inline-block; 
     width: fit-content;
     

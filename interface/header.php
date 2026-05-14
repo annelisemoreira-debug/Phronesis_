@@ -17,7 +17,7 @@ if (strpos($script_name, '/pages/') !== false || strpos($script_name, '/perfil/'
 }
 
 // 3. Define a foto padrão usando o $path dinâmico
-$fotoPerfil = $path . "assets/img/default-user.webp"; 
+$fotoPerfil = $path . "../assets/img/default-user.webp"; 
 
 if (isset($_SESSION['id'])) {
     $id_usuario = $_SESSION['id'];

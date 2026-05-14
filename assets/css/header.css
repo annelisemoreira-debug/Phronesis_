@@ -5,14 +5,13 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 0 0 15px 15px;
     flex-wrap: wrap;
 }
 
 .logoMarca {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    width: 300px;
+    height: 38px;
+    border-radius: 10px;
     overflow: hidden;
 }
 
@@ -47,11 +46,11 @@ header {
 .menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
 .menu li.materiais { background-color: #8dd4ff; }
 .menu li.livros { background-color: #ffe57e; }
-.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
+.menu li.entrar { background-color: #ffffff; border-radius: 25px; color: #3f007d;}
 
 .menu li.entrar a:hover {
-    background-color: #2060d8;
-    color: white;
+    background-color: #6000c0;
+    color: #ffffff;
     transition: 0.3s;
 }
 
@@ -59,7 +58,7 @@ header {
 
 /* Estilos do Dropdown de Perfil */
 .perfil-container { position: relative; cursor: pointer; }
-.foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; object-fit: cover; }
+.foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #6000c0; object-fit: cover; }
 .menu-dropdown { display: none; position: absolute; right: 0; background: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 5px; min-width: 150px; z-index: 100; }
 .menu-dropdown a { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
 .menu-dropdown a:hover { background: #f4f4f4; }
