@@ -245,18 +245,18 @@ body {
 }
 
 .banner {
-    margin-top: 55px;
-    width: 90%;             /* Ocupa toda a largura do container pai */
-    max-width: 1700px;       /* Mesma largura máxima do areaContent */
-    height: 150px;           /* Aumentado levemente para melhor proporção */
-    margin-left: 90px;       /* Mesma margem que você deu ao .areaContent */
-    overflow: hidden;        /* Garante que a imagem não saia da borda arredondada */
+    width: 90%; 
+    max-width: 1200px;
+    height: 135px;
+    margin: 30px auto; 
+    display: block;
+    overflow: hidden;
 }
 
 .banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover;       /* Faz a imagem preencher o espaço sem distorcer */
+    object-fit: cover;
     display: block;
 }
 

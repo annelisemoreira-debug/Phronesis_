@@ -42,18 +42,16 @@ body {
 .banner {
     width: 90%; 
     max-width: 1200px;
-    height: 135px; /* Ajustei a altura para aparecer melhor, mas pode manter 130px se preferir */
-    
-    /* CENTRALIZAÇÃO MÁGICA AQUI: */
+    height: 135px;
     margin: 30px auto; 
     display: block;
-    overflow: hidden; /* Garante que a imagem não saia das bordas arredondadas */
+    overflow: hidden;
 }
 
 .banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+    object-fit: cover;
     display: block;
 }
 

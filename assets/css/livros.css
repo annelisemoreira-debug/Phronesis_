@@ -81,11 +81,11 @@ body {
 .areaContent {
     border-radius: 15px;
     padding: 50px 70px;
-    width: 100%; /* Alterado de 1600px para responsividade */
+    width: 100%; 
     max-width: 1400px;
     flex: 1;
     background-color: white;
-    margin: 0 auto; /* Centralizado */
+    margin: 0 auto;
 }
 
 .banner {
@@ -120,13 +120,28 @@ body {
     gap: 40px; 
 }
 
-.containerVest:nth-child(even) {
-    flex-direction: row-reverse;
-    text-align: right;
+.descricaoVest {
+    flex: 1; 
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
 }
 
+/* --- AJUSTE DE ALINHAMENTO (ESQUERDA E DIREITA) --- */
+.containerVest:nth-child(odd) {
+    flex-direction: row;
+}
+.containerVest:nth-child(odd) .descricaoVest {
+    align-items: flex-start; /* Título na esquerda */
+    text-align: left;
+}
+
+.containerVest:nth-child(even) {
+    flex-direction: row-reverse;
+}
 .containerVest:nth-child(even) .descricaoVest {
-    align-items: flex-end;
+    align-items: flex-end; /* Título na direita */
+    text-align: right;
 }
 
 .fuvestImg, .vunestImg, .unicampImg, .enemImg {
@@ -140,31 +155,27 @@ body {
     object-fit: contain;
 }
 
-.descricaoVest {
-    flex: 1; 
-    display: flex;
-    flex-direction: column; 
-    gap: 15px;
-}
-
 .descricaoVest p {
     font-size: 17px;
     color: #000;
     line-height: 1.6;
 }
 
+/* Estilo Padrão do Rótulo (Fundo curto padrão Vunesp) */
 .nome {
-    background-color: #8654f3;
     color: white;
-    padding: 8px 30px; 
-    border-radius: 20px;
+    padding: 8px 45px; 
+    border-radius: 50px; 
     font-weight: bold;
     font-size: 20px;
     display: inline-block; 
-    text-transform: uppercase; 
+    width: fit-content; 
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    background-color: #8654f3;
 }
 
-/* --- JANELAS MODAIS (Estilo Fiel à sua Imagem) --- */
+/* --- JANELAS MODAIS --- */
 .containerVest dialog {
     position: fixed;
     inset: 0;  
@@ -174,7 +185,7 @@ body {
     padding: 40px;
     width: 90%;
     max-width: 520px;
-    max-height: 90vh; /* Para não cortar em telas baixas */
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     text-align: center;
@@ -193,6 +204,7 @@ body {
     margin-bottom: 25px;
     font-size: 20px;
     text-transform: uppercase;
+    background-color: #8654f3;
 }
 
 .containerVest dialog h3 {
@@ -212,12 +224,6 @@ body {
     white-space: pre-line;
 }
 
-/* Cores dos Modais */
-.containerVest:nth-child(1) dialog h2 { background-color: #8654f3; }
-.containerVest:nth-child(2) dialog h2 { background-color: #ff4d4d; }
-.containerVest:nth-child(3) dialog h2 { background-color: #9b6dff; }
-.containerVest:nth-child(4) dialog h2 { background-color: #47b1f2; }
-
 .close-button {
     position: absolute;
     top: 15px;
@@ -236,7 +242,7 @@ body {
     justify-content: center;
 }
 
-/* --- RESPONSIVIDADE (Media Queries) --- */
+/* --- RESPONSIVIDADE --- */
 @media (max-width: 1024px) {
     .principalContent { padding: 18px 20px; }
     .areaContent { padding: 30px; }
@@ -248,7 +254,7 @@ body {
         text-align: center;
         gap: 20px;
     }
-    .containerVest:nth-child(even) .descricaoVest, .descricaoVest {
+    .containerVest .descricaoVest, .containerVest:nth-child(even) .descricaoVest {
         align-items: center;
     }
     .fuvestImg, .vunestImg, .unicampImg, .enemImg {
