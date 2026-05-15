@@ -1,11 +1,11 @@
-/*Reset e Base*/
+/* Reset e Base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/*Imagem de Fundo */
+/* Imagem de Fundo */
 .bg-html {
     position: fixed;
     top: 0;
@@ -26,8 +26,8 @@
 }
 
 .glass-card {
-    display: flex; /* Alinha logo e form lado a lado */
-    background-color: rgba(180, 150, 255, 0.85); /* Roxo transparente */
+    display: flex;
+    background-color: rgba(180, 150, 255, 0.85);
     border-radius: 15px;
     overflow: hidden;
     max-width: 950px;
@@ -71,54 +71,72 @@
     color: #001a8b;
     font-family: Arial, Helvetica, sans-serif;
     display: block;
-    margin-bottom: -5px; /* Força o label a descer para perto do input */
+    margin-bottom: -5px;
     padding-left: 5px;
-}
-
-.mainContainer p {
-    font-family: Arial, Helvetica, sans-serif;    
 }
 
 .mainContainer input {
     border: 2px solid transparent; 
-    padding: 12px 15px; /* Mantém o padding interno que você já tinha */
+    padding: 12px 15px;
     border-radius: 25px;
     width: 100%;
     font-size: 16px;
-    background-color: white; /* Garante que o fundo seja branco */
+    background-color: white;
     transition: all 0.3s ease;
 }
 
 .mainContainer input:focus {
     outline: none;
     border: 2px solid #4fd6ff;
-    box-shadow: 0 0 5px rgba(146, 79, 255, 0.5)
+    box-shadow: 0 0 5px rgba(146, 79, 255, 0.5);
 }
 
-/* Campos lado a lado */
+/* --- SOLUÇÃO DE CENTRALIZAÇÃO DO OLHO --- */
+
+.inserirInfo {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+}
+
+.input-group-password {
+    position: relative;
+    display: flex;
+    align-items: center; /* Centraliza o ícone verticalmente em relação ao input */
+    margin-top: 5px;
+}
+
+.input-group-password input {
+    padding-right: 45px; /* Espaço para o texto não passar sob o olho */
+    margin-top: 0 !important; /* Reseta margem para não quebrar o flex */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #001a8b;
+    font-size: 18px;
+    z-index: 10;
+}
+
+/* --- ALINHAMENTO --- */
+
 .linha_dupla {
     display: flex;
     gap: 15px;
     align-items: flex-end;
 }
 
-.inserirInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Zerado para controle total via margin */
-    flex: 1;
-    width: 100%;
-}
-
 .inserirInfo label {
     margin-top: 10px;
 }
 
-.inserirInfo input{
+.inserirInfo input {
     margin-top: 5px;
 }
 
-/* Botão Cadastrar */
 .entrarLogin {
     border: none;
     background-color: #001a8b;
@@ -128,7 +146,7 @@
     border-radius: 25px; 
     padding: 12px 60px;
     cursor: pointer;
-    align-self: center; /* Centraliza no fundo roxo */
+    align-self: center;
     margin-top: 15px;
     transition: 0.3s;
 }
@@ -143,21 +161,21 @@
     font-weight: bolder;
     text-decoration: none;
     font-family: Arial, Helvetica, sans-serif;
-
 }
 
 .botaoLogin:hover {
     color: #ffc700;
-    transition: color 0.3s ease;
-    text-shadow: 0 0 8px rgba(97, 44, 167, 0.514);
+    text-shadow: 0 0 8px rgba(97, 44, 167, 0.5);
 }
 
-/* Responsividade para Celular */
+/* Responsividade */
 @media (max-width: 850px) {
     .glass-card {
-        flex-direction: column; /* Empilha no celular */
+        flex-direction: column;
+        height: auto;
     }
     .linha_dupla {
         flex-direction: column;
+        align-items: stretch;
     }
 }

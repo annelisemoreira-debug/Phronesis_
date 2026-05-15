@@ -6,7 +6,47 @@
     <meta charset="UTF-8">
     <title>Faça parte do Phronesis!</title>
     <link rel="stylesheet" href="assets/css/cadastro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Estrutura para centralização precisa */
+        .inserirInfo { 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Contêiner relativo apenas para o campo de input */
+        .input-group-password {
+            position: relative;
+            display: flex;
+            align-items: center; /* Centraliza verticalmente o ícone em relação ao input */
+        }
+
+        .input-group-password input {
+            width: 100%;
+            padding-right: 45px; /* Espaço para o ícone não cobrir o texto */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            color: #031768;
+            z-index: 10;
+            font-size: 1.1rem;
+            /* Removemos o top: 65% e usamos alinhamento flex centralizado */
+        }
+
+        /* Ajuste visual para o formulário */
+        .linha_dupla {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .linha_dupla .inserirInfo {
+            flex: 1;
+        }
+    </style>
 </head>
 
 <body>
@@ -39,9 +79,12 @@
                         <div class="linha_dupla">
                             <div class="inserirInfo">
                                 <label>Senha: </label>
-                                <input type="password" name="senha" id="senha"
-                                    placeholder="Mínimo 6 caracteres (letra, número e símbolo)"
-                                    required>
+                                <div class="input-group-password">
+                                    <input type="password" name="senha" id="senha"
+                                        placeholder="Mínimo 6 caracteres"
+                                        required>
+                                    <i class="fa-solid fa-eye toggle-password" id="btn-senha"></i>
+                                </div>
                             </div>
 
                             <div class="inserirInfo">
@@ -60,7 +103,19 @@
     </main>
 
     <script>
-        // Configuração padrão do Toast
+        const btnSenha = document.getElementById('btn-senha');
+        const inputSenha = document.getElementById('senha');
+
+        btnSenha.addEventListener('click', () => {
+            if (inputSenha.type === 'password') {
+                inputSenha.setAttribute('type', 'text');
+                btnSenha.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                inputSenha.setAttribute('type', 'password');
+                btnSenha.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -69,7 +124,6 @@
             timerProgressBar: true
         });
 
-        // 1. Captura mensagens vindas do PHP (cad.php)
         <?php if (isset($_SESSION['erro_cad'])): ?>
             Toast.fire({
                 icon: 'error',
@@ -77,20 +131,15 @@
             });
         <?php unset($_SESSION['erro_cad']); endif; ?>
 
-        // 2. Validação Manual para substituir os avisos padrão do navegador
         document.getElementById('formCadastro').addEventListener('submit', function(e) {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const telefone = document.getElementById('telefone').value;
             
-            // Regex da senha (mesma do seu cad.php)
             const senhaRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            let erro = "";
-
-                // Verificação de campos vazios
             if (!nome || !email || !senha || !telefone) {
                 e.preventDefault();
                 Toast.fire({
@@ -98,7 +147,6 @@
                     title: "Por favor, preencha todos os campos."
                 });
             } 
-            // Verificação de e-mail
             else if (!emailRegex.test(email)) {
                 e.preventDefault();
                 Toast.fire({
@@ -106,7 +154,6 @@
                     title: "Formato de e-mail inválido."
                 });
             } 
-            // Verificação de senha com formato de lista
             else if (!senhaRegex.test(senha)) {
                 e.preventDefault();
                 Toast.fire({
@@ -126,7 +173,6 @@
             }
         });
 
-        // Sua função de máscara (mantida original)
         function handleTelefone(event) {
             let input = event.target;
             input.value = telefoneMask(input.value);

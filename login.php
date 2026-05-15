@@ -5,7 +5,20 @@
     <meta charset="UTF-8">
     <title>Faça o seu login no Phronesis!</title>
     <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Ajuste fino para o ícone não quebrar o layout */
+        .inserirInfo { position: relative; }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 65%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #031768;
+        }
+    </style>
 </head>
 <body>
     <img src="assets/img/fundoRoxo.webp" class="bg-html" alt="Fundo">
@@ -32,6 +45,7 @@
                         <div class="inserirInfo">
                             <label>Senha: </label>
                             <input type="password" name="senha" id="senha" placeholder="Digite sua senha" required>
+                            <i class="fa-solid fa-eye toggle-password" id="btn-senha"></i>
                         </div>
 
                         <a class="esqueceuSenha" href="senhaPerdida.php?acao=recuperar" style="text-decoration:none"> Esqueceu sua senha? </a>
@@ -43,6 +57,20 @@
     </main>
 
     <script>
+        // Lógica para mostrar/esconder senha
+        const btnSenha = document.getElementById('btn-senha');
+        const inputSenha = document.getElementById('senha');
+
+        btnSenha.addEventListener('click', () => {
+            if (inputSenha.type === 'password') {
+                inputSenha.setAttribute('type', 'text');
+                btnSenha.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                inputSenha.setAttribute('type', 'password');
+                btnSenha.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
         // Configuração padrão do Toast
         const Toast = Swal.mixin({
             toast: true,
@@ -52,7 +80,6 @@
             timerProgressBar: true
         });
 
-        // 1. Captura mensagens vindas do PHP (Login incorreto ou Sucesso no cadastro)
         <?php if(isset($_SESSION['erro_login'])): ?>
             Toast.fire({
                 icon: 'error',
@@ -67,7 +94,6 @@
             });
         <?php unset($_SESSION['sucesso_login']); endif; ?>
 
-        // 2. Validação Manual para evitar os balões padrão do navegador
         document.getElementById('formLogin').addEventListener('submit', function(e) {
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;

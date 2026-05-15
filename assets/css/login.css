@@ -1,3 +1,5 @@
+/*--- CSS CORRIGIDO PARA CENTRALIZAR O OLHO ---*/
+
 /*Reset e Base*/
 * {
     margin: 0;
@@ -98,16 +100,17 @@
 .mainContainer h1 {
     font-size: 36px;
     color: #001a8b;
-
 }
 
 .mainContainer p {
     font-family: Arial, Helvetica, sans-serif;    
 }
 
+/*--- AJUSTE DE INPUTS ---*/
 .mainContainer input {
     border: 2px solid transparent; /* Adiciona uma borda invisível de 2px no estado normal */
-    padding: 12px 15px; /* Mantém o padding interno que você já tinha */
+    /* Padding ajustado para acomodar o ícone à direita */
+    padding: 12px 40px 12px 15px; /* Direita agora tem 40px */
     border-radius: 25px;
     width: 100%;
     font-size: 16px;
@@ -137,6 +140,34 @@ form {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/*---Inputs com Ícone (Olho)---*/
+.inserirInfo.campo-senha {
+    position: relative; /* Pai posicionado para o ícone */
+}
+
+/* Container para alinhar input e ícone horizontalmente */
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper input {
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px; /* Alinhamento horizontal do ícone */
+    top: 50%; /* Alinha o topo do ícone com o centro do container */
+    transform: translateY(-50%); /* Centraliza o ícone verticalmente */
+    cursor: pointer;
+    color: #001a8b; /* Cor do ícone combinando com o texto */
+    font-size: 18px; /* Ajuste o tamanho do ícone aqui */
+    /* Impede que o ícone afete o layout */
+    z-index: 2;
+}
 
 /* Botões e Links */
 .entrarLogin {

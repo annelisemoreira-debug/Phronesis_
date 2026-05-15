@@ -18,11 +18,11 @@ body {
 
 /* Conteúdo Principal */
 .principalContent {
-  flex: 1; 
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
-  padding: 18px 50px;
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding: 18px 50px;
 }
 
 /* Menu Superior */
@@ -65,7 +65,7 @@ body {
     min-width: 60px; 
     height: 50px;    
     padding: 0 10px;
-    isolation: isolate; /* Impede mistura de cores com o fundo */
+    isolation: isolate;
 }
 
 .user-profile-top {
@@ -75,51 +75,36 @@ body {
     object-fit: cover;  
     border: 2px solid white; 
     display: block;
-    opacity: 1 !important; /* Foto 100% visível */
-    mix-blend-mode: normal !important; /* Sem mistura com o azul */
-    filter: none !important;
 }
 
-.entrar-container a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 !important;
-    text-decoration: none;
-}
-
-.menu li.entrar a:hover {
-    filter: brightness(1.1);
-    transition: 0.3s;
-}
-
-/*Main section*/
+/* Main section */
 .areaContent {
     border-radius: 15px;
     padding: 50px 70px;
-    width: 1600px;
+    width: 100%; 
+    max-width: 1400px;
     flex: 1;
     background-color: white;
-    margin-left: 90px;
+    margin: 0 auto;
 }
 
 .banner {
-    margin-top: 20px;
-    width: 90%;             /* Ocupa toda a largura do container pai */
-    max-width: 1700px;       /* Mesma largura máxima do areaContent */
-    height: 150px;           /* Aumentado levemente para melhor proporção */
-    margin-left: 90px;       /* Mesma margem que você deu ao .areaContent */
-    overflow: hidden;        /* Garante que a imagem não saia da borda arredondada */
+    width: 90%; 
+    max-width: 1200px;
+    height: 135px;
+    margin: 30px auto; 
+    display: block;
+    overflow: hidden;
 }
 
 .banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover;       /* Faz a imagem preencher o espaço sem distorcer */
+    object-fit: cover;
     display: block;
 }
 
-/*Section main vestibulares*/
+/* Vestibulares */
 .listaLivros {
     width: 100%;
     display: flex;
@@ -128,15 +113,6 @@ body {
     padding: 40px 0;
 }
 
-.listaLivros img {
-    width: 100%;        
-    height: 200px;
-    object-fit: contain;
-    background-color: white;
-    padding: 20px;
-}
-
-/* Container de cada vestibular */
 .containerVest {
     width: 100%;
     display: flex;
@@ -149,17 +125,17 @@ body {
     text-align: right;
 }
 
-.containerVest:nth-child(even) .descricaoVest {
-    align-items: flex-end;
-}
-
-/* Cards das Imagens */
 .fuvestImg, .vunestImg, .unicampImg, .enemImg {
     flex: 0 0 280px;
     cursor: pointer;
 }
 
-/* Descrição e Tags */
+.containerVest img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
 .descricaoVest {
     flex: 1; 
     display: flex;
@@ -167,28 +143,36 @@ body {
     gap: 15px;
 }
 
+/* Garante que o nome fique do lado certo e não estique */
+.containerVest:nth-child(odd) .descricaoVest { align-items: flex-start; }
+.containerVest:nth-child(even) .descricaoVest { align-items: flex-end; }
+
 .descricaoVest p {
     font-size: 17px;
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.6; 
-    max-width: 700px; 
+    color: #000;
+    line-height: 1.6;
 }
 
+/* Estilo Padrão do Rótulo (Ajustado para não esticar) */
 .nome {
-    background-color: #8654f3;
     color: white;
-    padding: 8px 30px; 
-    border-radius: 20px;
+    padding: 8px 45px; 
+    border-radius: 50px; 
     font-weight: bold;
     font-size: 20px;
     display: inline-block; 
-    width: fit-content;
-    
-    text-transform: uppercase; 
+    width: fit-content; /* Impede que o fundo roxo ocupe a largura toda */
+    text-transform: uppercase;
+    margin-bottom: 5px;
 }
 
-/* Estilo Base para todos os Dialogs */
+/* CORES PADRONIZADAS POR VESTIBULAR */
+.containerVest:nth-child(1) .nome { background-color: #8654f3; }
+.containerVest:nth-child(2) .nome { background-color: #8654f3; } /* Vunesp igual ao resto */
+.containerVest:nth-child(3) .nome { background-color: #8654f3; }
+.containerVest:nth-child(4) .nome { background-color: #8654f3; }
+
+/* --- JANELAS MODAIS (RESTAURADAS) --- */
 .containerVest dialog {
     position: fixed;
     inset: 0;  
@@ -198,18 +182,17 @@ body {
     padding: 40px;
     width: 90%;
     max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     text-align: center;
     outline: none;
-    transition: 0.3s;
 }
 
-/* Fundo escurecido */
 .containerVest dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* O Título de destaque (Ex: FUVEST) dentro do modal */
 .containerVest dialog h2 {
     color: white;
     padding: 10px 40px;
@@ -220,7 +203,6 @@ body {
     text-transform: uppercase;
 }
 
-/* Subtítulos (LEITURAS OBRIGATÓRIAS) */
 .containerVest dialog h3 {
     font-size: 15px;
     letter-spacing: 3px;
@@ -229,7 +211,6 @@ body {
     text-transform: uppercase;
 }
 
-/* Parágrafo com os nomes dos livros */
 .containerVest dialog p {
     font-size: 16px;
     line-height: 1.8;
@@ -239,19 +220,12 @@ body {
     white-space: pre-line;
 }
 
-/*FUVEST*/
+/* Cores dos Títulos dentro dos Modais */
 .containerVest:nth-child(1) dialog h2 { background-color: #8654f3; }
+.containerVest:nth-child(2) dialog h2 { background-color: #8654f3; }
+.containerVest:nth-child(3) dialog h2 { background-color: #8654f3; }
+.containerVest:nth-child(4) dialog h2 { background-color: #8654f3; }
 
-/*VUNESP*/
-.containerVest:nth-child(2) dialog h2 { background-color: #ff4d4d; }
-
-/*UNICAMP*/
-.containerVest:nth-child(3) dialog h2 { background-color: #9b6dff; }
-
-/*ENEM*/
-.containerVest:nth-child(4) dialog h2 { background-color: #47b1f2; }
-
-/* Botão de fechar dentro do modal */
 .close-button {
     position: absolute;
     top: 15px;
@@ -260,23 +234,34 @@ body {
     height: 30px;
     border-radius: 50%;
     border: none;
-    background-color: #8654f3; /* Cinza claro/branco */
-    color: #ffffff; /* Cor do X */
+    background-color: #8654f3;
+    color: #ffffff;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s;
-    line-height: 1;
 }
 
-.close-button:hover {
-    background-color: #47b1f2;
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 1024px) {
+    .principalContent { padding: 18px 20px; }
+    .areaContent { padding: 30px; }
 }
 
-/* Garante que o conteúdo do modal não sobreponha o botão */
-.containerVest dialog {
-    position: relative; /* Necessário para o posicionamento do botão */
+@media (max-width: 768px) {
+    .containerVest, .containerVest:nth-child(even) {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    .containerVest:nth-child(even) .descricaoVest, .descricaoVest {
+        align-items: center;
+    }
+    .fuvestImg, .vunestImg, .unicampImg, .enemImg {
+        flex: 0 0 auto;
+        width: 180px;
+    }
+    .menu li.entrar { margin-left: 0; }
 }
