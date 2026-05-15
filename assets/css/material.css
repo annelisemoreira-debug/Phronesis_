@@ -169,66 +169,6 @@ body {
   padding: 18px 50px;
 }
 
-/* Menu Superior */
-.menu {
-  display: flex;
-  list-style: none;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.menu li {
-  border-radius: 15px;
-  overflow: hidden;
-}
-
-.menu li a {
-  text-decoration: none;
-  display: block;
-  padding: 12px 25px;
-  color: black;
-  font-weight: bold;
-  font-size: 16px;
-  text-align: center;
-}
-
-/* Cores do Menu */
-.menu li.cronogramas {
-  background-color: #bfa2ff;
-}
-.menu li.livros {
-  background-color: #8dd4ff;
-}
-.menu li.home {
-  background-color: #ffe57e;
-}
-
-/* --- AJUSTE DO PERFIL NO MENU SUPERIOR --- */
-
-/* Container do botão 'Entrar' ou Perfil */
-.menu li.entrar {
-  background-color: #47b1f2;
-  border-radius: 25px;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 60px; /* Garante que o botão tenha um tamanho mínimo */
-  height: 50px; /* Altura fixa para manter o alinhamento */
-  padding: 0 10px;
-}
-
-/* Estilização da imagem de perfil (Avatar) */
-.user-profile-top {
-  width: 40px; /* Tamanho da bolinha */
-  height: 40px; /* Tamanho da bolinha */
-  border-radius: 50%; /* Faz ficar redondo */
-  object-fit: cover; /* Não deixa a foto esticar */
-  border: 2px solid white; /* Um contorno branco para destacar no azul */
-  display: block;
-}
-
 /* Garante que o link dentro da LI não quebre o layout */
 .entrar-container a {
   display: flex;
