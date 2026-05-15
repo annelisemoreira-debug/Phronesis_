@@ -1,38 +1,5 @@
 <?php
 session_start();
-
-// 1. CONEXÃO COM O BANCO
-$servername = "localhost";
-$username = "root";
-$password = "Home@spSENAI2025!";
-$dbname = "phronesis";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// 2. LÓGICA DA FOTO E TIPO
-$fotoPerfil = "assets/img/default-user.webp"; 
-$usuarioTipo = "comum"; // Valor padrão caso não encontre
-
-if (isset($_SESSION['id'])) {
-    $id_usuario = $_SESSION['id'];
-    
-    // ADICIONADO 'tipo' na consulta abaixo
-    $stmt = $conn->prepare("SELECT foto, tipo FROM usuario WHERE id_usuario = ?");
-    $stmt->bind_param("i", $id_usuario);
-    $stmt->execute();
-    $res = $stmt->get_result()->fetch_assoc();
-
-    if ($res) {
-        $usuarioTipo = $res['tipo']; // Armazena se é 'admin' ou 'comum'
-        
-        if (!empty($res['foto'])) {
-            $caminhoFoto = $res['foto'];
-            if (file_exists($caminhoFoto)) {
-                $fotoPerfil = $caminhoFoto;
-            }
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -42,50 +9,14 @@ if (isset($_SESSION['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phronesis</title>
     <link rel="stylesheet" href="assets/css/index.css">
-    <style>
-        /* Seus estilos originais permanecem aqui */
-        .perfil-container { position: flex; cursor: pointer; }
-        .foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ccc; object-fit: cover; }
-        .menu-dropdown { display: none; position: absolute; right: 0; background: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 5px; min-width: 150px; z-index: 100; }
-        .menu-dropdown a { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
-        .menu-dropdown a:hover { background: #f4f4f4; }
-        .show { display: block; }
-        
-        /* Estilo para o item ADM não quebrar o layout */
-        .menu .admin a { color: #ff4d4d; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="assets/css/header.css"> 
 </head>
 <body>
-    <header>
-        <div class="logoMarca"><img src="assets/img/phronesisIndex.png" alt="Logo oficial da Phronesis"></div>
-        <nav class="menuNav">
-            <ul class="menu">
-                <?php if (isset($_SESSION['id'])): ?>
-                    <li class="materiais"><a href="pages/material.php">Materiais</a></li>
-                    <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
-                    <li class="cronogramas"><a href="pages/meu_calendario.php">Cronogramas</a></li>
-
-                    <?php if ($usuarioTipo === 'admin'): ?>
-                        <li class="admin"><a href="pages/admin_materias.php">ADM</a></li>
-                    <?php endif; ?>
-
-                    <li class="perfil-container" onclick="toggleMenu()">
-                        <img src="<?php echo $fotoPerfil; ?>?t=<?php echo time(); ?>" alt="Perfil" class="foto-perfil">
-                        <div id="dropdownPerfil" class="menu-dropdown">
-                            <a href="perfil/configperfil.php">Meu Perfil</a>
-                            <a href="logout.php" style="color: red;">Sair</a>
-                        </div>
-                    </li>
-                <?php else: ?>
-                    <li class="entrar"><a href="login.php">Entrar</a></li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'interface/header.php'; ?>
 
     <main>
         <section class="banner">
-            <img src="./assets/img/bannerInicio.webp" alt="Fundo">
+            <img src="assets/img/bannerInicio.webp" alt="Fundo">
         </section>
         <h1> O que oferecemos? </h1>
         <h3>Conheça nosso serviços e melhore nos estudos!</h3>
@@ -130,38 +61,44 @@ if (isset($_SESSION['id'])) {
     </main>
 
     <script>
-        function toggleMenu() {
-            document.getElementById("dropdownPerfil").classList.toggle("show");
-        }
+document.addEventListener("DOMContentLoaded", function() {
+    const perfilBtn = document.getElementById("perfilBtn");
+    const dropdown = document.getElementById("dropdownPerfil");
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.foto-perfil')) {
-                var dropdowns = document.getElementsByClassName("menu-dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+    if (perfilBtn && dropdown) {
+        // 1. Clique para Abrir/Fechar
+        perfilBtn.addEventListener("click", function(event) {
+            event.stopPropagation();
+            dropdown.classList.toggle("show");
+            console.log("Menu clicado!"); // Debug: Verifique no F12 se isso aparece
+        });
+
+        // 2. Clique fora para fechar
+        window.addEventListener("click", function() {
+            if (dropdown.classList.contains("show")) {
+                dropdown.classList.remove("show");
             }
-        }
+        });
+    } else {
+        console.error("Elementos do menu não encontrados!");
+    }
 
-        const track = document.querySelector('.carousel-track');
-        const nextBtn = document.querySelector('.next');
-        const prevBtn = document.querySelector('.prev');
+    // --- Lógica do Carrossel (Mantida) ---
+    const track = document.querySelector('.carousel-track');
+    const nextBtn = document.querySelector('.next');
+    const prevBtn = document.querySelector('.prev');
 
-        function moveNext() {
+    if (nextBtn && prevBtn) {
+        nextBtn.addEventListener('click', () => {
             const cards = document.querySelectorAll('.card');
             track.appendChild(cards[0]);
-        }
-
-        function movePrev() {
+        });
+        prevBtn.addEventListener('click', () => {
             const cards = document.querySelectorAll('.card');
             track.insertBefore(cards[cards.length - 1], cards[0]);
-        }
-
-        nextBtn.addEventListener('click', moveNext);
-        prevBtn.addEventListener('click', movePrev);
-    </script>
+        });
+    }
+});
+</script>
 </body>
 </html>

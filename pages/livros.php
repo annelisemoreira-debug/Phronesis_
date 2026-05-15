@@ -22,12 +22,13 @@ if (!$dadosUser) {
     exit();
 }
 
-
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+//senha: Home@spSENAI2025!
+
 // --- CONEXÃO E BUSCA DO USUÁRIO ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+$conn = new mysqli("localhost", "root", "", "phronesis");
 $dadosUser = null;
 
 // Como a trava acima já garante que o ID existe, podemos buscar direto
@@ -43,35 +44,14 @@ $dadosUser = $res->fetch_assoc();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leituras obrigatórias</title>
     <link rel="stylesheet" href="../assets/css/livros.css">
+    <link rel="stylesheet" href="../assets/css/header.css"> 
+
 </head>
 <body> 
-    <div class="wrapper">
-    
-        <div class="principalContent">
-            <header>
-                <nav class="menuNav">
-                    <ul class="menu">
-                        <li class="materiais"><a href="material.php">Materiais</a></li>
-                        <li class="home"><a href="../index.php">Início</a></li>
-                        <li class="cronogramas"><a href="meu_calendario.php">Cronogramas</a></li>
-                        <li class="entrar">
-                            <div class="entrar-container">
-                                <?php if ($dadosUser): ?>
-                                    <a href="../perfil/configperfil.php">
-                                        <?php 
-                                            $fotoPerfil = !empty($dadosUser['foto']) ? $dadosUser['foto'] : 'assets/img/default-user.webp';
-                                        ?>
-                                        <img src="../<?= $fotoPerfil ?>" class="user-profile-top" alt="Perfil" onerror="this.src='../assets/img/default-user.webp';">
-                                    </a>
-                                <?php else: ?>
-                                    <a href="../login.php">Entrar</a>
-                                <?php endif; ?>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-            </header>
+    <?php include '../interface/header.php'; ?>
 
+    <div class="wrapper">
+        <div class="principalContent">
             <section class="banner">
                 <img src="../assets/img/bannerLivros02.webp" class="bg-html" alt="Fundo">
             </section>
@@ -193,37 +173,60 @@ $dadosUser = $res->fetch_assoc();
     </div>
 
    <script>
-        const containersVest = document.querySelectorAll('.containerVest');
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // === 1. LÓGICA DO DROPDOWN (HEADER) ===
+    const perfilBtn = document.getElementById("perfilBtn");
+    const dropdown = document.getElementById("dropdownPerfil");
 
-        containersVest.forEach(container => {
-            const btnOpen = container.querySelector('img[id^="openModal"]');
-            const modal = container.querySelector('dialog');
-            const btnClose = container.querySelector('#closeModal');
-
-            if (btnOpen && modal) {
-                btnOpen.addEventListener("click", () => {
-                    modal.showModal();
-                });
-            }
-
-            if (btnClose && modal) {
-                btnClose.addEventListener("click", () => {
-                    modal.close();
-                });
-            }
-
-            modal.addEventListener("click", (e) => {
-                const dialogDimensions = modal.getBoundingClientRect();
-                if (
-                    e.clientX < dialogDimensions.left ||
-                    e.clientX > dialogDimensions.right ||
-                    e.clientY < dialogDimensions.top ||
-                    e.clientY > dialogDimensions.bottom
-                ) {
-                    modal.close();
-                }
-            });
+    if (perfilBtn && dropdown) {
+        perfilBtn.addEventListener("click", function(event) {
+            event.stopPropagation();
+            dropdown.classList.toggle("show");
         });
-    </script>
+
+        window.addEventListener("click", function() {
+            if (dropdown.classList.contains("show")) {
+                dropdown.classList.remove("show");
+            }
+        });
+    }
+
+    // === 2. LÓGICA DAS JANELAS MODAIS (LIVROS) ===
+    const containersVest = document.querySelectorAll('.containerVest');
+
+    containersVest.forEach(container => {
+        // Busca os elementos dentro de cada container específico
+        const btnOpen = container.querySelector('img[id^="openModal"]');
+        const modal = container.querySelector('dialog');
+        const btnClose = container.querySelector('.close-button'); // Usando a classe que você definiu
+
+        if (btnOpen && modal) {
+            btnOpen.addEventListener("click", () => {
+                modal.showModal();
+            });
+        }
+
+        if (btnClose && modal) {
+            btnClose.addEventListener("click", () => {
+                modal.close();
+            });
+        }
+
+        // Fechar ao clicar fora do modal (no backdrop)
+        modal.addEventListener("click", (e) => {
+            const dialogDimensions = modal.getBoundingClientRect();
+            if (
+                e.clientX < dialogDimensions.left ||
+                e.clientX > dialogDimensions.right ||
+                e.clientY < dialogDimensions.top ||
+                e.clientY > dialogDimensions.bottom
+            ) {
+                modal.close();
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

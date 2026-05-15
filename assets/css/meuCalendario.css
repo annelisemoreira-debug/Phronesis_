@@ -97,3 +97,44 @@ body {
     color: #001a8b;
     border-bottom: 1px solid #001a8b;
 }
+
+/* Container para as opções de login */
+.login-options {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Texto "ou" sutil */
+.divider-text {
+    font-size: 14px;
+    color: #888;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divider-text::before, .divider-text::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+    margin: 0 15px;
+}
+
+/* Botão Secundário (Outline) */
+.btn-secondary {
+    color: #001a8b;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.btn-secondary:hover {
+    opacity: 0.7;
+}

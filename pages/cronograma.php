@@ -7,6 +7,8 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
+//senha: Home@spSENAI2025!
+
 // --- CONEXÃO ---
 $conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 

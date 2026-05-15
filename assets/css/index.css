@@ -5,32 +5,9 @@
     box-sizing: border-box;
 }
 
-header {
-    background-color: #8c52ff;
-    padding: 15px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 0 0 15px 15px;
-    flex-wrap: wrap;
-}
-
 body {
     background-color:#bfa2ff;
     overflow-x: hidden; /* Evita barra de rolagem na página toda */
-}
-
-.logoMarca {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.logoMarca img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 .menu {
@@ -43,7 +20,6 @@ body {
 
 .menu li {
     border-radius: 5px;
-    overflow: hidden;
 }
 
 .menu li a {
@@ -55,9 +31,6 @@ body {
     font-size: 14px;
 }
 
-.menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
-.menu li.materiais { background-color: #8dd4ff; }
-.menu li.livros { background-color: #ffe57e; }
 .menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
 
 .menu li.entrar a:hover {
@@ -209,3 +182,18 @@ h1, h3 {
 .btn:hover { transform: translateY(-50%) scale(1.2); }
 .prev { left: -60px; }
 .next { right: -60px; }
+
+/* Ajuste fino para os links dentro do dropdown não herdarem estilos indesejados */
+.menu-dropdown a {
+    display: block;
+    padding: 10px 15px;
+    color: #333 !important;
+    text-decoration: none;
+    background: white;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.menu-dropdown a:hover {
+    background-color: #f4f4f4 !important;
+}
