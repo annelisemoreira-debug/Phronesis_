@@ -1,5 +1,30 @@
 <?php
 session_start();
+
+// 1. Verifica se a variável de sessão existe
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+//senha: Home@spSENAI2025!
+
+// --- CONEXÃO ---
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+
+// 2. Verifica se o ID da sessão ainda é válido no banco de dados
+$id = $_SESSION['id'];
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$dadosUser = $res->fetch_assoc();
+
+// Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
+if (!$dadosUser) {
+    session_destroy(); // Destrói a sessão inválida
+    header("Location: ../login.php");
+    exit();
+}
+
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new Google\Client();
@@ -36,20 +61,27 @@ $authUrl = $client->createAuthUrl();
 
 </head>
 <body>
-    <img src="../assets/img/fundoAmarelo01.png" class="bg-html" alt="Fundo">
+    
+    <img src="../assets/img/fundoAmarelo02.webp" class="bg-html" alt="Fundo">
 
     <div class="login-card">
     <h2>Conectar para criar!</h2>
     <p>Para facilitar a organização da sua rotina, o nosso site funciona de forma integrada com o <span class="google-brand">Google Agenda</span>.</p>
     
-    <p>Para que você consiga montar e visualizar seu cronograma personalizado por aqui, você só precisa conectar a sua conta do Google. Assim que você fizer o login, sincronizamos tudo automaticamente para você.</p>
+    <p>Sincronize sua conta Google para criar e visualizar seu cronograma automaticamente. </p>
     
     <a class="btn-google" href="<?= $authUrl ?>">
-        Entrar com Google
+        Continuar com Google
     </a>
 
+    <div class="login-options">
+        <a class="btn-secondary" href="cronograma.php">
+            Já conectei minha conta
+        </a>
+    </div>
+
     <div class="footer-link">
-        <a href="../index.php">Deseja Voltar?</a>
+        <a href="../index.php">Voltar</a>
     </div>
 </div>
         

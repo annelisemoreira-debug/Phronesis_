@@ -1,16 +1,33 @@
 <?php
 session_start();
 
-// 1. VERIFICAÇÃO DE ACESSO
+// 1. Verifica se a variável de sessão existe
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
+
+// --- CONEXÃO ---
+$conn = new mysqli("localhost", "root", "", "phronesis");
+
+// 2. Verifica se o ID da sessão ainda é válido no banco de dados
+$id = $_SESSION['id'];
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$dadosUser = $res->fetch_assoc();
+
+// Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
+if (!$dadosUser) {
+    session_destroy(); // Destrói a sessão inválida
+    header("Location: ../login.php");
+    exit();
+}
+
+// senha: Home@spSENAI2025!
 
 // 2. CONEXÃO COM O BANCO
 $servername = "localhost";
 $username = "root";
-$password = "Home@spSENAI2025!";
+$password = "";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -141,29 +158,29 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 </head>
 <body>
    <div class="main-wrapper">
-        <aside class="sidebar">
-            <div class="logo">
-                <img src="assets/img/phronesisLogo.png" alt="Phronesis">
-            </div>
-            <nav>
-                <p class="nav-title">Conta Pessoal</p>
-                <ul>
-                    <li><a href="configperfil.php" class="active">Meu perfil</a></li>
-                    <li><a href="#">Acessibilidade</a></li>
-                </ul>
-                <p class="nav-title">Voltar</p>
-                <ul>
-                    <li><a href="../index.php">Início</a></li>
-                    <li><a href="../pages/livros.php">Livros</a></li>
-                    <li><a href="../pages/material.php">Matérias</a></li>
-                    <li><a href="../pages/cronograma.php">Cronograma</a></li>
-                </ul>
-            </nav>
-        </aside>
+            <aside class="sidebar">
+                <div class="logo">
+                    <img src="../assets/img/logoSite.webp" alt="Phronesis">
+                </div>
+                <nav>
+                    <p class="nav-title">Conta Pessoal</p>
+                    <ul>
+                        <li><a href="configperfil.php" class="active"><span>👤</span> Meu perfil</a></li>
+                        <li><a href="#"><span>♿</span> Acessibilidade</a></li>
+                    </ul>
+                    <p class="nav-title">Voltar</p>
+                    <ul>
+                        <li><a href="../index.php"><span>🏠</span> Início</a></li>
+                        <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
+                        <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
+                        <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
+                    </ul>
+                </nav>
+            </aside>
 
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/bannerInicio.png" alt="Banner" style="width: 100%;">
+                <img src="../assets/img/bannerInicio.webp" alt="Banner" style="width: 100%;">
             </header>
 
              <section class="container-dados" style="padding: 20px;">
@@ -201,7 +218,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                 </div>
 
                 <div class="footer-actions" style="margin-top: 40px;">
-                    <a href="logout.php" style="color: red; text-decoration: none; font-weight: bold;">Desconectar</a>
+                    <a href="../logout.php" style="color: red; text-decoration: none; font-weight: bold;">Desconectar</a>
                 </div>
                 
             </section>

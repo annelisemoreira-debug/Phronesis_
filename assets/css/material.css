@@ -1,102 +1,168 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #9274ff;
+  background-color: #bfa2ff;
+}
+
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: 0.3s;
+  padding: 0;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.star-on {
+  color: #ffd700;
+}
+.star-off {
+  color: #ccc;
+}
+
+/* ESTILO PARA A SEÇÃO SEPARADA ABAIXO */
+.caixa-favoritos-nova {
+  margin-top: 40px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 /* Wrapper */
 .wrapper {
-    display: flex;
-    min-height: 100vh;
-    padding: 5px 15px;
-    gap: 20px;
+  display: flex;
+  min-height: 100vh;
+  padding: 5px 15px;
+  gap: 20px;
 }
-
 
 /* Sidebar */
 .menuSidebar {
-    position: sticky;
-    top: 20px;          
-    height: calc(100vh - 40px);
-    width: 350px;
-    background: white;
-    border-radius: 15px;
-    padding: 35px 30px; 
-    display: flex; 
-    flex-direction: column;
-    gap: 30px;
-    min-width: 250px;
+  position: sticky;
+  top: 20px;
+  width: 260px;
+  height: calc(100vh - 40px);
+  background: #f6f5fb;
+  border-radius: 18px;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
+/* NAV */
 .menuSidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
+/* TEXTO "Explore por matéria:" */
+.menuSidebar nav::before {
+  content: "Explore por matéria:";
+  font-size: 19px;
+  font-weight: 700;
+  color: #3f007d;
+  margin: 10px 0 6px 8px;
+  display: block;
+}
+
+/* LINKS DAS MATÉRIAS */
 .menuSidebar nav a {
-    text-decoration: none;
-    color: #6837af;
-    font-weight: bold;
-    font-size: 20px;
-    cursor: pointer;
-    position: relative;
-    display: inline-block;
-    padding-bottom: 4px;    
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: #5b3aa6;
+  transition: all 0.2s ease;
 }
 
-/* A barra de carregamento sutil */
+/* HOVER */
+.menuSidebar nav a:hover {
+  background: rgba(155, 210, 255, 0.22);
+  transform: translateX(3px);
+}
+
+/* ATIVO */
+.active-subject {
+  background: #e7f4ff;
+  color: #3c2aa0 !important;
+  border-left: 4px solid #7bbcff;
+  padding-left: 10px;
+  box-shadow: 0 6px 16px rgba(123, 188, 255, 0.18);
+}
+
+/* LOADING BAR (animação) */
 .menuSidebar nav a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0%;
-    height: 3px;
-    background-color: #ffcc49;
-    transition: width 0.2s ease;
-    border-radius: 2px;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background-color: #ffcc49;
+  border-radius: 2px;
 }
 
-/* Classe disparada pelo JS */
 .menuSidebar nav a.loading::after {
-    animation: loadingTube 2s forwards ease-in-out;
+  animation: loadingTube 2s forwards ease-in-out;
 }
 
 @keyframes loadingTube {
-    0% { width: 0%; }
-    30% { width: 40%; }
-    60% { width: 70%; }
-    100% { width: 90%; }
+  0% { width: 0%; }
+  30% { width: 40%; }
+  60% { width: 70%; }
+  100% { width: 90%; }
+}
+
+@keyframes loadingTube {
+  0% {
+    width: 0%;
+  }
+  30% {
+    width: 40%;
+  }
+  60% {
+    width: 70%;
+  }
+  100% {
+    width: 90%;
+  }
 }
 
 /*Logo menuSidebar*/
 .logoMarca {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logoMarca a {
-    width: 100%; 
-    display: block;
+  width: 100%;
+  display: block;
 }
 
 .logoMarca img {
-    width: 100%;
-    height: auto; 
-    display: block;
-    object-fit: contain; 
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
 /* Conteúdo Principal */
 .principalContent {
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -105,250 +171,342 @@ body {
 
 /* Menu Superior */
 .menu {
-    display: flex;
-    list-style: none;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center; 
+  display: flex;
+  list-style: none;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .menu li {
-    border-radius: 15px;
-    overflow: hidden;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
 .menu li a {
-    text-decoration: none;
-    display: block;
-    padding: 12px 25px; 
-    color: black;
-    font-weight: bold;
-    font-size: 16px;
-    text-align: center;
+  text-decoration: none;
+  display: block;
+  padding: 12px 25px;
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
 }
 
 /* Cores do Menu */
-.menu li.cronogramas { background-color: #bfa2ff; }
-.menu li.livros { background-color: #8dd4ff; }
-.menu li.home { background-color: #ffe57e; }
-
-/* Botão Entrar */
-.menu li.entrar {
-    background-color: #47b1f2;
-    border-radius: 25px;
-    margin-left: auto;
+.menu li.cronogramas {
+  background-color: #bfa2ff;
+}
+.menu li.livros {
+  background-color: #8dd4ff;
+}
+.menu li.home {
+  background-color: #ffe57e;
 }
 
-.menu li.entrar a:hover {
-    background-color: #2060d8;
-    color: white;
-    transition: 0.3s;
+/* --- AJUSTE DO PERFIL NO MENU SUPERIOR --- */
+
+/* Container do botão 'Entrar' ou Perfil */
+.menu li.entrar {
+  background-color: #47b1f2;
+  border-radius: 25px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px; /* Garante que o botão tenha um tamanho mínimo */
+  height: 50px; /* Altura fixa para manter o alinhamento */
+  padding: 0 10px;
+}
+
+/* Estilização da imagem de perfil (Avatar) */
+.user-profile-top {
+  width: 40px; /* Tamanho da bolinha */
+  height: 40px; /* Tamanho da bolinha */
+  border-radius: 50%; /* Faz ficar redondo */
+  object-fit: cover; /* Não deixa a foto esticar */
+  border: 2px solid white; /* Um contorno branco para destacar no azul */
+  display: block;
+}
+
+/* Garante que o link dentro da LI não quebre o layout */
+.entrar-container a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important; /* Remove o padding exagerado que demos aos outros links */
 }
 
 /*Main section*/
 .areaContent {
-    border-radius: 15px;
-    padding: 20px;
-    flex: 1;
+  border-radius: 15px;
+  padding: 20px;
+  flex: 1;
 }
 
 .banner {
-    background-color: #47b1f2;
+    margin-top: 55px;
+    width: 90%;             /* Ocupa toda a largura do container pai */
+    max-width: 1700px;       /* Mesma largura máxima do areaContent */
+    height: 150px;           /* Aumentado levemente para melhor proporção */
+    margin-left: 90px;       /* Mesma margem que você deu ao .areaContent */
+    overflow: hidden;        /* Garante que a imagem não saia da borda arredondada */
+}
+
+.banner img {
     width: 100%;
-    height: 130px;
-    border-radius: 20px;
+    height: 100%;
+    object-fit: cover;       /* Faz a imagem preencher o espaço sem distorcer */
+    display: block;
 }
 
 /*Section main videos*/
 .video-container-white {
-    background-color: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .video-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 .video-title {
-    color: #6837af;
-    font-size: 1.2rem;
-    font-weight: bold;
+  color: #6837af;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 /* Área de Pesquisa */
 .search-box {
-    display: flex;
-    align-items: center;
-    border: 2px solid #bfa2ff;
-    border-radius: 50px;
-    padding: 5px 15px;
-    width: 300px;
+  display: flex;
+  align-items: center;
+  border: 2px solid #bfa2ff;
+  border-radius: 50px;
+  padding: 5px 15px;
+  width: 300px;
 }
 
 .search-box input {
-    border: none;
-    outline: none;
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
 }
 
 .search-box button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 /* Grade de Vídeos (CSS Grid) */
 .video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 .video-grid::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 .video-grid::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
+  background: #f1f1f1;
+  border-radius: 10px;
 }
 .video-grid::-webkit-scrollbar-thumb {
-    background: #ffe57e;
-    border-radius: 10px;
+  background: #ffe57e;
+  border-radius: 10px;
 }
 
 /* Os Quadradinhos Roxos */
 .video-card {
-    background-color: #B39DDB; /* Cor roxa da sua representação */
-    border-radius: 15px;
-    padding: 10px;
-    transition: transform 0.3s;
+  background-color: white; /* Cor roxa da sua representação */
+  border-radius: 15px;
+  padding: 10px;
+  transition: transform 0.3s;
 }
 
 .video-card:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 /* Container pai para colocar a galeria e a sidebar lado a lado */
+/* Troque o display:flex antigo por este que força coluna */
 .container-materiais {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    margin-top: 30px;
+  display: flex;
+  flex-direction: column; /* Isso joga os Favoritos para baixo */
+  gap: 30px;
+  width: 100%;
+  margin-top: 30px;
 }
 
-/* Ajuste na largura do container de vídeos */
+/* Garante que o container de vídeos ocupe a largura total */
 .video-container-white {
-    flex: 3; /* Ocupa a maior parte do espaço */
-    background-color: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  width: 100%;
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Ajuste a Grid para ser responsiva e ocupar o espaço novo */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  max-height: none; /* Removemos o scroll interno para o layout fluir melhor */
+  overflow-y: visible;
 }
 
 /* O novo campo branco (sidebar lateral) */
 .sidebar-complementar {
-    flex: 1; /* Ocupa o espaço menor à direita */
-    background-color: white;
-    border-radius: 20px;
-    min-height: 400px; 
-    align-self: stretch; /* Estica para ter a mesma altura da galeria */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  flex: 1; /* Ocupa o espaço menor à direita */
+  background-color: white;
+  border-radius: 20px;
+  min-height: 400px;
+  align-self: stretch; /* Estica para ter a mesma altura da galeria */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 /* Ajuste da Grid para comportar a nova lateral */
 .video-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 colunas ficam melhores com a sidebar */
-    gap: 20px;
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 10px;
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    1fr
+  ); /* 3 colunas ficam melhores com a sidebar */
+  gap: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 
+/*h3 contador vestibular*/
+.titulo-main {
+  font-size: 19px;
+  font-weight: 800;
+  color: #5b3aa6;
+  line-height: 1.2;
+}
 
-:root {
-            --primary-bg: #ffffff;
-            --card-bg: #ffffff;
-            --text-main: #6837af;
-            /* Cores dos Vestibulares */
-            --color-enem: #f1c40f;
-            --color-fuvest: #e74c3c;
-            --color-unicamp: #2ecc71;
-            --color-unesp: #9b59b6;
-            --color-uerj: #3498db;
-            --color-ita: #cf17e7;
-        }
+.tag-vestibulares {
+  background: #9fe0ff;
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border-bottom: 5px solid #7591f3;
 
-        .exam-widget {
-            background-color: var(--primary-bg);
-            padding: 20px;
-            border-radius: 15px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 320px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
+}
 
-        .widget-title {
-            color: var(--text-main);
-            margin-bottom: 50px;
-            font-size: 1.2rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
-        }
+.sidebar-exam-container {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 2px solid #7591f3;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
-        .exam-card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-left: 5px solid #ccc;
-            transition: transform 0.2s ease;
-        }
+.widget-title-sidebar {
+  font-size: 19px;
+  font-weight: 800;
+  color: #5b3aa6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
 
-        .exam-card:hover { transform: translateX(5px); }
+/* O Card agora é apenas um container transparente com borda lateral curva */
+.exam-card-mini {
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
 
-        /* Cores Dinâmicas */
-        .enem { border-left-color: var(--color-enem); }
-        .fuvest { border-left-color: var(--color-fuvest); }
-        .unicamp { border-left-color: var(--color-unicamp); }
-        .unesp { border-left-color: var(--color-unesp); }
-        .uerj { border-left-color: var(--color-uerj); }
-        .ita { border-left-color: var(--color-ita); }
+.exam-card-mini:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
 
-        .exam-info { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .exam-name { color: var(--text-main); font-weight: bold; font-size: 0.85rem; }
-        .exam-status { color: #6837af; font-size: 0.7rem; }
+/* Título do Vestibular (Ex: ENEM 2026) */
+.exam-name-mini {
+  font-size: 18px;
+  font-weight: 700;
+  color: #3f007d;
+}
 
-        .countdown-clock {
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 1rem;
-            margin: 5px 0;
-        }
+/* O Timer com a linha colorida embaixo */
+.countdown-mini {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding-bottom: 4px;
+  border-bottom: 3px solid; /* A espessura da linha colorida */
+  width: fit-content; /* Faz a linha ter o tamanho exato do texto */
+}
 
-        /* Cores dos Timers */
-        .enem .countdown-clock { color: var(--color-enem); }
-        .fuvest .countdown-clock { color: var(--color-fuvest); }
-        .unicamp .countdown-clock { color: var(--color-unicamp); }
-        .unesp .countdown-clock { color: var(--color-unesp); }
-        .uerj .countdown-clock { color: var(--color-uerj); }
-        .ita .countdown-clock { color: var(--color-ita); }
+/* Cores e Bordas Curvas Laterais */
+.mini-enem {
+  border-left: 4px solid #f1c40f;
+  border-radius: 15px 0 0 15px;
+}
+.mini-enem .countdown-mini {
+  color: #f1c40f;
+  border-bottom-color: #f1c40f;
+}
 
-        .progress-bar { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; }
-        .progress-fill { height: 100%; border-radius: 2px; }
-        .enem .progress-fill { background: var(--color-enem); }
-        .fuvest .progress-fill { background: var(--color-fuvest); }
-        .unicamp .progress-fill { background: var(--color-unicamp); }
-        .unesp .progress-fill { background: var(--color-unesp); }
-        .uerj .progress-fill { background: var(--color-uerj); }
-        .ita .progress-fill { background: var(--color-ita); }
+.mini-fuvest {
+  border-left: 4px solid #e74c3c;
+  border-radius: 15px 0 0 15px;
+}
+.mini-fuvest .countdown-mini {
+  color: #e74c3c;
+  border-bottom-color: #e74c3c;
+}
+
+.mini-unicamp {
+  border-left: 4px solid #2ecc71;
+  border-radius: 15px 0 0 15px;
+}
+.mini-unicamp .countdown-mini {
+  color: #2ecc71;
+  border-bottom-color: #2ecc71;
+}
+
+.mini-unesp {
+  border-left: 4px solid #9b59b6;
+  border-radius: 15px 0 0 15px;
+}
+.mini-unesp .countdown-mini {
+  color: #9b59b6;
+  border-bottom-color: #9b59b6;
+}
+
+.mini-uerj {
+  border-left: 4px solid #3498db;
+  border-radius: 15px 0 0 15px;
+}
+.mini-uerj .countdown-mini {
+  color: #3498db;
+  border-bottom-color: #3498db;
+}
+
+.mini-ita {
+  border-left: 4px solid #cf17e7;
+  border-radius: 15px 0 0 15px;
+}
+.mini-ita .countdown-mini {
+  color: #cf17e7;
+  border-bottom-color: #cf17e7;
+}

@@ -1,163 +1,160 @@
 <?php
-// 1. Configurações de erro e Sessão
 session_start();
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
-// CONEXÃO COM O BANCO (Para buscar a foto de perfil do usuário logado)
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
-
-$dadosUser = null;
-if (isset($_SESSION['id'])) {
-    $id = $_SESSION['id'];
-    $res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
-    $dadosUser = $res->fetch_assoc();
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
 }
 
-// 2. Importação do Google Client (Autoload)
+//senha: Home@spSENAI2025!
+
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+
+$id = $_SESSION['id'];
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$dadosUser = $res->fetch_assoc();
+
+if (!$dadosUser) {
+    session_destroy();
+    header("Location: ../login.php");
+    exit();
+}
+
+// --- BUSCA O QUE O USUÁRIO JÁ FAVORITOU ---
+$meus_favs = [];
+$res_f = $conn->query("SELECT video_id FROM favoritos WHERE id_usuario = $id");
+while ($f = $res_f->fetch_assoc()) {
+    $meus_favs[] = $f['video_id'];
+}
+
+// --- CONFIGURAÇÃO API YOUTUBE (MANTIDA INTEGRALMENTE) ---
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// 3. Configuração da API Key
 $minha_chave = 'AIzaSyCENf31FjtasIsEqd20BTK53vrD_v3GuxQ';
 $client = new Google\Client();
 $client->setDeveloperKey($minha_chave);
 $youtube = new Google\Service\YouTube($client);
 
-// 4. Lógica de Busca Dinâmica
 $termoBuscaOriginal = isset($_GET['search']) ? $_GET['search'] : (isset($_GET['materia']) ? $_GET['materia'] : 'Biologia');
 $termoBuscaAPI = $termoBuscaOriginal . ' aula vestibular';
 
-$videos = []; 
+$modoEconomico = false;
 
 try {
-    // 5. Chamada oficial da API do YouTube
-    $res = $youtube->search->listSearch('snippet', [
-        'q'             => $termoBuscaAPI, 
-        'maxResults'    => 12,           
-        'type'          => 'video',
-        'videoDuration' => 'medium',    
-        'relevanceLanguage' => 'pt'
-    ]);
-    $videos = $res['items'];
-
+    if (!$modoEconomico) {
+        $res = $youtube->search->listSearch('snippet', [
+            'q'             => $termoBuscaAPI,
+            'maxResults'    => 12,
+            'type'          => 'video',
+            'videoDuration' => 'medium',
+            'relevanceLanguage' => 'pt'
+        ]);
+        $videos = $res['items'];
+    } else {
+        throw new Exception("Modo Econômico");
+    }
 } catch (Exception $e) {
-    // 6. BACKUP: Se a cota estourar
     $videos = [
-        [
-            'id' => ['videoId' => '0P-fO8P9mSg'],
-            'snippet' => [
-                'title' => '[MODO ECONÔMICO] Introdução à ' . $termoBuscaOriginal,
-                'thumbnails' => ['high' => ['url' => 'https://img.youtube.com/vi/0P-fO8P9mSg/hqdefault.jpg']]
-            ]
-        ],
-        [
-            'id' => ['videoId' => '9I86L8uWbYk'],
-            'snippet' => [
-                'title' => '[MODO ECONÔMICO] Revisão Geral para Vestibular',
-                'thumbnails' => ['high' => ['url' => 'https://img.youtube.com/vi/9I86L8uWbYk/hqdefault.jpg']]
-            ]
-        ],
-        [
-            'id' => ['videoId' => 'dQw4w9WgXcQ'],
-            'snippet' => [
-                'title' => '[MODO ECONÔMICO] Dicas Extras de Estudo',
-                'thumbnails' => ['high' => ['url' => 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg']]
-            ]
-        ]
+        ['id' => ['videoId' => '0P-fO8P9mSg'], 'snippet' => ['title' => 'Introdução à ' . $termoBuscaOriginal]],
+        ['id' => ['videoId' => '9I86L8uWbYk'], 'snippet' => ['title' => 'Revisão Geral de ' . $termoBuscaOriginal]],
+        ['id' => ['videoId' => 'vG0Ym-LUpfU'], 'snippet' => ['title' => '5 Dicas de Interpretação | Prof. Noslen']],
+        ['id' => ['videoId' => '8mS_E0-m7fU'], 'snippet' => ['title' => 'Como aprender ' . $termoBuscaOriginal]]
     ];
-    error_log("YouTube API Quota Exceeded. Using Mock Data.");
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Materiais Complementares - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/material.css">
-    <style>
-        /* Estilos para a foto de perfil no topo */
-        .user-profile-top {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #fff;
-            transition: transform 0.2s;
-        }
-        .user-profile-top:hover {
-            transform: scale(1.1);
-        }
-        .entrar-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/header.css">
 </head>
+
 <body>
+    <?php include '../interface/header.php'; ?>
+
+    <section class="banner"><img src="../assets/img/bannerAzul.webp" alt=""></section>
+
     <div class="wrapper">
         <aside class="menuSidebar">
-            <div class="logoMarca">
-                <a href="../index.php">
-                    <img src="../assets/img/logoSidebar.webp" alt="Logo oficial da Phronesis">
-                </a>
-            </div>
             <nav>
-                <a href="?materia=Linguagens">Linguagens</a>
-                <a href="?materia=Matematica">Matemática</a>
-                <a href="?materia=Fisica">Física</a>
-                <a href="?materia=Biologia">Biologia</a>
-                <a href="?materia=Quimica">Química</a>
-                <a href="?materia=Historia">História</a>
-                <a href="?materia=Geografia">Geografia</a>
+
+                <a class="<?= $termoBuscaOriginal == 'Linguagens' ? 'active-subject' : '' ?>"
+                    href="?materia=Linguagens">
+                    Linguagens
+                </a>
+
+                <a class="<?= $termoBuscaOriginal == 'Matematica' ? 'active-subject' : '' ?>"
+                    href="?materia=Matematica">
+                    Matemática
+                </a>
+
+                <a class="<?= $termoBuscaOriginal == 'Fisica' ? 'active-subject' : '' ?>"
+                    href="?materia=Fisica">
+                    Física
+                </a>
+
+                <a class="<?= $termoBuscaOriginal == 'Biologia' ? 'active-subject' : '' ?>"
+                    href="?materia=Biologia">
+                    Biologia
+                </a>
+
+                <a class="<?= $termoBuscaOriginal == 'Quimica' ? 'active-subject' : '' ?>"
+                    href="?materia=Quimica">
+                    Química
+                </a>
+
+                <a class="<?= $termoBuscaOriginal == 'Historia' ? 'active-subject' : '' ?>"
+                    href="?materia=Historia">
+                    História
+                </a>
+
+                <a class="<?= $termoBuscaOriginal == 'Geografia' ? 'active-subject' : '' ?>"
+                    href="?materia=Geografia">
+                    Geografia
+                </a>
+
+                <div class="sidebar-exam-container">
+                    <h3 class="widget-title-sidebar">
+                        <span class="titulo-main">Contagem regressiva</span>
+                        <span class="tag-vestibulares">VESTIBULARES</span>
+                    </h3>
+                    <div class="exam-card-mini mini-enem"><span class="exam-name-mini">ENEM 2026</span>
+                        <div id="timer-enem" class="countdown-mini">00d 00h 00m</div>
+                    </div>
+                    <div class="exam-card-mini mini-fuvest"><span class="exam-name-mini">FUVEST 2027</span>
+                        <div id="timer-fuvest" class="countdown-mini">00d 00h 00m</div>
+                    </div>
+                    <div class="exam-card-mini mini-unicamp"><span class="exam-name-mini">UNICAMP 2026</span>
+                        <div id="timer-unicamp" class="countdown-mini">00d 00h 00m</div>
+                    </div>
+                    <div class="exam-card-mini mini-unesp"><span class="exam-name-mini">UNESP 2027</span>
+                        <div id="timer-unesp" class="countdown-mini">00d 00h 00m</div>
+                    </div>
+                </div>
+
+            </nav>
+
+
             </nav>
         </aside>
-    
+
         <div class="principalContent">
-            <header>
-                <nav class="menuNav">
-                    <ul class="menu">
-                        <li class="livros"><a href="livros.php">Obras Obrigatórias</a></li>
-                        <li class="home"><a href="../index.php">Início</a></li>
-                        <li class="cronogramas"><a href="meu_calendario.php">Cronogramas</a></li>
-                        <li class="entrar">
-                            <div class="entrar-container">
-                                <?php if ($dadosUser): ?>
-                                    <a href="../perfil/configperfil.php">
-                                        <img src="../<?= !empty($dadosUser['foto']) ? $dadosUser['foto'] : 'assets/img/default-user.png' ?>" class="user-profile-top" alt="Perfil">
-                                    </a>
-                                <?php else: ?>
-                                    <a href="../login.php">Entrar</a>
-                                <?php endif; ?>
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-            </header>
-
             <main class="areaContent">
-                <section class="banner">
-                    <div></div>
-                </section>
-
                 <section class="container-materiais">
                     <div class="video-container-white">
                         <div class="video-header">
                             <h2 class="video-title">Materiais Complementares (<?= htmlspecialchars($termoBuscaOriginal) ?>)</h2>
-                            
                             <div class="search-box">
                                 <form action="" method="GET" style="display: flex; width: 100%; align-items: center;">
-                                    <input type="text" 
-                                           name="search" 
-                                           placeholder="Pesquisar vídeo..." 
-                                           id="searchInput" 
-                                           value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-                                    
+                                    <input type="text" name="search" placeholder="Pesquisar vídeo..." id="searchInput" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
                                     <button type="submit" style="background: none; border: none; cursor: pointer;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                                         </svg>
                                     </button>
                                 </form>
@@ -165,221 +162,103 @@ try {
                         </div>
 
                         <div class="video-grid" id="videoGrid">
-                            <?php if (!empty($videos)): ?>
-                                <?php foreach ($videos as $video): ?>
-                                    <div class="video-card">
-                                        <a href="https://www.youtube.com/watch?v=<?= $video['id']['videoId'] ?>" target="_blank" style="text-decoration:none;">
-                                            <img src="<?= $video['snippet']['thumbnails']['high']['url'] ?>" alt="Capa do vídeo" style="width:100%; border-radius:12px;">
-                                            <p style="color: #4B0082; font-weight: bold; margin-top: 10px; font-size: 14px;">
-                                                <?= mb_strimwidth($video['snippet']['title'], 0, 45, "...") ?>
-                                            </p>
-                                        </a>
+                            <?php foreach ($videos as $video):
+                                $vId = $video['id']['videoId'];
+                                $vTitle = $video['snippet']['title'];
+                                $isFav = in_array($vId, $meus_favs);
+                            ?>
+                                <div class="video-card">
+                                    <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                                        <iframe class="video-frame" src="https://www.youtube.com/embed/<?= $vId ?>" frameborder="0" allowfullscreen></iframe>
                                     </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p>Nenhum vídeo disponível no momento.</p>
-                            <?php endif; ?>
+                                    <p class="video-title-card">
+                                        <?= htmlspecialchars(mb_strimwidth($vTitle, 0, 45, "...")) ?>
+
+                                        <button class="fav-btn <?= $isFav ? 'star-on' : 'star-off' ?>"
+                                            onclick="toggleFav('<?= $vId ?>', '<?= addslashes($vTitle) ?>', this)">
+                                            ★
+                                        </button>
+                                    </p>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
 
-    <aside class="sidebar-complementar">
-
-                                <div class="exam-widget">
-
-                                    <h3 class="widget-title">Contagem Regressiva</h3>
-
-                                
-
-                                    <div class="exam-grid">
-
-                                        <div class="exam-card enem">
-
-                                            <div class="exam-info">
-
-                                                <span class="exam-name">ENEM 2026</span>
-
-                                                <span class="exam-status">Nacional</span>
-
-                                            </div>
-
-                                            <div id="timer-enem" class="countdown-clock">00d 00h 00m</div>
-
-                                            <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
-
+                    <div class="caixa-favoritos-nova">
+                        <div class="video-header">
+                            <h2 class="video-title" style="color: #4B0082;">Meus Vídeos Salvos ★</h2>
+                        </div>
+                        <div class="video-grid" id="listaFavoritos">
+                            <?php
+                            $res_salvos = $conn->query("SELECT * FROM favoritos WHERE id_usuario = $id");
+                            if ($res_salvos->num_rows > 0):
+                                while ($f = $res_salvos->fetch_assoc()): ?>
+                                    <div class="video-card">
+                                        <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                                            <iframe class="video-frame" src="https://www.youtube.com/embed/<?= $f['video_id'] ?>" frameborder="0" allowfullscreen></iframe>
                                         </div>
+                                        <p class="video-title-card">
+                                            <?= htmlspecialchars(mb_strimwidth($f['titulo_video'], 0, 45, "...")) ?>
 
-
-
-                                        <div class="exam-card fuvest">
-
-                                            <div class="exam-info">
-
-                                                <span class="exam-name">FUVEST 2026</span>
-
-                                                <span class="exam-status">USP</span>
-
-                                            </div>
-
-                                            <div id="timer-fuvest" class="countdown-clock">00d 00h 00m</div>
-
-                                            <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
-
-                                        </div>
-
-
-
-                                        <div class="exam-card unicamp">
-
-                                            <div class="exam-info">
-
-                                                <span class="exam-name">UNICAMP 2026</span>
-
-                                                <span class="exam-status">Unicamp</span>
-
-                                            </div>
-
-                                            <div id="timer-unicamp" class="countdown-clock">00d 00h 00m</div>
-
-                                            <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
-
-                                        </div>
-
-
-
-                                        <div class="exam-card unesp">
-
-                                            <div class="exam-info">
-
-                                                <span class="exam-name">UNESP 2026</span>
-
-                                                <span class="exam-status">Vunesp</span>
-
-                                            </div>
-
-                                            <div id="timer-unesp" class="countdown-clock">00d 00h 00m</div>
-
-                                            <div class="progress-bar"><div class="progress-fill" style="width: 35%;"></div></div>
-
-                                        </div>
-
-
-
-                                        <div class="exam-card uerj">
-
-                                            <div class="exam-info">
-
-                                                <span class="exam-name">UERJ 2027</span>
-
-                                                <span class="exam-status">1º EQ</span>
-
-                                            </div>
-
-                                            <div id="timer-uerj" class="countdown-clock">00d 00h 00m</div>
-
-                                            <div class="progress-bar"><div class="progress-fill" style="width: 90%;"></div></div>
-
-                                        </div>
-
-
-
-                                        <div class="exam-card ita">
-
-                                            <div class="exam-info">
-
-                                                <span class="exam-name">ITA 2027</span>
-
-                                                <span class="exam-status">Militar</span>
-
-                                            </div>
-
-                                            <div id="timer-ita" class="countdown-clock">00d 00h 00m</div>
-
-                                            <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-
-                                        </div>
-
+                                            <button class="fav-btn star-on"
+                                                onclick="toggleFav('<?= $f['video_id'] ?>', '<?= addslashes($f['titulo_video']) ?>', this)">
+                                                ★
+                                            </button>
+                                        </p>
                                     </div>
-
-                                </div>
-
-
-
-                            <script>
-
-                                function createTimer(id, targetDate) {
-
-                                    const target = new Date(targetDate).getTime();
-
-                                    const element = document.getElementById(id);
-
-
-
-                                    const interval = setInterval(() => {
-
-                                        const now = new Date().getTime();
-
-                                        const diff = target - now;
-
-
-
-                                        if (diff <= 0) {
-
-                                            element.innerHTML = "PROVA EM ANDAMENTO";
-
-                                            clearInterval(interval);
-
-                                            return;
-
-                                        }
-
-
-
-                                        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-                                        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-                                        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-                                        const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-
-
-                                        element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
-
-                                    }, 1000);
-
-                                }
-
-
-
-                                // Chamadas das Funções com Datas Reais (ou estimadas conforme ciclo 2026/2027)
-
-                                createTimer("timer-enem", "Nov 1, 2026 13:00:00");
-
-                                createTimer("timer-fuvest", "Nov 15, 2026 13:00:00");
-
-                                createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
-
-                                createTimer("timer-unesp", "Nov 15, 2026 13:00:00"); // Data prevista
-
-                                createTimer("timer-uerj", "Jun 7, 2026 09:00:00"); // 1º EQ
-
-                                createTimer("timer-ita", "Oct 13, 2026 08:00:00"); // Estimativa 1ª Fase
-
-                            </script>
-                    </aside>
+                                <?php endwhile;
+                            else: ?>
+                                <p style="grid-column: 1/-1; text-align: center; color: #999; padding: 20px;">Você ainda não favoritou vídeos.</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </section>
             </main>
         </div>
     </div>
 
     <script>
-        document.querySelectorAll('.menuSidebar nav a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.querySelectorAll('.menuSidebar nav a').forEach(l => l.classList.remove('loading'));
-                this.classList.add('loading');
-            });
-        });
+        function toggleFav(vId, vTit, btn) {
+            const formData = new FormData();
+            formData.append('v_id', vId);
+            formData.append('v_tit', vTit);
+
+            fetch('fav.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    // Se a resposta for ok, recarrega para atualizar as duas listas
+                    location.reload();
+                })
+                .catch(err => console.error("Erro no favorito:", err));
+        }
+
+        // Timers mantidos
+        function createTimer(id, targetDate) {
+            const target = new Date(targetDate).getTime();
+            const element = document.getElementById(id);
+            if (!element) return;
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = target - now;
+                if (diff <= 0) {
+                    element.innerHTML = "PROVA EM ANDAMENTO";
+                    return;
+                }
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+            }, 1000);
+        }
+
+        createTimer("timer-enem", "Nov 1, 2026 13:00:00");
+        createTimer("timer-fuvest", "Nov 15, 2026 13:00:00");
+        createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
+        createTimer("timer-unesp", "Nov 15, 2026 13:00:00");
     </script>
 </body>
+
 </html>

@@ -20,9 +20,10 @@
 .glass-card {
     display: flex;
     background-color: rgba(180, 150, 255, 0.85);
-    border-radius: 10px;
+    border-radius: 15px;
     overflow: hidden;
     max-width: 950px;
+    height: 488px;
     width: 100%;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
@@ -118,22 +119,6 @@
     outline: none;
     border: 2px solid #4fd6ff;
     box-shadow: 0 0 5px rgba(146, 79, 255, 0.5)
-}
-
-/*Mensagens de erro e sucesso*/
-.erroLogin {
-    color: #ff1e1e;
-    background-color: rgba(177, 28, 28, 0.176);
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.cadastroSucesso {
-    color: #2ecc71;
-    background-color:  rgba(46, 204, 113, 0.176);
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
-    text-shadow: 0 0 8px rgba(97, 44, 167, 0.514);    
 }
 
 /* Formulário */

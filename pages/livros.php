@@ -1,49 +1,62 @@
+<?php
+session_start();
+
+// 1. Verifica se a variável de sessão existe
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// --- CONEXÃO ---
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+
+// 2. Verifica se o ID da sessão ainda é válido no banco de dados
+$id = $_SESSION['id'];
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$dadosUser = $res->fetch_assoc();
+
+// Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
+if (!$dadosUser) {
+    session_destroy(); // Destrói a sessão inválida
+    header("Location: ../login.php");
+    exit();
+}
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+//senha: Home@spSENAI2025!
+
+// --- CONEXÃO E BUSCA DO USUÁRIO ---
+$conn = new mysqli("localhost", "root", "", "phronesis");
+$dadosUser = null;
+
+// Como a trava acima já garante que o ID existe, podemos buscar direto
+$id = $_SESSION['id'];
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$dadosUser = $res->fetch_assoc();
+
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leituras obrigatórias</title>
     <link rel="stylesheet" href="../assets/css/livros.css">
+    <link rel="stylesheet" href="../assets/css/header.css"> 
+
 </head>
 <body> 
+    <?php include '../interface/header.php'; ?>
+
     <div class="wrapper">
-
-        <aside class="menuSidebar">
-            <div class="logoMarca">
-                <a href="../index.php">
-                    <img src="../assets/img/logoSidebar.webp" alt="Logo oficial da Phronesis">
-                </a>
-            </div>
-
-            <nav>
-                <a>Linguagens</a>
-                <a>Matemática</a>
-                <a>Física</a>
-                <a>Biologia</a>
-                <a>Química</a>
-                <a>História</a>
-                <a>Geografia</a>
-            </nav>
-        </aside>
-    
         <div class="principalContent">
-            <header>
-                <nav class="menuNav">
-                    <ul class="menu">
-                        <li class="materiais"><a href="material.php">Materiais</a></li>
-                        <li class="home"><a href="../index.php">Início</a></li>
-                        <li class="cronogramas"><a href="meu_calendario.php">Cronogramas</a></li>
-                        <li class="entrar"><a href="../login.php">Entrar</a></li>
-                    </ul>
-                </nav>
-            </header>
+            <section class="banner">
+                <img src="../assets/img/bannerLivros02.webp" class="bg-html" alt="Fundo">
+            </section>
 
             <main class="areaContent">
-                <section class="banner">
-                    <img src="../assets/img/bannerLivros02.png" class="bg-html" alt="Fundo">
-                </section>
-
                     <section class="listaLivros">
                         <article class="containerVest">
                             <div class="fuvestImg">
@@ -160,37 +173,60 @@
     </div>
 
    <script>
-        const containersVest = document.querySelectorAll('.containerVest');
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // === 1. LÓGICA DO DROPDOWN (HEADER) ===
+    const perfilBtn = document.getElementById("perfilBtn");
+    const dropdown = document.getElementById("dropdownPerfil");
 
-        containersVest.forEach(container => {
-            const btnOpen = container.querySelector('img[id^="openModal"]');
-            const modal = container.querySelector('dialog');
-            const btnClose = container.querySelector('#closeModal');
-
-            if (btnOpen && modal) {
-                btnOpen.addEventListener("click", () => {
-                    modal.showModal();
-                });
-            }
-
-            if (btnClose && modal) {
-                btnClose.addEventListener("click", () => {
-                    modal.close();
-                });
-            }
-
-            modal.addEventListener("click", (e) => {
-                const dialogDimensions = modal.getBoundingClientRect();
-                if (
-                    e.clientX < dialogDimensions.left ||
-                    e.clientX > dialogDimensions.right ||
-                    e.clientY < dialogDimensions.top ||
-                    e.clientY > dialogDimensions.bottom
-                ) {
-                    modal.close();
-                }
-            });
+    if (perfilBtn && dropdown) {
+        perfilBtn.addEventListener("click", function(event) {
+            event.stopPropagation();
+            dropdown.classList.toggle("show");
         });
-    </script>
+
+        window.addEventListener("click", function() {
+            if (dropdown.classList.contains("show")) {
+                dropdown.classList.remove("show");
+            }
+        });
+    }
+
+    // === 2. LÓGICA DAS JANELAS MODAIS (LIVROS) ===
+    const containersVest = document.querySelectorAll('.containerVest');
+
+    containersVest.forEach(container => {
+        // Busca os elementos dentro de cada container específico
+        const btnOpen = container.querySelector('img[id^="openModal"]');
+        const modal = container.querySelector('dialog');
+        const btnClose = container.querySelector('.close-button'); // Usando a classe que você definiu
+
+        if (btnOpen && modal) {
+            btnOpen.addEventListener("click", () => {
+                modal.showModal();
+            });
+        }
+
+        if (btnClose && modal) {
+            btnClose.addEventListener("click", () => {
+                modal.close();
+            });
+        }
+
+        // Fechar ao clicar fora do modal (no backdrop)
+        modal.addEventListener("click", (e) => {
+            const dialogDimensions = modal.getBoundingClientRect();
+            if (
+                e.clientX < dialogDimensions.left ||
+                e.clientX > dialogDimensions.right ||
+                e.clientY < dialogDimensions.top ||
+                e.clientY > dialogDimensions.bottom
+            ) {
+                modal.close();
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

@@ -1,124 +1,27 @@
 <?php
 session_start();
-
-// 1. CONEXÃO COM O BANCO
-$servername = "localhost";
-$username = "root";
-$password = "Home@spSENAI2025!";
-$dbname = "phronesis";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// 2. LÓGICA DA FOTO (Sincronizada com o Perfil)
-$fotoPerfil = "assets/img/default-user.webp"; // Boneco cinza padrão
-
-if (isset($_SESSION['id'])) {
-    $id_usuario = $_SESSION['id'];
-    
-    $stmt = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
-    $stmt->bind_param("i", $id_usuario);
-    $stmt->execute();
-    $res = $stmt->get_result()->fetch_assoc();
-
-    if (!empty($res['foto'])) {
-        // Na index, usamos o caminho puro do banco
-        $caminhoFoto = $res['foto']; 
-        
-        if (file_exists($caminhoFoto)) {
-            $fotoPerfil = $caminhoFoto;
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phronesis</title>
     <link rel="stylesheet" href="assets/css/index.css">
-    <style>
-        /* Estilos rápidos para o menu de perfil */
-        .perfil-container {
-            position: flex;
-            cursor: pointer;
-        }
-
-        .foto-perfil {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid #ccc;
-            object-fit: cover;
-        }
-
-        .menu-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            min-width: 150px;
-            z-index: 100;
-        }
-
-        .menu-dropdown a {
-            display: block;
-            padding: 10px;
-            color: #333;
-            text-decoration: none;
-            border-bottom: 1px solid #eee;
-        }
-
-        .menu-dropdown a:hover {
-            background: #f4f4f4;
-        }
-
-        .show {
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/header.css"> 
 </head>
-
 <body>
-    <header>
-        <div class="logoMarca"><img src="assets/img/phronesisIndex.png" alt="Logo oficial da Phronesis"></div>
-        <nav class="menuNav">
-            <ul class="menu">
-                
-                <?php if (isset($_SESSION['id'])): ?>
-                    <li class="materiais"><a href="pages/material.php">Materiais</a></li>
-                    <li class="livros"><a href="pages/livros.php">Obras Obrigatórias</a></li>
-                    <li class="cronogramas"><a href="pages/meu_calendario.php">Cronogramas</a></li>
-
-                    <li class="perfil-container" onclick="toggleMenu()">
-                        <img src="<?php echo $fotoPerfil; ?>?t=<?php echo time(); ?>" alt="Perfil" class="foto-perfil">
-                        <div id="dropdownPerfil" class="menu-dropdown">
-                            <a href="perfil/configperfil.php">Meu Perfil</a>
-                            <a href="logout.php" style="color: red;">Sair</a>
-                        </div>
-                    </li>
-
-                <?php else: ?>
-                    <li class="entrar"><a href="login.php">Entrar</a></li>
-                <?php endif; ?>
-
-            </ul>
-        </nav>
-    </header>
+    <?php include 'interface/header.php'; ?>
 
     <main>
         <section class="banner">
-            <img src="./assets/img/bannerInicio.png" alt="Fundo">
+            <img src="assets/img/bannerInicio.webp" alt="Fundo">
         </section>
         <h1> O que oferecemos? </h1>
         <h3>Conheça nosso serviços e melhore nos estudos!</h3>
         <div class="carousel-container">
             <button class="btn prev">❮</button>
-
             <div class="carousel-track">
                 <div class="card blue-theme">
                     <div class="top-tabs-container">
@@ -127,8 +30,7 @@ if (isset($_SESSION['id'])) {
                         <div class="tab purple"></div>
                     </div>
                     <h2>Materiais</h2>
-                    <p><b>• Videoaulas:</b><br>
-                        Aulas em vídeo organizadas por disciplina, que permitem estudar no próprio ritmo, com teoria, prática e exercícios. Nosso site contém videoaulas ministradas por excelentes professores, com conteúdos planejados especialmente para os vestibulares das melhores universidades do país.</p>
+                    <p><b>• Videoaulas:</b><br> Aulas em vídeo organizadas por disciplina, que permitem estudar no próprio ritmo...</p>
                     <div class="bottom-tab"></div>
                 </div>
 
@@ -139,9 +41,7 @@ if (isset($_SESSION['id'])) {
                         <div class="tab yellow"></div>
                     </div>
                     <h2>Cronograma</h2>
-                    <p><b>• Cronograma personalizado:</b><br>
-                        Nosso site também oferece geração de cronograma personalizado de estudos.
-                        O aluno informa seus objetivos, o vestibular que deseja prestar e o tempo disponível para estudar, e a plataforma organiza automaticamente um plano estratégico, distribuindo disciplinas, revisões, exercícios e leituras obrigatórias de forma equilibrada.</p>
+                    <p><b>• Cronograma personalizado:</b><br> O aluno informa seus objetivos e a plataforma organiza...</p>
                     <div class="bottom-tab"></div>
                 </div>
 
@@ -152,60 +52,53 @@ if (isset($_SESSION['id'])) {
                         <div class="tab blue"></div>
                     </div>
                     <h2>Livros</h2>
-                    <p><b>• Leituras obrigatórias:</b><br>
-                        Nosso site também contém materiais completos sobre as leituras obrigatórias dos principais vestibulares do país, com resumos, análises, contexto histórico, características literárias e possíveis temas de prova.</p>
+                    <p><b>• Leituras obrigatórias:</b><br> Materiais completos sobre as leituras obrigatórias...</p>
                     <div class="bottom-tab"></div>
                 </div>
             </div>
-
             <button class="btn next">❯</button>
         </div>
-        </section>
     </main>
 
     <script>
-        // Função para abrir/fechar o menu ao clicar na foto
-        function toggleMenu() {
-            document.getElementById("dropdownPerfil").classList.toggle("show");
-        }
+document.addEventListener("DOMContentLoaded", function() {
+    const perfilBtn = document.getElementById("perfilBtn");
+    const dropdown = document.getElementById("dropdownPerfil");
 
-        // Fecha o menu se o usuário clicar fora dele
-        window.onclick = function(event) {
-            if (!event.target.matches('.foto-perfil')) {
-                var dropdowns = document.getElementsByClassName("menu-dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+    if (perfilBtn && dropdown) {
+        // 1. Clique para Abrir/Fechar
+        perfilBtn.addEventListener("click", function(event) {
+            event.stopPropagation();
+            dropdown.classList.toggle("show");
+            console.log("Menu clicado!"); // Debug: Verifique no F12 se isso aparece
+        });
+
+        // 2. Clique fora para fechar
+        window.addEventListener("click", function() {
+            if (dropdown.classList.contains("show")) {
+                dropdown.classList.remove("show");
             }
-        }
-        const track = document.querySelector('.carousel-track');
-        const nextBtn = document.querySelector('.next');
-        const prevBtn = document.querySelector('.prev');
+        });
+    } else {
+        console.error("Elementos do menu não encontrados!");
+    }
 
-        // Função para mover para o próximo
-        function moveNext() {
+    // --- Lógica do Carrossel (Mantida) ---
+    const track = document.querySelector('.carousel-track');
+    const nextBtn = document.querySelector('.next');
+    const prevBtn = document.querySelector('.prev');
+
+    if (nextBtn && prevBtn) {
+        nextBtn.addEventListener('click', () => {
             const cards = document.querySelectorAll('.card');
-            // Pegamos o primeiro card e colocamos DEPOIS do último
             track.appendChild(cards[0]);
-        }
-
-        // Função para mover para o anterior
-        function movePrev() {
+        });
+        prevBtn.addEventListener('click', () => {
             const cards = document.querySelectorAll('.card');
-            // Pegamos o último card e colocamos ANTES do primeiro
             track.insertBefore(cards[cards.length - 1], cards[0]);
-        }
-
-        // Eventos de clique
-        nextBtn.addEventListener('click', moveNext);
-        prevBtn.addEventListener('click', movePrev);
-
-        // Inicialização: Se você tiver apenas 3 cards, 
-        // o CSS :nth-child(2) já vai focar no do meio automaticamente.
-    </script>
+        });
+    }
+});
+</script>
 </body>
-
 </html>

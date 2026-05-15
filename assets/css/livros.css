@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #9274ff;
+    background-color: #bfa2ff;
 }
 
 /* Wrapper */
@@ -16,62 +16,12 @@ body {
     gap: 20px;
 }
 
-
-/* Sidebar */
-.menuSidebar {
-    position: sticky;
-    top: 20px;          
-    height: calc(100vh - 40px);
-    width: 350px;
-    background: white;
-    border-radius: 15px;
-    padding: 35px 30px; 
-    display: flex; 
-    flex-direction: column;
-    gap: 30px;
-    min-width: 250px;
-}
-
-.menuSidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.menuSidebar nav a {
-    text-decoration: none;
-    color: #6837af; 
-    font-weight: bold;
-    font-size: 20px;
-    cursor: pointer;    
-}
-
-/*Logo menuSidebar*/
-.logoMarca {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logoMarca a {
-    width: 100%; 
-    display: block;
-}
-
-.logoMarca img {
-    width: 100%;
-    height: auto; 
-    display: block;
-    object-fit: contain; 
-}
-
 /* Conteúdo Principal */
 .principalContent {
   flex: 1; 
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 50px;
   padding: 18px 50px;
 }
 
@@ -109,26 +59,64 @@ body {
     background-color: #47b1f2;
     border-radius: 25px;
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px; 
+    height: 50px;    
+    padding: 0 10px;
+    isolation: isolate; /* Impede mistura de cores com o fundo */
+}
+
+.user-profile-top {
+    width: 40px;      
+    height: 40px;     
+    border-radius: 50%; 
+    object-fit: cover;  
+    border: 2px solid white; 
+    display: block;
+    opacity: 1 !important; /* Foto 100% visível */
+    mix-blend-mode: normal !important; /* Sem mistura com o azul */
+    filter: none !important;
+}
+
+.entrar-container a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    text-decoration: none;
 }
 
 .menu li.entrar a:hover {
-    background-color: #2060d8;
-    color: white;
+    filter: brightness(1.1);
     transition: 0.3s;
 }
 
 /*Main section*/
 .areaContent {
     border-radius: 15px;
-    padding: 20px;
+    padding: 50px 70px;
+    width: 1600px;
     flex: 1;
     background-color: white;
+    margin-left: 90px;
 }
 
 .banner {
-    width: 1400px;
-    height: 130px;
-    border-radius: 20px;
+    margin-top: 20px;
+    width: 90%;             /* Ocupa toda a largura do container pai */
+    max-width: 1700px;       /* Mesma largura máxima do areaContent */
+    height: 150px;           /* Aumentado levemente para melhor proporção */
+    margin-left: 90px;       /* Mesma margem que você deu ao .areaContent */
+    overflow: hidden;        /* Garante que a imagem não saia da borda arredondada */
+}
+
+.banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;       /* Faz a imagem preencher o espaço sem distorcer */
+    display: block;
 }
 
 /*Section main vestibulares*/
@@ -146,8 +134,6 @@ body {
     object-fit: contain;
     background-color: white;
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 /* Container de cada vestibular */
@@ -182,7 +168,7 @@ body {
 }
 
 .descricaoVest p {
-    font-size: 16px;
+    font-size: 17px;
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.6; 
@@ -195,7 +181,7 @@ body {
     padding: 8px 30px; 
     border-radius: 20px;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 20px;
     display: inline-block; 
     width: fit-content;
     

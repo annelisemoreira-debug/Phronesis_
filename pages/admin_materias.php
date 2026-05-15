@@ -1,11 +1,40 @@
 <?php
-// Conexão com o banco (ajuste host, dbname, user e pass)
-// --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
+session_start();
 
+// 1. CONEXÃO COM O BANCO (Usando MySQLi para checar o admin antes do PDO)
+$servername = "localhost";
+$username = "root";
+$password = "Home@spSENAI2025!";
+$dbname = "phronesis";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// SEGURANÇA: Se não tiver ID na sessão, nem tenta o resto
+if (!isset($_SESSION['id'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
+// BUSCA O TIPO DIRETO NO BANCO PARA GARANTIR
+$id_usuario = $_SESSION['id'];
+$stmt_check = $conn->prepare("SELECT tipo FROM usuario WHERE id_usuario = ?");
+$stmt_check->bind_param("i", $id_usuario);
+$stmt_check->execute();
+$user_data = $stmt_check->get_result()->fetch_assoc();
+
+// Se não for admin, volta para a index
+if (!$user_data || $user_data['tipo'] !== 'admin') {
+    header("Location: ../index.php");
+    exit();
+}
+
+// 2. LÓGICA PDO (Para o restante do seu código funcionar)
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=phronesis", "root", "Home@spSENAI2025!");
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) { die("Erro: " . $e->getMessage()); }
+} catch (PDOException $e) { 
+    die("Erro: " . $e->getMessage()); 
+}
 
 $msg = "";
 
@@ -17,7 +46,9 @@ if (isset($_POST['add_materia'])) {
             $stmt = $pdo->prepare("INSERT INTO materia (nome_materia) VALUES (?)");
             $stmt->execute([$nome]);
             $msg = "✅ Matéria '$nome' adicionada!";
-        } catch (Exception $e) { $msg = "❌ Erro: Matéria já existe ou falha no banco."; }
+        } catch (Exception $e) { 
+            $msg = "❌ Erro: Matéria já existe ou falha no banco."; 
+        }
     }
 }
 
@@ -27,7 +58,9 @@ if (isset($_GET['del'])) {
         $stmt = $pdo->prepare("DELETE FROM materia WHERE id_materia = ?");
         $stmt->execute([$_GET['del']]);
         $msg = "🗑️ Matéria removida!";
-    } catch (Exception $e) { $msg = "⚠️ Não é possível remover: matéria está em uso em um cronograma."; }
+    } catch (Exception $e) { 
+        $msg = "⚠️ Não é possível remover: matéria está em uso em um cronograma."; 
+    }
 }
 
 // Buscar matérias existentes
@@ -47,6 +80,7 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
         .del { color: red; text-decoration: none; font-weight: bold; }
+        .voltar { display: inline-block; margin-top: 20px; text-decoration: none; color: #666; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -60,17 +94,21 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
         </form>
 
         <table>
-            <tr><th>ID</th><th>Nome</th><th>Ação</th></tr>
-            <?php foreach($materias as $m): ?>
-            <tr>
-                <td><?= $m['id_materia'] ?></td>
-                <td><?= htmlspecialchars($m['nome_materia']) ?></td>
-                <td><a href="?del=<?= $m['id_materia'] ?>" class="del">×</a></td>
-            </tr>
-            <?php endforeach; ?>
+            <thead>
+                <tr><th>ID</th><th>Nome</th><th>Ação</th></tr>
+            </thead>
+            <tbody>
+                <?php foreach($materias as $m): ?>
+                <tr>
+                    <td><?= $m['id_materia'] ?></td>
+                    <td><?= htmlspecialchars($m['nome_materia']) ?></td>
+                    <td><a href="?del=<?= $m['id_materia'] ?>" class="del" onclick="return confirm('Excluir?')">×</a></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
         </table>
         <br>
-        <a href="cronograma.php">⬅️ Ir para o Cronograma</a>
+        <a href="../index.php" class="voltar">⬅️ Voltar para a Home</a>
     </div>
 </body>
 </html>
