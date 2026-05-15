@@ -8,7 +8,7 @@ if (!isset($_SESSION['id'])) {
 
 //senha: Home@spSENAI2025!
 
-$conn = new mysqli("localhost", "root", "", "phronesis");
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 
 $id = $_SESSION['id'];
 $res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
