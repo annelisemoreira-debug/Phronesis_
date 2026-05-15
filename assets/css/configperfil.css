@@ -116,6 +116,35 @@ body {
     filter: grayscale(0%); /* Deixa colorido no hover */
 }
 
+
+.icon-acessibilidade {
+    /* Tamanho padrão para ícones de sidebar */
+    width: 18px; 
+    height: 18px;
+    
+    /* Espaçamento para alinhar com o texto */
+    margin-right: 12px; 
+    vertical-align: middle;
+    
+    /* Arredondamento suave */
+    border-radius: 3px; 
+    
+    /* Garante que a imagem não distorça */
+    object-fit: cover; 
+    display: inline-block;
+
+    /* Efeito de cor */
+    filter: grayscale(100%);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+/* Ativa a cor no hover do link */
+.sidebar ul li a:hover .icon-acessibilidade {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
 /* --- CONTEÚDO PRINCIPAL (Direita) --- */
 .content {
     flex: 1;

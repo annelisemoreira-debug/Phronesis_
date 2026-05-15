@@ -370,15 +370,6 @@ CREATE TABLE favoritos (
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS progresso_usuario (
-    id_progresso INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT NOT NULL,
-    id_material INT NOT NULL, -- Assumindo que sua tabela de aulas se chame 'material'
-    data_conclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
-    -- Adicione a FK para material se necessário
-);
-
 
 UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'manuella@phronesis.com';
