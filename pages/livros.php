@@ -28,7 +28,7 @@ error_reporting(E_ALL);
 //senha: Home@spSENAI2025!
 
 // --- CONEXÃO E BUSCA DO USUÁRIO ---
-$conn = new mysqli("localhost", "root", "", "phronesis");
+$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 $dadosUser = null;
 
 // Como a trava acima já garante que o ID existe, podemos buscar direto
