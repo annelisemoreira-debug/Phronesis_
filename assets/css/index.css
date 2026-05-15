@@ -46,6 +46,7 @@ body {
     border-radius: 20px;
     margin: 30px 20px 15px 20px;
     align-self: center;
+    margin-left: 250px;
     display: block;
 }
 
@@ -196,4 +197,141 @@ h1, h3 {
 
 .menu-dropdown a:hover {
     background-color: #f4f4f4 !important;
+}
+
+.page-wrapper {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    gap: 40px;
+    align-items: center;
+    margin: 80px auto;
+}
+
+/* O container principal do efeito */
+.bento-grid {
+    display: flex;
+    flex: 2; /* Ocupa o dobro de espaço que o texto da sidebar */
+    height: 500px;
+    gap: 20px;
+}
+
+/* Coluna da esquerda - Ocupa 30% da largura inicial */
+.grid-col-left {
+    flex: 0 0 30%; 
+    display: flex;
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Coluna da direita - Ocupa 70% da largura inicial */
+.grid-col-right {
+    flex: 0 0 70%; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Linha de baixo dentro da coluna da direita */
+.grid-row-bottom {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Ajuste das alturas internas da direita */
+.item-2 { flex: 1.2; } /* O de cima é um pouco mais alto */
+.grid-row-bottom { flex: 1; }
+
+/* Ajuste das larguras na linha de baixo (proporção 2 para 1 como na foto) */
+.item-3 { flex: 2; } 
+.item-4 { flex: 1; }
+
+/* --- REGRAS DAS IMAGENS --- */
+.box {
+    background: white;
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Impede que a foto amasse */
+    display: block;
+}
+
+/* --- LOGICA DE EXPANSÃO (O QUE VOCÊ QUERIA) --- */
+
+/* Quando o mouse entra no grid, todos os outros diminuem */
+.bento-grid:hover .grid-col-left,
+.bento-grid:hover .grid-col-right,
+.bento-grid:hover .box,
+.bento-grid:hover .grid-row-bottom {
+    flex: 1; /* Todos tentam ficar iguais... */
+    opacity: 0.6;
+}
+
+/* Mas o que está com o mouse cresce e ganha destaque */
+.grid-col-left:hover { flex: 3 !important; opacity: 1 !important; }
+.grid-col-right:hover { flex: 3 !important; opacity: 1 !important; }
+
+/* Crescimento interno */
+.item-2:hover { flex: 4 !important; opacity: 1 !important; }
+.grid-row-bottom:hover { flex: 4 !important; }
+.item-3:hover { flex: 5 !important; opacity: 1 !important; }
+.item-4:hover { flex: 5 !important; opacity: 1 !important; }
+
+.sidebar {
+    flex: 1;
+    color: #2d005d;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza o texto verticalmente em relação aos quadros */
+}
+
+/* Aquela etiqueta pequena indicando o curso */
+.sidebar .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #8c52ff;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.sidebar h1 {
+    font-size: 2.8rem;
+    text-align: left; /* Alinhamento à esquerda é padrão em sites modernos */
+    margin: 0 0 15px 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.sidebar .description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #4b2a6d;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Um detalhe visual para o destaque do projeto final */
+.mission-box {
+    border-left: 4px solid #8c52ff;
+    padding-left: 15px;
+    margin-top: 10px;
+}
+
+.mission-box p {
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #5a3b7d;
+    line-height: 1.5;
+    text-align: left;
 }

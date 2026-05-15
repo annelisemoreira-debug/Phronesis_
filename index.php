@@ -4,13 +4,15 @@ session_start();
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phronesis</title>
     <link rel="stylesheet" href="assets/css/index.css">
-    <link rel="stylesheet" href="assets/css/header.css"> 
+    <link rel="stylesheet" href="assets/css/header.css">
 </head>
+
 <body>
     <?php include 'interface/header.php'; ?>
 
@@ -58,47 +60,86 @@ session_start();
             </div>
             <button class="btn next">❯</button>
         </div>
+
+        <section>
+            <div class="page-wrapper">
+                <div class="bento-grid">
+                    <div class="grid-col-left">
+                        <div class="box item-1">
+                            <img src="assets/img/pessoas5.webp" alt="Pessoas">
+                        </div>
+                    </div>
+                    <div class="grid-col-right">
+                        <div class="box item-2">
+                            <img src="assets/img/pessoas4.webp" alt="Pessoas">
+                        </div>
+                        <div class="grid-row-bottom">
+                            <div class="box item-3">
+                                <img src="assets/img/pessoas6.webp" alt="Pessoas">
+                            </div>
+                            <div class="box item-4">
+                                <img src="assets/img/pessoas8.webp" alt="Pessoas">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+               <div class="sidebar">
+    <span class="tag">PROJETO FINAL • SENAI</span>
+    <h1>Sobre nós</h1>
+    <p class="description">
+        Somos desenvolvedores em formação, cursando o último ano do Ensino Médio e o 
+        <strong>Técnico em Desenvolvimento de Sistemas</strong> no SENAI.
+    </p>
+    <div class="mission-box">
+        <p>A Phronesis é o resultado do nosso TCC: um sistema pensado para aplicar todo o conhecimento técnico que adquirimos ao longo do curso.</p>
+    </div>
+</div>
+            </div>
+        </section>
     </main>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const perfilBtn = document.getElementById("perfilBtn");
-    const dropdown = document.getElementById("dropdownPerfil");
+        document.addEventListener("DOMContentLoaded", function() {
+            const perfilBtn = document.getElementById("perfilBtn");
+            const dropdown = document.getElementById("dropdownPerfil");
 
-    if (perfilBtn && dropdown) {
-        // 1. Clique para Abrir/Fechar
-        perfilBtn.addEventListener("click", function(event) {
-            event.stopPropagation();
-            dropdown.classList.toggle("show");
-            console.log("Menu clicado!"); // Debug: Verifique no F12 se isso aparece
-        });
+            if (perfilBtn && dropdown) {
+                // 1. Clique para Abrir/Fechar
+                perfilBtn.addEventListener("click", function(event) {
+                    event.stopPropagation();
+                    dropdown.classList.toggle("show");
+                    console.log("Menu clicado!"); // Debug: Verifique no F12 se isso aparece
+                });
 
-        // 2. Clique fora para fechar
-        window.addEventListener("click", function() {
-            if (dropdown.classList.contains("show")) {
-                dropdown.classList.remove("show");
+                // 2. Clique fora para fechar
+                window.addEventListener("click", function() {
+                    if (dropdown.classList.contains("show")) {
+                        dropdown.classList.remove("show");
+                    }
+                });
+            } else {
+                console.error("Elementos do menu não encontrados!");
+            }
+
+            // --- Lógica do Carrossel (Mantida) ---
+            const track = document.querySelector('.carousel-track');
+            const nextBtn = document.querySelector('.next');
+            const prevBtn = document.querySelector('.prev');
+
+            if (nextBtn && prevBtn) {
+                nextBtn.addEventListener('click', () => {
+                    const cards = document.querySelectorAll('.card');
+                    track.appendChild(cards[0]);
+                });
+                prevBtn.addEventListener('click', () => {
+                    const cards = document.querySelectorAll('.card');
+                    track.insertBefore(cards[cards.length - 1], cards[0]);
+                });
             }
         });
-    } else {
-        console.error("Elementos do menu não encontrados!");
-    }
-
-    // --- Lógica do Carrossel (Mantida) ---
-    const track = document.querySelector('.carousel-track');
-    const nextBtn = document.querySelector('.next');
-    const prevBtn = document.querySelector('.prev');
-
-    if (nextBtn && prevBtn) {
-        nextBtn.addEventListener('click', () => {
-            const cards = document.querySelectorAll('.card');
-            track.appendChild(cards[0]);
-        });
-        prevBtn.addEventListener('click', () => {
-            const cards = document.querySelectorAll('.card');
-            track.insertBefore(cards[cards.length - 1], cards[0]);
-        });
-    }
-});
-</script>
+    </script>
 </body>
+
 </html>
