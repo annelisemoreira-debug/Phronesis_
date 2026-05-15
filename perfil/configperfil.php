@@ -8,7 +8,7 @@ if (!isset($_SESSION['id'])) {
 }
 
 // --- CONEXÃO ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+$conn = new mysqli("localhost", "root", "", "phronesis");
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
 $id = $_SESSION['id'];
@@ -22,11 +22,12 @@ if (!$dadosUser) {
     exit();
 }
 
+// senha: Home@spSENAI2025!
 
 // 2. CONEXÃO COM O BANCO
 $servername = "localhost";
 $username = "root";
-$password = "Home@spSENAI2025!";
+$password = "";
 $dbname = "phronesis";
 
 $conn = new mysqli($servername, $username, $password, $dbname);

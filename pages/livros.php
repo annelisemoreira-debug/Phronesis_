@@ -8,7 +8,7 @@ if (!isset($_SESSION['id'])) {
 }
 
 // --- CONEXÃO ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+$conn = new mysqli("localhost", "root", "", "phronesis");
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
 $id = $_SESSION['id'];
@@ -25,8 +25,10 @@ if (!$dadosUser) {
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+//senha: Home@spSENAI2025!
+
 // --- CONEXÃO E BUSCA DO USUÁRIO ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+$conn = new mysqli("localhost", "root", "", "phronesis");
 $dadosUser = null;
 
 // Como a trava acima já garante que o ID existe, podemos buscar direto

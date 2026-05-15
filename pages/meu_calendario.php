@@ -7,8 +7,10 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
+//senha: Home@spSENAI2025!
+
 // --- CONEXÃO ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+$conn = new mysqli("localhost", "root", "", "phronesis");
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
 $id = $_SESSION['id'];
@@ -66,14 +68,20 @@ $authUrl = $client->createAuthUrl();
     <h2>Conectar para criar!</h2>
     <p>Para facilitar a organização da sua rotina, o nosso site funciona de forma integrada com o <span class="google-brand">Google Agenda</span>.</p>
     
-    <p>Para que você consiga montar e visualizar seu cronograma personalizado por aqui, você só precisa conectar a sua conta do Google. Assim que você fizer o login, sincronizamos tudo automaticamente para você.</p>
+    <p>Sincronize sua conta Google para criar e visualizar seu cronograma automaticamente. </p>
     
     <a class="btn-google" href="<?= $authUrl ?>">
-        Entrar com Google
+        Continuar com Google
     </a>
 
+    <div class="login-options">
+        <a class="btn-secondary" href="cronograma.php">
+            Já conectei minha conta
+        </a>
+    </div>
+
     <div class="footer-link">
-        <a href="../index.php">Deseja Voltar?</a>
+        <a href="../index.php">Voltar</a>
     </div>
 </div>
         

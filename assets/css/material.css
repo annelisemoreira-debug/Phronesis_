@@ -46,35 +46,63 @@ body {
 .menuSidebar {
   position: sticky;
   top: 20px;
+  width: 260px;
   height: calc(100vh - 40px);
-  width: 350px;
-  background: white;
-  border-radius: 15px;
-  padding: 35px 30px;
+  background: #f6f5fb;
+  border-radius: 18px;
+  padding: 20px 14px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  min-width: 250px;
+  gap: 18px;
 }
 
+/* NAV */
 .menuSidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 6px;
 }
 
+/* TEXTO "Explore por matéria:" */
+.menuSidebar nav::before {
+  content: "Explore por matéria:";
+  font-size: 19px;
+  font-weight: 700;
+  color: #3f007d;
+  margin: 10px 0 6px 8px;
+  display: block;
+}
+
+/* LINKS DAS MATÉRIAS */
 .menuSidebar nav a {
-  text-decoration: none;
-  color: #6837af;
-  font-weight: bold;
-  font-size: 20px;
-  cursor: pointer;
   position: relative;
-  display: inline-block;
-  padding-bottom: 4px;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: #5b3aa6;
+  transition: all 0.2s ease;
 }
 
-/* A barra de carregamento sutil */
+/* HOVER */
+.menuSidebar nav a:hover {
+  background: rgba(155, 210, 255, 0.22);
+  transform: translateX(3px);
+}
+
+/* ATIVO */
+.active-subject {
+  background: #e7f4ff;
+  color: #3c2aa0 !important;
+  border-left: 4px solid #7bbcff;
+  padding-left: 10px;
+  box-shadow: 0 6px 16px rgba(123, 188, 255, 0.18);
+}
+
+/* LOADING BAR (animação) */
 .menuSidebar nav a::after {
   content: "";
   position: absolute;
@@ -83,13 +111,18 @@ body {
   width: 0%;
   height: 3px;
   background-color: #ffcc49;
-  transition: width 0.2s ease;
   border-radius: 2px;
 }
 
-/* Classe disparada pelo JS */
 .menuSidebar nav a.loading::after {
   animation: loadingTube 2s forwards ease-in-out;
+}
+
+@keyframes loadingTube {
+  0% { width: 0%; }
+  30% { width: 40%; }
+  60% { width: 70%; }
+  100% { width: 90%; }
 }
 
 @keyframes loadingTube {
@@ -294,7 +327,7 @@ body {
 
 /* Os Quadradinhos Roxos */
 .video-card {
-  background-color: #b39ddb; /* Cor roxa da sua representação */
+  background-color: white; /* Cor roxa da sua representação */
   border-radius: 15px;
   padding: 10px;
   transition: transform 0.3s;
@@ -355,38 +388,62 @@ body {
   padding-right: 10px;
 }
 
-/* --- ESTILO ESPECÍFICO DOS VESTIBULARES (IDÊNTICO À IMAGEM 1) --- */
+
+/*h3 contador vestibular*/
+.titulo-main {
+  font-size: 19px;
+  font-weight: 800;
+  color: #5b3aa6;
+  line-height: 1.2;
+}
+
+.tag-vestibulares {
+  background: #9fe0ff;
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border-bottom: 5px solid #7591f3;
+
+}
 
 .sidebar-exam-container {
-  margin-top: 30px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 2px solid #7591f3;
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Espaço entre cada bloco de vestibular */
+  gap: 14px;
 }
 
 .widget-title-sidebar {
-  color: #6837af;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+  font-size: 19px;
+  font-weight: 800;
+  color: #5b3aa6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
 /* O Card agora é apenas um container transparente com borda lateral curva */
 .exam-card-mini {
-  background: transparent;
-  padding: 2px 0 2px 15px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
+
+.exam-card-mini:hover {
+  background: rgba(0, 0, 0, 0.03);
 }
 
 /* Título do Vestibular (Ex: ENEM 2026) */
 .exam-name-mini {
-  color: #6837af;
-  font-weight: bold;
-  font-size: 0.95rem;
-  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #3f007d;
 }
 
 /* O Timer com a linha colorida embaixo */
