@@ -28,26 +28,40 @@ body {
     width: 250px;
     background-color: white;
     border-radius: 15px;
-    padding: 30px 15px;
+    padding: 30px 20px;
     display: flex;
     flex-direction: column;
 }
 
-/* Centraliza o container da logo */
-.logo {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px; /* Reduzido levemente para melhor equilíbrio visual */
+.logo img {
+    width: 150px;
+    margin-bottom: 40px;
+    display: block;
 }
 
-/* Faz a logo se adaptar perfeitamente ao espaço disponível */
+.nav-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #000;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+/* --- SIDEBAR (Esquerda) --- */
+.sidebar {
+    width: 250px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px 15px; /* Ajustado padding lateral */
+    display: flex;
+    flex-direction: column;
+}
+
 .logo img {
-    max-width: 90%; /* Garante que ela respeite as bordas internas da sidebar */
-    height: auto;   /* Mantém a proporção correta sem achatar a imagem */
+    width: 150px;
+    margin-bottom: 40px;
+    padding-left: 10px;
     display: block;
-    object-fit: contain;
 }
 
 .nav-title {

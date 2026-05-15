@@ -10,6 +10,35 @@ body {
     overflow-x: hidden; /* Evita barra de rolagem na página toda */
 }
 
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.menu li {
+    border-radius: 5px;
+}
+
+.menu li a {
+    text-decoration: none;
+    display: block;
+    padding: 8px 15px;
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
+
+.menu li.entrar a:hover {
+    background-color: #2060d8;
+    color: white;
+    transition: 0.3s;
+}
+
 .banner {
     width: 90%; 
     max-width: 1200px;

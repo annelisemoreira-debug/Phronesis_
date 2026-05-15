@@ -25,6 +25,58 @@ body {
     padding: 18px 50px;
 }
 
+/* Menu Superior */
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center; 
+}
+
+.menu li {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.menu li a {
+    text-decoration: none;
+    display: block;
+    padding: 12px 25px; 
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Cores do Menu */
+.menu li.cronogramas { background-color: #bfa2ff; }
+.menu li.materiais { background-color: #8dd4ff; }
+.menu li.home { background-color: #ffe57e; }
+
+/* Botão Entrar */
+.menu li.entrar {
+    background-color: #47b1f2;
+    border-radius: 25px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px; 
+    height: 50px;    
+    padding: 0 10px;
+    isolation: isolate;
+}
+
+.user-profile-top {
+    width: 40px;      
+    height: 40px;     
+    border-radius: 50%; 
+    object-fit: cover;  
+    border: 2px solid white; 
+    display: block;
+}
+
 /* Main section */
 .areaContent {
     border-radius: 15px;
