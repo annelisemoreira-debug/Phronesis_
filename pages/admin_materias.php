@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -52,6 +53,21 @@ if (isset($_POST['add_materia'])) {
     }
 }
 
+// Lógica de Edição
+if (isset($_POST['edit_materia'])) {
+    $id_edit = $_POST['id_materia'];
+    $nome_edit = trim($_POST['novo_nome']);
+    if (!empty($nome_edit) && !empty($id_edit)) {
+        try {
+            $stmt = $pdo->prepare("UPDATE materia SET nome_materia = ? WHERE id_materia = ?");
+            $stmt->execute([$nome_edit, $id_edit]);
+            $msg = "📝 Matéria atualizada com sucesso!";
+        } catch (Exception $e) {
+            $msg = "❌ Erro ao editar matéria.";
+        }
+    }
+}
+
 // Lógica de Exclusão
 if (isset($_GET['del'])) {
     try {
@@ -79,8 +95,13 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
         button { padding: 10px; background: #34a853; color: white; border: none; cursor: pointer; border-radius: 4px; }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-        .del { color: red; text-decoration: none; font-weight: bold; }
+        .del { color: red; text-decoration: none; font-weight: bold; margin-left: 10px; }
+        .edit { color: #1a73e8; text-decoration: none; font-weight: bold; cursor: pointer; }
         .voltar { display: inline-block; margin-top: 20px; text-decoration: none; color: #666; font-size: 14px; }
+        
+        .input-inline { padding: 5px; width: 80%; border: 1px solid #1a73e8; border-radius: 4px; }
+        .btn-salvar { background: #1a73e8; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; margin-right: 5px; font-size: 12px; }
+        .btn-cancelar { background: #666; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -99,10 +120,20 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
             </thead>
             <tbody>
                 <?php foreach($materias as $m): ?>
-                <tr>
+                <tr id="linha-<?= $m['id_materia'] ?>">
                     <td><?= $m['id_materia'] ?></td>
-                    <td><?= htmlspecialchars($m['nome_materia']) ?></td>
-                    <td><a href="?del=<?= $m['id_materia'] ?>" class="del" onclick="return confirm('Excluir?')">×</a></td>
+                    
+                    <td class="col-nome">
+                        <span class="texto-nome"><?= htmlspecialchars($m['nome_materia']) ?></span>
+                    </td>
+                    
+                    <td class="col-acoes">
+                        <a class="edit btn-ativar-edicao" 
+                           data-id="<?= $m['id_materia'] ?>" 
+                           data-nome="<?= htmlspecialchars($m['nome_materia'], ENT_QUOTES, 'UTF-8') ?>">✏️</a>
+                        
+                        <a href="?del=<?= $m['id_materia'] ?>" class="del" onclick="return confirm('Excluir?')">×</a>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -110,5 +141,53 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
         <br>
         <a href="../index.php" class="voltar">⬅️ Voltar para a Home</a>
     </div>
+
+    <script>
+    // Monitora os cliques nos botões de editar de forma limpa e segura
+    document.body.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('btn-ativar-edicao')) {
+            const id = e.target.getAttribute('data-id');
+            const nomeAtual = e.target.getAttribute('data-nome');
+            ativarEdicao(id, nomeAtual);
+        }
+    });
+
+    function ativarEdicao(id, nomeAtual) {
+        const linha = document.getElementById(`linha-${id}`);
+        const colNome = linha.querySelector('.col-nome');
+        const colAcoes = linha.querySelector('.col-acoes');
+
+        // Salva o estado original caso queira cancelar
+        const htmlOriginalNome = colNome.innerHTML;
+        const htmlOriginalAcoes = colAcoes.innerHTML;
+
+        // Troca para o input inline
+        colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}">`;
+        // Define o valor via propriedade para evitar bugs com caracteres do tipo " e '
+        document.getElementById(`input-${id}`).value = nomeAtual;
+
+        // Altera os botões de ação
+        colAcoes.innerHTML = `
+            <form method="POST" style="display: inline;" onsubmit="prepararEnvio(${id});">
+                <input type="hidden" name="id_materia" value="${id}">
+                <input type="hidden" name="novo_nome" id="hidden-nome-${id}">
+                <button type="submit" name="edit_materia" class="btn-salvar">Salvar</button>
+            </form>
+            <button type="button" class="btn-cancelar" id="cancelar-${id}">X</button>
+        `;
+
+        // Evento de cancelar restaura os botões anteriores
+        document.getElementById(`cancelar-${id}`).addEventListener('click', () => {
+            colNome.innerHTML = htmlOriginalNome;
+            colAcoes.innerHTML = htmlOriginalAcoes;
+        });
+    }
+
+    function prepararEnvio(id) {
+        const valorInput = document.getElementById(`input-${id}`).value;
+        document.getElementById(`hidden-nome-${id}`).value = valorInput;
+    }
+    </script>
 </body>
 </html>
+
