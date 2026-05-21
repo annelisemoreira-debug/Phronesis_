@@ -7,6 +7,12 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
+// Se o usuário NÃO estiver logado, manda ele para a tela de login
+if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
+    header("Location: login.php");
+    exit(); // Interrompe a execução do script
+}
+
 // --- CONEXÃO ÚNICA ---
 $conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 

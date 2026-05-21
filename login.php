@@ -1,4 +1,13 @@
-<?php session_start(); ?>
+<?php 
+session_start(); 
+
+// Se as variáveis de sessão existirem, o usuário já está logado
+if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
+    header("Location: index.php");
+    exit(); // Interrompe a execução do script para garantir o redirecionamento
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

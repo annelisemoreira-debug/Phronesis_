@@ -1,9 +1,14 @@
 <?php
 session_start();
+
+// Se o usuário NÃO estiver logado, manda ele para a tela de login
+if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
+    header("Location: login.php");
+    exit(); // Interrompe a execução do script
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
