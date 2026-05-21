@@ -48,7 +48,7 @@ session_start();
                     <div class="sidebar">
                         <?php if (isset($_SESSION['id']) && isset($_SESSION['nome'])): ?>
                             <span class="tag">PAINEL DO ESTUDANTE</span>
-                            <h1>Bem-vindo, <?php echo htmlspecialchars($_SESSION['nome']); ?>!</h1>
+                            <h1>Bem-vindo(a), <?php echo htmlspecialchars($_SESSION['nome']); ?>!</h1>
                             <p class="description">
                                 Que bom ter você de volta! Aproveite nossos recursos para organizar seu cronograma de estudos e revisar as leituras obrigatórias.
                             </p>
