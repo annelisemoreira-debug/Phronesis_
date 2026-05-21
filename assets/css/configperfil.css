@@ -28,39 +28,25 @@ body {
     width: 250px;
     background-color: white;
     border-radius: 15px;
-    padding: 30px 20px;
+    padding: 30px 15px;
     display: flex;
     flex-direction: column;
 }
 
-.logo img {
-    width: 150px;
-    margin-bottom: 40px;
-    display: block;
-}
-
-.nav-title {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #000;
-    margin-top: 25px;
-    margin-bottom: 10px;
-}
-
-/* --- SIDEBAR (Esquerda) --- */
-.sidebar {
-    width: 250px;
-    background-color: white;
-    border-radius: 15px;
-    padding: 30px 15px; /* Ajustado padding lateral */
+/* Container da logo ajustado para centralizar */
+.logo {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 40px;
 }
 
+/* Imagem da logo maior e responsiva */
 .logo img {
-    width: 150px;
-    margin-bottom: 40px;
-    padding-left: 10px;
+    width: 220px;       /* Aumentado de 185px para 220px para dar mais presença */
+    max-width: 95%;     /* Permite ocupar quase toda a largura interna da sidebar */
+    height: auto;       /* Mantém a proporção sem distorcer o desenho */
     display: block;
 }
 
@@ -91,7 +77,12 @@ body {
     align-items: center;
     padding: 10px 12px;
     border-radius: 10px;
-    transition: all 0.3s ease; /* Transição suave */
+    transition: all 0.3s ease;
+}
+
+/* Padronização do link específico de acessibilidade */
+.nav-link-acessibilidade {
+    font-size: 1rem !important;
 }
 
 /* Efeito ao passar o mouse e item ativo */
@@ -116,24 +107,14 @@ body {
     filter: grayscale(0%); /* Deixa colorido no hover */
 }
 
-
 .icon-acessibilidade {
-    /* Tamanho padrão para ícones de sidebar */
     width: 18px; 
     height: 18px;
-    
-    /* Espaçamento para alinhar com o texto */
     margin-right: 12px; 
     vertical-align: middle;
-    
-    /* Arredondamento suave */
     border-radius: 3px; 
-    
-    /* Garante que a imagem não distorça */
     object-fit: cover; 
     display: inline-block;
-
-    /* Efeito de cor */
     filter: grayscale(100%);
     opacity: 0.8;
     transition: all 0.3s ease;
@@ -165,7 +146,7 @@ body {
     width: 100%;
     display: block;
     object-fit: cover;
-    margin-top: 30px; /* Levanta o banner para cobrir a borda superior arredondada */
+    margin-top: 30px;
 }
 
 /* Seção de dados */
@@ -227,7 +208,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* Botão de seleção (estilizado como o da imagem) */
+/* Botão de seleção */
 .upload-info button {
     background: none !important;
     border: none !important;
