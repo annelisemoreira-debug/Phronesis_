@@ -11,10 +11,11 @@
 body {
   background-color: #bfa2ff;
   color: #333;
+  overflow-x: hidden;
   min-height: 100vh;
 }
 
-/* Wrapper Principal (Layout Lado a Lado) */
+/* Wrapper Principal (Layout Lado a Lado - Sidebar + Conteúdo) */
 .wrapper {
   display: flex;
   min-height: 100vh;
@@ -25,73 +26,147 @@ body {
 }
 
 /* ==========================================================================
-   MENU SUPERIOR / PERFIL
+   MENU SUPERIOR / HEADER (FIEL ÀS IMAGENS ENVIADAS)
    ========================================================================== */
+header {
+  background-color: #8c52ff; /* Roxo principal idêntico ao da imagem */
+  padding: 12px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Container da Logo (Canto Esquerdo) */
+.logoMarca {
+  background: white;
+  padding: 6px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+}
+
+.logoMarca img {
+  height: 22px; /* Mantém a proporção elegante da escrita PHRONESIS */
+  object-fit: contain;
+  display: block;
+}
+
+/* Bloco de Navegação (Canto Direito) */
 .menu {
   display: flex;
   list-style: none;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 15px;
   align-items: center;
 }
 
 .menu li {
-  border-radius: 15px;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .menu li a {
   text-decoration: none;
   display: block;
-  padding: 12px 25px;
-  color: black;
-  font-weight: bold;
-  font-size: 16px;
+  padding: 8px 18px;
+  color: #000000;
+  font-weight: 700;
+  font-size: 14px;
   text-align: center;
+  border-radius: 6px;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* Cores do Menu */
-.menu li.cronogramas { background-color: #bfa2ff; }
-.menu li.livros { background-color: #8dd4ff; }
-.menu li.home { background-color: #ffe57e; }
+.menu li a:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
 
-/* Container do botão 'Entrar' ou Perfil */
-.menu li.entrar {
-  background-color: #47b1f2;
-  border-radius: 25px;
-  margin-left: auto;
+/* Cores específicas dos botões baseadas no layout padrão */
+.menu li.materiais a {
+  background-color: #8dd4ff; /* Azul claro */
+}
+
+.menu li.obras a, .menu li.livros a {
+  background-color: #ffe57e; /* Amarelo das Obras Obrigatórias */
+}
+
+.menu li.cronogramas a {
+  background-color: #a2d5ff; /* Azul sutil dos cronogramas */
+}
+
+/* Link de Administração (Texto Vermelho/Laranja sem fundo) */
+.menu li.admin a, .menu li.adm a {
+  background-color: transparent !important;
+  color: #ff4d4d !important;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 8px 10px;
+}
+
+/* Container do Avatar do Usuário */
+.perfil-container {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 60px;
-  height: 50px;
-  padding: 0 10px;
+  margin-left: 5px;
+  cursor: pointer;
 }
 
-/* Imagem de perfil (Avatar) */
-.user-profile-top {
-  width: 40px;
-  height: 40px;
+.user-profile-top, .foto-perfil {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
+  border: 2px solid #ffffff;
   object-fit: cover;
-  border: 2px solid white;
+  background-color: #fff;
   display: block;
 }
 
-/* Garante o alinhamento do link de entrar */
-.entrar-container a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 !important;
+/* Dropdown de perfil caso exista no HTML */
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  min-width: 160px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.menu-dropdown a {
+  display: block;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.menu-dropdown a:hover {
+  background: #f5f4f9;
+}
+
+.show {
+  display: block !important;
 }
 
 /* ==========================================================================
-   SIDEBAR (MENU LATERAL)
+   SIDEBAR (MENU LATERAL DE MATÉRIAS)
    ========================================================================== */
 .menuSidebar {
   position: sticky;
-  top: 20px;
+  top: 95px; /* Alinhamento correto abaixo do header roxo fixa */
   width: 280px;
   height: fit-content;
   background: #f6f5fb;
@@ -108,7 +183,7 @@ body {
 
 .menuSidebar nav::before {
   content: "Explore por matéria:";
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
   color: #3f007d;
   margin: 0 0 10px 8px;
@@ -124,7 +199,7 @@ body {
   padding: 12px 16px;
   border-radius: 12px;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #5b3aa6;
   transition: all 0.25s ease;
@@ -145,7 +220,7 @@ body {
 }
 
 /* ==========================================================================
-   INDICADOR DE CARREGAMENTO (LOADING DA BUSCA DE VÍDEOS)
+   INDICADOR DE CARREGAMENTO (LOADING)
    ========================================================================== */
 .video-grid.loading {
   position: relative;
@@ -170,14 +245,12 @@ body {
 }
 
 @keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 /* ==========================================================================
-   CONTEÚDO PRINCIPAL E CARDS DE VÍDEO
-   ========================================================================= */
+   CONTEÚDO PRINCIPAL E BANNER
+   ========================================================================== */
 .principalContent {
   flex: 1;
   display: flex;
@@ -189,80 +262,69 @@ body {
   width: 100%;
 }
 
-/* ==========================================================================
-   CORREÇÃO DO BANNER
-   ========================================================================== */
 .banner {
-  width: 100%;
-  max-width: 1650px;
-  height: 160px;
-  margin: 20px auto 0 auto;
-  padding: 0 30px;
-  overflow: hidden;
+    width: 100%; 
+    max-width: 1650px; 
+    height: 160px;       
+    margin: 20px auto 0 auto; 
+    display: block;
+    overflow: hidden;
 }
 
 .banner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
+    width: 98%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 15px;
 }
 
 /* ==========================================================================
-   CONTAINERS BRANCOS COM SCROLL AMARELO E ARREDONDADO (IGUAL À IMAGEM)
+   CONTAINERS BRANCOS COM ROLAGEM CUSTOMIZADA AMARELA
    ========================================================================== */
 .video-container-white, 
 .caixa-favoritos-nova {
   background-color: white;
   border-radius: 20px;
   padding: 30px;
-  margin-bottom: 30px;
+  margin-bottom: 5px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   width: 100%;
-  
-  /* Limita estritamente a altura para renderizar apenas 2 linhas de vídeo */
   max-height: 720px; 
-  overflow-y: scroll !important; /* Mantém o trilho visível para estilização */
+  overflow-y: scroll !important; 
 }
 
-/* Customização da Barra de Rolagem Moderna (WebKit) */
+/* Customização WebKit para a barra de rolagem amarela */
 .video-container-white::-webkit-scrollbar,
 .caixa-favoritos-nova::-webkit-scrollbar {
-  width: 12px !important; /* Espessura elegante da pílula */
+  width: 12px !important;
 }
 
-/* O fundo do trilho da barra (Track) */
 .video-container-white::-webkit-scrollbar-track,
 .caixa-favoritos-nova::-webkit-scrollbar-track {
-  background: #fffae6 !important; /* Amarelo bem suave/claro de fundo */
-  border-radius: 20px !important; /* Extremidades totalmente arredondadas */
-  margin: 15px 0; /* Dá uma folga nas pontas internas do container */
+  background: #fffae6 !important; 
+  border-radius: 20px !important; 
+  margin: 15px 0; 
 }
 
-/* O botão arrastável (Thumb) */
 .video-container-white::-webkit-scrollbar-thumb,
 .caixa-favoritos-nova::-webkit-scrollbar-thumb {
-  background: #ffca28 !important; /* Amarelo vivo idêntico ao da imagem */
-  border-radius: 20px !important; /* Formato de pílula perfeito */
-  border: 2px solid #fffae6 !important; /* Cria um leve espaçamento interno sutil */
+  background: #ffca28 !important; 
+  border-radius: 20px !important; 
+  border: 2px solid #fffae6 !important; 
 }
 
-/* Feedback visual ao passar o mouse */
 .video-container-white::-webkit-scrollbar-thumb:hover,
 .caixa-favoritos-nova::-webkit-scrollbar-thumb:hover {
-  background: #f5b041 !important; /* Tom levemente mais escuro ao interagir */
+  background: #f5b041 !important; 
 }
 
-/* Remove completamente as setas clássicas das extremidades */
 .video-container-white::-webkit-scrollbar-button,
 .caixa-favoritos-nova::-webkit-scrollbar-button {
   display: none !important;
 }
 
-/* ==========================================================================
-   CABEÇALHO E COMPONENTES INTERNOS
-   ========================================================================== */
-/* Cabeçalho dos Blocos */
+/* Componentes internos dos blocos brancos */
 .video-header {
   display: flex;
   justify-content: space-between;
@@ -278,7 +340,6 @@ body {
   font-weight: 700;
 }
 
-/* Barra de Pesquisa Modernizada */
 .search-box {
   display: flex;
   align-items: center;
@@ -319,7 +380,7 @@ body {
   transform: scale(1.1);
 }
 
-/* GRADE FIXADA EM 3 COLUNAS */
+/* Grid de cards fixado em 3 Colunas */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(200px, 1fr)); 
@@ -327,7 +388,6 @@ body {
   width: 100%;
 }
 
-/* Cartão do Vídeo (Card) */
 .video-card {
   background-color: #f9f8ff;
   border: 1px solid #eee;
@@ -345,7 +405,6 @@ body {
   background-color: #fff;
 }
 
-/* Ajuste Fino dos Iframes do YouTube */
 .video-wrapper {
   position: relative;
   padding-bottom: 56.25%;
@@ -363,7 +422,6 @@ body {
   height: 100%;
 }
 
-/* Container de Título e Botão Favoritar dentro do Card */
 .video-title-card {
   font-size: 14px;
   font-weight: 600;
@@ -376,7 +434,6 @@ body {
   min-height: 40px;
 }
 
-/* Botão Favoritar */
 .fav-btn {
   background: none;
   border: none;
@@ -387,21 +444,12 @@ body {
   padding: 0;
 }
 
-.fav-btn:hover {
-  transform: scale(1.2);
-}
-
-.star-on {
-  color: #ffd700;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-}
-
-.star-off {
-  color: #ccc;
-}
+.fav-btn:hover { transform: scale(1.2); }
+.star-on { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
+.star-off { color: #ccc; }
 
 /* ==========================================================================
-   WIDGET DE CONTAGEM REGRESSIVA (VESTIBULARES)
+   WIDGETS DE CONTAGEM REGRESSIVA (SIDEBAR)
    ========================================================================== */
 .sidebar-exam-container {
   margin-top: 20px;
@@ -420,7 +468,7 @@ body {
 }
 
 .titulo-main {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   color: #3f007d;
   text-transform: uppercase;
@@ -431,13 +479,12 @@ body {
   color: #1a658f;
   padding: 4px 10px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
   box-shadow: 0 3px 0 #60b3df;
 }
 
-/* Cards do Timer */
 .exam-card-mini {
   padding: 10px 12px;
   border-radius: 8px;
@@ -453,7 +500,7 @@ body {
 }
 
 .exam-name-mini {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #555;
   display: block;
@@ -463,11 +510,11 @@ body {
 .countdown-mini {
   font-family: monospace;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
   width: fit-content;
 }
 
-/* Cores das Bordas e Timers dos Vestibulares */
+/* Identificadores visuais laterais */
 .mini-enem { border-left: 4px solid #f1c40f; }
 .mini-enem .countdown-mini { color: #d4ac0d; }
 
@@ -480,8 +527,13 @@ body {
 .mini-unesp { border-left: 4px solid #9b59b6; }
 .mini-unesp .countdown-mini { color: #9b59b6; }
 
-/* Redirecionamento para telas menores */
+/* ==========================================================================
+   MEDIA QUERIES (RESPONSIVIDADE)
+   ========================================================================== */
 @media (max-width: 1024px) {
+  header {
+    padding: 15px 20px;
+  }
   .video-grid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }

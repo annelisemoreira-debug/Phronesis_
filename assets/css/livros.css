@@ -113,11 +113,11 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column; 
-    gap: 80px; /* Aumentado de 50px para 80px para dar mais espaçamento entre cada vestibular */
+    gap: 80px; 
     padding: 20px 40px; 
 }
 
-/* Todos os containers agora seguem o padrão Fuvest (imagem na esquerda, conteúdo na direita) */
+/* Todos os containers seguem o padrão (imagem na esquerda, conteúdo na direita) */
 .containerVest {
     width: 100%;
     display: flex;
@@ -135,15 +135,26 @@ body {
     gap: 15px;
 }
 
+/* --- LOGOS DOS VESTIBULARES --- */
 .fuvestImg, .vunestImg, .unicampImg, .enemImg {
     flex: 0 0 280px;
     cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+/* Efeito ao passar o mouse na imagem */
+.fuvestImg:hover, .vunestImg:hover, .unicampImg:hover, .enemImg:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 12px 24px rgba(134, 84, 243, 0.2); 
 }
 
 .containerVest img {
     width: 100%;
     height: auto;
     object-fit: contain;
+    border-radius: 12px; 
 }
 
 .descricaoVest p {
@@ -153,7 +164,7 @@ body {
     max-width: 95%; 
 }
 
-/* Estilo Padrão do Rótulo */
+/* Estilo Padrão do Rótulo (Título) */
 .nome {
     color: white;
     padding: 8px 45px; 
@@ -165,6 +176,21 @@ body {
     text-transform: uppercase;
     margin-bottom: 5px;
     background-color: #8654f3;
+}
+
+/* --- NOVO: TEXTO EMBUTIDO "LER MAIS..." --- */
+.texto-ler-mais {
+    color: #8654f3;             /* Tom roxo do site */
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+    display: inline-block;
+    transition: color 0.2s ease;
+}
+
+.texto-ler-mais:hover {
+    color: #592cb3;             /* Roxo ligeiramente mais escuro no hover */
+    text-decoration: underline; /* Destaca o comportamento de link */
 }
 
 /* --- JANELAS MODAIS COM SCROLL CUSTOMIZADO --- */

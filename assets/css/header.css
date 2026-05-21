@@ -1,11 +1,18 @@
 /* Estilos do Header e Menu */
 header {
     background-color: #8c52ff;
-    padding: 15px 5%;
+    padding: 15px 2%; /* Ajustado para esticar e alinhar com as extremidades da página */
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    width: 100%;
+
+    /* --- PROPRIEDADES PARA FIXAR O MENU --- */
+    position: sticky;      /* Faz o elemento fixar ao scrollar */
+    top: 0;                /* Fixa exatamente no topo da tela */
+    z-index: 1000;         /* Garante que o menu fique por cima de todo o conteúdo */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
 }
 
 .logoMarca {
@@ -24,7 +31,8 @@ header {
 .menu {
     display: flex;
     list-style: none;
-    gap: 10px;
+    gap: 15px; /* Espaçamento leve entre os botões */
+    align-items: center;
     flex-wrap: wrap;
     justify-content: center;
 }
@@ -32,17 +40,20 @@ header {
 .menu li {
     border-radius: 5px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 
 .menu li a {
     text-decoration: none;
     display: block;
-    padding: 8px 15px;
+    padding: 8px 18px; /* Preenchimento interno padrão dos botões */
     color: black;
     font-weight: bold;
     font-size: 14px;
 }
 
+/* Cores dos botões conforme padrão do cabeçalho */
 .menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
 .menu li.materiais { background-color: #8dd4ff; }
 .menu li.livros { background-color: #ffe57e; }
@@ -54,22 +65,61 @@ header {
     transition: 0.3s;
 }
 
-
-.menu .admin a { color: #ff4d4d; font-weight: bold; }
+/* Link de Administração */
+.menu .admin a { 
+    color: #ff4d4d; 
+    font-weight: bold; 
+    padding: 8px 10px;
+}
 
 /* Estilos do Dropdown de Perfil */
-.perfil-container { position: relative; cursor: pointer; }
-.foto-perfil { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #6000c0; object-fit: cover; }
-.menu-dropdown { display: none; position: absolute; right: 0; background: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 5px; min-width: 150px; z-index: 100; }
-.menu-dropdown a { display: block; padding: 10px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; }
-.menu-dropdown a:hover { background: #f4f4f4; }
-.show { display: block; }
+.perfil-container { 
+    position: relative; 
+    cursor: pointer; 
+}
 
-/* No header.css ou no final do livros.css */
+.foto-perfil { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    border: 2px solid #ffffff; /* Borda branca idêntica à imagem fornecida */
+    object-fit: cover; 
+    display: block;
+}
+
+.menu-dropdown { 
+    display: none; 
+    position: absolute; 
+    right: 0; 
+    top: 45px;
+    background: white; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    border-radius: 5px; 
+    min-width: 150px; 
+    z-index: 100; 
+}
+
+.menu-dropdown a { 
+    display: block; 
+    padding: 10px; 
+    color: #333; 
+    text-decoration: none; 
+    border-bottom: 1px solid #eee; 
+}
+
+.menu-dropdown a:hover { 
+    background: #f4f4f4; 
+}
+
+.show { 
+    display: block; 
+}
+
 .menu li.perfil-container {
     overflow: visible !important; 
     position: relative;
 }
+
 .menu-dropdown.show {
     display: block !important;
 }

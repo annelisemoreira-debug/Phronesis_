@@ -1,4 +1,3 @@
-/* --- MANTEVE SEU CÓDIGO ORIGINAL ATÉ O BANNER --- */
 * {
     margin: 0;
     padding: 0;
@@ -6,44 +5,34 @@
 }
 
 body {
-    background-color:#bfa2ff;
-    overflow-x: hidden; /* Evita barra de rolagem na página toda */
+    background-color: #bfa2ff;
+    overflow-x: hidden;
 }
 
-.menu {
+/* Estrutura de Alinhamento Global do Site */
+.wrapper {
     display: flex;
-    list-style: none;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
+    min-height: 100vh;
+    padding: 20px 30px; 
+    gap: 30px;
+    max-width: 1650px;  
+    margin: 0 auto;
 }
 
-.menu li {
-    border-radius: 5px;
+.principalContent {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 25px;         
+    padding: 0;        
 }
 
-.menu li a {
-    text-decoration: none;
-    display: block;
-    padding: 8px 15px;
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.menu li.entrar { background-color: #47b1f2; border-radius: 25px; }
-
-.menu li.entrar a:hover {
-    background-color: #2060d8;
-    color: white;
-    transition: 0.3s;
-}
-
+/* --- BANNER --- */
 .banner {
-    width: 90%; 
-    max-width: 1200px;
-    height: 135px;
-    margin: 30px auto; 
+    width: 100%; 
+    max-width: 1650px; 
+    height: 160px;       
+    margin: 20px auto 0 auto; 
     display: block;
     overflow: hidden;
 }
@@ -53,31 +42,69 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 15px;
 }
 
-h1, h3 {
-     text-align: center;
-      color: #4b0082;
-       margin-top: 10px; }
+/* --- SEÇÃO DO CARROSSEL (SEM QUADRADO BRANCO) --- */
+.carrossel-section {
+    width: 100%;
+    margin-top: 20px;
+}
 
-/* Container principal ajustado para dar espaço às setas nas laterais */
+.titulo-principal {
+    text-align: center;
+    color: #ffffff;  
+    font-size: 2.4rem;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.subtitulo-principal {
+    text-align: center;
+    color: #2d005d;  
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* --- QUADRADO BRANCO EXCLUSIVO DO "SOBRE NÓS" --- */
+.sobre-nos-container {
+    border-radius: 20px;   
+    padding: 50px;    
+    width: 100%; 
+    max-width: 1650px;     
+    background-color: white;
+    margin: 15px auto 20px auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); 
+}
+
+/* --- CARROSSEL --- */
 .carousel-container {
     position: relative;
     width: 100%;
     max-width: 1100px;
-    margin: 50px auto;
+    margin: 40px auto;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Estilo base dos cards (Laterais - mais estreitos) */
+.carousel-track {
+    display: flex;
+    gap: 15px; 
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .card {
-    /* Defina a largura que ele deve ter quando estiver na lateral */
     width: 280px; 
     min-width: 280px; 
-    height: 450px;
-    
+    height: 430px;
     background: white;
     border-radius: 25px;
     position: relative;
@@ -85,97 +112,75 @@ h1, h3 {
     flex-direction: column;
     align-items: center;
     padding: 60px 20px;
-    
-    /* Opacidade e escala menores para as laterais */
     opacity: 0.5;
-  transform: scale(0.8) rotateY(15deg); /* Leve inclinação 3D */
+    transform: scale(0.85) rotateY(12deg); 
     filter: blur(1px);
-    
-    /* Transição suave para todas as propriedades, inclusive largura */
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    overflow: hidden; /* Importante para o texto não vazar quando o card encolher */
+    overflow: hidden;
 }
 
-/* Card central (Largo e em destaque) */
 .card:nth-child(2) {
-    /* A largura total que você quer no centro */
-    width: 400px; 
-    min-width: 400px; 
-    
+    width: 380px; 
+    min-width: 380px; 
     opacity: 1;
-    transform: scale(1.05); /* Um leve aumento de altura para destacar */
+    transform: scale(1.02); 
     filter: blur(0);
     z-index: 10;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-/* Ajuste do Track para não dar tranco no movimento */
-.carousel-track {
-    display: flex;
-    gap: 10px; 
-    align-items: center;
-    justify-content: center;
-    padding: 40px 0;
-    /* Isso garante que o track se ajuste conforme os cards mudam de tamanho */
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Títulos e Textos */
 .card h2 {
     font-family: sans-serif;
     color: #002b4e;
     margin-bottom: 20px;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
 }
 
 .card p {
     color: #333;
-    line-height: 1.5;
+    line-height: 1.6;
     text-align: left;
     font-size: 0.95rem;
 }
 
-/* --- AS ABAS (ESTILO FICHÁRIO) --- */
+/* Abas estilo Fichário */
 .top-tabs-container {
     position: absolute;
-    top: -20px;
+    top: -18px;
     display: flex;
     justify-content: center;
     width: 100%;
 }
 
-/* Criando o efeito de abas sobrepostas */
 .tab {
     width: 80px;
     height: 35px;
     border-radius: 15px 15px 0 0;
-    margin: 0 -10px; /* Sobreposição das abas */
+    margin: 0 -10px;
 }
 
 .tab.blue { background-color: #90DFFF; z-index: 3; }
 .tab.yellow { background-color: #FCE686; z-index: 2; }
 .tab.purple { background-color: #8B4DFF; z-index: 1; }
 
-/* Aba inferior */
 .bottom-tab {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 25px;
+    height: 20px;
     border-radius: 0 0 25px 25px;
 }
 
-/* Cores das abas de baixo */
 .card.blue-theme .bottom-tab { background-color: #90DFFF; }
 .card.purple-theme .bottom-tab { background-color: #8B4DFF; }
 .card.yellow-theme .bottom-tab { background-color: #FCE686; }
 
-/* Setas brancas e grandes */
+/* Controles do Carrossel */
 .btn {
     background: none;
     border: none;
-    color: white;
+    color: #ffffff; 
     font-size: 4rem;
     font-weight: bold;
     cursor: pointer;
@@ -183,61 +188,42 @@ h1, h3 {
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
-    transition: 0.3s;
+    transition: 0.2s;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-.btn:hover { transform: translateY(-50%) scale(1.2); }
-.prev { left: -60px; }
-.next { right: -60px; }
+.btn:hover { color: #ffe57e; transform: translateY(-50%) scale(1.15); }
+.prev { left: -50px; }
+.next { right: -50px; }
 
-/* Ajuste fino para os links dentro do dropdown não herdarem estilos indesejados */
-.menu-dropdown a {
-    display: block;
-    padding: 10px 15px;
-    color: #333 !important;
-    text-decoration: none;
-    background: white;
-    font-size: 14px;
-    border-bottom: 1px solid #eee;
-}
-
-.menu-dropdown a:hover {
-    background-color: #f4f4f4 !important;
-}
-
+/* --- BENTO GRID & SIDEBAR (FONTES REDUZIDAS) --- */
 .page-wrapper {
     display: flex;
-    width: 90%;
-    max-width: 1200px;
-    gap: 40px;
+    width: 100%;
+    gap: 50px;
     align-items: center;
-    margin: 80px auto;
 }
 
-/* O container principal do efeito */
 .bento-grid {
     display: flex;
-    flex: 2; /* Ocupa o dobro de espaço que o texto da sidebar */
-    height: 500px;
+    flex: 1.8; 
+    height: 480px;
     gap: 20px;
 }
 
-/* Coluna da esquerda - Ocupa 30% da largura inicial */
 .grid-col-left {
-    flex: 0 0 30%; 
+    flex: 0 0 32%; 
     display: flex;
     transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Coluna da direita - Ocupa 70% da largura inicial */
 .grid-col-right {
-    flex: 0 0 70%; 
+    flex: 0 0 68%; 
     display: flex;
     flex-direction: column;
     gap: 20px;
     transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Linha de baixo dentro da coluna da direita */
 .grid-row-bottom {
     flex: 1;
     display: flex;
@@ -245,98 +231,106 @@ h1, h3 {
     transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Ajuste das alturas internas da direita */
-.item-2 { flex: 1.2; } /* O de cima é um pouco mais alto */
-.grid-row-bottom { flex: 1; }
-
-/* Ajuste das larguras na linha de baixo (proporção 2 para 1 como na foto) */
+.item-2 { flex: 1.1; } 
 .item-3 { flex: 2; } 
 .item-4 { flex: 1; }
 
-/* --- REGRAS DAS IMAGENS --- */
 .box {
-    background: white;
-    border-radius: 30px;
+    background: #fcfcfc;
+    border-radius: 24px;
     overflow: hidden;
     position: relative;
     width: 100%;
     height: 100%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
     transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .box img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Impede que a foto amasse */
+    object-fit: cover;
     display: block;
 }
 
-/* --- LOGICA DE EXPANSÃO (O QUE VOCÊ QUERIA) --- */
-
-/* Quando o mouse entra no grid, todos os outros diminuem */
+/* Hover no Bento */
 .bento-grid:hover .grid-col-left,
 .bento-grid:hover .grid-col-right,
 .bento-grid:hover .box,
 .bento-grid:hover .grid-row-bottom {
-    flex: 1; /* Todos tentam ficar iguais... */
+    flex: 1; 
     opacity: 0.6;
 }
 
-/* Mas o que está com o mouse cresce e ganha destaque */
-.grid-col-left:hover { flex: 3 !important; opacity: 1 !important; }
-.grid-col-right:hover { flex: 3 !important; opacity: 1 !important; }
+.grid-col-left:hover { flex: 2.5 !important; opacity: 1 !important; }
+.grid-col-right:hover { flex: 2.5 !important; opacity: 1 !important; }
+.item-2:hover { flex: 3.5 !important; opacity: 1 !important; }
+.grid-row-bottom:hover { flex: 3.5 !important; }
+.item-3:hover { flex: 4.5 !important; opacity: 1 !important; }
+.item-4:hover { flex: 4.5 !important; opacity: 1 !important; }
 
-/* Crescimento interno */
-.item-2:hover { flex: 4 !important; opacity: 1 !important; }
-.grid-row-bottom:hover { flex: 4 !important; }
-.item-3:hover { flex: 5 !important; opacity: 1 !important; }
-.item-4:hover { flex: 5 !important; opacity: 1 !important; }
-
+/* Sidebar - Definição de fontes reduzidas */
 .sidebar {
     flex: 1;
     color: #2d005d;
-    padding: 0 20px;
+    padding-left: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centraliza o texto verticalmente em relação aos quadros */
+    justify-content: center; 
 }
 
-/* Aquela etiqueta pequena indicando o curso */
 .sidebar .tag {
-    font-size: 11px;
+    font-size: 10px; /* Reduzido de 11px */
     font-weight: 700;
     letter-spacing: 1.5px;
-    color: #8c52ff;
+    color: #8654f3;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .sidebar h1 {
-    font-size: 2.8rem;
-    text-align: left; /* Alinhamento à esquerda é padrão em sites modernos */
-    margin: 0 0 15px 0;
+    font-size: 2.1rem; /* Reduzido de 2.3rem */
+    text-align: left;
+    margin: 0 0 12px 0;
+    color: #2d005d;
     font-family: 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.2;
 }
 
 .sidebar .description {
-    font-size: 1.1rem;
-    line-height: 1.6;
+    font-size: 0.95rem; /* Reduzido de 1.05rem */
+    line-height: 1.5;
     color: #4b2a6d;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     text-align: left;
 }
 
-/* Um detalhe visual para o destaque do projeto final */
 .mission-box {
-    border-left: 4px solid #8c52ff;
-    padding-left: 15px;
-    margin-top: 10px;
+    border-left: 3px solid #8654f3;
+    padding-left: 12px;
+    margin-top: 3px;
 }
 
 .mission-box p {
-    font-size: 0.95rem;
+    font-size: 0.88rem; /* Reduzido de 0.95rem */
     font-style: italic;
     color: #5a3b7d;
     line-height: 1.5;
     text-align: left;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 1024px) {
+    .sobre-nos-container { padding: 30px; }
+    .page-wrapper { flex-direction: column; gap: 40px; }
+    .bento-grid { width: 100%; height: 400px; }
+    .sidebar { text-align: center; padding: 0; }
+    .sidebar h1, .sidebar .description { text-align: center; }
+}
+
+@media (max-width: 768px) {
+    .wrapper { padding: 10px; gap: 15px; }
+    .btn { display: none; } 
+    .card { width: 240px; min-width: 240px; }
+    .card:nth-child(2) { width: 290px; min-width: 290px; }
 }

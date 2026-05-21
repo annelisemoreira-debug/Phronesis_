@@ -64,7 +64,8 @@ elseif ($acao == "login") {
     $email = $_POST['email'] ?? '';
     $senha = $_POST['senha'] ?? '';
 
-    $sql = "SELECT id_usuario, senha FROM usuario WHERE email=?";
+    // Alterado para buscar também o nome do usuário
+    $sql = "SELECT id_usuario, nome, senha FROM usuario WHERE email=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -74,6 +75,7 @@ elseif ($acao == "login") {
         $user = $result->fetch_assoc();
         if (password_verify($senha, $user['senha'])) {
             $_SESSION['id'] = $user['id_usuario'];
+            $_SESSION['nome'] = $user['nome']; // Armazena o nome na sessão para usar no index
             header("Location: index.php");
             exit();
         }
