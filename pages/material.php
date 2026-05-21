@@ -258,6 +258,52 @@ try {
         createTimer("timer-fuvest", "Nov 15, 2026 13:00:00");
         createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
         createTimer("timer-unesp", "Nov 15, 2026 13:00:00");
+
+
+        // Código para fazer o Dropdown abrir e fechar no CLIQUE
+    document.addEventListener("DOMContentLoaded", function() {
+        const perfilBtn = document.getElementById("perfilBtn");
+        const dropdownPerfil = document.getElementById("dropdownPerfil");
+
+        if (perfilBtn && dropdownPerfil) {
+            perfilBtn.addEventListener("click", function(e) {
+                e.stopPropagation(); // Evita fechar imediatamente ao clicar
+                dropdownPerfil.classList.toggle("show");
+            });
+        }
+
+        // Fecha o menu se o usuário clicar em qualquer outro lugar da tela
+        document.addEventListener("click", function() {
+            if (dropdownPerfil) {
+                dropdownPerfil.classList.remove("show");
+            }
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const videoGrid = document.getElementById("videoGrid");
+
+    // 1. Ativa o loading ao clicar em qualquer matéria da Sidebar
+    const linksMaterias = document.querySelectorAll(".menuSidebar nav a");
+    linksMaterias.forEach(link => {
+        link.addEventListener("click", function() {
+            if (videoGrid) {
+                videoGrid.classList.add("loading");
+            }
+        });
+    });
+
+    // 2. Ativa o loading ao enviar o formulário de pesquisa por texto
+    const searchForm = document.querySelector(".search-box dashed form, .search-box form");
+    if (searchForm) {
+        searchForm.addEventListener("submit", function() {
+            if (videoGrid) {
+                videoGrid.classList.add("loading");
+            }
+        });
+    }
+});
     </script>
 </body>
 

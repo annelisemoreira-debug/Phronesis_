@@ -12,8 +12,10 @@ body {
 .wrapper {
     display: flex;
     min-height: 100vh;
-    padding: 5px 15px;
-    gap: 20px;
+    padding: 20px 30px; /* Alinhado com o padding padrão da materias.php */
+    gap: 30px;
+    max-width: 1650px;  /* Novo limite ampliado idêntico ao outro arquivo */
+    margin: 0 auto;
 }
 
 /* Conteúdo Principal */
@@ -21,8 +23,8 @@ body {
     flex: 1; 
     display: flex;
     flex-direction: column;
-    gap: 50px;
-    padding: 18px 50px;
+    gap: 25px;         /* Espaçamento reduzido para ficar idêntico e mais limpo */
+    padding: 0;        /* Removido padding que espremia o conteúdo para dentro */
 }
 
 /* Menu Superior */
@@ -79,20 +81,21 @@ body {
 
 /* Main section */
 .areaContent {
-    border-radius: 15px;
-    padding: 50px 70px;
+    border-radius: 20px;   /* Cantos arredondados idênticos para consistência visual */
+    padding: 40px 50px;    /* Ajustado para não sobrar espaço morto nas laterais */
     width: 100%; 
-    max-width: 1400px;
+    max-width: 1650px;     /* Expandido até o mesmo limite da materias.php */
     flex: 1;
     background-color: white;
-    margin: 0 auto;
+    margin: 0 auto 30px auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); /* Adicionada a mesma sombra leve da outra página */
 }
 
 .banner {
-    width: 90%; 
-    max-width: 1200px;
-    height: 135px;
-    margin: 30px auto; 
+    width: 100%; 
+    max-width: 1650px; 
+    height: 160px;       /* Mesma altura proporcional e elegante da outra tela */
+    margin: 20px auto 0 auto; 
     display: block;
     overflow: hidden;
 }
@@ -102,6 +105,7 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 15px;
 }
 
 /* Vestibulares */
