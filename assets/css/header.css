@@ -15,17 +15,24 @@ header {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
 }
 
+/* Container da Logo (Canto Esquerdo) */
 .logoMarca {
-    width: 300px;
-    height: 38px;
-    border-radius: 10px;
-    overflow: hidden;
+  background: white !important;
+  padding: 6px 20px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 42px !important;
+  width: auto !important;       /* Anula os 250px do outro CSS que esticavam a caixa */
+  overflow: visible !important; /* Garante que a logo não seja cortada */
 }
 
 .logoMarca img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  height: 40px !important;      /* Mantém a proporção elegante da escrita PHRONESIS */
+  width: auto !important;       /* Evita que a imagem fique esticada ou achatada */
+  object-fit: contain !important; /* Garante o encaixe perfeito da imagem */
+  display: block !important;
 }
 
 .menu {

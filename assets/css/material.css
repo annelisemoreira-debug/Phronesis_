@@ -50,10 +50,12 @@ header {
   align-items: center;
   justify-content: center;
   height: 42px;
+  width: auto; /* Garante que não vai esticar */
 }
 
 .logoMarca img {
   height: 22px; /* Mantém a proporção elegante da escrita PHRONESIS */
+  width: auto;   /* Evita achatamento da imagem */
   object-fit: contain;
   display: block;
 }
@@ -249,7 +251,7 @@ header {
 }
 
 /* ==========================================================================
-   CONTEÚDO PRINCIPAL E BANNER
+   CONTEÚDO PRINCIPAL E BANNER (CORRIGIDO ALINHAMENTO SUPERIOR E LATERAL)
    ========================================================================== */
 .principalContent {
   flex: 1;
@@ -262,9 +264,10 @@ header {
   width: 100%;
 }
 
+/* --- BANNER --- */
 .banner {
     width: 100%; 
-    max-width: 1590px; 
+    max-width: 1600px; 
     height: 160px;       
     margin: 20px auto 0 auto; 
     display: block;
