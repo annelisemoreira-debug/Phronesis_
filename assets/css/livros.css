@@ -12,9 +12,9 @@ body {
 .wrapper {
     display: flex;
     min-height: 100vh;
-    padding: 20px 30px; /* Alinhado com o padding padrão da materias.php */
+    padding: 20px 30px; 
     gap: 30px;
-    max-width: 1650px;  /* Novo limite ampliado idêntico ao outro arquivo */
+    max-width: 1650px;  
     margin: 0 auto;
 }
 
@@ -23,8 +23,8 @@ body {
     flex: 1; 
     display: flex;
     flex-direction: column;
-    gap: 25px;         /* Espaçamento reduzido para ficar idêntico e mais limpo */
-    padding: 0;        /* Removido padding que espremia o conteúdo para dentro */
+    gap: 25px;         
+    padding: 0;        
 }
 
 /* Menu Superior */
@@ -81,20 +81,20 @@ body {
 
 /* Main section */
 .areaContent {
-    border-radius: 20px;   /* Cantos arredondados idênticos para consistência visual */
-    padding: 40px 50px;    /* Ajustado para não sobrar espaço morto nas laterais */
+    border-radius: 20px;   
+    padding: 40px 50px;    
     width: 100%; 
-    max-width: 1650px;     /* Expandido até o mesmo limite da materias.php */
+    max-width: 1650px;     
     flex: 1;
     background-color: white;
     margin: 0 auto 30px auto;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); /* Adicionada a mesma sombra leve da outra página */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); 
 }
 
 .banner {
     width: 100%; 
     max-width: 1650px; 
-    height: 160px;       /* Mesma altura proporcional e elegante da outra tela */
+    height: 160px;       
     margin: 20px auto 0 auto; 
     display: block;
     overflow: hidden;
@@ -113,39 +113,26 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column; 
-    gap: 50px;
-    padding: 40px 0;
+    gap: 80px; /* Aumentado de 50px para 80px para dar mais espaçamento entre cada vestibular */
+    padding: 20px 40px; 
 }
 
+/* Todos os containers agora seguem o padrão Fuvest (imagem na esquerda, conteúdo na direita) */
 .containerVest {
     width: 100%;
     display: flex;
+    flex-direction: row; 
     align-items: center; 
-    gap: 40px; 
+    gap: 50px; 
 }
 
 .descricaoVest {
     flex: 1; 
     display: flex;
     flex-direction: column; 
+    align-items: flex-start; 
+    text-align: left;        
     gap: 15px;
-}
-
-/* --- AJUSTE DE ALINHAMENTO (ESQUERDA E DIREITA) --- */
-.containerVest:nth-child(odd) {
-    flex-direction: row;
-}
-.containerVest:nth-child(odd) .descricaoVest {
-    align-items: flex-start; /* Título na esquerda */
-    text-align: left;
-}
-
-.containerVest:nth-child(even) {
-    flex-direction: row-reverse;
-}
-.containerVest:nth-child(even) .descricaoVest {
-    align-items: flex-end; /* Título na direita */
-    text-align: right;
 }
 
 .fuvestImg, .vunestImg, .unicampImg, .enemImg {
@@ -163,9 +150,10 @@ body {
     font-size: 17px;
     color: #000;
     line-height: 1.6;
+    max-width: 95%; 
 }
 
-/* Estilo Padrão do Rótulo (Fundo curto padrão Vunesp) */
+/* Estilo Padrão do Rótulo */
 .nome {
     color: white;
     padding: 8px 45px; 
@@ -179,21 +167,42 @@ body {
     background-color: #8654f3;
 }
 
-/* --- JANELAS MODAIS --- */
+/* --- JANELAS MODAIS COM SCROLL CUSTOMIZADO --- */
 .containerVest dialog {
     position: fixed;
     inset: 0;  
     margin: auto;
     border: none;
     border-radius: 15px;
-    padding: 40px;
+    padding: 40px 35px 40px 40px; 
     width: 90%;
     max-width: 520px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: 80vh; 
+    overflow-y: scroll; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     text-align: center;
     outline: none;
+}
+
+/* Customização do Scrollbar do Modal */
+.containerVest dialog::-webkit-scrollbar {
+    width: 10px;
+}
+
+.containerVest dialog::-webkit-scrollbar-track {
+    background: #fffae6; 
+    border-radius: 20px;
+    margin: 20px 0;
+}
+
+.containerVest dialog::-webkit-scrollbar-thumb {
+    background: #ffca28; 
+    border-radius: 20px;
+    border: 2px solid white;
+}
+
+.containerVest dialog::-webkit-scrollbar-thumb:hover {
+    background: #f5b041;
 }
 
 .containerVest dialog::backdrop {
@@ -226,6 +235,7 @@ body {
     margin: 20px 0;
     color: #444;
     white-space: pre-line;
+    padding-right: 15px; 
 }
 
 .close-button {
@@ -244,26 +254,30 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 10;
 }
 
 /* --- RESPONSIVIDADE --- */
 @media (max-width: 1024px) {
     .principalContent { padding: 18px 20px; }
     .areaContent { padding: 30px; }
+    .listaLivros { padding: 10px 5px; }
 }
 
 @media (max-width: 768px) {
-    .containerVest, .containerVest:nth-child(even) {
+    .containerVest {
         flex-direction: column;
         text-align: center;
         gap: 20px;
     }
-    .containerVest .descricaoVest, .containerVest:nth-child(even) .descricaoVest {
+    .containerVest .descricaoVest {
         align-items: center;
+        text-align: center; 
     }
     .fuvestImg, .vunestImg, .unicampImg, .enemImg {
         flex: 0 0 auto;
         width: 180px;
     }
     .menu li.entrar { margin-left: 0; }
+    .descricaoVest p { max-width: 100%; }
 }

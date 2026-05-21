@@ -11,16 +11,12 @@
 body {
   background-color: #bfa2ff;
   color: #333;
-  /* Força o navegador a sempre monitorar e exibir o rolamento vertical se o conteúdo crescer */
-  overflow-y: auto !important; 
   min-height: 100vh;
 }
 
 /* Wrapper Principal (Layout Lado a Lado) */
 .wrapper {
   display: flex;
-  /* Alterado de min-height para height: auto para deixar o documento esticar naturalmente */
-  height: auto; 
   min-height: 100vh;
   padding: 20px 30px;
   gap: 30px;
@@ -29,7 +25,7 @@ body {
 }
 
 /* ==========================================================================
-   MENU SUPERIOR / PERFIL (DEVOLVIDO E AJUSTADO)
+   MENU SUPERIOR / PERFIL
    ========================================================================== */
 .menu {
   display: flex;
@@ -63,7 +59,7 @@ body {
 .menu li.entrar {
   background-color: #47b1f2;
   border-radius: 25px;
-  margin-left: auto; /* Empurra o perfil para a extrema direita */
+  margin-left: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,9 +85,6 @@ body {
   justify-content: center;
   padding: 0 !important;
 }
-
-
-
 
 /* ==========================================================================
    SIDEBAR (MENU LATERAL)
@@ -162,12 +155,10 @@ body {
   align-items: center;
 }
 
-/* Esconde os cards antigos enquanto carrega */
 .video-grid.loading .video-card {
   display: none !important;
 }
 
-/* Cria o efeito do círculo giratório (Spinner) */
 .video-grid.loading::after {
   content: "";
   width: 50px;
@@ -184,10 +175,9 @@ body {
   }
 }
 
-
 /* ==========================================================================
    CONTEÚDO PRINCIPAL E CARDS DE VÍDEO
-   ========================================================================== */
+   ========================================================================= */
 .principalContent {
   flex: 1;
   display: flex;
@@ -200,14 +190,14 @@ body {
 }
 
 /* ==========================================================================
-   CORREÇÃO DO BANNER (ALINHADO PERFEITAMENTE COM O NOVO LIMITE AMPLIADO)
+   CORREÇÃO DO BANNER
    ========================================================================== */
 .banner {
   width: 100%;
-  max-width: 1650px;      /* Acompanha perfeitamente o novo tamanho do .wrapper */
-  height: 160px;          /* Aumentado levemente para manter a proporção elegante */
+  max-width: 1650px;
+  height: 160px;
   margin: 20px auto 0 auto;
-  padding: 0 30px;         /* Mantém o encaixe nas laterais idêntico ao conteúdo de baixo */
+  padding: 0 30px;
   overflow: hidden;
 }
 
@@ -218,7 +208,9 @@ body {
   border-radius: 15px;
 }
 
-/* Containers Brancos (Galeria Geral e Favoritos) */
+/* ==========================================================================
+   CONTAINERS BRANCOS COM SCROLL AMARELO E ARREDONDADO (IGUAL À IMAGEM)
+   ========================================================================== */
 .video-container-white, 
 .caixa-favoritos-nova {
   background-color: white;
@@ -227,8 +219,49 @@ body {
   margin-bottom: 30px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   width: 100%;
+  
+  /* Limita estritamente a altura para renderizar apenas 2 linhas de vídeo */
+  max-height: 720px; 
+  overflow-y: scroll !important; /* Mantém o trilho visível para estilização */
 }
 
+/* Customização da Barra de Rolagem Moderna (WebKit) */
+.video-container-white::-webkit-scrollbar,
+.caixa-favoritos-nova::-webkit-scrollbar {
+  width: 12px !important; /* Espessura elegante da pílula */
+}
+
+/* O fundo do trilho da barra (Track) */
+.video-container-white::-webkit-scrollbar-track,
+.caixa-favoritos-nova::-webkit-scrollbar-track {
+  background: #fffae6 !important; /* Amarelo bem suave/claro de fundo */
+  border-radius: 20px !important; /* Extremidades totalmente arredondadas */
+  margin: 15px 0; /* Dá uma folga nas pontas internas do container */
+}
+
+/* O botão arrastável (Thumb) */
+.video-container-white::-webkit-scrollbar-thumb,
+.caixa-favoritos-nova::-webkit-scrollbar-thumb {
+  background: #ffca28 !important; /* Amarelo vivo idêntico ao da imagem */
+  border-radius: 20px !important; /* Formato de pílula perfeito */
+  border: 2px solid #fffae6 !important; /* Cria um leve espaçamento interno sutil */
+}
+
+/* Feedback visual ao passar o mouse */
+.video-container-white::-webkit-scrollbar-thumb:hover,
+.caixa-favoritos-nova::-webkit-scrollbar-thumb:hover {
+  background: #f5b041 !important; /* Tom levemente mais escuro ao interagir */
+}
+
+/* Remove completamente as setas clássicas das extremidades */
+.video-container-white::-webkit-scrollbar-button,
+.caixa-favoritos-nova::-webkit-scrollbar-button {
+  display: none !important;
+}
+
+/* ==========================================================================
+   CABEÇALHO E COMPONENTES INTERNOS
+   ========================================================================== */
 /* Cabeçalho dos Blocos */
 .video-header {
   display: flex;
@@ -286,11 +319,10 @@ body {
   transform: scale(1.1);
 }
 
-/* Grade de Vídeos Limpa e Responsiva FIXADA EM 3 COLUNAS COM ROLAMENTO ATIVO */
+/* GRADE FIXADA EM 3 COLUNAS */
 .video-grid {
   display: grid;
-  /* Define exatamente 3 colunas, garantindo que cada card tenha no mínimo 250px para não quebrar a rolagem */
-  grid-template-columns: repeat(3, minmax(250px, 1fr)); 
+  grid-template-columns: repeat(3, minmax(200px, 1fr)); 
   gap: 25px;
   width: 100%;
 }
@@ -367,7 +399,6 @@ body {
 .star-off {
   color: #ccc;
 }
-
 
 /* ==========================================================================
    WIDGET DE CONTAGEM REGRESSIVA (VESTIBULARES)
@@ -449,10 +480,13 @@ body {
 .mini-unesp { border-left: 4px solid #9b59b6; }
 .mini-unesp .countdown-mini { color: #9b59b6; }
 
-
-/* Redirecionamento fluído para telas menores (Tablets e Celulares) */
+/* Redirecionamento para telas menores */
 @media (max-width: 1024px) {
   .video-grid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  .video-container-white, 
+  .caixa-favoritos-nova {
+    max-height: none; 
   }
 }

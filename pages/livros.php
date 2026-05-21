@@ -66,8 +66,7 @@ $dadosUser = $res->fetch_assoc();
                             <div class="descricaoVest">
                                 <h2 class="nome">FUVEST</h2>
                                 <p>
-                                    A Fuvest é o principal exame de ingresso para a USP, sendo considerada uma das provas mais tradicionais e exigentes do Brasil.
-                                    Ela serve para selecionar alunos com alto nível de domínio acadêmico em diversas áreas do conhecimento.
+                                    A Fuvest (Fundação Universitária para o Vestibular) é o principal exame de ingresso para a Universidade de São Paulo (USP), uma das instituições de ensino superior mais prestigiadas da América Latina. Sendo considerada uma das provas mais tradicionais, concorridas e exigentes do Brasil, ela visa selecionar alunos com alto nível de domínio acadêmico e forte capacidade de raciocínio crítico.
                                 </p>
                             </div>
 
@@ -99,9 +98,7 @@ $dadosUser = $res->fetch_assoc();
                             <div class="descricaoVest">
                                 <h2 class="nome">VUNESP</h2>
                                 <p>
-                                    A fundação Vunesp organiza o vestibular da Universidade Estadual Paulista.
-                                    O exame busca avaliar a capacidade de análise crítica e a base de conhecimentos gerais do candidato,
-                                    mantendo um equilíbrio entre o conteúdo teórico e a aplicação prática.
+                                    O vestibular da Universidade Estadual Paulista (Unesp), organizado e executado pela Fundação Vunesp, figura como um dos processos seletivos mais importantes, concorridos e respeitados do Brasil. Longe de ser apenas uma ferramenta de triagem mecânica, o exame é estruturado para avaliar a maturidade intelectual, a capacidade de análise crítica e a sólida base de conhecimentos gerais do candidato.
                                 </p>
                             </div>
 
@@ -122,9 +119,7 @@ $dadosUser = $res->fetch_assoc();
                             <div class="descricaoVest">
                                 <h2 class="nome">UNICAMP</h2>
                                 <p>
-                                    O vestibular da Unicamp é conhecido por sua abordagem interdisciplinar e humanizada.
-                                    Ele serve para selecionar estudantes para uma das universidades de maior prestígio em pesquisa na América Latina,
-                                    valorizando a capacidade de leitura e a interpretação de textos complexos.
+                                    O processo seletivo da Universidade Estadual de Campinas (Unicamp), coordenado pela Comvest (Comissão Permanente para os Vestibulares), ultrapassa os limites de um exame de admissão tradicional. Ele é projetado como um espelho da própria identidade da universidade: uma instituição de vanguarda, líder em patentes, inovação tecnológica e produção científica na América Latina.
                                 </p>
                             </div>
 
@@ -155,9 +150,7 @@ $dadosUser = $res->fetch_assoc();
                             <div class="descricaoVest">
                                 <h2 class="nome">ENEM</h2>
                                 <p>
-                                    O ENEM é a maior porta de entrada para o ensino superior no Brasil.
-                                    Ele serve para o ingresso em universidades federais e estaduais via Sisu,
-                                    além de dar acesso a bolsas pelo ProUni e financiamentos pelo Fies.
+                                   O Exame Nacional do Ensino Médio (ENEM), instituído em 1998 e profundamente reformulado em 2009, consolidou-se como a maior e mais importante porta de entrada para o ensino superior no Brasil, figurando também como um dos maiores exames unificados do mundo.
                                 </p>
                             </div>
 
