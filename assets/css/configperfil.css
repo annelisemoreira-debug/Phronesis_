@@ -10,17 +10,18 @@
 
 body {
     background-color: #bfa2ff; /* Fundo lilás da página */
-    height: 100vh;
+    min-height: 100vh; /* Permite expansão do body sem quebrar a estrutura */
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px 0;
     transition: background-color 0.3s ease;
 }
 
 .main-wrapper {
     display: flex;
     width: 95%;
-    height: 90vh;
+    height: 90vh; /* Mantém a janela proporcional ao viewport */
     gap: 20px;
 }
 
@@ -32,6 +33,7 @@ body {
     padding: 30px 15px;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0; /* Impede que a sidebar amasse */
     transition: background-color 0.3s ease;
 }
 
@@ -126,14 +128,16 @@ body {
     opacity: 1;
 }
 
-/* --- CONTEÚDO PRINCIPAL (Direita) --- */
+/* --- CONTEÚDO PRINCIPAL (Direita com Rolagem Interna) --- */
 .content {
     flex: 1;
     background-color: white;
     border-radius: 15px;
-    overflow: hidden; 
+    overflow-y: auto; /* Permite rolagem apenas dentro do painel de dados */
+    overflow-x: hidden; /* Corta vazamentos horizontais */
     display: flex;
     flex-direction: column;
+    width: 100%;
     transition: background-color 0.3s ease;
 }
 
@@ -144,12 +148,22 @@ body {
     box-sizing: border-box;
 }
 
+/* --- BANNER COMPORTAMENTO --- */
+.banner {
+    width: 100%; 
+    max-width: 1650px; 
+    height: 160px;       
+    margin: 0 auto 0 auto; 
+    display: block;
+    overflow: hidden;
+}
+
 .banner-img {
     width: 100%;
-    height: 140px;            
-    object-fit: cover;        
+    height: 100%;
+    object-fit: cover;
     display: block;
-    border-radius: 15px;      
+    border-radius: 15px;
 }
 
 .banner-light { display: block; }
@@ -158,10 +172,9 @@ body {
 /* Seção de dados */
 .container-dados {
     padding: 40px !important;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1; /* Garante ocupação total do espaço interno */
 }
 
 /* Alerta de conta gerenciada */
@@ -250,6 +263,7 @@ body {
 /* Botão Desconectar */
 .footer-actions {
     margin-top: auto;
+    padding-top: 20px;
 }
 
 .footer-actions a {
@@ -263,18 +277,16 @@ body {
     text-decoration: underline;
 }
 
-
 /* =======================================================
    REGRAS COMPLETAS E IDENTICAS DO MODO ESCURO
    ======================================================= */
-
 html.dark-theme body {
-    background-color: #1a1824; /* Fundo lilás escuro */
+    background-color: #1a1824; 
 }
 
 html.dark-theme .content, 
 html.dark-theme .sidebar {
-    background-color: #272530; /* Fundo interno cinza escuro */
+    background-color: #272530; 
 }
 
 /* CHAVEAMENTO DOS BANNERS */
@@ -322,13 +334,54 @@ html.dark-theme .upload-info button {
     color: #bfa2ff;
 }
 
-/* TEXTOS EM AMARELO/DOURADO DA SIDEBAR E LABELS (Igual ao mockup escuro) */
 html.dark-theme .user-info-fields label strong,
 html.dark-theme .sidebar ul li a:hover span,
 html.dark-theme .sidebar ul li a.active span {
-    color: #ffffff; /* Cor amarelada/dourada idêntica à imagem */
+    color: #ffffff; 
 }
 
 html.dark-theme .user-info-fields p.user-value {
-    color:#b0aec2; /* Texto dos valores (Nome/E-mail) em Branco */
+    color:#b0aec2; 
+}
+
+
+/* =======================================================
+   ESTILIZAÇÃO PERSONALIZADA DA BARRA DE ROLAGEM (SCROLLBAR)
+   ======================================================= */
+
+/* Definições de tamanho da barra */
+.content::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* O fundo da barra (O trilho por onde ela passa) */
+.content::-webkit-scrollbar-track {
+    background: #f0ecff; 
+    border-radius: 0 15px 15px 0; /* Mantém o alinhamento arredondado com as quinas */
+}
+
+/* O indicador que se move (Scroll handle) */
+.content::-webkit-scrollbar-thumb {
+    background-color: #7B61FF; /* Roxo principal do Phronesis */
+    border-radius: 10px;
+    border: 2px solid #f0ecff; /* Cria margem interna flutuante */
+}
+
+/* Cor do indicador ao passar o mouse */
+.content::-webkit-scrollbar-thumb:hover {
+    background-color: #6346eb;
+}
+
+/* Customização da barra adaptada ao Modo Escuro */
+html.dark-theme .content::-webkit-scrollbar-track {
+    background: #272530;
+}
+
+html.dark-theme .content::-webkit-scrollbar-thumb {
+    background-color: #bfa2ff; /* Lilás claro no modo escuro */
+    border: 2px solid #272530;
+}
+
+html.dark-theme .content::-webkit-scrollbar-thumb:hover {
+    background-color: #a385f0;
 }

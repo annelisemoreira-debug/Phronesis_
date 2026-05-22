@@ -25,7 +25,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
             
             <section class="banner">
                 <img src="assets/img/bannerInicio.webp" alt="Fundo" class="banner-img banner-light">
-                <img src="assets/img/escuroindex.webp" alt="Fundo Escuro" class="banner-img banner-dark">
+                <img src="assets/img/escurophronesis.webp" alt="Fundo Escuro" class="banner-img banner-dark">
             </section>
 
             <section class="sobre-nos-container">
@@ -38,14 +38,14 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
                         </div>
                         <div class="grid-col-right">
                             <div class="box item-2">
-                                <img src="assets/img/pessoas4.webp" alt="Pessoas">
+                                <img src="assets/img/qualquer.webp" alt="Pessoas">
                             </div>
                             <div class="grid-row-bottom">
                                 <div class="box item-3">
-                                    <img src="assets/img/pessoas6.webp" alt="Pessoas">
+                                    <img src="assets/img/joao.webp" alt="Pessoas">
                                 </div>
                                 <div class="box item-4">
-                                    <img src="assets/img/pessoas8.webp" alt="Pessoas">
+                                    <img src="assets/img/nos.webp" alt="Pessoas">
                                 </div>
                             </div>
                         </div>

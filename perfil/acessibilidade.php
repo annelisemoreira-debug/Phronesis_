@@ -28,7 +28,7 @@ if (!$dadosUser) {
     exit();
 }
 
-// 3. LÓGICA DE PROCESSAMENTO DO CORTE (Mantida idêntica)
+// 3. LÓGICA DE PROCESSAMENTO DO CORTE
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'crop_image') {
     ob_clean(); 
     header('Content-Type: application/json');
@@ -91,7 +91,6 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acessibilidade - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/acessibilidade.css">
-
     
     <script>
         (function () {
@@ -104,39 +103,37 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 </head>
 <body>
 
-
     <div class="main-wrapper">
-       <aside class="sidebar">
-    <div class="logo">
-        <img src="../assets/img/logoSite.webp" alt="Phronesis" class="logo-light">
-        
-        <img src="../assets/img/logoSite_dark.webp" alt="Phronesis" class="logo-dark">
-    </div>
-    <nav>
-        <p class="nav-title">Conta Pessoal</p>
-        <ul>
-            <li><a href="configperfil.php"><span>👤</span> Meu perfil</a></li>
-            <li>
-                <a href="acessibilidade.php" class="nav-link-acessibilidade active">
-                    <img src="../assets/img/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
-                    <span>Acessibilidade</span>
-                </a>
-            </li>
-        </ul>
-        <p class="nav-title">Voltar</p>
-        <ul>
-            <li><a href="../index.php"><span>🏠</span> Início</a></li>
-            <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
-            <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
-            <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
-        </ul>
-    </nav>
-</aside>
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="../assets/img/logoSite.webp" alt="Phronesis" class="logo-light">
+                <img src="../assets/img/logoescuro.webp" alt="Phronesis" class="logo-dark">
+            </div>
+            <nav>
+                <p class="nav-title">Conta Pessoal</p>
+                <ul>
+                    <li><a href="configperfil.php"><span>👤</span> Meu perfil</a></li>
+                    <li>
+                        <a href="acessibilidade.php" class="nav-link-acessibilidade active">
+                            <img src="../assets/img/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
+                            <span>Acessibilidade</span>
+                        </a>
+                    </li>
+                </ul>
+                <p class="nav-title">Voltar</p>
+                <ul>
+                    <li><a href="../index.php"><span>🏠</span> Início</a></li>
+                    <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
+                    <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
+                    <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
+                </ul>
+            </nav>
+        </aside>
 
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/bannerInicio.webp" alt="Banner" class="banner-img banner-light">
-                <img src="../assets/img/escuroindex.webp" alt="Banner" class="banner-img banner-dark">
+                <img src="../assets/img/acessibilidadeclaro.webp" alt="Banner" class="banner-img banner-light">
+                <img src="../assets/img/escuroacessibilidade.webp" alt="Banner" class="banner-img banner-dark">
             </header>
 
             <div class="container-acessibilidade">

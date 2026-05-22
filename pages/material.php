@@ -83,8 +83,11 @@ try {
 <body>
     <?php include '../interface/header.php'; ?>
 
-    <section class="banner"><img id="bannerImg" src="../assets/img/bannerAzul.webp" alt="Banner"></section>
-
+   <section class="banner">
+        <img src="../assets/img/bannerAzul.webp" class="banner-img banner-light" alt="Banner">
+        <img src="../assets/img/bannerescuro.webp" class="banner-img banner-dark" alt="Banner">
+    </section>
+    
     <div class="wrapper">
         <aside class="menuSidebar">
             <nav>
@@ -263,7 +266,7 @@ try {
     createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
     createTimer("timer-unesp", "Nov 15, 2026 13:00:00");
 
-    // === 3. EVENTOS APÓS O CARREGAMENTO DO DOM ===
+// === 3. EVENTOS APÓS O CARREGAMENTO DO DOM ===
     document.addEventListener("DOMContentLoaded", function() {
         
         // Efeito de loading na Grid de Vídeos ao clicar nas matérias
@@ -287,13 +290,7 @@ try {
             });
         }
 
-        // Troca dinâmica do banner se o tema for escuro (Executa com segurança após o HTML existir)
-        if (localStorage.getItem('site-theme') === 'dark') {
-            const banner = document.getElementById('bannerImg');
-            if (banner) {
-                banner.src = "../assets/img/bannerescuro.webp";
-            }
-        }
+        // A troca lógica do banner agora ocorre no topo de forma nativa e instantânea via CSS!
     });
 
     // Mantém apenas a injeção da classe no topo para evitar que a tela "pisque" em branco

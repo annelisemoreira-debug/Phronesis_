@@ -265,7 +265,6 @@ header {
 .areaContent {
   width: 100%;
 }
-
 /* --- BANNER --- */
 .banner {
     width: 100%; 
@@ -282,6 +281,24 @@ header {
     object-fit: cover;
     display: block;
     border-radius: 15px;
+}
+
+/* --- LOGICA DE EXIBIÇÃO DO BANNER POR TEMA --- */
+.banner .banner-dark {
+    display: none; /* Esconde o banner escuro no modo padrão (claro) */
+}
+
+.banner .banner-light {
+    display: block; /* Garante a exibição do banner claro por padrão */
+}
+
+/* Quando a classe do tema escuro estiver ativa no HTML */
+html.dark-theme .banner .banner-light {
+    display: none; /* Oculta o banner claro */
+}
+
+html.dark-theme .banner .banner-dark {
+    display: block; /* Revela o banner escuro instantaneamente */
 }
 
 /* ==========================================================================

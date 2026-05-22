@@ -51,7 +51,8 @@ error_reporting(E_ALL);
         <div class="principalContent">
             
             <section class="banner">
-                <img id="bannerImg" src="../assets/img/bannerLivros02.webp" class="bg-html" alt="Fundo">
+                <img src="../assets/img/bannerLivros02.webp" class="banner-img banner-light" alt="Fundo">
+                <img src="../assets/img/escuroslivros.webp" class="banner-img banner-dark" alt="Fundo">
             </section>
 
             <main class="areaContent">
@@ -203,14 +204,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // === 2. TROCA DE IMAGENS DO MODO ESCURO (APÓS CARREGAR O HTML) ===
+// === 2. TROCA DE IMAGENS DO MODO ESCURO (APÓS CARREGAR O HTML) ===
     if (localStorage.getItem('site-theme') === 'dark') {
         
-        // Substitui o banner clássico pelo escuro
-        const banner = document.getElementById('bannerImg');
-        if (banner) {
-            banner.src = "../assets/img/bannerLivrosEscuro.webp";
-        }
+        // As linhas do banner foram removidas daqui pois o CSS já faz isso no topo!
 
         // Substitui as logos dos vestibulares pelas versões escuras
         const fuv = document.getElementById('logoFuvest');
@@ -218,12 +215,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const uni = document.getElementById('logoUnicamp');
         const ene = document.getElementById('logoEnem');
 
-        if (fuv) fuv.src = "../assets/img/fuvestLogoEscuro.webp";
-        if (vun) vun.src = "../assets/img/vunespLogoEscuro.webp";
-        if (uni) uni.src = "../assets/img/unicampLogoEscuro.webp";
-        if (ene) ene.src = "../assets/img/enemLogoEscuro.webp";
+        if (fuv) fuv.src = "../assets/img/fuvestescuro.webp";
+        if (vun) vun.src = "../assets/img/vunespescura.webp";
+        if (uni) uni.src = "../assets/img/unicampescuro.webp";
+        if (ene) ene.src = "../assets/img/enemescuro.webp";
     }
 });
+
+
 
 // Mantém apenas a injeção da classe no topo para evitar "piscada" visual de fundo branco
 if (localStorage.getItem('site-theme') === 'dark') {
