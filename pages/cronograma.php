@@ -30,7 +30,6 @@ if (!$dadosUser) {
     exit();
 }
 
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 date_default_timezone_set('America/Sao_Paulo');
@@ -259,80 +258,84 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phronesis - Cronograma</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
-        .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; max-width: 1200px; margin: auto; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .sidebar { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; margin-bottom: 25px; padding-bottom: 10px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .full-width { grid-column: span 2; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-        input, button { padding: 12px; border-radius: 8px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
-        .list-container { border: 1px solid #ddd; border-radius: 8px; max-height: 200px; overflow-y: auto; background: #fff; margin-top: 5px; }
-        .row-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #f0f0f0; }
-        .row-item:last-child { border-bottom: none; }
-        .btn-gen { background: #4285F4; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-sync { background: #34a853; color: white; border: none; font-weight: bold; cursor: pointer; padding: 15px; }
-        .cronograma-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 10px; position: relative; border-left: 4px solid #4285F4; }
-        .cronograma-actions { position: absolute; right: 10px; top: 12px; display: flex; gap: 10px; }
-        .btn-action { text-decoration: none; font-size: 16px; }
-        .btn-del { color: #ea4335; }
-        .btn-edit { color: #4285F4; }
-        .calendar-embed { width: 100%; height: 600px; border: none; margin-top: 20px; border-radius: 8px; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal-content { background: white; margin: 10% auto; width: 450px; border-radius: 15px; padding: 25px; text-align: center; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/cronograma.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
 </head>
 <body>
 
-<div id="confirmModal" class="modal" style="<?= $mostrar_modal ? 'display:block;' : '' ?>">
+    <?php include '../interface/header.php'; ?>
+
+<div id="confirmModal" class="modal" style="<?= $mostrar_modal ? 'display:flex;' : '' ?>">
     <div class="modal-content">
         <h3>📚 Confirmar Cronograma</h3>
         <p>Título: <b><?= htmlspecialchars($_SESSION['ultimo_nome'] ?? '') ?></b></p>
         <form method="POST">
             <button type="submit" name="sincronizar" class="btn-sync">Confirmar e Salvar</button>
-            <button type="button" onclick="window.location.href='cronograma.php'" style="margin-top:10px; background:#f1f1f1; border:none; cursor:pointer; padding:10px; border-radius:8px; width:100%;">Cancelar</button>
+            <button type="button" onclick="window.location.href='cronograma.php'" class="btn-cancel-modal">Cancelar</button>
         </form>
     </div>
 </div>
 
-<div class="main-layout">
-    <div class="container">
-        <div class="header">
-            <h1>Phronesis</h1>
-            <a href="?logout=1" style="color:#d93025; text-decoration:none; font-weight:bold; font-size:14px;">Desconectar</a>
-        </div>
-
+<main class="main-layout">
+    
+    <section class="container-principal">
         <?php if ($msg_feedback): ?>
-            <div style="background:#e8f0fe; color:#1967d2; padding:15px; border-radius:8px; margin-bottom:20px; border: 1px solid #d2e3fc;"><?= $msg_feedback ?></div>
+            <div class="alert-message"><?= $msg_feedback ?></div>
         <?php endif; ?>
 
         <?php if ($calendar_id_exibir && !isset($_GET['editar'])): ?>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>📅 Agenda: <?= htmlspecialchars($_SESSION['meus_cronogramas'][$id_visualizacao]['titulo']) ?></h3>
-                <a href="cronograma.php" style="color:#4285F4; text-decoration:none; font-weight:bold;">+ Novo Cronograma</a>
+            <div class="agenda-header">
+                <h3><i class="fa-solid fa-calendar-days"></i> Agenda: <?= htmlspecialchars($_SESSION['meus_cronogramas'][$id_visualizacao]['titulo']) ?></h3>
+                <a href="cronograma.php" class="btn-novo-crono">+ Novo Cronograma</a>
             </div>
             <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo" class="calendar-embed"></iframe>
         <?php else: ?>
+            
+            <div class="card-header">
+                <div class="title-left">
+                    <span class="icon-purple-box">
+                        <i class="fa-regular fa-calendar-plus"></i>
+                    </span>
+                    <div>
+                        <h2>Phronesis</h2>
+                        <p>Crie e organize seu cronograma de estudos</p>
+                    </div>
+                </div>
+                <a href="?logout=1" class="btn-desconectar">
+                    Desconectar <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+
             <form method="POST" class="form-grid">
-                <div class="full-width">
+                <div class="full-width field-group">
                     <label>Nome do seu Cronograma:</label>
                     <input type="text" name="nome_cronograma" placeholder="Ex: Maratona ENEM 2026" 
                            value="<?= htmlspecialchars($dados_edicao['nome_cronograma'] ?? '') ?>" required>
                 </div>
-                <div>
+                
+                <div class="field-group input-icon-wrapper">
                     <label>Data Início:</label>
-                    <input type="date" name="data_inicio" min="<?= $hoje ?>" value="<?= $dados_edicao['data_inicio'] ?? $hoje ?>" required>
+                    <div class="input-with-icon">
+                        <input type="date" name="data_inicio" min="<?= $hoje ?>" value="<?= $dados_edicao['data_inicio'] ?? $hoje ?>" required>
+                        <i class="fa-regular fa-calendar input-icon-right"></i>
+                    </div>
                 </div>
-                <div>
+                
+                <div class="field-group input-icon-wrapper">
                     <label>Data Fim:</label>
-                    <input type="date" name="data_fim" min="<?= $hoje ?>" value="<?= $dados_edicao['data_fim'] ?? '' ?>" required>
+                    <div class="input-with-icon">
+                        <input type="date" name="data_fim" min="<?= $hoje ?>" value="<?= $dados_edicao['data_fim'] ?? '' ?>" required>
+                        <i class="fa-regular fa-calendar input-icon-right"></i>
+                    </div>
                 </div>
-                <div class="full-width">
+                
+                <div class="full-width field-group">
                     <label>Dias da Semana:</label>
-                    <div class="list-container">
+                    <div class="list-container scrolling-list">
                         <?php 
                         $dias = ['Segunda'=>1,'Terça'=>2,'Quarta'=>3,'Quinta'=>4,'Sexta'=>5,'Sábado'=>6,'Domingo'=>7];
                         $selecionados = $dados_edicao['dias_semana'] ?? [1,2,3,4,5,6,7];
@@ -340,59 +343,97 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                             <label class="row-item">
                                 <span><?=$n?></span>
                                 <input type="checkbox" name="dias_semana[]" value="<?=$v?>" 
-                                       <?= in_array($v, $selecionados) ? 'checked' : '' ?> style="width:20px;">
+                                       <?= in_array($v, $selecionados) ? 'checked' : '' ?> class="custom-checkbox">
                             </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
-                <div>
+                
+                <div class="field-group input-icon-wrapper">
                     <label>Hora Início:</label>
-                    <input type="time" name="hora_inicio" value="<?= $dados_edicao['hora_inicio'] ?? '08:00' ?>" required>
+                    <div class="input-with-icon">
+                        <input type="time" name="hora_inicio" value="<?= $dados_edicao['hora_inicio'] ?? '08:00' ?>" required>
+                        <i class="fa-regular fa-clock input-icon-right"></i>
+                    </div>
                 </div>
-                <div>
+                
+                <div class="field-group">
                     <label>Duração (horas):</label>
                     <input type="number" name="horas_estudo" value="<?= $dados_edicao['horas_estudo'] ?? '2' ?>" required>
                 </div>
-                <div class="full-width">
+                
+                <div class="full-width field-group">
                     <label>Matérias Disponíveis:</label>
-                    <div class="list-container">
+                    <div class="list-container scrolling-list">
                         <?php 
                         $mats_ativas = $dados_edicao['materias_id'] ?? [];
-                        foreach($lista_materias_db as $m): ?>
-                            <label class="row-item">
-                                <span><?= htmlspecialchars($m['nome_materia']) ?></span>
-                                <input type="checkbox" name="materias_id[]" value="<?= $m['id_materia'] ?>"
-                                       <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?> style="width:20px;">
-                            </label>
-                        <?php endforeach; ?>
+                        if(empty($lista_materias_db)): ?>
+                            <div class="row-item empty-state-select">Selecione as matérias que deseja estudar...</div>
+                        <?php else:
+                            foreach($lista_materias_db as $m): ?>
+                                <label class="row-item">
+                                    <span><?= htmlspecialchars($m['nome_materia']) ?></span>
+                                    <input type="checkbox" name="materias_id[]" value="<?= $m['id_materia'] ?>"
+                                           <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?> class="custom-checkbox">
+                                </label>
+                            <?php endforeach; 
+                        endif; ?>
                     </div>
                 </div>
+                
                 <button type="submit" name="gerar" class="btn-gen full-width">
-                    <?= isset($_GET['editar']) ? 'Regerar e Atualizar' : 'Gerar Cronograma' ?>
+                    <i class="fa-regular fa-calendar-check"></i> <?= isset($_GET['editar']) ? 'Regerar e Atualizar' : 'Gerar Cronograma' ?>
                 </button>
             </form>
         <?php endif; ?>
-    </div>
+    </section>
 
-    <div class="sidebar">
-        <h3>Histórico</h3>
+    <aside class="sidebar-historico">
+        <div class="sidebar-header">
+            <h3><i class="fa-regular fa-clock"></i> Histórico</h3>
+        </div>
+        
         <?php if(empty($_SESSION['meus_cronogramas'])): ?>
-            <p style="font-size:12px; color:#777;">Nenhum cronograma salvo.</p>
-        <?php endif; ?>
-        <?php foreach ($_SESSION['meus_cronogramas'] as $id => $cron): ?>
-            <div class="cronograma-item">
-                <a href="?ver=<?= $id ?>" style="text-decoration:none; color:inherit; display:block; padding-right:45px;">
-                    <b><?= htmlspecialchars($cron['titulo']) ?></b><br>
-                    <small><?= $cron['data'] ?></small>
-                </a>
-                <div class="cronograma-actions">
-                    <a href="?editar=<?= $id ?>" class="btn-action btn-edit" title="Editar">📝</a>
-                    <a href="?deletar_salvo=<?= $id ?>" class="btn-action btn-del" onclick="return confirm('Tem certeza que deseja excluir do banco e da agenda?')">×</a>
+            <div class="empty-history-wrapper">
+                <div class="empty-illustration">
+                    <div class="book-purple-icon">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span class="sparkle-1">✦</span>
+                        <span class="sparkle-2">✦</span>
+                    </div>
                 </div>
+                <h4>Nenhum cronograma salvo.</h4>
+                <p>Crie seu primeiro cronograma para vê-lo aqui!</p>
             </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+        <?php else: ?>
+            <div class="history-list">
+                <?php foreach ($_SESSION['meus_cronogramas'] as $id => $cron): ?>
+                    <div class="cronograma-item">
+                        <a href="?ver=<?= $id ?>" class="crono-link">
+                            <span class="crono-title"><?= htmlspecialchars($cron['titulo']) ?></span>
+                            <span class="crono-date"><?= $cron['data'] ?></span>
+                        </a>
+                        <div class="cronograma-actions">
+                            <a href="?editar=<?= $id ?>" class="btn-action btn-edit" title="Editar"><i class="fa-solid fa-pen"></i></a>
+                            <a href="?deletar_salvo=<?= $id ?>" class="btn-action btn-del" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir do banco e da agenda?')"><i class="fa-solid fa-xmark"></i></a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </aside>
+</main>
+
+<script>
+    // Aplica o tema salvo globalmente de forma compatível com as classes CSS existentes
+    (function () {
+        const savedTheme = localStorage.getItem('site-theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.body.classList.add('dark-theme');
+        }
+    })();
+</script>
 
 </body>
 </html>

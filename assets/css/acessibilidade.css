@@ -1,0 +1,439 @@
+/* assets/css/configperfil.css */
+
+/* Reset básico e Fontes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #bfa2ff; /* Fundo lilás da página */
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-wrapper {
+    display: flex;
+    width: 95%;
+    height: 90vh;
+    gap: 20px;
+}
+
+/* --- SIDEBAR (Esquerda) --- */
+.sidebar {
+    width: 250px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container da logo ajustado para centralizar */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* Imagem da logo maior e responsiva */
+.logo img {
+    width: 220px;       /* Aumentado de 185px para 220px para dar mais presença */
+    max-width: 95%;     /* Permite ocupar quase toda a largura interna da sidebar */
+    height: auto;       /* Mantém a proporção sem distorcer o desenho */
+    display: block;
+}
+
+
+.nav-title {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #9274ff; /* Cor mais sutil para o título da seção */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin-bottom: 5px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #555;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+/* Padronização do link específico de acessibilidade */
+.nav-link-acessibilidade {
+    font-size: 1rem !important;
+}
+
+/* Efeito ao passar o mouse e item ativo */
+.sidebar ul li a:hover, 
+.sidebar ul li a.active {
+    background-color: #f0ecff; /* Fundo lilás bem clarinho */
+    color: #7B61FF; /* Cor roxa Phronesis */
+    transform: translateX(5px); /* Move levemente para a direita */
+    font-weight: 600;
+}
+
+/* Estilo do emoji */
+.sidebar ul li a span {
+    margin-right: 12px;
+    font-size: 1.2rem;
+    filter: grayscale(100%); /* Deixa o emoji cinza por padrão */
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover span,
+.sidebar ul li a.active span {
+    filter: grayscale(0%); /* Deixa colorido no hover */
+}
+
+.icon-acessibilidade {
+    width: 18px; 
+    height: 18px;
+    margin-right: 12px; 
+    vertical-align: middle;
+    border-radius: 3px; 
+    object-fit: cover; 
+    display: inline-block;
+    filter: grayscale(100%);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+/* Ativa a cor no hover do link */
+.sidebar ul li a:hover .icon-acessibilidade {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+/* --- CONTEÚDO PRINCIPAL (Direita) --- */
+.content {
+    flex: 1;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden; /* Garante que o banner não escape das bordas arredondadas */
+    display: flex;
+    flex-direction: column;
+    width: 3000px;
+}
+
+/* --- BANNER SUPERIOR (Ajustado com espaçamento e tamanho menor) --- */
+.profile-banner {
+    width: 100%;
+    padding: 20px 30px 0 30px; /* Cria o espaçamento no topo (20px) e nas laterais (30px) */
+    box-sizing: border-box;
+}
+
+.banner-img {
+    width: 100%;
+    height: 140px;            /* Diminui a altura dele para ficar mais sutil e elegante */
+    object-fit: cover;        /* Garante que a imagem se adapte sem distorcer */
+    display: block;
+    border-radius: 15px;      /* Deixa as bordas arredondadas direto na imagem */
+}
+
+/* Seção de dados */
+.container-dados {
+    padding: 40px !important;
+    overflow-y: auto;
+}
+
+/* Alerta de conta gerenciada */
+.alert-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 35px;
+}
+
+.alert-info::before {
+    content: "ⓘ";
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.alert-info strong {
+    display: block;
+    font-size: 1.05rem;
+    margin-bottom: 5px;
+}
+
+.alert-info p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Upload de foto */
+.profile-upload {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.avatar-wrapper img {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none !important;
+}
+
+.upload-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.upload-info p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+/* Botão de seleção */
+.upload-info button {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    color: #555;
+    text-decoration: underline;
+    font-size: 0.9rem;
+}
+
+/* Campos de texto (Nome e E-mail) */
+.user-info-fields .field {
+    margin-bottom: 25px !important;
+}
+
+.user-info-fields label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.user-info-fields p {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Botão Desconectar */
+.footer-actions {
+    margin-top: auto;
+}
+
+.footer-actions a {
+    color: #FF4D4D !important;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.footer-actions a:hover {
+    text-decoration: underline;
+}
+
+/* --- ESTILIZAÇÃO DO CONTEÚDO DE ACESSIBILIBADE --- */
+.container-acessibilidade {
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.theme-section h2, .libras-info h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.theme-section .subtitle {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+/* CARDS DE SELEÇÃO DE TEMA */
+.theme-cards {
+    display: flex;
+    gap: 25px;
+}
+
+.theme-card {
+    flex: 1;
+    max-width: 420px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 14px;
+    padding: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.theme-card h3 {
+    font-size: 1.1rem;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+.theme-card p {
+    font-size: 0.9rem;
+    color: #444;
+    min-height: 40px;
+    line-height: 1.4;
+}
+
+.preview-box {
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.preview-box img {
+    width: 100%;
+    display: block;
+}
+
+/* Destaque de Card Selecionado */
+.theme-card.active-card {
+    border-color: #7B61FF;
+}
+
+/* SEÇÃO LIBRAS */
+.libras-section {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}
+
+.libras-info {
+    max-width: 65%;
+}
+
+.libras-info p {
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.libras-controls {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.libras-icon {
+    width: 45px;
+    height: auto;
+}
+
+/* SWITCH COMPONENTE */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #b5b5b5;
+    transition: .3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; width: 18px;
+    left: 4px; bottom: 4px;
+    background-color: white;
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background-color: #a3a3a3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* =======================================================
+   REGRAS DE ALTERAÇÃO GLOBAL PARA MODO ESCURO (dark-theme)
+   ======================================================= */
+html.dark-theme body {
+    background-color: #1a1824;
+}
+
+html.dark-theme .content, 
+html.dark-theme .sidebar {
+    background-color: #272530; /* Fundo interno cinza escuro */
+}
+
+html.dark-theme .sidebar ul li a {
+    color: #bbb;
+}
+
+html.dark-theme .sidebar ul li a:hover, 
+html.dark-theme .sidebar ul li a.active {
+    background-color: #2d2940;
+    color: #bfa2ff;
+}
+
+html.dark-theme .theme-section h2, 
+html.dark-theme .libras-info h2,
+html.dark-theme .theme-card h3 {
+    color: #fff;
+}
+
+html.dark-theme .theme-section .subtitle,
+html.dark-theme .theme-card p,
+html.dark-theme .libras-info p {
+    color: #b0aec2;
+}
+
+html.dark-theme .libras-section {
+    border-top-color: #2d2940;
+}
+
+

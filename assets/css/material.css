@@ -13,6 +13,7 @@ body {
   color: #333;
   overflow-x: hidden;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Wrapper Principal (Layout Lado a Lado - Sidebar + Conteúdo) */
@@ -50,12 +51,12 @@ header {
   align-items: center;
   justify-content: center;
   height: 42px;
-  width: auto; /* Garante que não vai esticar */
+  width: auto; 
 }
 
 .logoMarca img {
-  height: 22px; /* Mantém a proporção elegante da escrita PHRONESIS */
-  width: auto;   /* Evita achatamento da imagem */
+  height: 22px; 
+  width: auto;   
   object-fit: contain;
   display: block;
 }
@@ -92,15 +93,15 @@ header {
 
 /* Cores específicas dos botões baseadas no layout padrão */
 .menu li.materiais a {
-  background-color: #8dd4ff; /* Azul claro */
+  background-color: #8dd4ff; 
 }
 
 .menu li.obras a, .menu li.livros a {
-  background-color: #ffe57e; /* Amarelo das Obras Obrigatórias */
+  background-color: #ffe57e; 
 }
 
 .menu li.cronogramas a {
-  background-color: #a2d5ff; /* Azul sutil dos cronogramas */
+  background-color: #a2d5ff; 
 }
 
 /* Link de Administração (Texto Vermelho/Laranja sem fundo) */
@@ -168,13 +169,14 @@ header {
    ========================================================================== */
 .menuSidebar {
   position: sticky;
-  top: 95px; /* Alinhamento correto abaixo do header roxo fixa */
+  top: 95px; 
   width: 280px;
   height: fit-content;
   background: #f6f5fb;
   border-radius: 18px;
   padding: 25px 18px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .menuSidebar nav {
@@ -251,7 +253,7 @@ header {
 }
 
 /* ==========================================================================
-   CONTEÚDO PRINCIPAL E BANNER (CORRIGIDO ALINHAMENTO SUPERIOR E LATERAL)
+   CONTEÚDO PRINCIPAL E BANNER
    ========================================================================== */
 .principalContent {
   flex: 1;
@@ -295,6 +297,7 @@ header {
   width: 100%;
   max-height: 720px; 
   overflow-y: scroll !important; 
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Customização WebKit para a barra de rolagem amarela */
@@ -322,11 +325,6 @@ header {
   background: #f5b041 !important; 
 }
 
-.video-container-white::-webkit-scrollbar-button,
-.caixa-favoritos-nova::-webkit-scrollbar-button {
-  display: none !important;
-}
-
 /* Componentes internos dos blocos brancos */
 .video-header {
   display: flex;
@@ -341,6 +339,11 @@ header {
   color: #6837af;
   font-size: 1.4rem;
   font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.caixa-favoritos-nova .titulo-salvos {
+  color: #4B0082;
 }
 
 .search-box {
@@ -366,6 +369,7 @@ header {
   padding: 8px 0;
   font-size: 14px;
   color: #333;
+  background-color: transparent;
 }
 
 .search-box button {
@@ -379,11 +383,7 @@ header {
   transition: transform 0.2s;
 }
 
-.search-box button:hover {
-  transform: scale(1.1);
-}
-
-/* Grid de cards fixado em 3 Colunas */
+/* Grid de cards */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(200px, 1fr)); 
@@ -396,7 +396,7 @@ header {
   border: 1px solid #eee;
   border-radius: 16px;
   padding: 12px;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -435,6 +435,7 @@ header {
   align-items: flex-start;
   gap: 8px;
   min-height: 40px;
+  transition: color 0.3s ease;
 }
 
 .fav-btn {
@@ -496,12 +497,6 @@ header {
   transition: all 0.2s ease;
 }
 
-.exam-card-mini:hover {
-  background: #fff;
-  transform: translateX(2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
 .exam-name-mini {
   font-size: 12px;
   font-weight: 700;
@@ -517,18 +512,122 @@ header {
   width: fit-content;
 }
 
-/* Identificadores visuais laterais */
 .mini-enem { border-left: 4px solid #f1c40f; }
 .mini-enem .countdown-mini { color: #d4ac0d; }
-
 .mini-fuvest { border-left: 4px solid #e74c3c; }
 .mini-fuvest .countdown-mini { color: #e74c3c; }
-
 .mini-unicamp { border-left: 4px solid #2ecc71; }
 .mini-unicamp .countdown-mini { color: #27ae60; }
-
 .mini-unesp { border-left: 4px solid #9b59b6; }
 .mini-unesp .countdown-mini { color: #9b59b6; }
+
+/* ==========================================================================
+   IMPLEMENTAÇÃO COMPLETA DO TEMA ESCURO (DARK THEME)
+   ========================================================================== */
+html.dark-theme body {
+    background-color: #13111C; 
+}
+
+/* Bloco da Sidebar */
+html.dark-theme .menuSidebar {
+    background-color: #1D1B26;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+html.dark-theme .menuSidebar nav::before {
+    color: #BFA2FF;
+}
+
+html.dark-theme .menuSidebar nav a {
+    color: #BFA2FF;
+}
+
+html.dark-theme .menuSidebar nav a:hover {
+    background: rgba(134, 84, 243, 0.2);
+    color: #FFFFFF;
+}
+
+html.dark-theme .active-subject {
+    background: #252233;
+    color: #FFFFFF !important;
+    border-left: 4px solid #8654f3;
+    box-shadow: 0 4px 12px rgba(134, 84, 243, 0.2);
+}
+
+/* Cards dos Vestibulares na Sidebar */
+html.dark-theme .exam-card-mini {
+    background: #252230;
+    box-shadow: none;
+}
+
+html.dark-theme .exam-name-mini {
+    color: #E2E0E6;
+}
+
+/* Blocos Principais de Vídeos e Salvos */
+html.dark-theme .video-container-white,
+html.dark-theme .caixa-favoritos-nova {
+    background-color: #1D1B26;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-theme .video-title {
+    color: #A380F9;
+}
+
+html.dark-theme .caixa-favoritos-nova .titulo-salvos {
+    color: #BFA2FF;
+}
+
+/* Caixa de Pesquisa */
+html.dark-theme .search-box {
+    background-color: #252230;
+    border-color: #38344A;
+}
+
+html.dark-theme .search-box input {
+    color: #FFFFFF;
+}
+
+html.dark-theme .search-box button {
+    color: #A380F9;
+}
+
+/* Grade de Cards e Vídeos */
+html.dark-theme .video-card {
+    background-color: #252230;
+    border-color: #332F44;
+}
+
+html.dark-theme .video-card:hover {
+    background-color: #2C2838;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+html.dark-theme .video-title-card {
+    color: #E2E0E6;
+}
+
+html.dark-theme .sem-favoritos {
+    color: #6C687A !important;
+}
+
+/* Customização WebKit para a barra de rolagem no Dark Mode */
+html.dark-theme .video-container-white::-webkit-scrollbar-track,
+html.dark-theme .caixa-favoritos-nova::-webkit-scrollbar-track {
+  background: #252230 !important; 
+}
+
+html.dark-theme .video-container-white::-webkit-scrollbar-thumb,
+html.dark-theme .caixa-favoritos-nova::-webkit-scrollbar-thumb {
+  background: #8654f3 !important; 
+  border: 2px solid #252230 !important; 
+}
+
+html.dark-theme .video-container-white::-webkit-scrollbar-thumb:hover,
+html.dark-theme .caixa-favoritos-nova::-webkit-scrollbar-thumb:hover {
+  background: #7342e3 !important; 
+}
 
 /* ==========================================================================
    MEDIA QUERIES (RESPONSIVIDADE)

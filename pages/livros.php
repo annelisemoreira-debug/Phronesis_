@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 // Se o usuário NÃO estiver logado, manda ele para a tela de login
 if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     header("Location: login.php");
-    exit(); // Interrompe a execução do script
+    exit(); 
 }
 
 // --- CONEXÃO ÚNICA ---
@@ -27,7 +27,7 @@ $dadosUser = $res->fetch_assoc();
 
 // Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
 if (!$dadosUser) {
-    session_destroy(); // Destrói a sessão inválida
+    session_destroy(); 
     header("Location: ../login.php");
     exit();
 }
@@ -49,8 +49,9 @@ error_reporting(E_ALL);
 
     <div class="wrapper">
         <div class="principalContent">
+            
             <section class="banner">
-                <img src="../assets/img/bannerLivros02.webp" class="bg-html" alt="Fundo">
+                <img id="bannerImg" src="../assets/img/bannerLivros02.webp" class="bg-html" alt="Fundo">
             </section>
 
             <main class="areaContent">
@@ -58,7 +59,7 @@ error_reporting(E_ALL);
                     
                     <article class="containerVest">
                         <div class="fuvestImg">
-                            <img class="open-modal-trigger" src="../assets/img/fuvestLogo.webp" alt="FUVEST">
+                            <img id="logoFuvest" class="open-modal-trigger" src="../assets/img/fuvestLogo.webp" alt="FUVEST">
                         </div>
                         <div class="descricaoVest">
                             <h2 class="nome">FUVEST</h2>
@@ -88,7 +89,7 @@ error_reporting(E_ALL);
 
                     <article class="containerVest">
                         <div class="vunestImg">
-                            <img class="open-modal-trigger" src="../assets/img/vunespLogo.webp" alt="VUNESP">
+                            <img id="logoVunesp" class="open-modal-trigger" src="../assets/img/vunespLogo.webp" alt="VUNESP">
                         </div>
                         <div class="descricaoVest">
                             <h2 class="nome">VUNESP</h2>
@@ -108,7 +109,7 @@ error_reporting(E_ALL);
 
                     <article class="containerVest">
                         <div class="unicampImg">
-                            <img class="open-modal-trigger" src="../assets/img/unicampLogo.webp" alt="UNICAMP">
+                            <img id="logoUnicamp" class="open-modal-trigger" src="../assets/img/unicampLogo.webp" alt="UNICAMP">
                         </div>
                         <div class="descricaoVest">
                             <h2 class="nome">UNICAMP</h2>
@@ -138,7 +139,7 @@ error_reporting(E_ALL);
 
                     <article class="containerVest">
                         <div class="enemImg">
-                            <img class="open-modal-trigger" src="../assets/img/enemLogo.webp" alt="ENEM">
+                            <img id="logoEnem" class="open-modal-trigger" src="../assets/img/enemLogo.webp" alt="ENEM">
                         </div>
                         <div class="descricaoVest">
                             <h2 class="nome">ENEM</h2>
@@ -150,6 +151,7 @@ error_reporting(E_ALL);
                         <dialog id="modal-enem">
                             <button type="button" class="close-button">&times;</button>
                             <h2>ENEM</h2>
+                            <h3>Informações</h3>
                             <p>Conteúdo da janela modal.</p>
                         </dialog>
                     </article>
@@ -183,7 +185,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const containersVest = document.querySelectorAll('.containerVest');
 
     containersVest.forEach(container => {
-        // Pega tanto a imagem quanto o "Ler mais..." textual
         const triggers = container.querySelectorAll('.open-modal-trigger');
         const modal = container.querySelector('dialog');
         const btnClose = container.querySelector('.close-button');
@@ -216,6 +217,28 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+// Executa imediatamente para evitar "piscada" visual ao carregar a página
+if (localStorage.getItem('site-theme') === 'dark') {
+    document.documentElement.classList.add('dark-theme');
+    
+    // 1. Substitui o banner clássico pelo escuro
+    const banner = document.getElementById('bannerImg');
+    if (banner) {
+        banner.src = "../assets/img/bannerLivrosEscuro.webp";
+    }
+
+    // 2. Substitui as logos dos vestibulares pelas versões escuras
+    const fuv = document.getElementById('logoFuvest');
+    const vun = document.getElementById('logoVunesp');
+    const uni = document.getElementById('logoUnicamp');
+    const ene = document.getElementById('logoEnem');
+
+    if (fuv) fuv.src = "../assets/img/fuvestLogoEscuro.webp";
+    if (vun) vun.src = "../assets/img/vunespLogoEscuro.webp";
+    if (uni) uni.src = "../assets/img/unicampLogoEscuro.webp";
+    if (ene) ene.src = "../assets/img/enemLogoEscuro.webp";
+}
 </script>
 </body>
 </html>

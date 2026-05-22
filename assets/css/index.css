@@ -27,7 +27,7 @@ body {
     padding: 0;        
 }
 
-/* --- BANNER --- */
+/* --- BANNER COMPORTAMENTO --- */
 .banner {
     width: 100%; 
     max-width: 1650px; 
@@ -37,13 +37,17 @@ body {
     overflow: hidden;
 }
 
-.banner img {
+.banner-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     border-radius: 15px;
 }
+
+/* Visibilidade Inicial (Modo Claro) */
+.banner-light { display: block; }
+.banner-dark { display: none; }
 
 /* --- SEÇÃO DO CARROSSEL (SEM QUADRADO BRANCO) --- */
 .carrossel-section {
@@ -79,6 +83,7 @@ body {
     background-color: white;
     margin: 15px auto 20px auto;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* --- CARROSSEL --- */
@@ -195,7 +200,7 @@ body {
 .prev { left: -50px; }
 .next { right: -50px; }
 
-/* --- BENTO GRID & SIDEBAR (FONTES REDUZIDAS) --- */
+/* --- BENTO GRID & SIDEBAR --- */
 .page-wrapper {
     display: flex;
     width: 100%;
@@ -269,7 +274,7 @@ body {
 .item-3:hover { flex: 4.5 !important; opacity: 1 !important; }
 .item-4:hover { flex: 4.5 !important; opacity: 1 !important; }
 
-/* Sidebar - Definição de fontes reduzidas */
+/* Sidebar */
 .sidebar {
     flex: 1;
     color: #2d005d;
@@ -277,10 +282,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center; 
+    transition: color 0.3s ease;
 }
 
 .sidebar .tag {
-    font-size: 10px; /* Reduzido de 11px */
+    font-size: 10px; 
     font-weight: 700;
     letter-spacing: 1.5px;
     color: #8654f3;
@@ -289,20 +295,22 @@ body {
 }
 
 .sidebar h1 {
-    font-size: 2.1rem; /* Reduzido de 2.3rem */
+    font-size: 2.1rem; 
     text-align: left;
     margin: 0 0 12px 0;
     color: #2d005d;
     font-family: 'Segoe UI', Roboto, sans-serif;
     line-height: 1.2;
+    transition: color 0.3s ease;
 }
 
 .sidebar .description {
-    font-size: 0.95rem; /* Reduzido de 1.05rem */
+    font-size: 0.95rem; 
     line-height: 1.5;
     color: #4b2a6d;
     margin-bottom: 18px;
     text-align: left;
+    transition: color 0.3s ease;
 }
 
 .mission-box {
@@ -312,12 +320,64 @@ body {
 }
 
 .mission-box p {
-    font-size: 0.88rem; /* Reduzido de 0.95rem */
+    font-size: 0.88rem; 
     font-style: italic;
     color: #5a3b7d;
     line-height: 1.5;
     text-align: left;
+    transition: color 0.3s ease;
 }
+
+/* =======================================================
+   REGRAS COMPATÍVEIS PARA O MODO ESCURO (dark-theme)
+   ======================================================= */
+
+html.dark-theme body {
+    background-color: #1a1824; /* Fundo geral lilás escuro */
+}
+
+/* SUBSTITUIÇÃO DOS BANNERS */
+html.dark-theme .banner-light { display: none !important; }
+html.dark-theme .banner-dark { display: block !important; }
+
+/* CONTAINER DO SOBRE NÓS NO MODO ESCURO */
+html.dark-theme .sobre-nos-container {
+    background-color: #221f30; /* Fundo interno do bloco */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ADAPTAÇÃO TEXTUAL DA SIDEBAR */
+html.dark-theme .sidebar h1 {
+    color: #ffffff;
+}
+
+html.dark-theme .sidebar .tag {
+    color: #bfa2ff; /* Tom claro para contraste */
+}
+
+html.dark-theme .sidebar .description {
+    color: #e1def0;
+}
+
+html.dark-theme .mission-box {
+    border-left-color: #f1c40f; /* Detalhe amarelo/dourado conforme o mockup */
+}
+
+html.dark-theme .mission-box p {
+    color: #b0aec2;
+}
+
+html.dark-theme .subtitulo-principal {
+    color: #f1c40f; /* Subtítulo amarelo destacado sob fundo escuro */
+}
+
+/* NOTA PARA A LOGO DO HEADER:
+   Para alterar a logo de forma organizada, inclua no seu 'header.css' 
+   ou arquivo correspondente as regras equivalentes de visualização:
+   
+   html.dark-theme .logoescuro { display: block !important; }
+   html.dark-theme .logoclaro { display: none !important; }
+*/
 
 /* --- RESPONSIVIDADE --- */
 @media (max-width: 1024px) {

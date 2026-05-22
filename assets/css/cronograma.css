@@ -1,0 +1,556 @@
+/* --- RESET E CONFIGURAÇÕES GERAIS --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Definição de Variáveis de Cor (Padrão: Modo Claro) */
+:root {
+    --bg-color: #cbb4f9;          /* Fundo roxo pastel original */
+    --card-bg: #fbf9ff;           /* Fundo dos painéis principais */
+    --text-primary: #4c1d95;      /* Títulos fortes */
+    --text-secondary: #7c3aed;    /* Subtítulos e labels */
+    --text-body: #334155;         /* Inputs e textos comuns */
+    --text-muted: #94a3b8;        /* Datas e placeholders */
+    --input-bg: #f8fafc;          /* Fundo dos campos */
+    --input-border: #e2e8f0;      /* Borda dos campos */
+    --row-hover: #f5f3ff;         /* Hover nos itens da lista */
+    --row-border: #f1f5f9;        /* Divisória de itens */
+    --icon-box-bg: #f3e8ff;       /* Fundo do quadradinho do ícone */
+    --icon-box-color: #9b51e0;    /* Cor do ícone roxo */
+    --shadow: rgba(121, 40, 202, 0.15);
+    
+    /* Cores estáticas comuns aos dois modos */
+    --purple-main: #9b51e0;
+    --purple-hover: #7c3aed;
+    --btn-del-bg: #fee2e2;
+    --btn-del-color: #dc2626;
+    --btn-edit-bg: #e0f2fe;
+    --btn-edit-color: #0284c7;
+}
+
+/* Paleta de Cores Aplicada ao MODO ESCURO */
+body.dark-mode, body.dark-theme {
+    --bg-color: #12101a;          /* Fundo geral escuro profundo */
+    --card-bg: #1a1824;           /* Painéis cinza-escuro arroxeados */
+    --text-primary: #f3e8ff;      /* Títulos em tom lilás bem claro/branco */
+    --text-secondary: #a78bfa;    /* Subtítulos e labels roxo claro acesos */
+    --text-body: #cbd5e1;         /* Textos em cinza claro confortável */
+    --text-muted: #64748b;        /* Histórico apagado e placeholders */
+    --input-bg: #252332;          /* Inputs escuros */
+    --input-border: #38354d;      /* Bordas discretas dos inputs */
+    --row-hover: #2d293d;         /* Hover na lista escura */
+    --row-border: #252332;        /* Divisórias escuras */
+    --icon-box-bg: #2d293d;       /* Fundo do ícone no modo escuro */
+    --icon-box-color: #a78bfa;    /* Cor do ícone */
+    --shadow: rgba(0, 0, 0, 0.4);
+}
+
+body {
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    padding-bottom: 40px;
+    transition: background-color 0.3s ease;
+}
+
+/* --- GRID DO LAYOUT PRINCIPAL --- */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 25px;
+    max-width: 1300px;
+    margin: 45px auto 0 auto; /* Ajustado espaçamento superior para desgrudar do header */
+    padding: 0 20px;
+}
+
+/* --- CONTAINERS (CARDS) --- */
+.container-principal, .sidebar-historico {
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 25px var(--shadow);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- CARD HEADER DO FORMULÁRIO --- */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.title-left {
+    display: flex;
+    flex-direction: row; /* Alinhamento horizontal correto do ícone e textos */
+    align-items: center;
+    gap: 15px;
+}
+
+.icon-purple-box {
+    background-color: var(--icon-box-bg);
+    color: var(--icon-box-color);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.title-left h2 {
+    color: var(--text-primary);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.title-left p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+.btn-desconectar {
+    color: #e11d48;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s;
+}
+
+.btn-desconectar:hover {
+    opacity: 0.7;
+}
+
+/* --- COMPONENTES DO FORMULÁRIO --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-group label {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    border-radius: 10px;
+    color: var(--text-body);
+    font-size: 13px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #a78bfa;
+    background-color: var(--card-bg);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+}
+
+/* Ajuste para o seletor nativo de calendário */
+body.dark-mode input::-webkit-calendar-picker-indicator,
+body.dark-theme input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* INPUTS COM ÍCONE INTERNO */
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input {
+    padding-right: 40px;
+}
+
+.input-icon-right {
+    position: absolute;
+    right: 15px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+/* LISTAS DE SELEÇÃO (DIAS DA SEMANA E MATÉRIAS) */
+.list-container {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.scrolling-list::-webkit-scrollbar {
+    width: 6px;
+}
+.scrolling-list::-webkit-scrollbar-thumb {
+    background-color: var(--input-border);
+    border-radius: 4px;
+}
+
+.row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--row-border);
+    color: var(--text-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.row-item:last-child {
+    border-bottom: none;
+}
+
+.row-item:hover {
+    background-color: var(--row-hover);
+}
+
+.empty-state-select {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* CHECKBOX PERSONALIZADO */
+.custom-checkbox {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #a78bfa;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    transition: all 0.2s ease;
+    background-color: transparent;
+}
+
+.custom-checkbox:checked {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+}
+
+.custom-checkbox:checked::before {
+    content: "✓";
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* BOTÃO DE GERAR */
+.btn-gen {
+    background-color: var(--purple-main);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    box-shadow: 0 4px 12px rgba(155, 81, 224, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-gen:hover {
+    background-color: var(--purple-hover);
+    box-shadow: 0 6px 18px rgba(155, 81, 224, 0.4);
+    transform: translateY(-1px);
+}
+
+/* --- SIDEBAR HISTÓRICO --- */
+.sidebar-historico {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header h3 {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid var(--row-border);
+    padding-bottom: 10px;
+}
+
+/* ESTADO DO HISTÓRICO VAZIO */
+.empty-history-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: auto auto;
+    padding: 40px 10px;
+}
+
+.empty-illustration {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.book-purple-icon {
+    background-color: var(--purple-main);
+    color: white;
+    width: 80px;
+    height: 70px;
+    border-radius: 12px 12px 25px 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    box-shadow: 0 8px 20px rgba(155, 81, 224, 0.3);
+    position: relative;
+}
+
+.sparkle-1 {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    color: #fcd34d;
+    font-size: 18px;
+}
+
+.sparkle-2 {
+    position: absolute;
+    top: 15px;
+    left: -20px;
+    color: #fcd34d;
+    font-size: 14px;
+}
+
+.empty-history-wrapper h4 {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.empty-history-wrapper p {
+    color: var(--text-muted);
+    font-size: 11px;
+    max-width: 180px;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* CRONOGRAMA LISTA SE SALVO */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cronograma-item {
+    background-color: var(--input-bg);
+    border-left: 4px solid var(--purple-main);
+    border-radius: 8px;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: background-color 0.3s ease;
+}
+
+.crono-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.crono-title {
+    color: var(--text-body);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.crono-date {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+.cronograma-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    text-decoration: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.btn-edit { 
+    background-color: var(--btn-edit-bg); 
+    color: var(--btn-edit-color); 
+}
+body.dark-mode .btn-edit, body.dark-theme .btn-edit {
+    background-color: #0c2331;
+    color: #38bdf8;
+}
+
+.btn-del { 
+    background-color: var(--btn-del-bg); 
+    color: var(--btn-del-color); 
+}
+body.dark-mode .btn-del, body.dark-theme .btn-del {
+    background-color: #311616;
+    color: #f87171;
+}
+
+/* --- AGENDA INTERNA EM IFRAME --- */
+.agenda-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.agenda-header h3 { 
+    color: var(--text-primary); 
+}
+
+.btn-novo-crono {
+    background-color: #a78bfa;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.calendar-embed {
+    width: 100%;
+    height: 550px;
+    border: 1px solid var(--input-border);
+    border-radius: 12px;
+}
+
+/* --- FEEDBACKS E MODAL --- */
+.alert-message {
+    background-color: var(--icon-box-bg);
+    color: var(--purple-hover);
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--input-border);
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(18, 16, 26, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 { color: var(--text-primary); margin-bottom: 10px; }
+.modal-content p { font-size: 14px; color: var(--text-body); margin-bottom: 20px; }
+
+.btn-sync {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.btn-cancel-modal {
+    background-color: var(--input-bg);
+    color: var(--text-body);
+    border: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* --- SUPORTE COMPLEMENTAR AO TEMA ESCURO GLOBAL --- */
+body.dark-theme .sidebar, 
+body.dark-theme .content-wrapper, 
+body.dark-theme .main-content-card {
+    background-color: #252230;
+    color: #fff;
+}
+
+body.dark-theme h1, body.dark-theme h2 {
+    color: #fff;
+}
+
+body.dark-theme p, body.dark-theme span {
+    color: #b0aeb8;
+}
+
+body.dark-theme .book-item-card {
+    background-color: #2d293d;
+    border: 1px solid #3d3752;
+}

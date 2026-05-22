@@ -24,7 +24,8 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
         <div class="principalContent">
             
             <section class="banner">
-                <img src="assets/img/bannerInicio.webp" alt="Fundo">
+                <img src="assets/img/bannerInicio.webp" alt="Fundo" class="banner-img banner-light">
+                <img src="assets/img/bannerescuro.webp" alt="Fundo Escuro" class="banner-img banner-dark">
             </section>
 
             <section class="sobre-nos-container">
@@ -101,7 +102,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
                                 <div class="tab yellow"></div>
                             </div>
                             <h2>Cronograma</h2>
-                            <p><b>• Cronograma personalizado:</b><br> O aluno informa seus objetivos e a plataforma organizes...</p>
+                            <p><b>• Cronograma personalizado:</b><br> O aluno informa seus objetivos e a plataforma organiza...</p>
                             <div class="bottom-tab"></div>
                         </div>
 
@@ -157,7 +158,11 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
                 });
             }
         });
+
+        // Anti-Flicker nativo
+        if (localStorage.getItem('site-theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
     </script>
 </body>
-
 </html>

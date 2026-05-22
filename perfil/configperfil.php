@@ -7,24 +7,7 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-// --- CONEXÃO ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
-
-// 2. Verifica se o ID da sessão ainda é válido no banco de dados
-$id = $_SESSION['id'];
-$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
-$dadosUser = $res->fetch_assoc();
-
-// Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
-if (!$dadosUser) {
-    session_destroy(); // Destrói a sessão inválida
-    header("Location: ../login.php");
-    exit();
-}
-
-// senha: Home@spSENAI2025!
-
-// 2. CONEXÃO COM O BANCO
+// --- CONEXÃO COM O BANCO ---
 $servername = "localhost";
 $username = "root";
 $password = "Home@spSENAI2025!";
@@ -35,9 +18,18 @@ if ($conn->connect_error) { die("Erro: " . $conn->connect_error); }
 
 $id_usuario = $_SESSION['id'];
 
-// 3. LÓGICA DE PROCESSAMENTO DO CORTE
+// 2. Verifica se o ID da sessão ainda é válido no banco de dados
+$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id_usuario");
+$dadosUser = $res->fetch_assoc();
+
+if (!$dadosUser) {
+    session_destroy();
+    header("Location: ../login.php");
+    exit();
+}
+
+// 3. LÓGICA DE PROCESSAMENTO DO CORTE DA IMAGEM
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'crop_image') {
-    // Limpa qualquer saída anterior para não quebrar o JSON
     ob_clean(); 
     header('Content-Type: application/json');
 
@@ -50,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
         }
 
         $base64_image = $_POST['image_data']; 
-        // Remove o cabeçalho do base64 (data:image/webp;base64,...)
         $data = explode(',', $base64_image);
         $image_content = base64_decode($data[1]);
 
@@ -58,10 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
         $caminhoCompletoFisico = $diretorioFisico . $nomeArquivo;
         $caminhoBanco = $diretorioBanco . $nomeArquivo;
 
-        // Salva o arquivo diretamente
         if (file_put_contents($caminhoCompletoFisico, $image_content)) {
-            
-            // Buscar foto antiga para deletar
             $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
             $busca->bind_param("i", $id_usuario);
             $busca->execute();
@@ -72,54 +60,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
                 if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
             }
 
-            // Atualizar banco
             $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
             $upd->bind_param("si", $caminhoBanco, $id_usuario);
             $upd->execute();
 
             echo json_encode(['status' => 'success', 'redirect' => 'configperfil.php']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Não foi possível escrever o arquivo na pasta perfis. Verifique permissões.']);
+            echo json_encode(['status' => 'error', 'message' => 'Não foi possível escrever o arquivo na pasta perfis.']);
         }
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
     exit();
-
-
-
-    // Gerar nome único
-    $nomeArquivo = "user_" . $id_usuario . "_" . time() . ".webp";
-    $caminhoCompletoFisico = $diretorioFisico . $nomeArquivo;
-    $caminhoBanco = $diretorioBanco . $nomeArquivo;
-
-    // Salvar a imagem (O JS já mandou no tamanho certo, basta salvar)
-    if (imagewebp($src_image, $caminhoCompletoFisico, 80)) { 
-        
-        // Deletar antiga
-        $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
-        $busca->bind_param("i", $id_usuario);
-        $busca->execute();
-        $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
-
-        if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
-            $caminhoArquivoAntigo = "../" . $fotoAntiga;
-            if (file_exists($caminhoArquivoAntigo)) { unlink($caminhoArquivoAntigo); }
-        }
-
-        // Atualizar banco
-        $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
-        $upd->bind_param("si", $caminhoBanco, $id_usuario);
-        $upd->execute();
-
-        imagedestroy($src_image);
-        echo json_encode(['status' => 'success', 'redirect' => 'configperfil.php']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Erro ao salvar arquivo.']);
-    }
-    exit();
 }
-
 
 // 4. BUSCA DADOS PARA EXIBIÇÃO
 $stmt = $conn->prepare("SELECT nome, email, foto FROM usuario WHERE id_usuario = ?");
@@ -140,6 +93,15 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <link rel="stylesheet" href="../assets/css/configperfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('site-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
+
     <style>
         .modal-crop {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
@@ -158,39 +120,39 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 </head>
 <body>
    <div class="main-wrapper">
-            <aside class="sidebar">
-                <div class="logo">
-                    <img src="../assets/img/logoSite.webp" alt="Phronesis">
-                </div>
-                <nav>
-                    <p class="nav-title">Conta Pessoal</p>
-                    <ul>
-                        <li><a href="configperfil.php" class="active"><span>👤</span> Meu perfil</a></li>
-                            <li>
-                                <a href="#" class="nav-link-acessibilidade">
-                                    <img src="../assets/img/acessibilidade.webp" 
-                                        alt="Acessibilidade" 
-                                        class="icon-acessibilidade">
-                                    <span>Acessibilidade</span>
-                                </a>
-                            </li>
-                    </ul>
-                    <p class="nav-title">Voltar</p>
-                    <ul>
-                        <li><a href="../index.php"><span>🏠</span> Início</a></li>
-                        <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
-                        <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
-                        <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
-                    </ul>
-                </nav>
-            </aside>
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="../assets/img/logoSite.webp" alt="Phronesis" class="logo-light">
+                <img src="../assets/img/logoSite_dark.webp" alt="Phronesis" class="logo-dark">
+            </div>
+            <nav>
+                <p class="nav-title">Conta Pessoal</p>
+                <ul>
+                    <li><a href="configperfil.php" class="active"><span>👤</span> Meu perfil</a></li>
+                    <li>
+                        <a href="../perfil/acessibilidade.php" class="nav-link-acessibilidade">
+                            <img src="../assets/img/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
+                            <span>Acessibilidade</span>
+                        </a>
+                    </li>
+                </ul>
+                <p class="nav-title">Voltar</p>
+                <ul>
+                    <li><a href="../index.php"><span>🏠</span> Início</a></li>
+                    <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
+                    <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
+                    <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
+                </ul>
+            </nav>
+        </aside>
 
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/bannerInicio.webp" alt="Banner" style="width: 100%;">
+                <img src="../assets/img/bannerInicio.webp" alt="Banner" class="banner-img banner-light">
+                <img src="../assets/img/bannerInicio_dark.webp" alt="Banner" class="banner-img banner-dark">
             </header>
 
-             <section class="container-dados" style="padding: 20px;">
+            <section class="container-dados">
                 <div class="alert-info">
                     <div class="text">
                         <strong>Sua conta é gerenciada pela organização da qual você faz parte.</strong>
@@ -198,36 +160,34 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                     </div>
                 </div>
 
-            <section class="container-dados" style="padding: 20px;">
-                <div class="profile-upload" style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+                <div class="profile-upload">
                     <div class="avatar-wrapper">
-                        <img src="<?php echo $fotoExibicao; ?>?t=<?php echo time(); ?>" 
-                             id="currentAvatar" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;">
+                        <img src="<?php echo $fotoExibicao; ?>?t=<?php echo time(); ?>" id="currentAvatar">
                     </div>
                     <div class="upload-info">
                         <h3>Faça upload da sua foto de perfil</h3>
                         <p>Ajuste sua imagem de exibição para facilitar a identificação.</p>
                         <form id="formFotoPerfil">
                             <input type="file" id="foto_perfil" hidden accept="image/*">
-                            <button type="button" id="btnSelectFoto" style="padding: 10px 20px; cursor: pointer;"> Selecionar Nova Foto</button>
+                            <button type="button" id="btnSelectFoto">Selecionar Nova Foto</button>
                         </form>
                     </div>
                 </div>
-                 <div class="user-info-fields">
-                    <div class="field" style="margin-bottom: 15px;">
+
+                <div class="user-info-fields">
+                    <div class="field">
                         <label><strong>Nome:</strong></label>
-                        <p><?php echo htmlspecialchars($user['nome']); ?></p>
+                        <p class="user-value"><?php echo htmlspecialchars($user['nome']); ?></p>
                     </div>
-                    <div class="field" style="margin-bottom: 15px;">
+                    <div class="field">
                         <label><strong>Endereço de e-mail:</strong></label>
-                        <p><?php echo htmlspecialchars($user['email']); ?></p>
+                        <p class="user-value"><?php echo htmlspecialchars($user['email']); ?></p>
                     </div>
                 </div>
 
-                <div class="footer-actions" style="margin-top: 40px;">
-                    <a href="../logout.php" style="color: red; text-decoration: none; font-weight: bold;">Desconectar</a>
+                <div class="footer-actions">
+                    <a href="../logout.php">Desconectar</a>
                 </div>
-                
             </section>
         </main>
     </div>
@@ -280,8 +240,3 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     </script>
 </body>
 </html>
-
-
-
-
-

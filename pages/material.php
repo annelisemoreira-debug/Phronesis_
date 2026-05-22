@@ -83,7 +83,7 @@ try {
 <body>
     <?php include '../interface/header.php'; ?>
 
-    <section class="banner"><img src="../assets/img/bannerAzul.webp" alt=""></section>
+    <section class="banner"><img id="bannerImg" src="../assets/img/bannerAzul.webp" alt="Banner"></section>
 
     <div class="wrapper">
         <aside class="menuSidebar">
@@ -144,9 +144,6 @@ try {
                 </div>
 
             </nav>
-
-
-            </nav>
         </aside>
 
         <div class="principalContent">
@@ -192,12 +189,13 @@ try {
 
                     <div class="caixa-favoritos-nova">
                         <div class="video-header">
-                            <h2 class="video-title" style="color: #4B0082;">Meus Vídeos Salvos ★</h2>
+                            <h2 class="video-title titulo-salvos">Meus Vídeos Salvos ★</h2>
                         </div>
                         <div class="video-grid" id="listaFavoritos">
                             <?php
                             $res_salvos = $conn->query("SELECT * FROM favoritos WHERE id_usuario = $id");
                             if ($res_salvos->num_rows > 0):
+                                gold:
                                 while ($f = $res_salvos->fetch_assoc()): ?>
                                     <div class="video-card">
                                         <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
@@ -214,7 +212,7 @@ try {
                                     </div>
                                 <?php endwhile;
                             else: ?>
-                                <p style="grid-column: 1/-1; text-align: center; color: #999; padding: 20px;">Você ainda não favoritou vídeos.</p>
+                                <p class="sem-favoritos" style="grid-column: 1/-1; text-align: center; color: #999; padding: 20px;">Você ainda não favoritou vídeos.</p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -234,13 +232,11 @@ try {
                     body: formData
                 })
                 .then(response => {
-                    // Se a resposta for ok, recarrega para atualizar as duas listas
                     location.reload();
                 })
                 .catch(err => console.error("Erro no favorito:", err));
         }
 
-        // Timers mantidos
         function createTimer(id, targetDate) {
             const target = new Date(targetDate).getTime();
             const element = document.getElementById(id);
@@ -265,51 +261,53 @@ try {
         createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
         createTimer("timer-unesp", "Nov 15, 2026 13:00:00");
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const perfilBtn = document.getElementById("perfilBtn");
+            const dropdownPerfil = document.getElementById("dropdownPerfil");
 
-        // Código para fazer o Dropdown abrir e fechar no CLIQUE
-    document.addEventListener("DOMContentLoaded", function() {
-        const perfilBtn = document.getElementById("perfilBtn");
-        const dropdownPerfil = document.getElementById("dropdownPerfil");
+            if (perfilBtn && dropdownPerfil) {
+                perfilBtn.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    dropdownPerfil.classList.toggle("show");
+                });
+            }
 
-        if (perfilBtn && dropdownPerfil) {
-            perfilBtn.addEventListener("click", function(e) {
-                e.stopPropagation(); // Evita fechar imediatamente ao clicar
-                dropdownPerfil.classList.toggle("show");
+            document.addEventListener("click", function() {
+                if (dropdownPerfil) {
+                    dropdownPerfil.remove("show");
+                }
             });
+
+            const videoGrid = document.getElementById("videoGrid");
+            const linksMaterias = document.querySelectorAll(".menuSidebar nav a");
+            linksMaterias.forEach(link => {
+                link.addEventListener("click", function() {
+                    if (videoGrid) {
+                        videoGrid.classList.add("loading");
+                    }
+                });
+            });
+
+            const searchForm = document.querySelector(".search-box form");
+            if (searchForm) {
+                searchForm.addEventListener("submit", function() {
+                    if (videoGrid) {
+                        videoGrid.classList.add("loading");
+                    }
+                });
+            }
+        });
+
+        // Verificação síncrona imediata para evitar a oscilação visual de troca do banner
+        if (localStorage.getItem('site-theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+            
+            // Troca dinâmica do banner para a versão escura
+            const banner = document.getElementById('bannerImg');
+            if (banner) {
+                banner.src = "../assets/img/bannerescuro.webp";
+            }
         }
-
-        // Fecha o menu se o usuário clicar em qualquer outro lugar da tela
-        document.addEventListener("click", function() {
-            if (dropdownPerfil) {
-                dropdownPerfil.classList.remove("show");
-            }
-        });
-    });
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-    const videoGrid = document.getElementById("videoGrid");
-
-    // 1. Ativa o loading ao clicar em qualquer matéria da Sidebar
-    const linksMaterias = document.querySelectorAll(".menuSidebar nav a");
-    linksMaterias.forEach(link => {
-        link.addEventListener("click", function() {
-            if (videoGrid) {
-                videoGrid.classList.add("loading");
-            }
-        });
-    });
-
-    // 2. Ativa o loading ao enviar o formulário de pesquisa por texto
-    const searchForm = document.querySelector(".search-box dashed form, .search-box form");
-    if (searchForm) {
-        searchForm.addEventListener("submit", function() {
-            if (videoGrid) {
-                videoGrid.classList.add("loading");
-            }
-        });
-    }
-});
     </script>
 </body>
 

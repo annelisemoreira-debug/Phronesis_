@@ -6,6 +6,7 @@
 
 body {
     background-color: #bfa2ff;
+    transition: background-color 0.3s ease;
 }
 
 /* Wrapper */
@@ -89,8 +90,10 @@ body {
     background-color: white;
     margin: 0 auto 30px auto;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Estilização da Seção do Banner */
 .banner {
     width: 100%; 
     max-width: 1590px; 
@@ -117,7 +120,7 @@ body {
     padding: 20px 40px; 
 }
 
-/* Todos os containers seguem o padrão (imagem na esquerda, conteúdo na direita) */
+/* Containers (imagem na esquerda, conteúdo na direita) */
 .containerVest {
     width: 100%;
     display: flex;
@@ -135,16 +138,15 @@ body {
     gap: 15px;
 }
 
-/* --- LOGOS DOS VESTIBULARES --- */
+/* Logos dos Vestibulares */
 .fuvestImg, .vunestImg, .unicampImg, .enemImg {
     flex: 0 0 280px;
     cursor: pointer;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; 
 }
 
-/* Efeito ao passar o mouse na imagem */
 .fuvestImg:hover, .vunestImg:hover, .unicampImg:hover, .enemImg:hover {
     transform: translateY(-5px); 
     box-shadow: 0 12px 24px rgba(134, 84, 243, 0.2); 
@@ -162,6 +164,7 @@ body {
     color: #000;
     line-height: 1.6;
     max-width: 95%; 
+    transition: color 0.3s ease;
 }
 
 /* Estilo Padrão do Rótulo (Título) */
@@ -178,9 +181,9 @@ body {
     background-color: #8654f3;
 }
 
-/* --- NOVO: TEXTO EMBUTIDO "LER MAIS..." --- */
+/* Texto embutido "Ler mais..." */
 .texto-ler-mais {
-    color: #8654f3;             /* Tom roxo do site */
+    color: #8654f3;             
     font-weight: bold;
     cursor: pointer;
     margin-left: 5px;
@@ -189,11 +192,11 @@ body {
 }
 
 .texto-ler-mais:hover {
-    color: #592cb3;             /* Roxo ligeiramente mais escuro no hover */
-    text-decoration: underline; /* Destaca o comportamento de link */
+    color: #592cb3;             
+    text-decoration: underline; 
 }
 
-/* --- JANELAS MODAIS COM SCROLL CUSTOMIZADO --- */
+/* Janelas Modais (Dialog) */
 .containerVest dialog {
     position: fixed;
     inset: 0;  
@@ -208,6 +211,8 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     text-align: center;
     outline: none;
+    background-color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Customização do Scrollbar do Modal */
@@ -252,6 +257,7 @@ body {
     margin-bottom: 10px;
     color: #333;
     text-transform: uppercase;
+    transition: color 0.3s ease;
 }
 
 .containerVest dialog p {
@@ -262,6 +268,7 @@ body {
     color: #444;
     white-space: pre-line;
     padding-right: 15px; 
+    transition: color 0.3s ease;
 }
 
 .close-button {
@@ -281,6 +288,65 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 10;
+}
+
+/* ==========================================================================
+   IMPLEMENTAÇÃO DO TEMA ESCURO (DARK THEME)
+   ========================================================================== */
+html.dark-theme body {
+    background-color: #13111C; 
+}
+
+html.dark-theme .areaContent {
+    background-color: #1D1B26; 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-theme .descricaoVest p {
+    color: #FFFFFF;
+}
+
+html.dark-theme .texto-ler-mais {
+    color: #A380F9;
+}
+
+html.dark-theme .texto-ler-mais:hover {
+    color: #C3A9FF;
+}
+
+/* Suavização das sombras e fundos dos blocos das logos no Dark Mode */
+html.dark-theme .fuvestImg, 
+html.dark-theme .vunestImg, 
+html.dark-theme .unicampImg, 
+html.dark-theme .enemImg {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+html.dark-theme .containerVest dialog {
+    background-color: #1D1B26;
+    color: #FFFFFF;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+html.dark-theme .containerVest dialog h3 {
+    color: #BFA2FF; 
+}
+
+html.dark-theme .containerVest dialog p {
+    color: #E2E0E6;
+}
+
+html.dark-theme .containerVest dialog::-webkit-scrollbar-track {
+    background: #252230;
+}
+
+html.dark-theme .containerVest dialog::-webkit-scrollbar-thumb {
+    background: #8654f3;
+    border: 2px solid #1D1B26;
+}
+
+html.dark-theme .containerVest dialog::-webkit-scrollbar-thumb:hover {
+    background: #7342e3;
 }
 
 /* --- RESPONSIVIDADE --- */

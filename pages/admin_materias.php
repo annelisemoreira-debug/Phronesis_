@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -18,7 +17,7 @@ if (!isset($_SESSION['id'])) {
 
 // BUSCA O TIPO DIRETO NO BANCO PARA GARANTIR
 $id_usuario = $_SESSION['id'];
-$stmt_check = $conn->prepare("SELECT tipo FROM usuario WHERE id_usuario = ?");
+$stmt_check = $conn->prepare("SELECT tipo, foto FROM usuario WHERE id_usuario = ?");
 $stmt_check->bind_param("i", $id_usuario);
 $stmt_check->execute();
 $user_data = $stmt_check->get_result()->fetch_assoc();
@@ -31,7 +30,7 @@ if (!$user_data || $user_data['tipo'] !== 'admin') {
 
 // 2. LÓGICA PDO (Para o restante do seu código funcionar)
 try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) { 
     die("Erro: " . $e->getMessage()); 
@@ -87,107 +86,152 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>ADM - Gerenciar Matérias</title>
-    <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 400px; }
-        input { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px; background: #34a853; color: white; border: none; cursor: pointer; border-radius: 4px; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-        .del { color: red; text-decoration: none; font-weight: bold; margin-left: 10px; }
-        .edit { color: #1a73e8; text-decoration: none; font-weight: bold; cursor: pointer; }
-        .voltar { display: inline-block; margin-top: 20px; text-decoration: none; color: #666; font-size: 14px; }
-        
-        .input-inline { padding: 5px; width: 80%; border: 1px solid #1a73e8; border-radius: 4px; }
-        .btn-salvar { background: #1a73e8; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; margin-right: 5px; font-size: 12px; }
-        .btn-cancelar { background: #666; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Matérias - ADM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/admin_materias.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    
+
 </head>
 <body>
-    <div class="card">
-        <h2>Gerenciar Matérias (ADM)</h2>
-        <?php if($msg) echo "<p>$msg</p>"; ?>
+
+<?php include '../interface/header.php'; ?>
+
+
+<main class="main-container">
+    <section class="card-principal">
         
-        <form method="POST">
-            <input type="text" name="nome_materia" placeholder="Nome da Matéria (ex: Química)" required>
-            <button type="submit" name="add_materia">Add</button>
+        <div class="card-header">
+            <span class="icon-purple-box">
+                <i class="fa-solid fa-book"></i>
+            </span>
+            <div>
+                <h2>Gerenciar Matérias (ADM)</h2>
+                <p>Adicione e gerencie as matérias disponíveis para os cronogramas.</p>
+            </div>
+        </div>
+
+        <?php if($msg): ?>
+            <div class="alert-message"><?= $msg ?></div>
+        <?php endif; ?>
+        
+        <form method="POST" class="input-group-append">
+            <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" required>
+            <button type="submit" name="add_materia" class="btn-adicionar">
+                Adicionar <i class="fa-solid fa-plus"></i>
+            </button>
         </form>
 
-        <table>
-            <thead>
-                <tr><th>ID</th><th>Nome</th><th>Ação</th></tr>
-            </thead>
-            <tbody>
-                <?php foreach($materias as $m): ?>
-                <tr id="linha-<?= $m['id_materia'] ?>">
-                    <td><?= $m['id_materia'] ?></td>
-                    
-                    <td class="col-nome">
-                        <span class="texto-nome"><?= htmlspecialchars($m['nome_materia']) ?></span>
-                    </td>
-                    
-                    <td class="col-acoes">
-                        <a class="edit btn-ativar-edicao" 
-                           data-id="<?= $m['id_materia'] ?>" 
-                           data-nome="<?= htmlspecialchars($m['nome_materia'], ENT_QUOTES, 'UTF-8') ?>">✏️</a>
-                        
-                        <a href="?del=<?= $m['id_materia'] ?>" class="del" onclick="return confirm('Excluir?')">×</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <br>
-        <a href="../index.php" class="voltar">⬅️ Voltar para a Home</a>
-    </div>
+        <?php if(empty($materias)): ?>
+            <div class="empty-table-state">
+                <div class="book-purple-icon">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span class="sparkle-1">✦</span>
+                    <span class="sparkle-2">✦</span>
+                </div>
+                <h4>Nenhuma matéria cadastrada.</h4>
+                <p>Adicione sua primeira matéria para começar.</p>
+            </div>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">ID</th>
+                            <th style="width: 65%;">Nome da Matéria</th>
+                            <th style="width: 20%; text-align: center;">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($materias as $m): ?>
+                        <tr id="linha-<?= $m['id_materia'] ?>">
+                            <td><b>#<?= $m['id_materia'] ?></b></td>
+                            
+                            <td class="col-nome">
+                                <span class="texto-nome"><?= htmlspecialchars($m['nome_materia']) ?></span>
+                            </td>
+                            
+                            <td class="col-acoes" style="text-align: center;">
+                                <div class="action-buttons" style="justify-content: center;">
+                                    <button type="button" class="btn-table-action btn-table-edit btn-ativar-edicao" 
+                                       data-id="<?= $m['id_materia'] ?>" 
+                                       data-nome="<?= htmlspecialchars($m['nome_materia'], ENT_QUOTES, 'UTF-8') ?>" title="Editar">
+                                       <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    
+                                    <a href="?del=<?= $m['id_materia'] ?>" class="btn-table-action btn-table-del" onclick="return confirm('Tem certeza que deseja excluir esta matéria?')" title="Excluir">×</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
 
-    <script>
-    // Monitora os cliques nos botões de editar de forma limpa e segura
-    document.body.addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('btn-ativar-edicao')) {
-            const id = e.target.getAttribute('data-id');
-            const nomeAtual = e.target.getAttribute('data-nome');
-            ativarEdicao(id, nomeAtual);
-        }
-    });
+        <a href="../index.php" class="btn-back-home">
+            <i class="fa-solid fa-arrow-left"></i> Voltar para a Home
+        </a>
+    </section>
+</main>
 
-    function ativarEdicao(id, nomeAtual) {
-        const linha = document.getElementById(`linha-${id}`);
-        const colNome = linha.querySelector('.col-nome');
-        const colAcoes = linha.querySelector('.col-acoes');
+<script>
+// Monitoramento dinâmico de edição inline
+document.body.addEventListener('click', function(e) {
+    const btn = e.target.closest('.btn-ativar-edicao');
+    if (btn) {
+        const id = btn.getAttribute('data-id');
+        const nomeOriginal = btn.getAttribute('data-nome');
+        ativarEdicao(id, nomeOriginal); // Corrigido para corresponder ao nome da função abaixo
+    }
+});
 
-        // Salva o estado original caso queira cancelar
-        const htmlOriginalNome = colNome.innerHTML;
-        const htmlOriginalAcoes = colAcoes.innerHTML;
+function ativarEdicao(id, nomeOriginal) { // Corrigido aqui (removido o 'c')
+    const linha = document.getElementById(`linha-${id}`);
+    const colNome = linha.querySelector('.col-nome');
+    const colAcoes = linha.querySelector('.col-acoes');
 
-        // Troca para o input inline
-        colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}">`;
-        // Define o valor via propriedade para evitar bugs com caracteres do tipo " e '
-        document.getElementById(`input-${id}`).value = nomeAtual;
+    const htmlOriginalNome = colNome.innerHTML;
+    const htmlOriginalAcoes = colAcoes.innerHTML;
 
-        // Altera os botões de ação
-        colAcoes.innerHTML = `
+    // Troca o texto estático pelo campo de entrada ajustado
+    colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}">`;
+    document.getElementById(`input-${id}`).value = nomeOriginal;
+    document.getElementById(`input-${id}`).focus();
+
+    // Substitui temporariamente as ações por Salvar/Cancelar
+    colAcoes.innerHTML = `
+        <div class="action-buttons" style="justify-content: center;">
             <form method="POST" style="display: inline;" onsubmit="prepararEnvio(${id});">
                 <input type="hidden" name="id_materia" value="${id}">
                 <input type="hidden" name="novo_nome" id="hidden-nome-${id}">
                 <button type="submit" name="edit_materia" class="btn-salvar">Salvar</button>
             </form>
             <button type="button" class="btn-cancelar" id="cancelar-${id}">X</button>
-        `;
+        </div>
+    `;
 
-        // Evento de cancelar restaura os botões anteriores
-        document.getElementById(`cancelar-${id}`).addEventListener('click', () => {
-            colNome.innerHTML = htmlOriginalNome;
-            colAcoes.innerHTML = htmlOriginalAcoes;
-        });
-    }
+    // Evento para Reverter alteração caso clique em cancelar
+    document.getElementById(`cancelar-${id}`).addEventListener('click', () => {
+        colNome.innerHTML = htmlOriginalNome;
+        colAcoes.innerHTML = htmlOriginalAcoes;
+    });
+}
 
-    function prepararEnvio(id) {
-        const valorInput = document.getElementById(`input-${id}`).value;
-        document.getElementById(`hidden-nome-${id}`).value = valorInput;
-    }
-    </script>
+function prepararEnvio(id) {
+    const valorInput = document.getElementById(`input-${id}`).value;
+    document.getElementById(`hidden-nome-${id}`).value = valorInput;
+}
+
+(function () {
+        const savedTheme = localStorage.getItem('site-theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    })();
+    
+</script>
 </body>
 </html>
-
