@@ -255,6 +255,11 @@ body {
     text-decoration: underline;
 }
 
+.libras-controls {
+    border: 30px;
+}
+
+
 /* --- ESTILIZAÇÃO DO CONTEÚDO DE ACESSIBILIBADE --- */
 .container-acessibilidade {
     padding: 30px 40px;
