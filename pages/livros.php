@@ -164,24 +164,7 @@ error_reporting(E_ALL);
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     
-    // === 1. LÓGICA DO DROPDOWN (HEADER) ===
-    const perfilBtn = document.getElementById("perfilBtn");
-    const dropdown = document.getElementById("dropdownPerfil");
-
-    if (perfilBtn && dropdown) {
-        perfilBtn.addEventListener("click", function(event) {
-            event.stopPropagation();
-            dropdown.classList.toggle("show");
-        });
-
-        window.addEventListener("click", function() {
-            if (dropdown.classList.contains("show")) {
-                dropdown.classList.remove("show");
-            }
-        });
-    }
-
-    // === 2. LÓGICA DAS JANELAS MODAIS MÚLTIPLAS ===
+    // === 1. LÓGICA DAS JANELAS MODAIS MÚLTIPLAS ===
     const containersVest = document.querySelectorAll('.containerVest');
 
     containersVest.forEach(container => {
@@ -189,55 +172,62 @@ document.addEventListener("DOMContentLoaded", function() {
         const modal = container.querySelector('dialog');
         const btnClose = container.querySelector('.close-button');
 
-        if (triggers.length > 0 && modal) {
-            triggers.forEach(trigger => {
-                trigger.addEventListener("click", () => {
-                    modal.showModal();
+        // Garante que o código só roda se o modal existir neste container específico
+        if (modal) {
+            if (triggers.length > 0) {
+                triggers.forEach(trigger => {
+                    trigger.addEventListener("click", () => {
+                        modal.showModal();
+                    });
                 });
-            });
-        }
-
-        if (btnClose && modal) {
-            btnClose.addEventListener("click", () => {
-                modal.close();
-            });
-        }
-
-        // Fechar ao clicar fora do modal (no backdrop)
-        modal.addEventListener("click", (e) => {
-            const dialogDimensions = modal.getBoundingClientRect();
-            if (
-                e.clientX < dialogDimensions.left ||
-                e.clientX > dialogDimensions.right ||
-                e.clientY < dialogDimensions.top ||
-                e.clientY > dialogDimensions.bottom
-            ) {
-                modal.close();
             }
-        });
+
+            if (btnClose) {
+                btnClose.addEventListener("click", () => {
+                    modal.close();
+                });
+            }
+
+            // Fechar ao clicar fora do modal (no backdrop)
+            modal.addEventListener("click", (e) => {
+                const dialogDimensions = modal.getBoundingClientRect();
+                if (
+                    e.clientX < dialogDimensions.left ||
+                    e.clientX > dialogDimensions.right ||
+                    e.clientY < dialogDimensions.top ||
+                    e.clientY > dialogDimensions.bottom
+                ) {
+                    modal.close();
+                }
+            });
+        }
     });
+
+    // === 2. TROCA DE IMAGENS DO MODO ESCURO (APÓS CARREGAR O HTML) ===
+    if (localStorage.getItem('site-theme') === 'dark') {
+        
+        // Substitui o banner clássico pelo escuro
+        const banner = document.getElementById('bannerImg');
+        if (banner) {
+            banner.src = "../assets/img/bannerLivrosEscuro.webp";
+        }
+
+        // Substitui as logos dos vestibulares pelas versões escuras
+        const fuv = document.getElementById('logoFuvest');
+        const vun = document.getElementById('logoVunesp');
+        const uni = document.getElementById('logoUnicamp');
+        const ene = document.getElementById('logoEnem');
+
+        if (fuv) fuv.src = "../assets/img/fuvestLogoEscuro.webp";
+        if (vun) vun.src = "../assets/img/vunespLogoEscuro.webp";
+        if (uni) uni.src = "../assets/img/unicampLogoEscuro.webp";
+        if (ene) ene.src = "../assets/img/enemLogoEscuro.webp";
+    }
 });
 
-// Executa imediatamente para evitar "piscada" visual ao carregar a página
+// Mantém apenas a injeção da classe no topo para evitar "piscada" visual de fundo branco
 if (localStorage.getItem('site-theme') === 'dark') {
     document.documentElement.classList.add('dark-theme');
-    
-    // 1. Substitui o banner clássico pelo escuro
-    const banner = document.getElementById('bannerImg');
-    if (banner) {
-        banner.src = "../assets/img/bannerLivrosEscuro.webp";
-    }
-
-    // 2. Substitui as logos dos vestibulares pelas versões escuras
-    const fuv = document.getElementById('logoFuvest');
-    const vun = document.getElementById('logoVunesp');
-    const uni = document.getElementById('logoUnicamp');
-    const ene = document.getElementById('logoEnem');
-
-    if (fuv) fuv.src = "../assets/img/fuvestLogoEscuro.webp";
-    if (vun) vun.src = "../assets/img/vunespLogoEscuro.webp";
-    if (uni) uni.src = "../assets/img/unicampLogoEscuro.webp";
-    if (ene) ene.src = "../assets/img/enemLogoEscuro.webp";
 }
 </script>
 </body>

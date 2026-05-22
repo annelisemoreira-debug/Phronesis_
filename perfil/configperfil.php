@@ -123,7 +123,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
         <aside class="sidebar">
             <div class="logo">
                 <img src="../assets/img/logoSite.webp" alt="Phronesis" class="logo-light">
-                <img src="../assets/img/logoSite_dark.webp" alt="Phronesis" class="logo-dark">
+                <img src="../assets/img/escuro.webp" alt="Fundo Escuro" class="banner-img banner-dark">
             </div>
             <nav>
                 <p class="nav-title">Conta Pessoal</p>

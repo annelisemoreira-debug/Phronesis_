@@ -1,31 +1,26 @@
 <?php
 session_start();
 
-// 1. Verifica se a variável de sessão existe
-if (!isset($_SESSION['id'])) {
+// 1. Verifica se a variável de sessão existe e se o usuário está logado
+if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     header("Location: ../login.php");
     exit();
 }
 
-// Se o usuário NÃO estiver logado, manda ele para a tela de login
-if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
-    header("Location: login.php");
-    exit(); // Interrompe a execução do script
-}
-
-//senha: Home@spSENAI2025!
-
 // --- CONEXÃO ---
 $conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 
-// 2. Verifica se o ID da sessão ainda é válido no banco de dados
-$id = $_SESSION['id'];
+if ($conn->connect_error) {
+    die("Falha na conexão: " . $conn->connect_error);
+}
+
+// 2. Verifica se o ID da sessão ainda é válido no banco de dados (Segurança contra SQL Injection)
+$id = intval($_SESSION['id']);
 $res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
 $dadosUser = $res->fetch_assoc();
 
-// Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
 if (!$dadosUser) {
-    session_destroy(); // Destrói a sessão inválida
+    session_destroy(); 
     header("Location: ../login.php");
     exit();
 }
@@ -35,7 +30,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 date_default_timezone_set('America/Sao_Paulo');
 $hoje = date('Y-m-d'); 
 
-// 1. CONEXÃO COM O BANCO
+// CONEXÃO COM O BANCO (PDO)
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=phronesis;charset=utf8", "root", "Home@spSENAI2025!");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -74,17 +69,16 @@ $msg_feedback = "";
 $id_visualizacao = $_GET['ver'] ?? null;
 $mostrar_modal = false;
 
-// Variável para exibir o iframe
 $calendar_id_exibir = null;
 if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visualizacao])) {
     $calendar_id_exibir = $_SESSION['meus_cronogramas'][$id_visualizacao]['calendar_id'];
 }
 
-// --- 2. EXCLUSÃO ---
+// --- EXCLUSÃO ---
 if (isset($_GET['deletar_salvo'])) {
-    $id = $_GET['deletar_salvo'];
-    if (isset($_SESSION['meus_cronogramas'][$id])) {
-        $calendarId = $_SESSION['meus_cronogramas'][$id]['calendar_id'] ?? null;
+    $id_del = $_GET['deletar_salvo'];
+    if (isset($_SESSION['meus_cronogramas'][$id_del])) {
+        $calendarId = $_SESSION['meus_cronogramas'][$id_del]['calendar_id'] ?? null;
         try {
             if ($calendarId && $calendarId !== 'primary') {
                 $service->calendars->delete($calendarId);
@@ -95,7 +89,7 @@ if (isset($_GET['deletar_salvo'])) {
         } catch (Exception $e) { 
             $msg_feedback = "⚠️ Erro ao remover: " . $e->getMessage(); 
         }
-        unset($_SESSION['meus_cronogramas'][$id]);
+        unset($_SESSION['meus_cronogramas'][$id_del]);
     }
     header('Location: cronograma.php?msg=' . urlencode($msg_feedback));
     exit;
@@ -107,14 +101,14 @@ if (isset($_GET['editar'])) {
     $id_ed = $_GET['editar'];
     if (isset($_SESSION['meus_cronogramas'][$id_ed])) {
         $dados_edicao = $_SESSION['meus_cronogramas'][$id_ed]['params'] ?? null;
-        $_SESSION['editando_id'] = $id_ed; // Guarda o índice que estamos editando
+        $_SESSION['editando_id'] = $id_ed; 
         $id_visualizacao = null; 
     }
 }
 
 if (isset($_GET['msg'])) $msg_feedback = $_GET['msg'];
 
-// --- 3. GERAÇÃO TEMPORÁRIA ---
+// --- GERAÇÃO TEMPORÁRIA ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     $data_inicio = new DateTime($_POST['data_inicio']);
     $data_fim = new DateTime($_POST['data_fim']);
@@ -161,41 +155,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     }
 }
 
-// --- 4. SALVAR (CORREÇÃO DA DUPLICAÇÃO) ---
+// --- SALVAR ---
 if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     try {
         $pdo->beginTransaction(); 
-        $id_usuario_logado = $_SESSION['id_usuario'] ?? 1;
+        $id_usuario_logado = $_SESSION['id'] ?? 1;
         $calendarIdParaUso = null;
         $id_cronograma_existente = null;
 
-        // VERIFICA SE ESTAMOS EDITANDO ALGO QUE JÁ EXISTE
         if (isset($_SESSION['editando_id'])) {
             $idx = $_SESSION['editando_id'];
             $calendarIdParaUso = $_SESSION['meus_cronogramas'][$idx]['calendar_id'] ?? null;
             
-            // Busca o ID primário no banco para este calendário
             $stmt = $pdo->prepare("SELECT id_cronograma FROM cronograma WHERE google_calendar_id = ?");
             $stmt->execute([$calendarIdParaUso]);
             $id_cronograma_existente = $stmt->fetchColumn();
         }
 
         if ($id_cronograma_existente) {
-            // É UPDATE: Atualiza o título e limpa os itens antigos (evita duplicar itens)
             $stmtUpd = $pdo->prepare("UPDATE `cronograma` SET `titulo_cronograma` = ? WHERE `id_cronograma` = ?");
             $stmtUpd->execute([$_SESSION['ultimo_nome'], $id_cronograma_existente]);
             
             $pdo->prepare("DELETE FROM `cronograma_item` WHERE `id_cronograma` = ?")->execute([$id_cronograma_existente]);
             $id_cronograma_db = $id_cronograma_existente;
 
-            // Limpa eventos antigos do Google Calendar
             try {
                 $events = $service->events->listEvents($calendarIdParaUso);
                 foreach ($events->getItems() as $event) { $service->events->delete($calendarIdParaUso, $event->getId()); }
             } catch (Exception $e) {}
 
         } else {
-            // É NOVO: Cria novo calendário e faz INSERT
             $newCalendar = new Google\Service\Calendar\Calendar();
             $newCalendar->setSummary('Phronesis: ' . $_SESSION['ultimo_nome']);
             $newCalendar->setTimeZone('America/Sao_Paulo');
@@ -207,7 +196,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             $id_cronograma_db = $pdo->lastInsertId();
         }
 
-        // Insere os itens (Novos ou regerados da edição)
         foreach ($_SESSION['temp_cronograma'] as $evento) {
             $event = new Google\Service\Calendar\Event([
                 'summary' => 'Estudo: ' . $evento['materia'],
@@ -228,7 +216,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
         $pdo->commit();
 
-        // Atualiza a Sessão para o histórico lateral refletir a mudança
         $novo_dado = [
             'titulo' => $_SESSION['ultimo_nome'], 
             'data' => date('d/m/Y H:i'), 
@@ -425,11 +412,9 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 </main>
 
 <script>
-    // Aplica o tema salvo globalmente de forma compatível com as classes CSS existentes
     (function () {
         const savedTheme = localStorage.getItem('site-theme');
         if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
             document.body.classList.add('dark-theme');
         }
     })();

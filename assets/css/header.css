@@ -79,18 +79,19 @@ header {
     padding: 8px 10px;
 }
 
-/* Estilos do Dropdown de Perfil */
+/* Garante o posicionamento correto do dropdown */
 .perfil-container { 
     position: relative; 
     cursor: pointer; 
+    height: 40px;
 }
 
-.foto-perfil { 
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%; 
-    border: 2px solid #ffffff; /* Borda branca idêntica à imagem fornecida */
-    object-fit: cover; 
+.foto-perfil {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white; /* Borda branca para destacar a foto no menu roxo */
+    object-fit: cover;
     display: block;
 }
 
@@ -98,24 +99,37 @@ header {
     display: none; 
     position: absolute; 
     right: 0; 
-    top: 45px;
+    top: 50px; /* Ajustado para dar um respiro elegante abaixo da foto */
     background: white; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    border-radius: 5px; 
-    min-width: 150px; 
-    z-index: 100; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+    border-radius: 8px; 
+    min-width: 160px; 
+    z-index: 99999 !important; /* Valor absurdamente alto para passar por cima do iframe e modais */
+    border: 1px solid #eee;
+}
+
+/* Força a exibição quando a classe .show estiver ativa via JS */
+.menu-dropdown.show { 
+    display: block !important; 
 }
 
 .menu-dropdown a { 
     display: block; 
-    padding: 10px; 
+    padding: 12px 16px; 
     color: #333; 
     text-decoration: none; 
+    font-size: 14px;
+    font-weight: 500;
     border-bottom: 1px solid #eee; 
+    transition: background 0.2s ease;
+}
+
+.menu-dropdown a:last-child {
+    border-bottom: none;
 }
 
 .menu-dropdown a:hover { 
-    background: #f4f4f4; 
+    background: #f5f3ff; /* Um roxo bem clarinho no hover combinando com o Phronesis */
 }
 
 .show { 

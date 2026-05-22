@@ -437,3 +437,63 @@ html.dark-theme .libras-section {
 }
 
 
+/* --- BANNER SUPERIOR (Ajustado com espaçamento e tamanho menor) --- */
+.profile-banner {
+    width: 100%;
+    padding: 20px 30px 0 30px; /* Cria o espaçamento no topo (20px) e nas laterais (30px) */
+    box-sizing: border-box;
+}
+
+.banner-img {
+    width: 100%;
+    height: 140px;            /* Diminui a altura dele para ficar mais sutil e elegante */
+    object-fit: cover;        /* Garante que a imagem se adapte sem distorcer */
+    display: block;
+    border-radius: 15px;      /* Deixa as bordas arredondadas direto na imagem */
+}
+
+/* --- LOGICA DE EXIBIÇÃO DOS BANNERS POR TEMA --- */
+.profile-banner .banner-dark {
+    display: none; /* Esconde o banner escuro no modo claro */
+}
+
+.profile-banner .banner-light {
+    display: block; /* Garante que o banner claro apareça no modo claro */
+}
+
+/* Quando o sistema estiver no modo escuro */
+html.dark-theme .profile-banner .banner-light {
+    display: none; /* Oculta o banner claro */
+}
+
+html.dark-theme .profile-banner .banner-dark {
+    display: block; /* Exibe o bannerescuro */
+}
+
+/* Imagem da logo maior e responsiva */
+.logo img {
+    width: 220px;       /* Mantém o tamanho ideal */
+    max-width: 95%;     
+    height: auto;       
+    display: block;
+}
+
+/* --- LÓGICA DE EXIBIÇÃO DA LOGO POR TEMA --- */
+.logo .logo-dark {
+    display: none; /* Por padrão, esconde a logo escura no modo claro */
+}
+
+.logo .logo-light {
+    display: block; /* Garante que a logo comum apareça no modo claro */
+}
+
+/* Quando o sistema estiver no modo escuro */
+html.dark-theme .logo .logo-light {
+    display: none; /* Oculta a logo clara */
+}
+
+html.dark-theme .logo .logo-dark {
+    display: block; /* Exibe a logo escura automaticamente */
+}
+
+

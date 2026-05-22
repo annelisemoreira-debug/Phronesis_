@@ -25,7 +25,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
             
             <section class="banner">
                 <img src="assets/img/bannerInicio.webp" alt="Fundo" class="banner-img banner-light">
-                <img src="assets/img/bannerescuro.webp" alt="Fundo Escuro" class="banner-img banner-dark">
+                <img src="assets/img/escuroindex.webp" alt="Fundo Escuro" class="banner-img banner-dark">
             </section>
 
             <section class="sobre-nos-container">
@@ -125,44 +125,28 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const perfilBtn = document.getElementById("perfilBtn");
-            const dropdown = document.getElementById("dropdownPerfil");
+document.addEventListener("DOMContentLoaded", function() {
+        // --- Lógica do Carrossel ---
+        const track = document.querySelector('.carousel-track');
+        const nextBtn = document.querySelector('.next');
+        const prevBtn = document.querySelector('.prev');
 
-            if (perfilBtn && dropdown) {
-                perfilBtn.addEventListener("click", function(event) {
-                    event.stopPropagation();
-                    dropdown.classList.toggle("show");
-                });
-
-                window.addEventListener("click", function() {
-                    if (dropdown.classList.contains("show")) {
-                        dropdown.classList.remove("show");
-                    }
-                });
-            }
-
-            // --- Lógica do Carrossel ---
-            const track = document.querySelector('.carousel-track');
-            const nextBtn = document.querySelector('.next');
-            const prevBtn = document.querySelector('.prev');
-
-            if (nextBtn && prevBtn) {
-                nextBtn.addEventListener('click', () => {
-                    const cards = document.querySelectorAll('.card');
-                    track.appendChild(cards[0]);
-                });
-                prevBtn.addEventListener('click', () => {
-                    const cards = document.querySelectorAll('.card');
-                    track.insertBefore(cards[cards.length - 1], cards[0]);
-                });
-            }
-        });
-
-        // Anti-Flicker nativo
-        if (localStorage.getItem('site-theme') === 'dark') {
-            document.documentElement.classList.add('dark-theme');
+        if (nextBtn && prevBtn) {
+            nextBtn.addEventListener('click', () => {
+                const cards = document.querySelectorAll('.card');
+                track.appendChild(cards[0]);
+            });
+            prevBtn.addEventListener('click', () => {
+                const cards = document.querySelectorAll('.card');
+                track.insertBefore(cards[cards.length - 1], cards[0]);
+            });
         }
+    });
+
+    // Anti-Flicker nativo
+    if (localStorage.getItem('site-theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
     </script>
 </body>
 </html>

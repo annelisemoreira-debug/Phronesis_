@@ -3,26 +3,24 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
 }
 
 /* Definição de Variáveis de Cor (Padrão: Modo Claro) */
 :root {
-    --bg-color: #cbb4f9;          /* Fundo roxo pastel original */
-    --card-bg: #fbf9ff;           /* Fundo dos painéis principais */
-    --text-primary: #4c1d95;      /* Títulos fortes */
-    --text-secondary: #7c3aed;    /* Subtítulos e labels */
-    --text-body: #334155;         /* Inputs e textos comuns */
-    --text-muted: #94a3b8;        /* Datas e placeholders */
-    --input-bg: #f8fafc;          /* Fundo dos campos */
-    --input-border: #e2e8f0;      /* Borda dos campos */
-    --row-hover: #f5f3ff;         /* Hover nos itens da lista */
-    --row-border: #f1f5f9;        /* Divisória de itens */
-    --icon-box-bg: #f3e8ff;       /* Fundo do quadradinho do ícone */
-    --icon-box-color: #9b51e0;    /* Cor do ícone roxo */
+    --bg-color: #cbb4f9;          
+    --card-bg: #fbf9ff;           
+    --text-primary: #4c1d95;      
+    --text-secondary: #7c3aed;    
+    --text-body: #334155;         
+    --text-muted: #94a3b8;        
+    --input-bg: #f8fafc;          
+    --input-border: #e2e8f0;      
+    --row-hover: #f5f3ff;         
+    --row-border: #f1f5f9;        
+    --icon-box-bg: #f3e8ff;       
+    --icon-box-color: #9b51e0;    
     --shadow: rgba(121, 40, 202, 0.15);
     
-    /* Cores estáticas comuns aos dois modos */
     --purple-main: #9b51e0;
     --purple-hover: #7c3aed;
     --btn-del-bg: #fee2e2;
@@ -32,19 +30,19 @@
 }
 
 /* Paleta de Cores Aplicada ao MODO ESCURO */
-body.dark-mode, body.dark-theme {
-    --bg-color: #12101a;          /* Fundo geral escuro profundo */
-    --card-bg: #1a1824;           /* Painéis cinza-escuro arroxeados */
-    --text-primary: #f3e8ff;      /* Títulos em tom lilás bem claro/branco */
-    --text-secondary: #a78bfa;    /* Subtítulos e labels roxo claro acesos */
-    --text-body: #cbd5e1;         /* Textos em cinza claro confortável */
-    --text-muted: #64748b;        /* Histórico apagado e placeholders */
-    --input-bg: #252332;          /* Inputs escuros */
-    --input-border: #38354d;      /* Bordas discretas dos inputs */
-    --row-hover: #2d293d;         /* Hover na lista escura */
-    --row-border: #252332;        /* Divisórias escuras */
-    --icon-box-bg: #2d293d;       /* Fundo do ícone no modo escuro */
-    --icon-box-color: #a78bfa;    /* Cor do ícone */
+body.dark-theme {
+    --bg-color: #12101a;          
+    --card-bg: #1a1824;           
+    --text-primary: #f3e8ff;      
+    --text-secondary: #a78bfa;    
+    --text-body: #cbd5e1;         
+    --text-muted: #64748b;        
+    --input-bg: #252332;          
+    --input-border: #38354d;      
+    --row-hover: #2d293d;         
+    --row-border: #252332;        
+    --icon-box-bg: #2d293d;       
+    --icon-box-color: #a78bfa;    
     --shadow: rgba(0, 0, 0, 0.4);
 }
 
@@ -61,8 +59,9 @@ body {
     grid-template-columns: 1fr 340px;
     gap: 25px;
     max-width: 1300px;
-    margin: 45px auto 0 auto; /* Ajustado espaçamento superior para desgrudar do header */
+    margin: 35px auto 0 auto; 
     padding: 0 20px;
+    width: 100%;
 }
 
 /* --- CONTAINERS (CARDS) --- */
@@ -84,7 +83,7 @@ body {
 
 .title-left {
     display: flex;
-    flex-direction: row; /* Alinhamento horizontal correto do ícone e textos */
+    flex-direction: row; 
     align-items: center;
     gap: 15px;
 }
@@ -176,8 +175,6 @@ input:focus {
     box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
 }
 
-/* Ajuste para o seletor nativo de calendário */
-body.dark-mode input::-webkit-calendar-picker-indicator,
 body.dark-theme input::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
@@ -201,7 +198,7 @@ body.dark-theme input::-webkit-calendar-picker-indicator {
     pointer-events: none;
 }
 
-/* LISTAS DE SELEÇÃO (DIAS DA SEMANA E MATÉRIAS) */
+/* LISTAS DE SELEÇÃO */
 .list-container {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
@@ -433,7 +430,7 @@ body.dark-theme input::-webkit-calendar-picker-indicator {
     background-color: var(--btn-edit-bg); 
     color: var(--btn-edit-color); 
 }
-body.dark-mode .btn-edit, body.dark-theme .btn-edit {
+body.dark-theme .btn-edit {
     background-color: #0c2331;
     color: #38bdf8;
 }
@@ -442,7 +439,7 @@ body.dark-mode .btn-edit, body.dark-theme .btn-edit {
     background-color: var(--btn-del-bg); 
     color: var(--btn-del-color); 
 }
-body.dark-mode .btn-del, body.dark-theme .btn-del {
+body.dark-theme .btn-del {
     background-color: #311616;
     color: #f87171;
 }

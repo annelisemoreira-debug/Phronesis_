@@ -1,7 +1,5 @@
 <?php
-// CONEXÃO (Mantenha sua conexão atual)
-//senha: Home@spSENAI2025!
-
+// CONEXÃO
 $servername = "localhost";
 $username = "root";
 $password = "Home@spSENAI2025!";
@@ -11,15 +9,15 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 $script_name = $_SERVER['SCRIPT_NAME'];
 
 // 2. Se NÃO estivermos no index.php principal, precisamos subir um nível
-// Verificamos se o caminho contém '/pages/' ou '/perfil/'
 if (strpos($script_name, '/pages/') !== false || strpos($script_name, '/perfil/') !== false) {
     $path = "../";
 } else {
-    $path = ""; // Se estiver no index.php ou arquivos da raiz, o caminho é direto
+    $path = ""; // Se estiver no index.php ou arquivos da raiz
 }
 
-// 3. Define a foto padrão usando o $path dinâmico
-$fotoPerfil = $path . "../assets/img/default-user.webp"; 
+// 3. Define a foto padrão usando o $path dinâmico de forma correta (apenas $path + assets)
+$fotoPerfil = $path . "assets/img/default-user.webp"; 
+$usuarioTipo = 'user'; // Valor padrão para evitar erros de Notice do PHP
 
 if (isset($_SESSION['id'])) {
     $id_usuario = $_SESSION['id'];
@@ -69,3 +67,25 @@ if (isset($_SESSION['id'])) {
         </ul>
     </nav>
 </header>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const perfilBtn = document.getElementById("perfilBtn");
+    const dropdownPerfil = document.getElementById("dropdownPerfil");
+
+    if (perfilBtn && dropdownPerfil) {
+        // Abre e fecha ao clicar no container do perfil
+        perfilBtn.addEventListener("click", function(e) {
+            e.stopPropagation(); // Evita fechar imediatamente pelo clique global
+            dropdownPerfil.classList.toggle("show");
+        });
+
+        // Fecha o menu caso o usuário clique em qualquer outro lugar da tela
+        document.addEventListener("click", function(e) {
+            if (!perfilBtn.contains(e.target)) {
+                dropdownPerfil.classList.remove("show");
+            }
+        });
+    }
+});
+</script>

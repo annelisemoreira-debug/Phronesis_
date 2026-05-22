@@ -222,93 +222,85 @@ try {
     </div>
 
     <script>
-        function toggleFav(vId, vTit, btn) {
-            const formData = new FormData();
-            formData.append('v_id', vId);
-            formData.append('v_tit', vTit);
+    // === 1. LÓGICA DO FAVORITO ===
+    function toggleFav(vId, vTit, btn) {
+        const formData = new FormData();
+        formData.append('v_id', vId);
+        formData.append('v_tit', vTit);
 
-            fetch('fav.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    location.reload();
-                })
-                .catch(err => console.error("Erro no favorito:", err));
-        }
+        fetch('fav.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                location.reload();
+            })
+            .catch(err => console.error("Erro no favorito:", err));
+    }
 
-        function createTimer(id, targetDate) {
-            const target = new Date(targetDate).getTime();
-            const element = document.getElementById(id);
-            if (!element) return;
-            setInterval(() => {
-                const now = new Date().getTime();
-                const diff = target - now;
-                if (diff <= 0) {
-                    element.innerHTML = "PROVA EM ANDAMENTO";
-                    return;
-                }
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((diff % (1000 * 60)) / 1000);
-                element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
-            }, 1000);
-        }
-
-        createTimer("timer-enem", "Nov 1, 2026 13:00:00");
-        createTimer("timer-fuvest", "Nov 15, 2026 13:00:00");
-        createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
-        createTimer("timer-unesp", "Nov 15, 2026 13:00:00");
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const perfilBtn = document.getElementById("perfilBtn");
-            const dropdownPerfil = document.getElementById("dropdownPerfil");
-
-            if (perfilBtn && dropdownPerfil) {
-                perfilBtn.addEventListener("click", function(e) {
-                    e.stopPropagation();
-                    dropdownPerfil.classList.toggle("show");
-                });
+    // === 2. LÓGICA DO CRONÔMETRO ===
+    function createTimer(id, targetDate) {
+        const target = new Date(targetDate).getTime();
+        const element = document.getElementById(id);
+        if (!element) return;
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = target - now;
+            if (diff <= 0) {
+                element.innerHTML = "PROVA EM ANDAMENTO";
+                return;
             }
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+        }, 1000);
+    }
 
-            document.addEventListener("click", function() {
-                if (dropdownPerfil) {
-                    dropdownPerfil.remove("show");
+    createTimer("timer-enem", "Nov 1, 2026 13:00:00");
+    createTimer("timer-fuvest", "Nov 15, 2026 13:00:00");
+    createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
+    createTimer("timer-unesp", "Nov 15, 2026 13:00:00");
+
+    // === 3. EVENTOS APÓS O CARREGAMENTO DO DOM ===
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Efeito de loading na Grid de Vídeos ao clicar nas matérias
+        const videoGrid = document.getElementById("videoGrid");
+        const linksMaterias = document.querySelectorAll(".menuSidebar nav a");
+        linksMaterias.forEach(link => {
+            link.addEventListener("click", function() {
+                if (videoGrid) {
+                    videoGrid.classList.add("loading");
                 }
             });
-
-            const videoGrid = document.getElementById("videoGrid");
-            const linksMaterias = document.querySelectorAll(".menuSidebar nav a");
-            linksMaterias.forEach(link => {
-                link.addEventListener("click", function() {
-                    if (videoGrid) {
-                        videoGrid.classList.add("loading");
-                    }
-                });
-            });
-
-            const searchForm = document.querySelector(".search-box form");
-            if (searchForm) {
-                searchForm.addEventListener("submit", function() {
-                    if (videoGrid) {
-                        videoGrid.classList.add("loading");
-                    }
-                });
-            }
         });
 
-        // Verificação síncrona imediata para evitar a oscilação visual de troca do banner
+        // Efeito de loading ao submeter a pesquisa
+        const searchForm = document.querySelector(".search-box form");
+        if (searchForm) {
+            searchForm.addEventListener("submit", function() {
+                if (videoGrid) {
+                    videoGrid.classList.add("loading");
+                }
+            });
+        }
+
+        // Troca dinâmica do banner se o tema for escuro (Executa com segurança após o HTML existir)
         if (localStorage.getItem('site-theme') === 'dark') {
-            document.documentElement.classList.add('dark-theme');
-            
-            // Troca dinâmica do banner para a versão escura
             const banner = document.getElementById('bannerImg');
             if (banner) {
                 banner.src = "../assets/img/bannerescuro.webp";
             }
         }
-    </script>
+    });
+
+    // Mantém apenas a injeção da classe no topo para evitar que a tela "pisque" em branco
+    if (localStorage.getItem('site-theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+</script>
 </body>
 
 </html>
