@@ -59,7 +59,7 @@ body {
     grid-template-columns: 1fr 340px;
     gap: 25px;
     max-width: 1300px;
-    margin: 35px auto 0 auto; 
+    margin: 50px auto 0 auto; 
     padding: 0 20px;
     width: 100%;
 }
