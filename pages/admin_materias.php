@@ -226,11 +226,12 @@ function prepararEnvio(id) {
 }
 
 (function () {
-        const savedTheme = localStorage.getItem('site-theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
-        }
-    })();
+    const savedTheme = localStorage.getItem('site-theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme'); // Adiciona no <html>
+        document.body.classList.add('dark-theme');            // Mantém no <body> para o restante do seu admin_materias.css
+    }
+})();
     
 </script>
 
