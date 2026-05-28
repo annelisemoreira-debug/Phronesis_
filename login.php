@@ -69,6 +69,11 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
                         <button class="entrarLogin" type="submit"> Entrar </button>
                     </form>
 
+                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px 0;">
+                        <div style="flex: 1; height: 1px; background-color: rgba(0, 26, 139, 0.2);"></div>
+                        <span style="color: #001a8b; font-size: 11px; font-weight: bold;">OU</span>
+                        <div style="flex: 1; height: 1px; background-color: rgba(0, 26, 139, 0.2);"></div>
+                    </div>
 
                     <div id="g_id_onload"
                         data-client_id="904732005700-hhrsns4i5bl2ll22u57bsr9p0ijgkm4e.apps.googleusercontent.com"
@@ -80,7 +85,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
                         <div class="g_id_signin"
                              data-type="standard"
                              data-size="large"
-                             data-theme="outline"
+                             data-theme="outline"   
                              data-text="sign_in_with"
                              data-shape="filled_blue"
                              data-logo_alignment="left"

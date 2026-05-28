@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 20px;
+    padding: 60px;
 }
 
 .glass-card {
@@ -31,7 +31,7 @@
     border-radius: 15px;
     overflow: hidden;
     max-width: 950px;
-    height: 488px;
+    height: 550px;
     width: 100%;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
@@ -62,8 +62,12 @@
 }
 
 .mainContainer h1 {
-    font-size: 32px;
+    font-size: 36px;
     color: #001a8b;
+}
+
+.mainContainer p {
+    font-family: Arial, Helvetica, sans-serif;    
 }
 
 .mainContainer label {
@@ -76,12 +80,13 @@
 }
 
 .mainContainer input {
-    border: 2px solid transparent; 
-    padding: 12px 15px;
+    border: 2px solid transparent; /* Adiciona uma borda invisível de 2px no estado normal */
+    /* Padding ajustado para acomodar o ícone à direita */
+    padding: 12px 40px 12px 15px; /* Direita agora tem 40px */
     border-radius: 25px;
     width: 100%;
     font-size: 16px;
-    background-color: white;
+    background-color: white; /* Garante que o fundo seja branco */
     transition: all 0.3s ease;
 }
 
@@ -96,8 +101,10 @@
 .inserirInfo {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    width: 100%;
+    gap: 8px;
+    font-weight: bold;
+    color: #001a8b;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .input-group-password {
@@ -166,6 +173,10 @@
 .botaoLogin:hover {
     color: #ffc700;
     text-shadow: 0 0 8px rgba(97, 44, 167, 0.5);
+}
+
+.g_id_signin{
+    margin-top: -20px;
 }
 
 /* Responsividade */

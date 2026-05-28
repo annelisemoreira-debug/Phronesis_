@@ -25,7 +25,7 @@
     border-radius: 15px;
     overflow: hidden;
     max-width: 950px;
-    height: 488px;
+    height: 550px;
     width: 100%;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
@@ -124,8 +124,6 @@
     box-shadow: 0 0 5px rgba(146, 79, 255, 0.5)
 }
 
-
-
 /* Formulário */
 form {
     display: flex;
@@ -212,6 +210,10 @@ form {
 .esqueceuSenha:hover{
     color: #ffff;
     transition: color 0.3s ease;
+}
+
+.g_id_signin{
+    margin-top: -32px;
 }
 
 /*Responsividade*/

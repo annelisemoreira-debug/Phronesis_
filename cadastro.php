@@ -20,8 +20,8 @@
                     <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
                 </div>
 
-                <div class="mainContainer" style="gap: 10px; padding: 25px 40px;">
-                    <h1 class="mainTitulo" style="font-size: 28px;">Faça seu cadastro!</h1>
+                <div class="mainContainer">
+                    <h1 class="mainTitulo">Faça seu cadastro!</h1>
                     <p style="color: #031768; margin-bottom: 2px;">Já possui uma conta? <a class="botaoLogin" href="login.php"> Entrar </a></p>
 
                     <form id="formCadastro" method="POST" action="cad.php" novalidate style="display: flex; flex-direction: column; gap: 5px;">
@@ -52,7 +52,7 @@
                             </div>
                         </div>
 
-                        <button class="entrarLogin" type="submit" style="margin-top: 10px; padding: 10px 60px;"> Cadastrar </button>
+                        <button class="entrarLogin" type="submit" style="margin-top: 17px; padding: 10px 60px;"> Cadastrar </button>
                     </form>
 
                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px 0;">
@@ -75,7 +75,7 @@
                              data-text="signup_with"
                              data-shape="filled_blue"
                              data-logo_alignment="left"
-                             data-width="240">
+                             data-width="280">
                         </div>
                     </div>
 
