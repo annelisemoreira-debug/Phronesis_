@@ -15,7 +15,14 @@ if ($conn->connect_error) {
     die("Erro na conexão: " . $conn->connect_error);
 }
 
+// Captura a ação padrão vinda dos formulários tradicionais
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
+
+// CAPTURA AUTOMÁTICA DO GOOGLE:
+// Se o Google enviar uma credencial via POST, força a ação para "google_login"
+if (isset($_POST['credential'])) {
+    $acao = "google_login";
+}
 
 // --- AÇÃO: CADASTRAR ---
 if ($acao == "cadastro") { 
@@ -108,6 +115,81 @@ elseif ($acao == "nova_senha") {
         // Agora salvamos na sessão e voltamos para a página anterior
         $_SESSION['erro_recuperacao'] = "E-mail não encontrado ou senha igual à anterior.";
         header("Location: senhaPerdida.php?acao=recuperar");
+        exit();
+    }
+}
+
+// --- AÇÃO: LOGAR OU CADASTRAR VIA GOOGLE IDENTITY SERVICES ---
+elseif ($acao == "google_login") {
+    // O Google envia o JWT no campo POST nomeado 'credential'
+    $id_token = $_POST['credential'] ?? '';
+
+    // Detecta dinamicamente a página de origem para saber para onde retornar em caso de erro
+    $referer = $_SERVER['HTTP_REFERER'] ?? '';
+    $origemRetorno = (strpos($referer, 'cadastro.php') !== false) ? 'cadastro.php' : 'login.php';
+    $sessionErroKey = ($origemRetorno === 'cadastro.php') ? 'erro_cad' : 'erro_login';
+
+    if (empty($id_token)) {
+        $_SESSION[$sessionErroKey] = "Não foi possível validar as credenciais do Google.";
+        header("Location: " . $origemRetorno);
+        exit();
+    }
+
+    // Validação segura requisitando diretamente o endpoint de conferência da API do Google
+    $url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . urlencode($id_token);
+    $response = @file_get_contents($url);
+    
+    if ($response === FALSE) {
+        $_SESSION[$sessionErroKey] = "Falha de comunicação com os servidores de autenticação do Google.";
+        header("Location: " . $origemRetorno);
+        exit();
+    }
+
+    $payload = json_decode($response, true);
+
+    // Se a assinatura do Token for válida e trouxer o e-mail verificado do usuário
+    if (isset($payload['email'])) {
+        $email = $payload['email'];
+        $nome = $payload['name'] ?? 'Usuário Google';
+        
+        // Verifica se este e-mail do Google já está na nossa tabela local 'usuario'
+        $sql = "SELECT id_usuario, nome FROM usuario WHERE email=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            // Cenário 1: Usuário já existe -> Realiza o login direto na sessão
+            $user = $result->fetch_assoc();
+            $_SESSION['id'] = $user['id_usuario'];
+            $_SESSION['nome'] = $user['nome'];
+            header("Location: index.php");
+            exit();
+        } else {
+            // Cenário 2: Usuário não existe -> Cria o registro de forma automática e depois loga
+            // Como a autenticação é delegada ao Google, geramos uma hash aleatória irrelevante no banco para a senha tradicional
+            $senhaProvisoria = password_hash(uniqid(rand(), true), PASSWORD_DEFAULT);
+            $telefoneNulo = "";
+
+            $sql_cad = "INSERT INTO usuario (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
+            $stmt_cad = $conn->prepare($sql_cad);
+            $stmt_cad->bind_param("ssss", $nome, $email, $senhaProvisoria, $telefoneNulo);
+            
+            if ($stmt_cad->execute()) {
+                $_SESSION['id'] = $stmt_cad->insert_id;
+                $_SESSION['nome'] = $nome;
+                header("Location: index.php");
+                exit();
+            } else {
+                $_SESSION[$sessionErroKey] = "Erro na gravação do cadastro automático.";
+                header("Location: " . $origemRetorno);
+                exit();
+            }
+        }
+    } else {
+        $_SESSION[$sessionErroKey] = "Token do Google inválido ou expirado.";
+        header("Location: " . $origemRetorno);
         exit();
     }
 }

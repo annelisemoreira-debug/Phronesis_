@@ -4,7 +4,7 @@ session_start();
 // Se as variáveis de sessão existirem, o usuário já está logado
 if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
     header("Location: index.php");
-    exit(); // Interrompe a execução do script para garantir o redirecionamento
+    exit(); 
 }
 ?>
 
@@ -16,8 +16,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
     <link rel="stylesheet" href="assets/css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
-        /* Ajuste fino para o ícone não quebrar o layout */
         .inserirInfo { position: relative; }
         .toggle-password {
             position: absolute;
@@ -26,6 +28,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
             transform: translateY(-50%);
             cursor: pointer;
             color: #031768;
+        }
+        /* Alinhamento do botão do Google */
+        .google-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -60,13 +68,32 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
                         <a class="esqueceuSenha" href="senhaPerdida.php?acao=recuperar" style="text-decoration:none"> Esqueceu sua senha? </a>
                         <button class="entrarLogin" type="submit"> Entrar </button>
                     </form>
+
+
+                    <div id="g_id_onload"
+                        data-client_id="904732005700-hhrsns4i5bl2ll22u57bsr9p0ijgkm4e.apps.googleusercontent.com"
+                        data-login_uri="http://localhost/Phronesis_/cad.php"
+                        data-auto_prompt="false">
+                    </div>
+
+                    <div class="google-btn-container">
+                        <div class="g_id_signin"
+                             data-type="standard"
+                             data-size="large"
+                             data-theme="outline"
+                             data-text="sign_in_with"
+                             data-shape="filled_blue"
+                             data-logo_alignment="left"
+                             data-width="280">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Lógica para mostrar/esconder senha
         const btnSenha = document.getElementById('btn-senha');
         const inputSenha = document.getElementById('senha');
 
@@ -80,7 +107,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
             }
         });
 
-        // Configuração padrão do Toast
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -123,5 +149,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
             }
         });
     </script>
+
+    <?php include 'perfil/vlibras.php'; ?>
 </body>
 </html>

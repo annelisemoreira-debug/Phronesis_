@@ -177,11 +177,12 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
         </main>
     </div>
 
+<?php include 'vlibras.php'; ?>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const btnLight = document.getElementById("btn-light-theme");
             const btnDark = document.getElementById("btn-dark-theme");
-            const toggleLibras = document.getElementById("toggle-libras");
 
             function alternarTema(tema) {
                 if (tema === 'dark') {
@@ -196,21 +197,11 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                 localStorage.setItem('site-theme', tema);
             }
 
-            // Inicialização
             const temaAtual = localStorage.getItem('site-theme') || 'light';
             alternarTema(temaAtual);
 
-            if(localStorage.getItem('libras-active') === 'true') {
-                toggleLibras.checked = true;
-            }
-
-            // Eventos
             btnLight.addEventListener("click", () => alternarTema('light'));
             btnDark.addEventListener("click", () => alternarTema('dark'));
-            
-            toggleLibras.addEventListener("change", (e) => {
-                localStorage.setItem('libras-active', e.target.checked);
-            });
         });
     </script>
 </body>

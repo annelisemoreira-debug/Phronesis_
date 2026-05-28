@@ -420,5 +420,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     })();
 </script>
 
+<?php include '../perfil/vlibras.php'; ?>
+
 </body>
 </html>

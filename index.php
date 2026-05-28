@@ -13,8 +13,15 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phronesis</title>
-    <link rel="stylesheet" href="assets/css/index.css">
+    <link class="js-theme-style" rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/header.css">
+    
+    <script>
+        // Anti-Flicker nativo executado no Head (Evita tela piscar em branco)
+        if (localStorage.getItem('site-theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    </script>
 </head>
 
 <body>
@@ -125,7 +132,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     </div>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
         // --- Lógica do Carrossel ---
         const track = document.querySelector('.carousel-track');
         const nextBtn = document.querySelector('.next');
@@ -142,11 +149,9 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
     });
-
-    // Anti-Flicker nativo
-    if (localStorage.getItem('site-theme') === 'dark') {
-        document.documentElement.classList.add('dark-theme');
-    }
     </script>
+
+    <?php include 'perfil/vlibras.php'; ?>
+
 </body>
 </html>

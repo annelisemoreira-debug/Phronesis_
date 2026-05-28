@@ -356,7 +356,10 @@ body {
 
 .libras-icon {
     width: 45px;
-    height: auto;
+    height: 45px;
+    border-radius: 10%;
+    object-fit: cover;
+    margin-right: 10px; /* Espaço extra entre a imagem e o switch */
 }
 
 /* SWITCH COMPONENTE */
@@ -391,7 +394,7 @@ body {
 }
 
 input:checked + .slider {
-    background-color: #a3a3a3;
+    background-color: #7B61FF;
 }
 
 input:checked + .slider:before {

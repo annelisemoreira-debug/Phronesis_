@@ -233,5 +233,8 @@ function prepararEnvio(id) {
     })();
     
 </script>
+
+<?php include '../perfil/vlibras.php'; ?>
+
 </body>
 </html>

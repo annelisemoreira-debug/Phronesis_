@@ -229,5 +229,8 @@ if (localStorage.getItem('site-theme') === 'dark') {
     document.documentElement.classList.add('dark-theme');
 }
 </script>
+
+<?php include '../perfil/vlibras.php'; ?>
+
 </body>
 </html>

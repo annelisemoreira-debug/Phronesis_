@@ -90,6 +90,8 @@ $authUrl = $client->createAuthUrl();
         <a href="../index.php">Voltar</a>
     </div>
 </div>
+
+<?php include '../perfil/vlibras.php'; ?>
         
 </body>
 </html>

@@ -238,5 +238,8 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
             });
         });
     </script>
+
+    <?php include '../perfil/vlibras.php'; ?>
+
 </body>
 </html>

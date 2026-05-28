@@ -133,16 +133,16 @@ try {
                         <span class="tag-vestibulares">VESTIBULARES</span>
                     </h3>
                     <div class="exam-card-mini mini-enem"><span class="exam-name-mini">ENEM 2026</span>
-                        <div id="timer-enem" class="countdown-mini">00d 00h 00m</div>
+                        <div id="timer-enem" class="countdown-mini">00d 00h 00min</div>
                     </div>
                     <div class="exam-card-mini mini-fuvest"><span class="exam-name-mini">FUVEST 2027</span>
-                        <div id="timer-fuvest" class="countdown-mini">00d 00h 00m</div>
+                        <div id="timer-fuvest" class="countdown-mini">00d 00h 00min</div>
                     </div>
                     <div class="exam-card-mini mini-unicamp"><span class="exam-name-mini">UNICAMP 2026</span>
-                        <div id="timer-unicamp" class="countdown-mini">00d 00h 00m</div>
+                        <div id="timer-unicamp" class="countdown-mini">00d 00h 00min</div>
                     </div>
                     <div class="exam-card-mini mini-unesp"><span class="exam-name-mini">UNESP 2027</span>
-                        <div id="timer-unesp" class="countdown-mini">00d 00h 00m</div>
+                        <div id="timer-unesp" class="countdown-mini">00d 00h 00min</div>
                     </div>
                 </div>
 
@@ -257,7 +257,7 @@ try {
             const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((diff % (1000 * 60)) / 1000);
-            element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+            element.innerHTML = `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}min ${s.toString().padStart(2, '0')}s`;
         }, 1000);
     }
 
@@ -298,6 +298,8 @@ try {
         document.documentElement.classList.add('dark-theme');
     }
 </script>
-</body>
 
+<?php include '../perfil/vlibras.php'; ?>
+
+</body>
 </html>

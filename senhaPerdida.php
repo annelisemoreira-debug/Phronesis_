@@ -103,6 +103,9 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
             }
         });
     </script>
+
+<?php include '../perfil/vlibras.php'; ?>
+
 </body>
 </html>
 

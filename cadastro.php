@@ -1,54 +1,15 @@
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <title>Faça parte do Phronesis!</title>
     <link rel="stylesheet" href="assets/css/cadastro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        /* Estrutura para centralização precisa */
-        .inserirInfo { 
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Contêiner relativo apenas para o campo de input */
-        .input-group-password {
-            position: relative;
-            display: flex;
-            align-items: center; /* Centraliza verticalmente o ícone em relação ao input */
-        }
-
-        .input-group-password input {
-            width: 100%;
-            padding-right: 45px; /* Espaço para o ícone não cobrir o texto */
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            cursor: pointer;
-            color: #031768;
-            z-index: 10;
-            font-size: 1.1rem;
-            /* Removemos o top: 65% e usamos alinhamento flex centralizado */
-        }
-
-        /* Ajuste visual para o formulário */
-        .linha_dupla {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .linha_dupla .inserirInfo {
-            flex: 1;
-        }
-    </style>
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-
 <body>
     <img src="assets/img/fundoRoxo.webp" class="bg-html" alt="Fundo">
 
@@ -59,50 +20,72 @@
                     <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
                 </div>
 
-                <div class="mainContainer">
-                    <h1 class="mainTitulo">Faça seu cadastro!</h1>
-                    <p style="color: #031768">Já possui uma conta? <a class="botaoLogin" href="login.php"> Entrar </a></p>
+                <div class="mainContainer" style="gap: 10px; padding: 25px 40px;">
+                    <h1 class="mainTitulo" style="font-size: 28px;">Faça seu cadastro!</h1>
+                    <p style="color: #031768; margin-bottom: 2px;">Já possui uma conta? <a class="botaoLogin" href="login.php"> Entrar </a></p>
 
-                    <form id="formCadastro" method="POST" action="cad.php" novalidate>
+                    <form id="formCadastro" method="POST" action="cad.php" novalidate style="display: flex; flex-direction: column; gap: 5px;">
                         <input type="hidden" name="acao" value="cadastro">
 
                         <div class="inserirInfo">
                             <label>Nome: </label>
-                            <input type="text" name="nome" id="nome" placeholder="Digite seu nome completo" required>
+                            <input type="text" name="nome" id="nome" placeholder="Digite seu nome completo" required style="padding: 8px 15px;">
                         </div>
 
                         <div class="inserirInfo">
                             <label>E-mail: </label>
-                            <input type="email" name="email" id="email" placeholder="exemplo@email.com" required>
+                            <input type="email" name="email" id="email" placeholder="exemplo@email.com" required style="padding: 8px 15px;">
                         </div>
 
-                        <div class="linha_dupla">
+                        <div class="linha_dupla" style="gap: 10px;">
                             <div class="inserirInfo">
                                 <label>Senha: </label>
                                 <div class="input-group-password">
-                                    <input type="password" name="senha" id="senha"
-                                        placeholder="Mínimo 6 caracteres"
-                                        required>
+                                    <input type="password" name="senha" id="senha" placeholder="Mínimo 6 caracteres" required style="padding: 8px 15px;">
                                     <i class="fa-solid fa-eye toggle-password" id="btn-senha"></i>
                                 </div>
                             </div>
 
                             <div class="inserirInfo">
                                 <label>Telefone: </label>
-                                <input type="text" name="telefone" id="telefone"
-                                    placeholder="(00) 00000-0000" maxlength="15"
-                                    oninput="handleTelefone(event)" required>
+                                <input type="text" name="telefone" id="telefone" placeholder="(00) 00000-0000" maxlength="15" oninput="handleTelefone(event)" required style="padding: 8px 15px;">
                             </div>
                         </div>
 
-                        <button class="entrarLogin" type="submit"> Cadastrar </button>
+                        <button class="entrarLogin" type="submit" style="margin-top: 10px; padding: 10px 60px;"> Cadastrar </button>
                     </form>
+
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px 0;">
+                        <div style="flex: 1; height: 1px; background-color: rgba(0, 26, 139, 0.2);"></div>
+                        <span style="color: #001a8b; font-size: 11px; font-weight: bold;">OU</span>
+                        <div style="flex: 1; height: 1px; background-color: rgba(0, 26, 139, 0.2);"></div>
+                    </div>
+
+                    <div id="g_id_onload"
+                        data-client_id="904732005700-hhrsns4i5bl2ll22u57bsr9p0ijgkm4e.apps.googleusercontent.com"
+                        data-login_uri="http://localhost/Phronesis_/cad.php"
+                        data-auto_prompt="false">
+                    </div>
+
+                    <div class="google-btn-container" style="display: flex; justify-content: center;">
+                        <div class="g_id_signin"
+                             data-type="standard"
+                             data-size="medium"
+                             data-theme="outline"
+                             data-text="signup_with"
+                             data-shape="filled_blue"
+                             data-logo_alignment="left"
+                             data-width="240">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </main>
 
     <script>
+        // Lógica de alternar visibilidade da senha
         const btnSenha = document.getElementById('btn-senha');
         const inputSenha = document.getElementById('senha');
 
@@ -116,6 +99,7 @@
             }
         });
 
+        // Configuração do SweetAlert2
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -131,6 +115,7 @@
             });
         <?php unset($_SESSION['erro_cad']); endif; ?>
 
+        // Validações do Formulário via JavaScript
         document.getElementById('formCadastro').addEventListener('submit', function(e) {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
@@ -146,15 +131,13 @@
                     icon: 'warning',
                     title: "Por favor, preencha todos os campos."
                 });
-            } 
-            else if (!emailRegex.test(email)) {
+            } else if (!emailRegex.test(email)) {
                 e.preventDefault();
                 Toast.fire({
                     icon: 'warning',
                     title: "Formato de e-mail inválido."
                 });
-            } 
-            else if (!senhaRegex.test(senha)) {
+            } else if (!senhaRegex.test(senha)) {
                 e.preventDefault();
                 Toast.fire({
                     icon: 'warning',
@@ -173,6 +156,7 @@
             }
         });
 
+        // Máscara do Telefone
         function handleTelefone(event) {
             let input = event.target;
             input.value = telefoneMask(input.value);
@@ -187,5 +171,7 @@
             return value;
         }
     </script>
+
+    <?php include 'perfil/vlibras.php'; ?>
 </body>
 </html>
