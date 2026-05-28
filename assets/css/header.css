@@ -13,6 +13,7 @@ header {
     top: 0;                /* Fixa exatamente no topo da tela */
     z-index: 1000;         /* Garante que o menu fique por cima de todo o conteúdo */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 /* Container da Logo (Canto Esquerdo) */
@@ -26,6 +27,7 @@ header {
   height: 42px !important;
   width: auto !important;       /* Anula os 250px do outro CSS que esticavam a caixa */
   overflow: visible !important; /* Garante que a logo não seja cortada */
+  transition: background-color 0.3s ease, padding 0.3s ease;
 }
 
 .logoMarca img {
@@ -33,6 +35,14 @@ header {
   width: auto !important;       /* Evita que a imagem fique esticada ou achatada */
   object-fit: contain !important; /* Garante o encaixe perfeito da imagem */
   display: block !important;
+}
+
+/* Lógica de Alternância do Logotipo no Header */
+.logoMarca .logo-light { 
+    display: block !important; 
+}
+.logoMarca .logo-dark { 
+    display: none !important; 
 }
 
 .menu {
@@ -49,6 +59,7 @@ header {
     overflow: hidden;
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .menu li a {
@@ -58,10 +69,11 @@ header {
     color: black;
     font-weight: bold;
     font-size: 14px;
+    transition: color 0.3s ease;
 }
 
 /* Cores dos botões conforme padrão do cabeçalho */
-.menu li.sobre, .menu li.cronogramas { background-color: #a2d5ff; }
+.menu li.cronogramas { background-color: #c0a5fc; }
 .menu li.materiais { background-color: #8dd4ff; }
 .menu li.livros { background-color: #ffe57e; }
 .menu li.entrar { background-color: #ffffff; border-radius: 25px; color: #3f007d;}
@@ -77,6 +89,7 @@ header {
     color: #ff4d4d; 
     font-weight: bold; 
     padding: 8px 10px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 /* Garante o posicionamento correto do dropdown */
@@ -93,6 +106,7 @@ header {
     border: 2px solid white; /* Borda branca para destacar a foto no menu roxo */
     object-fit: cover;
     display: block;
+    transition: border-color 0.3s ease;
 }
 
 .menu-dropdown { 
@@ -106,6 +120,7 @@ header {
     min-width: 160px; 
     z-index: 99999 !important; /* Valor absurdamente alto para passar por cima do iframe e modais */
     border: 1px solid #eee;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Força a exibição quando a classe .show estiver ativa via JS */
@@ -121,7 +136,7 @@ header {
     font-size: 14px;
     font-weight: 500;
     border-bottom: 1px solid #eee; 
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .menu-dropdown a:last-child {
@@ -141,6 +156,117 @@ header {
     position: relative;
 }
 
-.menu-dropdown.show {
-    display: block !important;
+
+/* ==========================================================================
+   CONFIGURAÇÃO DO MODO ESCURO (INTEGRADO COM ACESSIBILIDADE VIA .dark-theme)
+   ========================================================================== */
+
+/* Altera o fundo do cabeçalho para a mesma cor do body dark do site */
+html.dark-theme header {
+    background-color: #272530;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Remove a caixa branca de fundo da Logomarca */
+html.dark-theme .logoMarca {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Alternância de imagem da logo via classe ativa */
+html.dark-theme .logoMarca .logo-light { 
+    display: none !important; 
+}
+html.dark-theme .logoMarca .logo-dark { 
+    display: block !important; 
+}
+
+/* Transforma a estrutura dos botões para o estilo transparente vazado */
+html.dark-theme .menu li {
+    background-color: transparent !important;
+    border-radius: 6px;
+}
+
+html.dark-theme .menu li a {
+    font-size: 13px;
+    padding: 6px 16px;
+}
+
+/* Botão: Materiais (Borda e texto em Azul Claro) */
+html.dark-theme .menu li.materiais {
+    border: 1.5px solid #8dd4ff;
+}
+html.dark-theme .menu li.materiais a {
+    color: #8dd4ff;
+}
+html.dark-theme .menu li.materiais:hover {
+    background-color: rgba(141, 212, 255, 0.1) !important;
+}
+
+/* Botão: Obras Obrigatórias (Borda e texto em Dourado Amarelado) */
+html.dark-theme .menu li.livros {
+    border: 1.5px solid #ffe57e;
+}
+html.dark-theme .menu li.livros a {
+    color: #ffe57e;
+}
+html.dark-theme .menu li.livros:hover {
+    background-color: rgba(255, 229, 126, 0.1) !important;
+}
+
+/* Botão: Cronogramas (Borda e texto em Azul Suave) */
+html.dark-theme .menu li.cronogramas {
+    border: 1.5px solid #caa2ff;
+}
+html.dark-theme .menu li.cronogramas a {
+    color: #caa2ff;
+}
+html.dark-theme .menu li.cronogramas:hover {
+    background-color: rgba(162, 213, 255, 0.1) !important;
+}
+
+/* Botão fallback: Entrar (Modo Escuro) */
+html.dark-theme .menu li.entrar {
+    border: 1.5px solid #ffffff;
+    background-color: transparent !important;
+}
+html.dark-theme .menu li.entrar a {
+    color: #ffffff;
+}
+html.dark-theme .menu li.entrar:hover {
+    background-color: #ffffff !important;
+}
+html.dark-theme .menu li.entrar a:hover {
+    color: #1a1824 !important;
+}
+
+/* Ajuste no link do ADM para não sumir no escuro */
+html.dark-theme .menu .admin a {
+    color: #ff6b6b;
+}
+html.dark-theme .menu .admin a:hover {
+    text-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+}
+
+/* Contorno destacado em branco puro para a foto de perfil no modo escuro */
+html.dark-theme .foto-perfil {
+    border-color: #ffffff !important;
+}
+
+/* Customização do Menu Dropdown interno no Modo Escuro */
+html.dark-theme .menu-dropdown {
+    background-color: #272530; /* Mesma cor usada na sidebar/content dark */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+html.dark-theme .menu-dropdown a {
+    color: #b0aec2;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+html.dark-theme .menu-dropdown a:hover {
+    background-color: rgba(123, 97, 255, 0.1); /* Sutil preenchimento roxo do Phronesis */
+    color: #ffffff;
 }
