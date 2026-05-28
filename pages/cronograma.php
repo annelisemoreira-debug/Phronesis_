@@ -413,9 +413,9 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
 <script>
     (function () {
-        const savedTheme = localStorage.getItem('site-theme');
+        const savedTheme = localStorage.getItem('site-theme') || 'light';
         if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
+            document.documentElement.classList.add('dark-theme');
         }
     })();
 </script>

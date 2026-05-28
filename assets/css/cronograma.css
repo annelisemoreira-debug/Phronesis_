@@ -29,8 +29,8 @@
     --btn-edit-color: #0284c7;
 }
 
-/* Paleta de Cores Aplicada ao MODO ESCURO */
-body.dark-theme {
+/* Paleta de Cores Aplicada ao MODO ESCURO (Herdando do elemento HTML global) */
+html.dark-theme body {
     --bg-color: #12101a;          
     --card-bg: #1a1824;           
     --text-primary: #f3e8ff;      
@@ -175,7 +175,7 @@ input:focus {
     box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
 }
 
-body.dark-theme input::-webkit-calendar-picker-indicator {
+html.dark-theme input::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
 
@@ -426,20 +426,12 @@ body.dark-theme input::-webkit-calendar-picker-indicator {
     font-size: 12px;
 }
 
-.btn-edit { 
-    background-color: var(--btn-edit-bg); 
-    color: var(--btn-edit-color); 
-}
-body.dark-theme .btn-edit {
+html.dark-theme .btn-edit {
     background-color: #0c2331;
     color: #38bdf8;
 }
 
-.btn-del { 
-    background-color: var(--btn-del-bg); 
-    color: var(--btn-del-color); 
-}
-body.dark-theme .btn-del {
+html.dark-theme .btn-del {
     background-color: #311616;
     color: #f87171;
 }
@@ -532,22 +524,22 @@ body.dark-theme .btn-del {
 }
 
 /* --- SUPORTE COMPLEMENTAR AO TEMA ESCURO GLOBAL --- */
-body.dark-theme .sidebar, 
-body.dark-theme .content-wrapper, 
-body.dark-theme .main-content-card {
+html.dark-theme .sidebar, 
+html.dark-theme .content-wrapper, 
+html.dark-theme .main-content-card {
     background-color: #252230;
     color: #fff;
 }
 
-body.dark-theme h1, body.dark-theme h2 {
+html.dark-theme h1, html.dark-theme h2 {
     color: #fff;
 }
 
-body.dark-theme p, body.dark-theme span {
+html.dark-theme p, html.dark-theme span {
     color: #b0aeb8;
 }
 
-body.dark-theme .book-item-card {
+html.dark-theme .book-item-card {
     background-color: #2d293d;
     border: 1px solid #3d3752;
 }

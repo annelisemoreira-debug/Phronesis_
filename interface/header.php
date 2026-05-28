@@ -16,7 +16,7 @@ if (strpos($script_name, '/pages/') !== false || strpos($script_name, '/perfil/'
 }
 
 // 3. Define a foto padrão usando o $path dinâmico de forma correta (apenas $path + assets)
-$fotoPerfil = $path . "assets/img/default-user.webp"; 
+$fotoPerfil = $path . "assets/img/default-user.webp";
 $usuarioTipo = 'user'; // Valor padrão para evitar erros de Notice do PHP
 
 if (isset($_SESSION['id'])) {
@@ -25,9 +25,9 @@ if (isset($_SESSION['id'])) {
     $stmt->bind_param("i", $id_usuario);
     $stmt->execute();
     $res = $stmt->get_result()->fetch_assoc();
-    
+
     if ($res) {
-        $usuarioTipo = $res['tipo']; 
+        $usuarioTipo = $res['tipo'];
         if (!empty($res['foto'])) {
             // Remove barras iniciais da foto do banco para não quebrar com o $path
             $fotoLimpa = ltrim($res['foto'], '/');
@@ -40,7 +40,8 @@ if (isset($_SESSION['id'])) {
 <header>
     <div class="logoMarca">
         <a href="<?php echo $path; ?>index.php">
-            <img src="<?php echo $path; ?>assets/img/logoSite.webp" alt="logoPhronesis">
+            <img src="<?php echo $path; ?>assets/img/logoSite.webp" alt="logoPhronesis" class="logo-light">
+            <img src="<?php echo $path; ?>assets/img/logoescuro.webp" alt="logoPhronesis" class="logo-dark">
         </a>
     </div>
     <nav class="menuNav">
@@ -49,7 +50,7 @@ if (isset($_SESSION['id'])) {
                 <li class="materiais"><a href="<?php echo $path; ?>pages/material.php">Materiais</a></li>
                 <li class="livros"><a href="<?php echo $path; ?>pages/livros.php">Obras Obrigatórias</a></li>
                 <li class="cronogramas"><a href="<?php echo $path; ?>pages/meu_calendario.php">Cronogramas</a></li>
-                
+
                 <?php if ($usuarioTipo === 'admin'): ?>
                     <li class="admin"><a href="<?php echo $path; ?>pages/admin_materias.php">ADM</a></li>
                 <?php endif; ?>
@@ -69,23 +70,23 @@ if (isset($_SESSION['id'])) {
 </header>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const perfilBtn = document.getElementById("perfilBtn");
-    const dropdownPerfil = document.getElementById("dropdownPerfil");
+    document.addEventListener("DOMContentLoaded", function() {
+        const perfilBtn = document.getElementById("perfilBtn");
+        const dropdownPerfil = document.getElementById("dropdownPerfil");
 
-    if (perfilBtn && dropdownPerfil) {
-        // Abre e fecha ao clicar no container do perfil
-        perfilBtn.addEventListener("click", function(e) {
-            e.stopPropagation(); // Evita fechar imediatamente pelo clique global
-            dropdownPerfil.classList.toggle("show");
-        });
+        if (perfilBtn && dropdownPerfil) {
+            // Abre e fecha ao clicar no container do perfil
+            perfilBtn.addEventListener("click", function(e) {
+                e.stopPropagation(); // Evita fechar imediatamente pelo clique global
+                dropdownPerfil.classList.toggle("show");
+            });
 
-        // Fecha o menu caso o usuário clique em qualquer outro lugar da tela
-        document.addEventListener("click", function(e) {
-            if (!perfilBtn.contains(e.target)) {
-                dropdownPerfil.classList.remove("show");
-            }
-        });
-    }
-});
+            // Fecha o menu caso o usuário clique em qualquer outro lugar da tela
+            document.addEventListener("click", function(e) {
+                if (!perfilBtn.contains(e.target)) {
+                    dropdownPerfil.classList.remove("show");
+                }
+            });
+        }
+    });
 </script>
