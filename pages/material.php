@@ -84,8 +84,8 @@ try {
     <?php include '../interface/header.php'; ?>
 
    <section class="banner">
-        <img src="../assets/img/bannerAzul.webp" class="banner-img banner-light" alt="Banner">
-        <img src="../assets/img/bannerescuro.webp" class="banner-img banner-dark" alt="Banner">
+        <img src="../assets/img/normalMateriais.webp" class="banner-img banner-light" alt="Banner">
+        <img src="../assets/img/escuroMateriais.webp" class="banner-img banner-dark" alt="Banner">
     </section>
     
     <div class="wrapper">
@@ -294,9 +294,9 @@ try {
     });
 
     // Mantém apenas a injeção da classe no topo para evitar que a tela "pisque" em branco
-    if (localStorage.getItem('site-theme') === 'dark') {
-        document.documentElement.classList.add('dark-theme');
-    }
+        if (localStorage.getItem('site-theme') === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
 </script>
 
 <?php include '../perfil/vlibras.php'; ?>

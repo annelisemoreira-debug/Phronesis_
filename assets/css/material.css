@@ -564,6 +564,16 @@ html.dark-theme .menuSidebar nav a:hover {
     color: #FFFFFF;
 }
 
+/* ==========================================================================
+   RESET DOS BOTÕES DO HEADER NO MODO ESCURO (CORREÇÃO DE CONFLITO)
+   ========================================================================== */
+html.dark-theme .menu li.materiais a,
+html.dark-theme .menu li.obras a, 
+html.dark-theme .menu li.livros a, 
+html.dark-theme .menu li.cronogramas a {
+    background-color: transparent !important;
+}
+
 html.dark-theme .active-subject {
     background: #252233;
     color: #FFFFFF !important;
@@ -600,6 +610,16 @@ html.dark-theme .caixa-favoritos-nova .titulo-salvos {
 html.dark-theme .search-box {
     background-color: #252230;
     border-color: #38344A;
+}
+
+/* Caixa de Pesquisa */
+html.dark-theme .titulo-main {
+    color: white;
+}
+
+/* Caixa de Pesquisa */
+html.dark-theme .menuSidebar nav::before  {
+    color: white;
 }
 
 html.dark-theme .search-box input {
