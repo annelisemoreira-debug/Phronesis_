@@ -114,9 +114,18 @@ $googleLogado = isset($_SESSION['upload_token']) ? 'true' : 'false';
                 });
             }
         });
+
+                
+        // Mantém apenas a injeção da classe no topo para evitar "piscada" visual de fundo branco
+        if (localStorage.getItem('site-theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
     </script>
 
     <?php include '../perfil/vlibras.php'; ?>
         
 </body>
 </html>
+
+
+
