@@ -176,7 +176,7 @@ html.dark-theme .google-brand {
 
 /* 4. Botão "Continuar com Google" */
 html.dark-theme .btn-google {
-    background-color: #002286; 
+    background-color: #470086; 
     color: #ffffff !important;
     display: flex;
     align-items: center;
@@ -193,7 +193,7 @@ html.dark-theme .btn-google {
 }
 
 html.dark-theme .btn-google:hover {
-    background-color: #7dafe1;
+    background-color: #af7de1;
     transform: translateY(-1px);
 }
 
