@@ -13,8 +13,6 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     exit(); // Interrompe a execução do script
 }
 
-//senha: Home@spSENAI2025!
-
 // --- CONEXÃO ---
 $conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 
@@ -29,7 +27,6 @@ if (!$dadosUser) {
     header("Location: ../login.php");
     exit();
 }
-
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -54,9 +51,11 @@ if (isset($_GET['code'])) {
         echo "Erro ao obter token: " . $e->getMessage();
     }
 }
-// ... restante do código do botão
 
 $authUrl = $client->createAuthUrl();
+
+// Guarda em uma variável booleana se a conta do Google está conectada
+$googleLogado = isset($_SESSION['upload_token']) ? 'true' : 'false';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -64,34 +63,60 @@ $authUrl = $client->createAuthUrl();
     <meta charset="UTF-8">
     <title>Login - Cronograma</title>
     <link rel="stylesheet" href="../assets/css/meuCalendario.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     
     <img src="../assets/img/fundoAmarelo02.webp" class="bg-html" alt="Fundo">
 
     <div class="login-card">
-    <h2>Conectar para criar!</h2>
-    <p>Para facilitar a organização da sua rotina, o nosso site funciona de forma integrada com o <span class="google-brand">Google Agenda</span>.</p>
-    
-    <p>Sincronize sua conta Google para criar e visualizar seu cronograma automaticamente. </p>
-    
-    <a class="btn-google" href="<?= $authUrl ?>">
-        Continuar com Google
-    </a>
-
-    <div class="login-options">
-        <a class="btn-secondary" href="cronograma.php">
-            Já conectei minha conta
+        <h2>Conectar para criar!</h2>
+        <p>Para facilitar a organização da sua rotina, o nosso site funciona de forma integrada com o <span class="google-brand">Google Agenda</span>.</p>
+        
+        <p>Sincronize sua conta Google para criar e visualizar seu cronograma automaticamente. </p>
+        
+        <a class="btn-google" href="<?= $authUrl ?>">
+            Continuar com Google
         </a>
+
+        <div class="login-options">
+            <a class="btn-secondary" id="btn-ja-conectei" href="cronograma.php">
+                Já conectei minha conta
+            </a>
+        </div>
+
+        <div class="footer-link">
+            <a href="../index.php">Voltar</a>
+        </div>
     </div>
 
-    <div class="footer-link">
-        <a href="../index.php">Voltar</a>
-    </div>
-</div>
+    <script>
+        // Cria a mesma instância de Toast que você usou no login.php
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true
+        });
 
-<?php include '../perfil/vlibras.php'; ?>
+        // Passa o estado de login do PHP para o JavaScript
+        const estaLogadoNoGoogle = <?php echo $googleLogado; ?>;
+
+        document.getElementById('btn-ja-conectei').addEventListener('click', function(e) {
+            // Se NÃO estiver logado no Google, barra o redirecionamento e mostra o aviso
+            if (!estaLogadoNoGoogle) {
+                e.preventDefault(); // Cancela o clique do link
+                
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Você ainda não conectou sua conta do Google!'
+                });
+            }
+        });
+    </script>
+
+    <?php include '../perfil/vlibras.php'; ?>
         
 </body>
 </html>
