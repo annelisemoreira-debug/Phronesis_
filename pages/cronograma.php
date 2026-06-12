@@ -251,6 +251,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/cronograma.css">
     <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 </head>
 <body>
 

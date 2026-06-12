@@ -15,6 +15,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     <title>Phronesis</title>
     <link class="js-theme-style" rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
     
     <script>
         // Anti-Flicker nativo executado no Head (Evita tela piscar em branco)

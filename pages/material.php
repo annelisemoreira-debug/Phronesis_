@@ -78,6 +78,7 @@ try {
     <title>Materiais Complementares - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/material.css">
     <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 </head>
 
 <body>
