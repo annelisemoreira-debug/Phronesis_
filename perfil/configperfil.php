@@ -28,50 +28,79 @@ if (!$dadosUser) {
     exit();
 }
 
-// 3. LÓGICA DE PROCESSAMENTO DO CORTE DA IMAGEM
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'crop_image') {
+// 3. LÓGICA DE PROCESSAMENTO DO CORTE / REMOÇÃO DA IMAGEM
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     ob_clean(); 
     header('Content-Type: application/json');
 
-    try {
-        $diretorioFisico = "../assets/img/perfis/";
-        $diretorioBanco = "assets/img/perfis/";
-        
-        if (!file_exists($diretorioFisico)) { 
-            mkdir($diretorioFisico, 0777, true); 
-        }
-
-        $base64_image = $_POST['image_data']; 
-        $data = explode(',', $base64_image);
-        $image_content = base64_decode($data[1]);
-
-        $nomeArquivo = "user_" . $id_usuario . "_" . time() . ".webp";
-        $caminhoCompletoFisico = $diretorioFisico . $nomeArquivo;
-        $caminhoBanco = $diretorioBanco . $nomeArquivo;
-
-        if (file_put_contents($caminhoCompletoFisico, $image_content)) {
+    // --- NOVA FUNÇÃO: REMOVER FOTO (VOLTAR PADRÃO) ---
+    if ($_POST['action'] == 'delete_image') {
+        try {
             $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
             $busca->bind_param("i", $id_usuario);
             $busca->execute();
             $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
 
+            // Apaga o arquivo físico se não for a padrão
             if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
                 $caminhoArquivoAntigo = "../" . $fotoAntiga;
                 if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
             }
 
-            $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
-            $upd->bind_param("si", $caminhoBanco, $id_usuario);
+            // Define como NULL ou string vazia no banco
+            $upd = $conn->prepare("UPDATE usuario SET foto = NULL WHERE id_usuario = ?");
+            $upd->bind_param("i", $id_usuario);
             $upd->execute();
 
-            echo json_encode(['status' => 'success', 'redirect' => 'configperfil.php']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Não foi possível escrever o arquivo na pasta perfis.']);
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        exit();
     }
-    exit();
+
+    // --- CORTAR E SALVAR IMAGEM ---
+    if ($_POST['action'] == 'crop_image') {
+        try {
+            $diretorioFisico = "../assets/img/perfis/";
+            $diretorioBanco = "assets/img/perfis/";
+            
+            if (!file_exists($diretorioFisico)) { 
+                mkdir($diretorioFisico, 0777, true); 
+            }
+
+            $base64_image = $_POST['image_data']; 
+            $data = explode(',', $base64_image);
+            $image_content = base64_decode($data[1]);
+
+            $nomeArquivo = "user_" . $id_usuario . "_" . time() . ".webp";
+            $caminhoCompletoFisico = $diretorioFisico . $nomeArquivo;
+            $caminhoBanco = $diretorioBanco . $nomeArquivo;
+
+            if (file_put_contents($caminhoCompletoFisico, $image_content)) {
+                $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
+                $busca->bind_param("i", $id_usuario);
+                $busca->execute();
+                $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
+
+                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+                    $caminhoArquivoAntigo = "../" . $fotoAntiga;
+                    if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
+                }
+
+                $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
+                $upd->bind_param("si", $caminhoBanco, $id_usuario);
+                $upd->execute();
+
+                echo json_encode(['status' => 'success', 'redirect' => 'configperfil.php']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Não foi possível escrever o arquivo na pasta perfis.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit();
+    }
 }
 
 // 4. BUSCA DADOS PARA EXIBIÇÃO
@@ -81,7 +110,8 @@ $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
 $caminhoPadrao = "../assets/img/default-user.webp"; 
-$fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? "../" . $user['foto'] : $caminhoPadrao;
+$temFotoPersonalizada = (!empty($user['foto']) && $user['foto'] != 'assets/img/default-user.webp' && file_exists("../" . $user['foto']));
+$fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
 ?>
 
 <!DOCTYPE html>
@@ -112,11 +142,14 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
             background-color: #fff; padding: 20px; border-radius: 8px; width: 90%; max-width: 500px; text-align: center;
         }
         .img-container { max-height: 400px; margin-bottom: 20px; }
-        .img-container img { max-width: 100%; }
+        .img-container img { max-width: 100%; display: block; }
         .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
         .btn-crop-confirm { background-color: #7B61FF; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
         .btn-crop-cancel { background-color: #e0e0e0; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
         .cropper-view-box, .cropper-face { border-radius: 50%; outline: none !important; }
+        
+        /* Estilo rápido para o botão de remover mantendo o padrão */
+        .btn-remove-foto { color: #FF4D4D !important; margin-left: 15px; }
     </style>
 </head>
 <body>
@@ -171,6 +204,10 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                         <form id="formFotoPerfil">
                             <input type="file" id="foto_perfil" hidden accept="image/*">
                             <button type="button" id="btnSelectFoto">Selecionar Nova Foto</button>
+                            
+                            <?php if ($temFotoPersonalizada): ?>
+                                <button type="button" id="btnRemoveFoto" class="btn-remove-foto">Remover Foto</button>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>
@@ -213,28 +250,75 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 
             $('#btnSelectFoto').on('click', function() { $('#foto_perfil').click(); });
 
-            $('#foto_perfil').on('change', function(e) {
-                var reader = new FileReader();
-                reader.onload = function(event) {
-                    $image.attr('src', event.target.result);
-                    $modal.css('display', 'flex');
-                    if (cropper) cropper.destroy();
-                    cropper = new Cropper($image[0], { aspectRatio: 1, viewMode: 1, dragMode: 'move' });
-                };
-                reader.readAsDataURL(e.target.files[0]);
+            // AÇÃO DO BOTÃO REMOVER FOTO
+            $('#btnRemoveFoto').on('click', function() {
+                if(confirm("Tem certeza que deseja remover sua foto de perfil e usar a padrão?")) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'configperfil.php',
+                        data: { action: 'delete_image' },
+                        dataType: 'json',
+                        success: function(response) {
+                            if(response.status === 'success') {
+                                window.location.reload();
+                            } else {
+                                alert("Erro ao remover: " + response.message);
+                            }
+                        }
+                    });
+                }
             });
 
-            $('#btnCancelCrop').on('click', function() { $modal.hide(); cropper.destroy(); });
+            $('#foto_perfil').on('change', function(e) {
+                var files = e.target.files;
+                if (files && files.length > 0) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        $image.attr('src', event.target.result);
+                        $modal.css('display', 'flex');
+                        if (cropper) cropper.destroy();
+                        cropper = new Cropper($image[0], { 
+                            aspectRatio: 1, 
+                            viewMode: 1, 
+                            dragMode: 'move',
+                            autoCropArea: 0.8
+                        });
+                    };
+                    reader.readAsDataURL(files[0]);
+                }
+            });
+
+            $('#btnCancelCrop').on('click', function() { 
+                $modal.hide(); 
+                if (cropper) cropper.destroy(); 
+                $('#foto_perfil').val('');
+            });
 
             $('#btnConfirmCrop').on('click', function() {
-                var canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
+                var canvas = cropper.getCroppedCanvas({ 
+                    width: 400, 
+                    height: 400,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
                 var base64data = canvas.toDataURL('image/webp');
 
                 $.ajax({
                     type: 'POST',
                     url: 'configperfil.php',
                     data: { action: 'crop_image', image_data: base64data },
-                    success: function(response) { window.location.href = response.redirect; }
+                    dataType: 'json',
+                    success: function(response) { 
+                        if(response.status === 'success') {
+                            window.location.reload();
+                        } else {
+                            alert("Erro: " + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        alert("Erro técnico ao salvar a imagem.");
+                    }
                 });
             });
         });

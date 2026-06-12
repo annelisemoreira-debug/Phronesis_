@@ -77,9 +77,10 @@ try {
     }
 }
 
-if (!isset($_SESSION['meus_cronogramas'])) {
-    $_SESSION['meus_cronogramas'] = [];
-}
+// ---- BUSCA CRONOGRAMAS DIRETAMENTE DO BANCO DE DADOS (Persistência) ----
+$stmtCronos = $pdo->prepare("SELECT id_cronograma, titulo_cronograma AS titulo, google_calendar_id AS calendar_id, DATE_FORMAT(data_criacao, '%d/%m/%Y %H:%i') AS data FROM cronograma WHERE id_usuario = ? ORDER BY id_cronograma DESC");
+$stmtCronos->execute([$id]);
+$meus_cronogramas_db = $stmtCronos->fetchAll(PDO::FETCH_ASSOC);
 
 if (isset($_GET['logout'])) {
     $conn->query("UPDATE usuario SET google_token = NULL WHERE id_usuario = $id");
@@ -104,26 +105,36 @@ $id_visualizacao = $_GET['ver'] ?? null;
 $mostrar_modal = false;
 
 $calendar_id_exibir = null;
-if ($id_visualizacao !== null && isset($_SESSION['meus_cronogramas'][$id_visualizacao])) {
-    $calendar_id_exibir = $_SESSION['meus_cronogramas'][$id_visualizacao]['calendar_id'];
+if ($id_visualizacao !== null) {
+    $stmtVis = $pdo->prepare("SELECT google_calendar_id, titulo_cronograma FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
+    $stmtVis->execute([$id_visualizacao, $id]);
+    $crono_ver = $stmtVis->fetch(PDO::FETCH_ASSOC);
+    if ($crono_ver) {
+        $calendar_id_exibir = $crono_ver['google_calendar_id'];
+        $titulo_exibir = $crono_ver['titulo_cronograma'];
+    }
 }
 
 // --- EXCLUSÃO ---
 if (isset($_GET['deletar_salvo'])) {
-    $id_del = $_GET['deletar_salvo'];
-    if (isset($_SESSION['meus_cronogramas'][$id_del])) {
-        $calendarId = $_SESSION['meus_cronogramas'][$id_del]['calendar_id'] ?? null;
+    $id_del = intval($_GET['deletar_salvo']);
+    
+    $stmtCheck = $pdo->prepare("SELECT google_calendar_id FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
+    $stmtCheck->execute([$id_del, $id]);
+    $crono_del = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+    if ($crono_del) {
+        $calendarId = $crono_del['google_calendar_id'] ?? null;
         try {
             if ($calendarId && $calendarId !== 'primary') {
                 $service->calendars->delete($calendarId);
             }
-            $stmtDel = $pdo->prepare("DELETE FROM `cronograma` WHERE `google_calendar_id` = ?");
-            $stmtDel->execute([$calendarId]);
+            $stmtDel = $pdo->prepare("DELETE FROM `cronograma` WHERE `id_cronograma` = ? AND `id_usuario` = ?");
+            $stmtDel->execute([$id_del, $id]);
             $msg_feedback = "🗑️ Cronograma removido com sucesso!";
         } catch (Exception $e) {
             $msg_feedback = "⚠️ Erro ao remover: " . $e->getMessage();
         }
-        unset($_SESSION['meus_cronogramas'][$id_del]);
     }
     header('Location: cronograma.php?msg=' . urlencode($msg_feedback));
     exit;
@@ -132,9 +143,11 @@ if (isset($_GET['deletar_salvo'])) {
 // Prepara edição
 $dados_edicao = null;
 if (isset($_GET['editar'])) {
-    $id_ed = $_GET['editar'];
-    if (isset($_SESSION['meus_cronogramas'][$id_ed])) {
-        $dados_edicao = $_SESSION['meus_cronogramas'][$id_ed]['params'] ?? null;
+    $id_ed = intval($_GET['editar']);
+    $stmtEd = $pdo->prepare("SELECT google_calendar_id, titulo_cronograma FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
+    $stmtEd->execute([$id_ed, $id]);
+    $crono_ed = $stmtEd->fetch(PDO::FETCH_ASSOC);
+    if ($crono_ed) {
         $_SESSION['editando_id'] = $id_ed;
         $id_visualizacao = null;
     }
@@ -148,11 +161,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     $data_fim = new DateTime($_POST['data_fim']);
     $materias_selecionadas = $_POST['materias_id'] ?? [];
     $dias_permitidos = $_POST['dias_semana'] ?? [];
+    
+    $intervalo_seguranca = $data_inicio->diff($data_fim);
 
     if (empty($materias_selecionadas)) {
         $msg_feedback = "❌ Erro: Selecione ao menos uma matéria.";
     } elseif ($data_fim < $data_inicio) {
         $msg_feedback = "❌ Erro: Data final não pode ser menor que a inicial.";
+    } elseif ($intervalo_seguranca->days > 366) { 
+        $msg_feedback = "❌ Erro: O período máximo permitido para um cronograma é de 1 ano.";
     } else {
         $_SESSION['ultimo_nome'] = !empty($_POST['nome_cronograma']) ? $_POST['nome_cronograma'] : "Plano de Estudos";
         $nomes_map = [];
@@ -198,22 +215,20 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     set_time_limit(300);
     try {
         $pdo->beginTransaction();
-        $id_usuario_logado = $_SESSION['id'] ?? 1;
+        $id_usuario_logado = $id;
         $calendarIdParaUso = null;
         $id_cronograma_existente = null;
 
         if (isset($_SESSION['editando_id'])) {
-            $idx = $_SESSION['editando_id'];
-            $calendarIdParaUso = $_SESSION['meus_cronogramas'][$idx]['calendar_id'] ?? null;
-
-            $stmt = $pdo->prepare("SELECT id_cronograma FROM cronograma WHERE google_calendar_id = ?");
-            $stmt->execute([$calendarIdParaUso]);
-            $id_cronograma_existente = $stmt->fetchColumn();
+            $id_cronograma_existente = intval($_SESSION['editando_id']);
+            $stmt = $pdo->prepare("SELECT google_calendar_id FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
+            $stmt->execute([$id_cronograma_existente, $id]);
+            $calendarIdParaUso = $stmt->fetchColumn();
         }
 
-        if ($id_cronograma_existente) {
-            $stmtUpd = $pdo->prepare("UPDATE `cronograma` SET `titulo_cronograma` = ? WHERE `id_cronograma` = ?");
-            $stmtUpd->execute([$_SESSION['ultimo_nome'], $id_cronograma_existente]);
+        if ($id_cronograma_existente && $calendarIdParaUso) {
+            $stmtUpd = $pdo->prepare("UPDATE `cronograma` SET `titulo_cronograma` = ? WHERE `id_cronograma` = ? AND `id_usuario` = ?");
+            $stmtUpd->execute([$_SESSION['ultimo_nome'], $id_cronograma_existente, $id]);
 
             $pdo->prepare("DELETE FROM `cronograma_item` WHERE `id_cronograma` = ?")->execute([$id_cronograma_existente]);
             $id_cronograma_db = $id_cronograma_existente;
@@ -231,7 +246,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             $createdCalendar = $service->calendars->insert($newCalendar);
             $calendarIdParaUso = $createdCalendar->getId();
 
-            $stmtCrono = $pdo->prepare("INSERT INTO `cronograma` (`id_usuario`, `titulo_cronograma`, `google_calendar_id`) VALUES (?, ?, ?)");
+            $stmtCrono = $pdo->prepare("INSERT INTO `cronograma` (`id_usuario`, `titulo_cronograma`, `google_calendar_id`, `data_criacao`) VALUES (?, ?, ?, NOW())");
             $stmtCrono->execute([$id_usuario_logado, $_SESSION['ultimo_nome'], $calendarIdParaUso]);
             $id_cronograma_db = $pdo->lastInsertId();
         }
@@ -256,23 +271,9 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
         $pdo->commit();
 
-        $novo_dado = [
-            'titulo' => $_SESSION['ultimo_nome'],
-            'data' => date('d/m/Y H:i'),
-            'calendar_id' => $calendarIdParaUso,
-            'params' => $_SESSION['temp_params']
-        ];
-
-        if (isset($_SESSION['editando_id'])) {
-            $_SESSION['meus_cronogramas'][$_SESSION['editando_id']] = $novo_dado;
-            $idx_final = $_SESSION['editando_id'];
-            unset($_SESSION['editando_id']);
-        } else {
-            $_SESSION['meus_cronogramas'][] = $novo_dado;
-            $idx_final = count($_SESSION['meus_cronogramas']) - 1;
-        }
-
-        unset($_SESSION['temp_cronograma'], $_SESSION['temp_params']);
+        $idx_final = $id_cronograma_db;
+        unset($_SESSION['editando_id'], $_SESSION['temp_cronograma'], $_SESSION['temp_params']);
+        
         header('Location: cronograma.php?ver=' . $idx_final . '&msg=' . urlencode("✅ Cronograma salvo com sucesso!"));
         exit;
     } catch (Exception $e) {
@@ -297,6 +298,31 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        .history-list {
+            max-height: 480px; 
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .history-list::-webkit-scrollbar,
+        .conteiner-materias-expansivel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .history-list::-webkit-scrollbar-track,
+        .conteiner-materias-expansivel::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        .history-list::-webkit-scrollbar-thumb,
+        .conteiner-materias-expansivel::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.3);
+            border-radius: 10px;
+        }
+        .history-list::-webkit-scrollbar-thumb:hover,
+        .conteiner-materias-expansivel::-webkit-scrollbar-thumb:hover {
+            background: rgba(124, 58, 237, 0.6);
+        }
+
         .btn-toggle-materias {
             display: flex;
             align-items: center;
@@ -318,18 +344,24 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             opacity: 0.9;
             transform: translateY(-1px);
         }
+
         .conteiner-materias-expansivel {
             display: none; 
             margin-top: 15px;
             flex-direction: column;
             gap: 10px;
             animation: fadeIn 0.3s ease;
+            max-height: 280px; 
+            overflow-y: auto;  
+            padding-right: 4px;
         }
+
         .materia-accordion-item {
             background-color: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             overflow: hidden;
+            flex-shrink: 0; 
         }
         .dark-theme .materia-accordion-item {
             background-color: #26263b;
@@ -389,7 +421,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Classe utilitária para desabilitar visualmente os dias indisponíveis */
         .dia-desabilitado {
             opacity: 0.4;
             pointer-events: none;
@@ -414,8 +445,8 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
     <div id="loadingScreen" class="modal" style="display: none;">
         <div class="modal-content loader-box">
-            <h3>🗓️ Sincronizando com o Google Agenda...</h3>
-            <p>Isso pode levar alguns segundos dependendo do tamanho do seu cronograma.</p>
+            <h3 id="loadingText">🗓️ Sincronizando com o Google Agenda...</h3>
+            <p id="loadingSubtext">Isso pode levar alguns segundos dependendo do tamanho do seu cronograma.</p>
             <div class="progress-bar-container">
                 <div class="progress-bar-fill"></div>
             </div>
@@ -431,7 +462,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
             <?php if ($calendar_id_exibir && !isset($_GET['editar'])): ?>
                 <div class="agenda-header">
-                    <h3><i class="fa-solid fa-calendar-days"></i> Agenda: <?= htmlspecialchars($_SESSION['meus_cronogramas'][$id_visualizacao]['titulo']) ?></h3>
+                    <h3><i class="fa-solid fa-calendar-days"></i> Agenda: <?= htmlspecialchars($titulo_exibir) ?></h3>
                     <a href="cronograma.php" class="btn-novo-crono">+ Novo Cronograma</a>
                 </div>
                 <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo&wkst=1&bgcolor=%23fbf9ff&color=%237c3aed&showCalendars=0&showTabs=1" class="calendar-embed" style="border: none;" allowfullscreen></iframe>
@@ -456,13 +487,13 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="full-width field-group">
                         <label>Nome do seu Cronograma:</label>
                         <input type="text" name="nome_cronograma" placeholder="Ex: Maratona ENEM 2026"
-                            value="<?= htmlspecialchars($dados_edicao['nome_cronograma'] ?? $_POST['nome_cronograma'] ?? '') ?>" required>
+                            value="<?= htmlspecialchars($_POST['nome_cronograma'] ?? '') ?>" required>
                     </div>
 
                     <div class="field-group input-icon-wrapper">
                         <label>Data Início:</label>
                         <div class="input-with-icon">
-                            <input type="date" name="data_inicio" id="data_inicio" min="<?= $hoje ?>" value="<?= $dados_edicao['data_inicio'] ?? $_POST['data_inicio'] ?? $hoje ?>" onchange="atualizarDiasSemana()" required>
+                            <input type="date" name="data_inicio" id="data_inicio" min="<?= $hoje ?>" value="<?= $_POST['data_inicio'] ?? $hoje ?>" onchange="atualizarDiasSemana()" required>
                             <i class="fa-regular fa-calendar input-icon-right"></i>
                         </div>
                     </div>
@@ -470,7 +501,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="field-group input-icon-wrapper">
                         <label>Data Fim:</label>
                         <div class="input-with-icon">
-                            <input type="date" name="data_fim" id="data_fim" min="<?= $hoje ?>" value="<?= $dados_edicao['data_fim'] ?? $_POST['data_fim'] ?? '' ?>" onchange="atualizarDiasSemana()" required>
+                            <input type="date" name="data_fim" id="data_fim" min="<?= $hoje ?>" value="<?= $_POST['data_fim'] ?? '' ?>" onchange="atualizarDiasSemana()" required>
                             <i class="fa-regular fa-calendar input-icon-right"></i>
                         </div>
                     </div>
@@ -484,21 +515,21 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="field-group input-icon-wrapper">
                         <label>Hora Início:</label>
                         <div class="input-with-icon">
-                            <input type="time" name="hora_inicio" value="<?= $dados_edicao['hora_inicio'] ?? $_POST['hora_inicio'] ?? '08:00' ?>" required>
+                            <input type="time" name="hora_inicio" value="<?= $_POST['hora_inicio'] ?? '08:00' ?>" required>
                             <i class="fa-regular fa-clock input-icon-right"></i>
                         </div>
                     </div>
 
                     <div class="field-group">
                         <label>Duração (horas):</label>
-                        <input type="number" name="horas_estudo" value="<?= $dados_edicao['horas_estudo'] ?? $_POST['horas_estudo'] ?? '2' ?>" required>
+                        <input type="number" name="horas_estudo" value="<?= $_POST['horas_estudo'] ?? '2' ?>" required>
                     </div>
 
                     <div class="full-width field-group">
                         <label>Matérias Disponíveis:</label>
                         <div class="list-container scrolling-list">
                             <?php
-                            $mats_ativas = $dados_edicao['materias_id'] ?? $_POST['materias_id'] ?? [];
+                            $mats_ativas = $_POST['materias_id'] ?? [];
                             if (empty($lista_materias_db)): ?>
                                 <div class="row-item empty-state-select">Selecione as matérias que deseja estudar...</div>
                             <?php else:
@@ -525,7 +556,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 <h3><i class="fa-regular fa-clock"></i> Histórico</h3>
             </div>
 
-            <?php if (empty($_SESSION['meus_cronogramas'])): ?>
+            <?php if (empty($meus_cronogramas_db)): ?>
                 <div class="empty-history-wrapper">
                     <div class="empty-illustration">
                         <div class="book-purple-icon">
@@ -539,56 +570,73 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 </div>
             <?php else: ?>
                 <div class="history-list">
-                    <?php foreach ($_SESSION['meus_cronogramas'] as $id => $cron): ?>
+                    <?php foreach ($meus_cronogramas_db as $cron): ?>
                         <div class="cronograma-item">
-                            <a href="?ver=<?= $id ?>" class="crono-link">
+                            <a href="?ver=<?= $cron['id_cronograma'] ?>" class="crono-link">
                                 <span class="crono-title"><?= htmlspecialchars($cron['titulo']) ?></span>
                                 <span class="crono-date"><?= $cron['data'] ?></span>
                             </a>
                             <div class="cronograma-actions">
-                                <a href="?editar=<?= $id ?>" class="btn-action btn-edit" title="Editar"><i class="fa-solid fa-pen"></i></a>
-                                <a href="#" class="btn-action btn-del" title="Excluir" onclick="confirmDelete(event, '<?= $id ?>')"><i class="fa-solid fa-xmark"></i></a>
+                                <a href="?editar=<?= $cron['id_cronograma'] ?>" class="btn-action btn-edit" title="Editar" onclick="dispararLoadingEdicao(event, this.href)"><i class="fa-solid fa-pen"></i></a>
+                                <a href="#" class="btn-action btn-del" title="Excluir" onclick="confirmDelete(event, '<?= $cron['id_cronograma'] ?>')"><i class="fa-solid fa-xmark"></i></a>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
-            <button class="btn-toggle-materias" id="btnToggleMaterias">
-                <span>Navegar Conteúdos por Matéria</span>
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
+            <?php if (!($calendar_id_exibir && !isset($_GET['editar']))): ?>
+                <button class="btn-toggle-materias" id="btnToggleMaterias">
+                    <span>Navegar Conteúdos por Matéria</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
 
-            <div class="conteiner-materias-expansivel" id="conteinerMaterias">
-                <?php if (!empty($materias_com_conteudos)): ?>
-                    <?php foreach ($materias_com_conteudos as $materia_nome => $conteudos): ?>
-                        <div class="materia-accordion-item">
-                            <div class="materia-accordion-header">
-                                <span><i class="fa-regular fa-folder"></i> <?= htmlspecialchars($materia_nome) ?></span>
-                                <i class="fa-solid fa-chevron-down chevron"></i>
+                <div class="conteiner-materias-expansivel" id="conteinerMaterias">
+                    <?php if (!empty($materias_com_conteudos)): ?>
+                        <?php foreach ($materias_com_conteudos as $materia_nome => $conteudos): ?>
+                            <div class="materia-accordion-item">
+                                <div class="materia-accordion-header">
+                                    <span><i class="fa-regular fa-folder"></i> <?= htmlspecialchars($materia_nome) ?></span>
+                                    <i class="fa-solid fa-chevron-down chevron"></i>
+                                </div>
+                                <div class="materia-accordion-content">
+                                    <ul>
+                                        <?php if (!empty($conteudos)): ?>
+                                            <?php foreach ($conteudos as $conteudo): ?>
+                                                <li><?= htmlspecialchars($conteudo) ?></li>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <li style="color: #8e8ea8; font-style: italic;">Nenhum conteúdo cadastrado para esta matéria ainda.</li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </div>
                             </div>
-                            <div class="materia-accordion-content">
-                                <ul>
-                                    <?php if (!empty($conteudos)): ?>
-                                        <?php foreach ($conteudos as $conteudo): ?>
-                                            <li><?= htmlspecialchars($conteudo) ?></li>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <li style="color: #8e8ea8; font-style: italic;">Nenhum conteúdo cadastrado para esta matéria ainda.</li>
-                                    <?php endif; ?>
-                                </ul>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p style="color: #8e8ea8; font-size: 0.9rem; text-align: center; margin-top: 10px;">Nenhuma matéria carregada do banco.</p>
-                <?php endif; ?>
-            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p style="color: #8e8ea8; font-size: 0.9rem; text-align: center; margin-top: 10px;">Nenhuma matéria carregada do banco.</p>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </aside>
     </main>
 
+    <div id="deleteConfirmModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h3>🗑️ Excluir Cronograma</h3>
+        <p>Título: <b id="deleteCronoTitle"></b></p>
+        <p>Isso removerá a agenda criada no Google Agenda definitivamente!</p>
+        <div class="modal-actions-custom">
+            <button type="button" id="btnConfirmarExclusaoFinal" class="btn-del-modal">Sim, excluir!</button>
+            <button type="button" onclick="fecharModalExclusao()" class="btn-cancel-modal">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+    
+
     <script>
-        // Array fixo com os mapeamentos corretos dos dias da semana (ISO-8601: Segunda=1, Domingo=7)
+
+        
         const DIAS_MAP = [
             { nome: 'Segunda-Feira', valor: 1 },
             { nome: 'Terça-Feira', valor: 2 },
@@ -599,8 +647,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             { nome: 'Domingo', valor: 7 }
         ];
 
-        // Array para lembrar quais dias já estavam salvos (Edição ou POST anterior)
-        const diasSelecionadosAnteriormente = <?= json_encode($dados_edicao['dias_semana'] ?? $_POST['dias_semana'] ?? [1, 2, 3, 4, 5, 6, 7]) ?>;
+        const diasSelecionadosAnteriormente = <?= json_encode($_POST['dias_semana'] ?? [1, 2, 3, 4, 5, 6, 7]) ?>;
 
         function atualizarDiasSemana() {
             const inputInicio = document.getElementById('data_inicio').value;
@@ -609,7 +656,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             
             if (!container) return;
 
-            // Se não informou ambas as datas completas, mostra todos os dias ativos por padrão
             if (!inputInicio || !inputFim || inputInicio.length !== 10 || inputFim.length !== 10) {
                 renderizarDias(diasSelecionadosAnteriormente, null);
                 return;
@@ -618,24 +664,21 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             const d1 = new Date(inputInicio + 'T00:00:00');
             const d2 = new Date(inputFim + 'T00:00:00');
 
-            // Proteção crucial: Se o ano for menor que 1000 ou inconsistente, evita travar ou quebrar o JS
             if (d1.getFullYear() < 1000 || d2.getFullYear() < 1000 || d2 < d1) {
                 renderizarDias(diasSelecionadosAnteriormente, null);
                 return;
             }
 
-            // Calcula a diferença exata em dias inteiros
             const diffTempo = Math.abs(d2 - d1);
             const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
 
-            // Se o intervalo de metas for menor que uma semana (6 dias ou menos), filtramos os dias válidos
             if (diffDias < 6) {
                 let diasValidos = [];
                 let dataVar = new Date(d1.getTime());
 
                 for (let i = 0; i <= diffDias; i++) {
                     let numDia = dataVar.getDay(); 
-                    let diaIso = numDia === 0 ? 7 : numDia; // Converte Domingo de 0 para 7
+                    let diaIso = numDia === 0 ? 7 : numDia;
                     if (!diasValidos.includes(diaIso)) {
                         diasValidos.push(diaIso);
                     }
@@ -643,20 +686,19 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 }
                 renderizarDias(diasSelecionadosAnteriormente, diasValidos);
             } else {
-                // Se for maior ou igual a uma semana completa, todos os dias estão disponíveis
                 renderizarDias(diasSelecionadosAnteriormente, null);
             }
         }
 
         function renderizarDias(selecionados, filtrados) {
             const container = document.getElementById('containerDiasSemana');
+            if (!container) return;
             container.innerHTML = '';
 
             DIAS_MAP.forEach(dia => {
                 const label = document.createElement('label');
                 label.className = 'row-item';
 
-                // Se houver filtro ativo e o dia atual não estiver nele, desabilitamos visualmente
                 const estaDisponivel = filtrados === null || filtrados.includes(dia.valor);
                 if (!estaDisponivel) {
                     label.classList.add('dia-desabilitado');
@@ -671,18 +713,34 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 checkbox.value = dia.valor;
                 checkbox.className = 'custom-checkbox';
                 
-                // Se estiver disponível e constar nos selecionados, marca o check
                 if (estaDisponivel && selecionados.map(Number).includes(dia.valor)) {
                     checkbox.checked = true;
                 }
                 if (!estaDisponivel) {
-                    checkbox.disabled = true; // Impede envio no formulário caso esteja indisponível
+                    checkbox.disabled = true;
                 }
 
                 label.appendChild(span);
                 label.appendChild(checkbox);
                 container.appendChild(label);
             });
+        }
+
+        // NOVA FUNÇÃO: Exibe tela de loading customizada para a Edição
+        function dispararLoadingEdicao(event, url) {
+            event.preventDefault();
+            document.getElementById('loadingText').innerText = "🛠️ Carregando dados para edição...";
+            document.getElementById('loadingSubtext').innerText = "Buscando parâmetros do seu cronograma no banco de dados.";
+            document.getElementById('loadingScreen').style.display = "flex";
+            window.location.href = url;
+        }
+
+        // NOVA FUNÇÃO: Exibe tela de loading customizada para a Exclusão
+        function dispararLoadingExclusao(url) {
+            document.getElementById('loadingText').innerText = "🗑️ Removendo cronograma...";
+            document.getElementById('loadingSubtext').innerText = "Limpando os eventos vinculados ao seu Google Agenda.";
+            document.getElementById('loadingScreen').style.display = "flex";
+            window.location.href = url;
         }
 
         (function() {
@@ -693,7 +751,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
         })();
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Inicializa a renderização dos dias assim que a página abre
             atualizarDiasSemana();
 
             const modalForm = document.querySelector("#confirmModal form");
@@ -703,6 +760,10 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             if (modalForm) {
                 modalForm.addEventListener("submit", function() {
                     if (confirmModal) confirmModal.style.display = "none";
+                    
+                    // Garante que o texto volte ao padrão se for criação de novos eventos
+                    document.getElementById('loadingText').innerText = "🗓️ Sincronizando com o Google Agenda...";
+                    document.getElementById('loadingSubtext').innerText = "Isso pode levar alguns segundos dependendo do tamanho do seu cronograma.";
                     if (loadingScreen) loadingScreen.style.display = "flex";
                 });
             }
@@ -710,32 +771,36 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             const btnToggleMaterias = document.getElementById('btnToggleMaterias');
             const conteinerMaterias = document.getElementById('conteinerMaterias');
 
-            btnToggleMaterias.addEventListener('click', function() {
-                const isVisible = conteinerMaterias.style.display === 'flex';
-                conteinerMaterias.style.display = isVisible ? 'none' : 'flex';
-                
-                const icon = this.querySelector('.fa-chevron-down, .fa-chevron-up');
-                if(icon) {
-                    icon.classList.toggle('fa-chevron-down', isVisible);
-                    icon.classList.toggle('fa-chevron-up', !isVisible);
-                }
-            });
+            if (btnToggleMaterias && conteinerMaterias) {
+                btnToggleMaterias.addEventListener('click', function() {
+                    const isVisible = conteinerMaterias.style.display === 'flex';
+                    conteinerMaterias.style.display = isVisible ? 'none' : 'flex';
+                    
+                    const icon = this.querySelector('.fa-chevron-down, .fa-chevron-up');
+                    if(icon) {
+                        icon.classList.toggle('fa-chevron-down', isVisible);
+                        icon.classList.toggle('fa-chevron-up', !isVisible);
+                    }
+                });
+            }
 
-            // Gerenciamento dos Accordions de matérias internas
             document.querySelectorAll('.materia-accordion-header').forEach(header => {
                 header.addEventListener('click', function() {
                     const item = this.parentElement;
+                    item.classList.toggle('active');
                     const content = item.querySelector('.materia-accordion-content');
-                    const isActive = item.classList.contains('active');
-                    
-                    document.querySelectorAll('.materia-accordion-item').forEach(i => {
-                        i.classList.remove('active');
-                        i.querySelector('.materia-accordion-content').style.maxHeight = null;
-                    });
-
-                    if (!isActive) {
-                        item.classList.add('active');
-                        content.style.maxHeight = content.scrollHeight + "px";
+                    if (content) {
+                        if (item.classList.contains('active')) {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                        } else {
+                            content.style.maxHeight = "0px";
+                        }
+                        
+                        setTimeout(() => {
+                            if(item.classList.contains('active')) {
+                                header.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }
+                        }, 310);
                     }
                 });
             });
@@ -745,7 +810,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             event.preventDefault();
             Swal.fire({
                 title: 'Tem certeza?',
-                text: "Você removerá este cronograma e ele será apagado do seu Google Agenda!",
+                text: "Isso removerá a agenda criada no Google Agenda definitivamente!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#7c3aed',
@@ -754,10 +819,13 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = `?deletar_salvo=${id}`;
+                    // ATUALIZADO: Agora chama a função de loading em vez de ir direto
+                    dispararLoadingExclusao(`?deletar_salvo=${id}`);
                 }
             });
         }
+
+        
     </script>
 </body>
 </html>
