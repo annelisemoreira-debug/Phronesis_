@@ -44,29 +44,37 @@ if (isset($_SESSION['id'])) {
             <img src="<?php echo $path; ?>assets/img/logoescuro.webp" alt="logoPhronesis" class="logo-dark">
         </a>
     </div>
+
     <nav class="menuNav">
         <ul class="menu">
-            <?php if (isset($_SESSION['id'])): ?>
-                <li class="materiais"><a href="<?php echo $path; ?>pages/material.php">Materiais</a></li>
-                <li class="livros"><a href="<?php echo $path; ?>pages/livros.php">Obras Obrigatórias</a></li>
-                <li class="cronogramas"><a href="<?php echo $path; ?>pages/meu_calendario.php">Cronogramas</a></li>
-
-                <?php if ($usuarioTipo === 'admin'): ?>
-                    <li class="admin"><a href="<?php echo $path; ?>pages/admin_materias.php">ADM</a></li>
-                <?php endif; ?>
-
-                <li class="perfil-container" id="perfilBtn">
-                    <img src="<?php echo $fotoPerfil; ?>" alt="Perfil" class="foto-perfil">
-                    <div id="dropdownPerfil" class="menu-dropdown">
-                        <a href="<?php echo $path; ?>perfil/configperfil.php">Meu Perfil</a>
-                        <a href="<?php echo $path; ?>logout.php" style="color: red;">Sair</a>
-                    </div>
-                </li>
-            <?php else: ?>
-                <li class="entrar"><a href="<?php echo $path; ?>login.php">Entrar</a></li>
-            <?php endif; ?>
-        </ul>
+            <li class="materiais"><a href="<?php echo $path; ?>pages/material.php">Materiais</a></li>
+            <li class="livros"><a href="<?php echo $path; ?>pages/livros.php">Obras Obrigatórias</a></li>
+            <li class="cronogramas"><a href="<?php echo $path; ?>pages/meu_calendario.php">Cronogramas</a></li>
+            </ul>
     </nav>
+
+    <div class="perfil-wrapper">
+        <?php if (isset($_SESSION['id'])): ?>
+            
+            <?php if ($usuarioTipo === 'admin'): ?>
+                <a href="<?php echo $path; ?>pages/admin_materias.php" class="botao-nav-adm">ADM</a>
+            <?php else: ?>
+                <span class="texto-painel">Painel do Estudante</span>
+            <?php endif; ?>
+
+            <div class="perfil-container" id="perfilBtn">
+                <img src="<?php echo $fotoPerfil; ?>" alt="Perfil" class="foto-perfil">
+                <div id="dropdownPerfil" class="menu-dropdown">
+                    <a href="<?php echo $path; ?>perfil/configperfil.php">Meu Perfil</a>
+                    <a href="<?php echo $path; ?>logout.php" style="color: red;">Sair</a>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="menu">
+                <div class="entrar"><a href="<?php echo $path; ?>login.php">Entrar</a></div>
+            </div>
+        <?php endif; ?>
+    </div>
 </header>
 
 <script>
