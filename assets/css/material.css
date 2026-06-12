@@ -256,13 +256,13 @@ html.dark-theme .seen-on {
 
 /* Altera a cor do texto do título para Azul Claro */
 .video-title-card.video-visto {
-    color: #00b4d8 !important; /* Azul claro vivo */
+    color: #5b3aa6 !important; /* Azul claro vivo */
     font-weight: 600; /* Deixa o título levemente mais destacado */
 }
 
 /* Se dentro do seu título houver um link <a>, pinta ele também */
 .video-title-card.video-visto a {
-    color: #00b4d8 !important;
+    color: #5b3aa6 !important;
 }
 
 /* Deixa o botão de check (✓) azul claro e ativo */
