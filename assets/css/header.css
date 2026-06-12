@@ -176,7 +176,7 @@ header {
 /* Estilização do Botão Funcional "ADM" quando movido para o bloco do Perfil */
 .botao-nav-adm {
     text-decoration: none;
-    color: #ffcccc; /* Tom rosado/salmão idêntico ao do seu rascunho em modo claro */
+    color: #ff3636; /* Tom rosado/salmão idêntico ao do seu rascunho em modo claro */
     font-weight: bold;
     font-size: 14px;
     margin-right: 16px; /* Garante o espaçamento adequado antes da foto de perfil */
@@ -185,8 +185,8 @@ header {
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 .botao-nav-adm:hover {
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    color: #ff1414;
+    text-shadow: 0 0 8px rgba(136, 16, 16, 0.6);
 }
 
 /* ==========================================================================
