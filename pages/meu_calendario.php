@@ -1,27 +1,20 @@
 <?php
 session_start();
 
-// 1. Verifica se a variável de sessão existe
-if (!isset($_SESSION['id'])) {
+// 1. Verifica se a variável de sessão existe (Usuário logado no sistema)
+if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     header("Location: ../login.php");
     exit();
-}
-
-// Se o usuário NÃO estiver logado, manda ele para a tela de login
-if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
-    header("Location: login.php");
-    exit(); // Interrompe a execução do script
 }
 
 // --- CONEXÃO ---
 $conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
-$id = $_SESSION['id'];
-$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$id = intval($_SESSION['id']);
+$res = $conn->query("SELECT foto, google_token FROM usuario WHERE id_usuario = $id");
 $dadosUser = $res->fetch_assoc();
 
-// Se a sessão existe mas o banco não retornou ninguém (ex: após um drop table)
 if (!$dadosUser) {
     session_destroy(); // Destrói a sessão inválida
     header("Location: ../login.php");
@@ -30,38 +23,76 @@ if (!$dadosUser) {
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// Inicializa o Cliente Google API
 $client = new Google\Client();
 $client->setAuthConfig('../credentials.json');
 $client->addScope(Google\Service\Calendar::CALENDAR);
 $client->setAccessType('offline');
-$client->setPrompt('select_account consent'); 
+// Importante: 'consent' garante que o Google devolva o Refresh Token permanente
+$client->setPrompt('consent'); 
 
-// ESTE LINK ABAIXO TEM QUE SER IGUAL AO QUE VOCÊ SALVOU NO GOOGLE
+// Link de redirecionamento idêntico ao do Console do Google Developer
 $redirect_uri = 'http://localhost/Phronesis_/pages/meu_calendario.php';
 $client->setRedirectUri($redirect_uri);
 
-// Se o Google enviou o código de volta
+// ======================================================================
+// CONTROLE DE TOKEN: RECUPERAÇÃO DO BANCO OU SESSÃO
+// ======================================================================
+
+// 1. Se a sessão está limpa mas temos o token salvo no Banco de Dados, joga ele para a sessão
+if (!isset($_SESSION['upload_token']) && !empty($dadosUser['google_token'])) {
+    $_SESSION['upload_token'] = json_decode($dadosUser['google_token'], true);
+}
+
+// 2. Se o Google acabou de mandar o código de autorização de volta pela URL
 if (isset($_GET['code'])) {
     try {   
         $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
         $_SESSION['upload_token'] = $token;
+        
+        // SALVA NO BANCO: Transforma o array do token em texto JSON e guarda no perfil do usuário
+        $tokenJson = $conn->real_escape_string(json_encode($token));
+        $conn->query("UPDATE usuario SET google_token = '$tokenJson' WHERE id_usuario = $id");
+
         header('Location: cronograma.php');
         exit;
     } catch (Exception $e) {
-        echo "Erro ao obter token: " . $e->getMessage();
+        // Silencia ou trata o erro se o código expirar
     }
 }
 
-$authUrl = $client->createAuthUrl();
+// 3. Validação final de redirecionamento
+if (isset($_SESSION['upload_token'])) {
+    $client->setAccessToken($_SESSION['upload_token']);
+    
+    // Se o token expirou, mas temos o Refresh Token (gerado pelo accessType offline), ele renova sozinho!
+    if ($client->isAccessTokenExpired()) {
+        if ($client->getRefreshToken()) {
+            $newToken = $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+            $_SESSION['upload_token'] = $newToken;
+            
+            // Atualiza o novo token gerado no banco de dados
+            $tokenJson = $conn->real_escape_string(json_encode($newToken));
+            $conn->query("UPDATE usuario SET google_token = '$tokenJson' WHERE id_usuario = $id");
+        }
+    }
 
-// Guarda em uma variável booleana se a conta do Google está conectada
-$googleLogado = isset($_SESSION['upload_token']) ? 'true' : 'false';
+    // Se o token estiver perfeitamente ativo e válido, pula direto para o cronograma
+    if (!$client->isAccessTokenExpired()) {
+        header('Location: cronograma.php');
+        exit();
+    }
+}
+
+// Se chegou até aqui, o usuário realmente não tem vinculação ativa. Mostra a tela.
+$authUrl = $client->createAuthUrl();
+$googleLogado = 'false';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Cronograma</title>
+    <title>Sincronizar Agenda - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/meuCalendario.css">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -74,10 +105,10 @@ $googleLogado = isset($_SESSION['upload_token']) ? 'true' : 'false';
         <h2>Conectar para criar!</h2>
         <p>Para facilitar a organização da sua rotina, o nosso site funciona de forma integrada com o <span class="google-brand">Google Agenda</span>.</p>
         
-        <p>Sincronize sua conta Google para criar e visualizar seu cronograma automaticamente. </p>
+        <p>Sincronize sua conta Google para criar e visualizar seu cronograma automaticamente.</p>
         
         <a class="btn-google" href="<?= $authUrl ?>">
-            Continuar com Google
+            <i class="fa-brands fa-google"></i> Vincular Google Agenda
         </a>
 
         <div class="login-options">
@@ -87,12 +118,11 @@ $googleLogado = isset($_SESSION['upload_token']) ? 'true' : 'false';
         </div>
 
         <div class="footer-link">
-            <a href="../index.php">Voltar</a>
+            <a href="../index.php">Voltar ao Início</a>
         </div>
     </div>
 
     <script>
-        // Cria a mesma instância de Toast que você usou no login.php
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -101,23 +131,18 @@ $googleLogado = isset($_SESSION['upload_token']) ? 'true' : 'false';
             timerProgressBar: true
         });
 
-        // Passa o estado de login do PHP para o JavaScript
         const estaLogadoNoGoogle = <?php echo $googleLogado; ?>;
 
         document.getElementById('btn-ja-conectei').addEventListener('click', function(e) {
-            // Se NÃO estiver logado no Google, barra o redirecionamento e mostra o aviso
             if (!estaLogadoNoGoogle) {
-                e.preventDefault(); // Cancela o clique do link
-                
+                e.preventDefault();
                 Toast.fire({
                     icon: 'warning',
-                    title: 'Você ainda não conectou sua conta do Google!'
+                    title: 'Você precisa clicar em "Vincular Google Agenda" primeiro!'
                 });
             }
         });
 
-                
-        // Mantém apenas a injeção da classe no topo para evitar "piscada" visual de fundo branco
         if (localStorage.getItem('site-theme') === 'dark') {
             document.documentElement.classList.add('dark-theme');
         }
@@ -127,6 +152,3 @@ $googleLogado = isset($_SESSION['upload_token']) ? 'true' : 'false';
         
 </body>
 </html>
-
-
-

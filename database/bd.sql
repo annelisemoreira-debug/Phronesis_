@@ -386,15 +386,16 @@ UPDATE usuario SET tipo = 'admin' WHERE email = 'raoni@phronesis.com';
 CREATE DATABASE IF NOT EXISTS phronesis;
 USE phronesis;
 
--- 2. Tabela de usuários COM a coluna de tipo (admin/comum)
+-- 2. Tabela de usuários COM a coluna de tipo e google_token integrados
 CREATE TABLE IF NOT EXISTS usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
-    telefone VARCHAR(20),
+    telefone VARCHAR(20) NULL, -- CORRIGIDO: Sintaxe ajustada aqui
     foto VARCHAR(255) DEFAULT 'assets/img/default-user.webp',
-    tipo ENUM('comum', 'admin') DEFAULT 'comum' -- ADICIONADO AQUI
+    tipo ENUM('comum', 'admin') DEFAULT 'comum',
+    google_token TEXT NULL -- ADICIONADO AQUI: Armazenamento permanente do Google
 );
 
 -- 3. TABELA FORTE: Materia
@@ -427,7 +428,8 @@ CREATE TABLE IF NOT EXISTS cronograma_item (
     FOREIGN KEY (id_materia) REFERENCES materia(id_materia) ON DELETE RESTRICT
 );
 
-CREATE TABLE favoritos (
+-- 6. Favoritos (Vídeos)
+CREATE TABLE IF NOT EXISTS favoritos (
     id_favorito INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
     video_id VARCHAR(50) NOT NULL,
@@ -435,6 +437,7 @@ CREATE TABLE favoritos (
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
 );
 
+-- 7. Vistos (Histórico de Vídeos)
 CREATE TABLE IF NOT EXISTS vistos (
     id_visto INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
@@ -443,10 +446,10 @@ CREATE TABLE IF NOT EXISTS vistos (
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
 );
 
+-- 8. Definição dos Administradores do Sistema
 UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'manuella@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'annelise@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'dukye@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'narutomig@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'raoni@phronesis.com';
-

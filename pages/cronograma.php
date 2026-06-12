@@ -47,9 +47,17 @@ if (!isset($_SESSION['meus_cronogramas'])) {
     $_SESSION['meus_cronogramas'] = [];
 }
 
-// Logout e Limpeza
+// ======================================================================
+// AJUSTE CRUCIAL: Logout e Limpeza completa (Sessão + Banco de Dados)
+// ======================================================================
 if (isset($_GET['logout'])) {
+    // 1. Limpa o token salvo permanentemente no perfil do usuário no Banco de Dados
+    $conn->query("UPDATE usuario SET google_token = NULL WHERE id_usuario = $id");
+
+    // 2. Limpa as variáveis de ambiente da sessão atual
     unset($_SESSION['upload_token'], $_SESSION['temp_cronograma'], $_SESSION['editando_id']);
+    
+    // 3. Manda o usuário de volta para a tela de sincronização limpa
     header('Location: meu_calendario.php');
     exit;
 }
@@ -132,11 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
         $data_atual = clone $data_inicio;
         $intervalo = $data_inicio->diff($data_fim);
 
-        // MODIFICAÇÃO CIRÚRGICA: Coloca todas as matérias no mesmo dia
         for ($i = 0; $i <= $intervalo->days; $i++) {
             if (in_array($data_atual->format('N'), $dias_permitidos)) {
 
-                // Iniciamos a primeira matéria no horário base escolhido pelo usuário
                 $horario_acumulado = new DateTime($data_atual->format('Y-m-d') . ' ' . $_POST['hora_inicio']);
 
                 foreach ($materias_selecionadas as $id_da_vez) {
@@ -152,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
                         'fim_iso' => $fim_sessao->format('Y-m-d\TH:i:s')
                     ];
 
-                    // Avança o horário acumulado para que a próxima matéria comece logo após o término desta
                     $horario_acumulado->modify('+' . $_POST['horas_estudo'] . ' hours');
                 }
             }
@@ -166,7 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
 
 // --- SALVAR ---
 if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
-    // Define que o script pode rodar por até 5 minutos (300 segundos) para dar tempo de salvar tudo no Google
     set_time_limit(300);
     try {
         $pdo->beginTransaction();
@@ -268,7 +272,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 
 <body>
@@ -496,7 +499,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             }
         })();
 
-        // Intercepta a confirmação para exibir a tela de carregamento
         document.addEventListener("DOMContentLoaded", function() {
             const modalForm = document.querySelector("#confirmModal form");
             const confirmModal = document.getElementById("confirmModal");
@@ -510,16 +512,15 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             }
         });
 
-        // Função customizada usando SweetAlert2 para a exclusão
         function confirmDelete(event, id) {
-            event.preventDefault(); // Impede o link de navegar imediatamente
+            event.preventDefault();
 
             Swal.fire({
                 title: 'Tem certeza?',
                 text: "Você deseja excluir este cronograma do banco de dados e da sua Google Agenda?",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#22c55e', // Cor padrão dos botões Phronesis
+                confirmButtonColor: '#22c55e',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Sim, excluir!',
                 cancelButtonText: 'Cancelar',
@@ -527,7 +528,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 color: document.documentElement.classList.contains('dark-theme') ? '#fff' : '#000'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Se o usuário confirmou, redireciona para a URL de exclusão do PHP
                     window.location.href = '?deletar_salvo=' + id;
                 }
             });
