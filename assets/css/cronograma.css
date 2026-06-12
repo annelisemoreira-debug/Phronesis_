@@ -7,20 +7,20 @@
 
 /* Definição de Variáveis de Cor (Padrão: Modo Claro) */
 :root {
-    --bg-color: #cbb4f9;          
-    --card-bg: #fbf9ff;           
-    --text-primary: #4c1d95;      
-    --text-secondary: #7c3aed;    
-    --text-body: #334155;         
-    --text-muted: #94a3b8;        
-    --input-bg: #f8fafc;          
-    --input-border: #e2e8f0;      
-    --row-hover: #f5f3ff;         
-    --row-border: #f1f5f9;        
-    --icon-box-bg: #f3e8ff;       
-    --icon-box-color: #9b51e0;    
+    --bg-color: #cbb4f9;
+    --card-bg: #fbf9ff;
+    --text-primary: #4c1d95;
+    --text-secondary: #7c3aed;
+    --text-body: #334155;
+    --text-muted: #94a3b8;
+    --input-bg: #f8fafc;
+    --input-border: #e2e8f0;
+    --row-hover: #f5f3ff;
+    --row-border: #f1f5f9;
+    --icon-box-bg: #f3e8ff;
+    --icon-box-color: #9b51e0;
     --shadow: rgba(121, 40, 202, 0.15);
-    
+
     --purple-main: #9b51e0;
     --purple-hover: #7c3aed;
     --btn-del-bg: #fee2e2;
@@ -31,18 +31,18 @@
 
 /* Paleta de Cores Aplicada ao MODO ESCURO (Herdando do elemento HTML global) */
 html.dark-theme body {
-    --bg-color: #12101a;          
-    --card-bg: #1a1824;           
-    --text-primary: #f3e8ff;      
-    --text-secondary: #a78bfa;    
-    --text-body: #cbd5e1;         
-    --text-muted: #64748b;        
-    --input-bg: #252332;          
-    --input-border: #38354d;      
-    --row-hover: #2d293d;         
-    --row-border: #252332;        
-    --icon-box-bg: #2d293d;       
-    --icon-box-color: #a78bfa;    
+    --bg-color: #12101a;
+    --card-bg: #1a1824;
+    --text-primary: #f3e8ff;
+    --text-secondary: #a78bfa;
+    --text-body: #cbd5e1;
+    --text-muted: #64748b;
+    --input-bg: #252332;
+    --input-border: #38354d;
+    --row-hover: #2d293d;
+    --row-border: #252332;
+    --icon-box-bg: #2d293d;
+    --icon-box-color: #a78bfa;
     --shadow: rgba(0, 0, 0, 0.4);
 }
 
@@ -59,13 +59,14 @@ body {
     grid-template-columns: 1fr 340px;
     gap: 25px;
     max-width: 1300px;
-    margin: 50px auto 0 auto; 
+    margin: 50px auto 0 auto;
     padding: 0 20px;
     width: 100%;
 }
 
 /* --- CONTAINERS (CARDS) --- */
-.container-principal, .sidebar-historico {
+.container-principal,
+.sidebar-historico {
     background-color: var(--card-bg);
     border-radius: 20px;
     padding: 30px;
@@ -83,7 +84,7 @@ body {
 
 .title-left {
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
     align-items: center;
     gap: 15px;
 }
@@ -211,6 +212,7 @@ html.dark-theme input::-webkit-calendar-picker-indicator {
 .scrolling-list::-webkit-scrollbar {
     width: 6px;
 }
+
 .scrolling-list::-webkit-scrollbar-thumb {
     background-color: var(--input-border);
     border-radius: 4px;
@@ -388,7 +390,7 @@ html.dark-theme input::-webkit-calendar-picker-indicator {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
     transition: background-color 0.3s ease;
 }
 
@@ -444,8 +446,8 @@ html.dark-theme .btn-del {
     margin-bottom: 20px;
 }
 
-.agenda-header h3 { 
-    color: var(--text-primary); 
+.agenda-header h3 {
+    color: var(--text-primary);
 }
 
 .btn-novo-crono {
@@ -462,10 +464,12 @@ html.dark-theme .btn-del {
 .calendar-embed {
     width: 100%;
     height: 550px;
-    border: 2px solid var(--text-secondary); /* Borda roxa fina */
+    border: 2px solid var(--text-secondary);
+    /* Borda roxa fina */
     border-radius: 16px;
     background-color: var(--card-bg);
-    box-shadow: 0 4px 15px var(--shadow); /* Sombra roxa suave do seu tema */
+    box-shadow: 0 4px 15px var(--shadow);
+    /* Sombra roxa suave do seu tema */
     transition: all 0.3s ease;
 }
 
@@ -484,7 +488,10 @@ html.dark-theme .btn-del {
 .modal {
     display: none;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-color: rgba(18, 16, 26, 0.6);
     backdrop-filter: blur(4px);
     z-index: 2000;
@@ -499,11 +506,19 @@ html.dark-theme .btn-del {
     width: 100%;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
-.modal-content h3 { color: var(--text-primary); margin-bottom: 10px; }
-.modal-content p { font-size: 14px; color: var(--text-body); margin-bottom: 20px; }
+.modal-content h3 {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    font-size: 14px;
+    color: var(--text-body);
+    margin-bottom: 20px;
+}
 
 .btn-sync {
     background-color: #22c55e;
@@ -528,18 +543,20 @@ html.dark-theme .btn-del {
 }
 
 /* --- SUPORTE COMPLEMENTAR AO TEMA ESCURO GLOBAL --- */
-html.dark-theme .sidebar, 
-html.dark-theme .content-wrapper, 
+html.dark-theme .sidebar,
+html.dark-theme .content-wrapper,
 html.dark-theme .main-content-card {
     background-color: #252230;
     color: #fff;
 }
 
-html.dark-theme h1, html.dark-theme h2 {
+html.dark-theme h1,
+html.dark-theme h2 {
     color: #fff;
 }
 
-html.dark-theme p, html.dark-theme span {
+html.dark-theme p,
+html.dark-theme span {
     color: #b0aeb8;
 }
 
@@ -548,3 +565,47 @@ html.dark-theme .book-item-card {
     border: 1px solid #3d3752;
 }
 
+/* --- TELA E COMPONENTES DE CARREGAMENTO (AJUSTE DE API) --- */
+.loader-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Container da Barra de Progresso */
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background-color: var(--input-border);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+}
+
+/* Efeito da barra carregando infinitamente */
+.progress-bar-fill {
+    width: 40%;
+    height: 100%;
+    background-color: var(--purple-main);
+    border-radius: 10px;
+    position: absolute;
+    animation: indeterminateProgress 1.5s infinite linear;
+}
+
+@keyframes indeterminateProgress {
+    0% {
+        left: -40%;
+    }
+
+    50% {
+        left: 40%;
+        width: 60%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
