@@ -14,7 +14,7 @@ if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
 
-// 2. Verifica se o ID da sessão ainda é válido no banco de dados (Segurança contra SQL Injection)
+// 2. Verifica se o ID da sessão ainda é válido no banco de dados
 $id = intval($_SESSION['id']);
 $res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
 $dadosUser = $res->fetch_assoc();
@@ -43,21 +43,47 @@ $sql = "SELECT id_materia, nome_materia FROM materia ORDER BY nome_materia ASC";
 $consulta = $pdo->query($sql);
 $lista_materias_db = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
+$materias_com_conteudos = [];
+try {
+    $sql_conteudos = "SELECT m.nome_materia, t.nome_topico AS nome_conteudo
+                      FROM materia m
+                      LEFT JOIN materia_topico t ON m.id_materia = t.id_materia 
+                      ORDER BY m.nome_materia ASC, t.nome_topico ASC";
+    $stmt_cont = $pdo->query($sql_conteudos);
+    $lista_completa = $stmt_cont->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (empty($lista_completa) || (count($lista_completa) === 1 && empty($lista_completa[0]['nome_conteudo']))) {
+        $sql_conteudos = "SELECT m.nome_materia, c.nome_conteudo 
+                          FROM materia m
+                          LEFT JOIN conteudo c ON m.id_materia = c.id_materia 
+                          ORDER BY m.nome_materia ASC, c.nome_conteudo ASC";
+        $stmt_cont = $pdo->query($sql_conteudos);
+        $lista_completa = $stmt_cont->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    foreach ($lista_completa as $linha) {
+        $mat = $linha['nome_materia'];
+        if (!isset($materias_com_conteudos[$mat])) {
+            $materias_com_conteudos[$mat] = [];
+        }
+        if (!empty($linha['nome_conteudo'])) {
+            $materias_com_conteudos[$mat][] = $linha['nome_conteudo'];
+        }
+    }
+} catch (Exception $e) {
+    $consulta_fallback = $pdo->query("SELECT nome_materia FROM materia ORDER BY nome_materia ASC");
+    while ($row = $consulta_fallback->fetch(PDO::FETCH_ASSOC)) {
+        $materias_com_conteudos[$row['nome_materia']] = [];
+    }
+}
+
 if (!isset($_SESSION['meus_cronogramas'])) {
     $_SESSION['meus_cronogramas'] = [];
 }
 
-// ======================================================================
-// AJUSTE CRUCIAL: Logout e Limpeza completa (Sessão + Banco de Dados)
-// ======================================================================
 if (isset($_GET['logout'])) {
-    // 1. Limpa o token salvo permanentemente no perfil do usuário no Banco de Dados
     $conn->query("UPDATE usuario SET google_token = NULL WHERE id_usuario = $id");
-
-    // 2. Limpa as variáveis de ambiente da sessão atual
     unset($_SESSION['upload_token'], $_SESSION['temp_cronograma'], $_SESSION['editando_id']);
-    
-    // 3. Manda o usuário de volta para a tela de sincronização limpa
     header('Location: meu_calendario.php');
     exit;
 }
@@ -142,12 +168,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
 
         for ($i = 0; $i <= $intervalo->days; $i++) {
             if (in_array($data_atual->format('N'), $dias_permitidos)) {
-
                 $horario_acumulado = new DateTime($data_atual->format('Y-m-d') . ' ' . $_POST['hora_inicio']);
 
                 foreach ($materias_selecionadas as $id_da_vez) {
                     $inicio_sessao = clone $horario_acumulado;
-
                     $fim_sessao = clone $inicio_sessao;
                     $fim_sessao->modify('+' . $_POST['horas_estudo'] . ' hours');
 
@@ -199,8 +223,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 foreach ($events->getItems() as $event) {
                     $service->events->delete($calendarIdParaUso, $event->getId());
                 }
-            } catch (Exception $e) {
-            }
+            } catch (Exception $e) {}
         } else {
             $newCalendar = new Google\Service\Calendar\Calendar();
             $newCalendar->setSummary('Phronesis: ' . $_SESSION['ultimo_nome']);
@@ -272,6 +295,106 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .btn-toggle-materias {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
+        }
+        .btn-toggle-materias:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .conteiner-materias-expansivel {
+            display: none; 
+            margin-top: 15px;
+            flex-direction: column;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        .materia-accordion-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .dark-theme .materia-accordion-item {
+            background-color: #26263b;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .materia-accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.02);
+            transition: background 0.2s;
+        }
+        .materia-accordion-header:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+        }
+        .materia-accordion-header i.fa-folder {
+            margin-right: 10px;
+            color: #a78bfa;
+        }
+        .materia-accordion-header i.chevron {
+            transition: transform 0.3s ease;
+        }
+        .materia-accordion-item.active .materia-accordion-header i.chevron {
+            transform: rotate(180deg);
+        }
+        .materia-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+        .materia-accordion-content ul {
+            list-style: none;
+            padding: 12px 16px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .materia-accordion-content li {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .materia-accordion-content li::before {
+            content: "•";
+            color: #7c3aed;
+            font-size: 1.2rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Classe utilitária para desabilitar visualmente os dias indisponíveis */
+        .dia-desabilitado {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -354,46 +477,8 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
                     <div class="full-width field-group">
                         <label>Dias da Semana:</label>
-                        <div class="list-container scrolling-list">
-                            <?php
-                            $dias_todos = ['Segunda-Feira' => 1, 'Terça-Feira' => 2, 'Quarta-Feira' => 3, 'Quinta-Feira' => 4, 'Sexta-Feira' => 5, 'Sábado' => 6, 'Domingo' => 7];
-                            $selecionados = $dados_edicao['dias_semana'] ?? $_POST['dias_semana'] ?? [1, 2, 3, 4, 5, 6, 7];
-
-                            $dt_ini_val = $dados_edicao['data_inicio'] ?? $_POST['data_inicio'] ?? $hoje;
-                            $dt_fim_val = $dados_edicao['data_fim'] ?? $_POST['data_fim'] ?? null;
-
-                            $dias_filtrados = $dias_todos;
-
-                            if ($dt_fim_val) {
-                                $d1 = new DateTime($dt_ini_val);
-                                $d2 = new DateTime($dt_fim_val);
-                                $diff_dias = $d1->diff($d2)->days;
-
-                                if ($diff_dias < 6 && $d2 >= $d1) {
-                                    $dias_filtrados = [];
-                                    $temp_date = clone $d1;
-                                    for ($i = 0; $i <= $diff_dias; $i++) {
-                                        $num_dia = (int)$temp_date->format('N');
-                                        $nome_dia = array_search($num_dia, $dias_todos);
-                                        if ($nome_dia !== false) {
-                                            $dias_filtrados[$nome_dia] = $num_dia;
-                                        }
-                                        $temp_date->modify('+1 day');
-                                    }
-                                    uasort($dias_filtrados, function ($a, $b) {
-                                        return $a <=> $b;
-                                    });
-                                }
-                            }
-
-                            foreach ($dias_filtrados as $n => $v): ?>
-                                <label class="row-item">
-                                    <span><?= $n ?></span>
-                                    <input type="checkbox" name="dias_semana[]" value="<?= $v ?>"
-                                        <?= in_array($v, $selecionados) ? 'checked' : '' ?> class="custom-checkbox">
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
+                        <div class="list-container scrolling-list" id="containerDiasSemana">
+                            </div>
                     </div>
 
                     <div class="field-group input-icon-wrapper">
@@ -416,7 +501,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                             $mats_ativas = $dados_edicao['materias_id'] ?? $_POST['materias_id'] ?? [];
                             if (empty($lista_materias_db)): ?>
                                 <div class="row-item empty-state-select">Selecione as matérias que deseja estudar...</div>
-                                <?php else:
+                            <?php else:
                                 foreach ($lista_materias_db as $m): ?>
                                     <label class="row-item">
                                         <span><?= htmlspecialchars($m['nome_materia']) ?></span>
@@ -468,28 +553,136 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
+
+            <button class="btn-toggle-materias" id="btnToggleMaterias">
+                <span>Navegar Conteúdos por Matéria</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+
+            <div class="conteiner-materias-expansivel" id="conteinerMaterias">
+                <?php if (!empty($materias_com_conteudos)): ?>
+                    <?php foreach ($materias_com_conteudos as $materia_nome => $conteudos): ?>
+                        <div class="materia-accordion-item">
+                            <div class="materia-accordion-header">
+                                <span><i class="fa-regular fa-folder"></i> <?= htmlspecialchars($materia_nome) ?></span>
+                                <i class="fa-solid fa-chevron-down chevron"></i>
+                            </div>
+                            <div class="materia-accordion-content">
+                                <ul>
+                                    <?php if (!empty($conteudos)): ?>
+                                        <?php foreach ($conteudos as $conteudo): ?>
+                                            <li><?= htmlspecialchars($conteudo) ?></li>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <li style="color: #8e8ea8; font-style: italic;">Nenhum conteúdo cadastrado para esta matéria ainda.</li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p style="color: #8e8ea8; font-size: 0.9rem; text-align: center; margin-top: 10px;">Nenhuma matéria carregada do banco.</p>
+                <?php endif; ?>
+            </div>
         </aside>
     </main>
 
     <script>
+        // Array fixo com os mapeamentos corretos dos dias da semana (ISO-8601: Segunda=1, Domingo=7)
+        const DIAS_MAP = [
+            { nome: 'Segunda-Feira', valor: 1 },
+            { nome: 'Terça-Feira', valor: 2 },
+            { nome: 'Quarta-Feira', valor: 3 },
+            { nome: 'Quinta-Feira', valor: 4 },
+            { nome: 'Sexta-Feira', valor: 5 },
+            { nome: 'Sábado', valor: 6 },
+            { nome: 'Domingo', valor: 7 }
+        ];
+
+        // Array para lembrar quais dias já estavam salvos (Edição ou POST anterior)
+        const diasSelecionadosAnteriormente = <?= json_encode($dados_edicao['dias_semana'] ?? $_POST['dias_semana'] ?? [1, 2, 3, 4, 5, 6, 7]) ?>;
+
         function atualizarDiasSemana() {
-            const dataInicio = document.getElementById('data_inicio').value;
-            const dataFim = document.getElementById('data_fim').value;
+            const inputInicio = document.getElementById('data_inicio').value;
+            const inputFim = document.getElementById('data_fim').value;
+            const container = document.getElementById('containerDiasSemana');
+            
+            if (!container) return;
 
-            if (dataInicio && dataFim) {
-                const form = document.getElementById('formCronograma');
-
-                const inputTrocaData = document.createElement('input');
-                inputTrocaData.type = 'hidden';
-                inputTrocaData.name = 'atualizando_datas';
-                inputTrocaData.value = '1';
-                form.appendChild(inputTrocaData);
-
-                document.querySelectorAll('input[name="materias_id[]"]').forEach(el => el.removeAttribute('required'));
-                document.getElementsByName('nome_cronograma')[0].removeAttribute('required');
-
-                form.submit();
+            // Se não informou ambas as datas completas, mostra todos os dias ativos por padrão
+            if (!inputInicio || !inputFim || inputInicio.length !== 10 || inputFim.length !== 10) {
+                renderizarDias(diasSelecionadosAnteriormente, null);
+                return;
             }
+
+            const d1 = new Date(inputInicio + 'T00:00:00');
+            const d2 = new Date(inputFim + 'T00:00:00');
+
+            // Proteção crucial: Se o ano for menor que 1000 ou inconsistente, evita travar ou quebrar o JS
+            if (d1.getFullYear() < 1000 || d2.getFullYear() < 1000 || d2 < d1) {
+                renderizarDias(diasSelecionadosAnteriormente, null);
+                return;
+            }
+
+            // Calcula a diferença exata em dias inteiros
+            const diffTempo = Math.abs(d2 - d1);
+            const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
+
+            // Se o intervalo de metas for menor que uma semana (6 dias ou menos), filtramos os dias válidos
+            if (diffDias < 6) {
+                let diasValidos = [];
+                let dataVar = new Date(d1.getTime());
+
+                for (let i = 0; i <= diffDias; i++) {
+                    let numDia = dataVar.getDay(); 
+                    let diaIso = numDia === 0 ? 7 : numDia; // Converte Domingo de 0 para 7
+                    if (!diasValidos.includes(diaIso)) {
+                        diasValidos.push(diaIso);
+                    }
+                    dataVar.setDate(dataVar.getDate() + 1);
+                }
+                renderizarDias(diasSelecionadosAnteriormente, diasValidos);
+            } else {
+                // Se for maior ou igual a uma semana completa, todos os dias estão disponíveis
+                renderizarDias(diasSelecionadosAnteriormente, null);
+            }
+        }
+
+        function renderizarDias(selecionados, filtrados) {
+            const container = document.getElementById('containerDiasSemana');
+            container.innerHTML = '';
+
+            DIAS_MAP.forEach(dia => {
+                const label = document.createElement('label');
+                label.className = 'row-item';
+
+                // Se houver filtro ativo e o dia atual não estiver nele, desabilitamos visualmente
+                const estaDisponivel = filtrados === null || filtrados.includes(dia.valor);
+                if (!estaDisponivel) {
+                    label.classList.add('dia-desabilitado');
+                }
+
+                const span = document.createElement('span');
+                span.textContent = dia.nome;
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'dias_semana[]';
+                checkbox.value = dia.valor;
+                checkbox.className = 'custom-checkbox';
+                
+                // Se estiver disponível e constar nos selecionados, marca o check
+                if (estaDisponivel && selecionados.map(Number).includes(dia.valor)) {
+                    checkbox.checked = true;
+                }
+                if (!estaDisponivel) {
+                    checkbox.disabled = true; // Impede envio no formulário caso esteja indisponível
+                }
+
+                label.appendChild(span);
+                label.appendChild(checkbox);
+                container.appendChild(label);
+            });
         }
 
         (function() {
@@ -500,6 +693,9 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
         })();
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Inicializa a renderização dos dias assim que a página abre
+            atualizarDiasSemana();
+
             const modalForm = document.querySelector("#confirmModal form");
             const confirmModal = document.getElementById("confirmModal");
             const loadingScreen = document.getElementById("loadingScreen");
@@ -510,32 +706,58 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     if (loadingScreen) loadingScreen.style.display = "flex";
                 });
             }
+
+            const btnToggleMaterias = document.getElementById('btnToggleMaterias');
+            const conteinerMaterias = document.getElementById('conteinerMaterias');
+
+            btnToggleMaterias.addEventListener('click', function() {
+                const isVisible = conteinerMaterias.style.display === 'flex';
+                conteinerMaterias.style.display = isVisible ? 'none' : 'flex';
+                
+                const icon = this.querySelector('.fa-chevron-down, .fa-chevron-up');
+                if(icon) {
+                    icon.classList.toggle('fa-chevron-down', isVisible);
+                    icon.classList.toggle('fa-chevron-up', !isVisible);
+                }
+            });
+
+            // Gerenciamento dos Accordions de matérias internas
+            document.querySelectorAll('.materia-accordion-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const item = this.parentElement;
+                    const content = item.querySelector('.materia-accordion-content');
+                    const isActive = item.classList.contains('active');
+                    
+                    document.querySelectorAll('.materia-accordion-item').forEach(i => {
+                        i.classList.remove('active');
+                        i.querySelector('.materia-accordion-content').style.maxHeight = null;
+                    });
+
+                    if (!isActive) {
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
         });
 
         function confirmDelete(event, id) {
             event.preventDefault();
-
             Swal.fire({
                 title: 'Tem certeza?',
-                text: "Você deseja excluir este cronograma do banco de dados e da sua Google Agenda?",
+                text: "Você removerá este cronograma e ele será apagado do seu Google Agenda!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#22c55e',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#7c3aed',
+                cancelButtonColor: '#ef4444',
                 confirmButtonText: 'Sim, excluir!',
-                cancelButtonText: 'Cancelar',
-                background: document.documentElement.classList.contains('dark-theme') ? '#1e1e2f' : '#fff',
-                color: document.documentElement.classList.contains('dark-theme') ? '#fff' : '#000'
+                cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = '?deletar_salvo=' + id;
+                    window.location.href = `?deletar_salvo=${id}`;
                 }
             });
         }
     </script>
-
-    <?php include '../perfil/vlibras.php'; ?>
-
 </body>
-
 </html>

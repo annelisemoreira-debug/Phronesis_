@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 1. CONEXÃO COM O BANCO (Usando MySQLi para checar o admin antes do PDO)
+// 1. CONEXÃO COM O BANCO
 $servername = "localhost";
 $username = "root";
 $password = "Home@spSENAI2025!";
@@ -28,7 +28,7 @@ if (!$user_data || $user_data['tipo'] !== 'admin') {
     exit();
 }
 
-// 2. LÓGICA PDO (Para o restante do seu código funcionar)
+// 2. LÓGICA PDO
 try {
     $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -38,7 +38,7 @@ try {
 
 $msg = "";
 
-// Lógica de Inserção
+// Lógica de Inserção de Matéria
 if (isset($_POST['add_materia'])) {
     $nome = trim($_POST['nome_materia']);
     if (!empty($nome)) {
@@ -52,7 +52,7 @@ if (isset($_POST['add_materia'])) {
     }
 }
 
-// Lógica de Edição
+// Lógica de Edição de Matéria
 if (isset($_POST['edit_materia'])) {
     $id_edit = $_POST['id_materia'];
     $nome_edit = trim($_POST['novo_nome']);
@@ -67,7 +67,7 @@ if (isset($_POST['edit_materia'])) {
     }
 }
 
-// Lógica de Exclusão
+// Lógica de Exclusão de Matéria
 if (isset($_GET['del'])) {
     try {
         $stmt = $pdo->prepare("DELETE FROM materia WHERE id_materia = ?");
@@ -78,8 +78,56 @@ if (isset($_GET['del'])) {
     }
 }
 
+// Lógica de Inserção de Tópico
+if (isset($_POST['add_topico'])) {
+    $id_materia_topico = $_POST['id_materia'];
+    $nome_topico = trim($_POST['nome_topico']);
+    if (!empty($nome_topico) && !empty($id_materia_topico)) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO materia_topico (id_materia, nome_topico) VALUES (?, ?)");
+            $stmt->execute([$id_materia_topico, $nome_topico]);
+            $msg = "📌 Tópico adicionado com sucesso!";
+        } catch (Exception $e) {
+            $msg = "❌ Erro ao adicionar tópico.";
+        }
+    }
+}
+
+// NOVA: Lógica de Edição de Tópico
+if (isset($_POST['edit_topico'])) {
+    $id_topico = $_POST['id_topico'];
+    $novo_nome_topico = trim($_POST['novo_nome_topico']);
+    if (!empty($id_topico) && !empty($novo_nome_topico)) {
+        try {
+            $stmt = $pdo->prepare("UPDATE materia_topico SET nome_topico = ? WHERE id_topico = ?");
+            $stmt->execute([$novo_nome_topico, $id_topico]);
+            $msg = "📝 Tópico atualizado com sucesso!";
+        } catch (Exception $e) {
+            $msg = "❌ Erro ao editar tópico.";
+        }
+    }
+}
+
+// Lógica de Exclusão de Tópico
+if (isset($_GET['del_topico'])) {
+    try {
+        $stmt = $pdo->prepare("DELETE FROM materia_topico WHERE id_topico = ?");
+        $stmt->execute([$_GET['del_topico']]);
+        $msg = "🗑️ Tópico removido!";
+    } catch (Exception $e) {
+        $msg = "❌ Erro ao remover tópico.";
+    }
+}
+
 // Buscar matérias existentes
 $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+// Buscar tópicos vinculados organizados por id_materia
+$topicos_brutos = $pdo->query("SELECT * FROM materia_topico ORDER BY nome_topico ASC")->fetchAll(PDO::FETCH_ASSOC);
+$topicos = [];
+foreach ($topicos_brutos as $t) {
+    $topicos[$t['id_materia']][] = $t;
+}
 ?>
 
 <!DOCTYPE html>
@@ -93,12 +141,10 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
     <link rel="stylesheet" href="../assets/css/admin_materias.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-
 </head>
 <body>
 
 <?php include '../interface/header.php'; ?>
-
 
 <main class="main-container">
     <section class="card-principal">
@@ -108,8 +154,8 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
                 <i class="fa-solid fa-book"></i>
             </span>
             <div>
-                <h2>Gerenciar Matérias (ADM)</h2>
-                <p>Adicione e gerencie as matérias disponíveis para os cronogramas.</p>
+                <h2>Gerenciar Matérias e Tópicos (ADM)</h2>
+                <p>Adicione as matérias e liste os subtópicos cobrados para direcionar os estudantes.</p>
             </div>
         </div>
 
@@ -139,29 +185,60 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 15%;">ID</th>
-                            <th style="width: 65%;">Nome da Matéria</th>
-                            <th style="width: 20%; text-align: center;">Ação</th>
+                            <th style="width: 10%;">ID</th>
+                            <th style="width: 55%;">Nome da Matéria</th>
+                            <th style="width: 35%; text-align: center;">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($materias as $m): ?>
-                        <tr id="linha-<?= $m['id_materia'] ?>">
-                            <td><b>#<?= $m['id_materia'] ?></b></td>
-                            
+                        <?php foreach($materias as $m): $id_m = $m['id_materia']; ?>
+                        <tr id="linha-<?= $id_m ?>">
+                            <td><b>#<?= $id_m ?></b></td>
                             <td class="col-nome">
                                 <span class="texto-nome"><?= htmlspecialchars($m['nome_materia']) ?></span>
                             </td>
-                            
                             <td class="col-acoes" style="text-align: center;">
                                 <div class="action-buttons" style="justify-content: center;">
+                                    <button type="button" class="btn-table-action btn-table-topicos" onclick="toggleTopicosPanel(<?= $id_m ?>)" title="Gerenciar Tópicos">
+                                        <i class="fa-solid fa-list-check"></i>
+                                    </button>
+
                                     <button type="button" class="btn-table-action btn-table-edit btn-ativar-edicao" 
-                                       data-id="<?= $m['id_materia'] ?>" 
-                                       data-nome="<?= htmlspecialchars($m['nome_materia'], ENT_QUOTES, 'UTF-8') ?>" title="Editar">
+                                       data-id="<?= $id_m ?>" 
+                                       data-nome="<?= htmlspecialchars($m['nome_materia'], ENT_QUOTES, 'UTF-8') ?>" title="Editar Nome">
                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                     
-                                    <a href="?del=<?= $m['id_materia'] ?>" class="btn-table-action btn-table-del" onclick="return confirm('Tem certeza que deseja excluir esta matéria?')" title="Excluir">×</a>
+                                    <a href="?del=<?= $id_m ?>" class="btn-table-action btn-table-del" onclick="return confirm('Tem certeza que deseja excluir esta matéria? Todos os tópicos dela sumirão.')" title="Excluir">×</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="painel-topicos-<?= $id_m ?>" class="sub-row-topicos">
+                            <td colspan="3">
+                                <div class="box-topicos-adm">
+                                    <h4>Tópicos de Conteúdo para: <u><?= htmlspecialchars($m['nome_materia']) ?></u></h4>
+                                    
+                                    <ul class="lista-topicos-atuais">
+                                        <?php if(isset($topicos[$id_m])): ?>
+                                            <?php foreach($topicos[$id_m] as $t): ?>
+                                                <li class="tag-topico-adm" id="tag-topico-<?= $t['id_topico'] ?>">
+                                                    <span class="nome-topico-texto"><?= htmlspecialchars($t['nome_topico']) ?></span>
+                                                    <i class="fa-solid fa-pen btn-topic-edit" onclick="ativarEdicaoTopico(<?= $t['id_topico'] ?>, '<?= htmlspecialchars($t['nome_topico'], ENT_QUOTES, 'UTF-8') ?>')" title="Editar Tópico"></i>
+                                                    <a href="?del_topico=<?= $t['id_topico'] ?>" class="btn-topic-del" onclick="return confirm('Apagar este tópico?')" title="Remover Tópico">×</a>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <span style="font-size: 12px; color: var(--text-muted); font-style: italic;">Nenhum subtópico adicionado ainda.</span>
+                                        <?php endif; ?>
+                                    </ul>
+
+                                    <form method="POST" class="form-add-topico-inline">
+                                        <input type="hidden" name="id_materia" value="<?= $id_m ?>">
+                                        <input type="text" name="nome_topico" placeholder="Adicionar novo tópico (ex: Estequiometria)" required>
+                                        <button type="submit" name="add_topico" style="background-color: var(--purple-main); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600;">
+                                            Adicionar
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -178,17 +255,23 @@ $materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetc
 </main>
 
 <script>
-// Monitoramento dinâmico de edição inline
+// Exibir/Ocultar painel de tópicos da matéria específica
+function toggleTopicosPanel(id) {
+    const painel = document.getElementById(`painel-topicos-${id}`);
+    painel.style.display = (painel.style.display === 'table-row') ? 'none' : 'table-row';
+}
+
+// Monitoramento dinâmico de edição inline de MATÉRIAS
 document.body.addEventListener('click', function(e) {
     const btn = e.target.closest('.btn-ativar-edicao');
     if (btn) {
         const id = btn.getAttribute('data-id');
         const nomeOriginal = btn.getAttribute('data-nome');
-        ativarEdicao(id, nomeOriginal); // Corrigido para corresponder ao nome da função abaixo
+        ativarEdicaoMateria(id, nomeOriginal);
     }
 });
 
-function ativarEdicao(id, nomeOriginal) { // Corrigido aqui (removido o 'c')
+function activarEdicao(id, nomeOriginal) {
     const linha = document.getElementById(`linha-${id}`);
     const colNome = linha.querySelector('.col-nome');
     const colAcoes = linha.querySelector('.col-acoes');
@@ -196,12 +279,10 @@ function ativarEdicao(id, nomeOriginal) { // Corrigido aqui (removido o 'c')
     const htmlOriginalNome = colNome.innerHTML;
     const htmlOriginalAcoes = colAcoes.innerHTML;
 
-    // Troca o texto estático pelo campo de entrada ajustado
     colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}">`;
     document.getElementById(`input-${id}`).value = nomeOriginal;
     document.getElementById(`input-${id}`).focus();
 
-    // Substitui temporariamente as ações por Salvar/Cancelar
     colAcoes.innerHTML = `
         <div class="action-buttons" style="justify-content: center;">
             <form method="POST" style="display: inline;" onsubmit="prepararEnvio(${id});">
@@ -213,26 +294,45 @@ function ativarEdicao(id, nomeOriginal) { // Corrigido aqui (removido o 'c')
         </div>
     `;
 
-    // Evento para Reverter alteração caso clique em cancelar
     document.getElementById(`cancelar-${id}`).addEventListener('click', () => {
         colNome.innerHTML = htmlOriginalNome;
         colAcoes.innerHTML = htmlOriginalAcoes;
     });
 }
 
+function ativarEdicaoMateria(id, nomeOriginal) { activarEdicao(id, nomeOriginal); }
+
 function prepararEnvio(id) {
     const valorInput = document.getElementById(`input-${id}`).value;
     document.getElementById(`hidden-nome-${id}`).value = valorInput;
 }
 
+// NOVA: Ativar edição Inline de TÓPICOS
+function ativarEdicaoTopico(idTopico, nomeOriginal) {
+    const tag = document.getElementById(`tag-topico-${idTopico}`);
+    const htmlOriginal = tag.innerHTML;
+
+    tag.innerHTML = `
+        <form method="POST" style="display: flex; align-items: center; gap: 5px;">
+            <input type="hidden" name="id_topico" value="${idTopico}">
+            <input type="text" name="novo_nome_topico" value="${nomeOriginal}" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
+            <button type="submit" name="edit_topico" class="btn-salvar" style="padding: 4px 8px;">✔</button>
+            <button type="button" class="btn-cancelar" id="cancel-topico-${idTopico}" style="padding: 4px 8px; background: #ef4444;">X</button>
+        </form>
+    `;
+
+    document.getElementById(`cancel-topico-${idTopico}`).addEventListener('click', () => {
+        tag.innerHTML = htmlOriginal;
+    });
+}
+
 (function () {
     const savedTheme = localStorage.getItem('site-theme');
     if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark-theme'); // Adiciona no <html>
-        document.body.classList.add('dark-theme');            // Mantém no <body> para o restante do seu admin_materias.css
+        document.documentElement.classList.add('dark-theme');
+        document.body.classList.add('dark-theme');
     }
 })();
-    
 </script>
 
 <?php include '../perfil/vlibras.php'; ?>

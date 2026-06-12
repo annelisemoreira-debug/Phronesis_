@@ -11,8 +11,8 @@
     --card-bg: #fbf9ff;
     --text-primary: #4c1d95;
     --text-secondary: #7c3aed;
-    --text-body: #334155;
-    --text-muted: #94a3b8;
+    --text-body: #334155;          /* Tom escuro legível para o modo claro */
+    --text-muted: #64748b;         /* Ajustado para dar leitura sobre cinza claro */
     --input-bg: #f8fafc;
     --input-border: #e2e8f0;
     --row-hover: #f5f3ff;
@@ -29,7 +29,8 @@
     --btn-edit-color: #0284c7;
 }
 
-/* Paleta de Cores Aplicada ao MODO ESCURO (Herdando do elemento HTML global) */
+/* Paleta de Cores Aplicada ao MODO ESCURO */
+html.dark-theme,
 html.dark-theme body {
     --bg-color: #12101a;
     --card-bg: #1a1824;
@@ -50,6 +51,8 @@ body {
     background-color: var(--bg-color);
     min-height: 100vh;
     padding-bottom: 40px;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-body);
     transition: background-color 0.3s ease;
 }
 
@@ -199,7 +202,7 @@ html.dark-theme input::-webkit-calendar-picker-indicator {
     pointer-events: none;
 }
 
-/* LISTAS DE SELEÇÃO */
+/* LISTAS DE SELEÇÃO INFERIORES (Matéria Disponíveis dropdown) */
 .list-container {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
@@ -224,11 +227,15 @@ html.dark-theme input::-webkit-calendar-picker-indicator {
     align-items: center;
     padding: 12px 20px;
     border-bottom: 1px solid var(--row-border);
-    color: var(--text-body);
+    color: var(--text-body) !important; /* Força cor correta no modo claro */
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
+}
+
+html.dark-theme .row-item {
+    color: var(--text-body) !important;
 }
 
 .row-item:last-child {
@@ -242,6 +249,7 @@ html.dark-theme input::-webkit-calendar-picker-indicator {
 .empty-state-select {
     color: var(--text-muted);
     font-style: italic;
+    padding: 15px 20px;
 }
 
 /* CHECKBOX PERSONALIZADO */
@@ -460,16 +468,13 @@ html.dark-theme .btn-del {
     font-weight: 600;
 }
 
-/* --- AGENDA INTERNA EM IFRAME (Customizado Roxo) --- */
 .calendar-embed {
     width: 100%;
     height: 550px;
     border: 2px solid var(--text-secondary);
-    /* Borda roxa fina */
     border-radius: 16px;
     background-color: var(--card-bg);
     box-shadow: 0 4px 15px var(--shadow);
-    /* Sombra roxa suave do seu tema */
     transition: all 0.3s ease;
 }
 
@@ -542,7 +547,205 @@ html.dark-theme .btn-del {
     cursor: pointer;
 }
 
-/* --- SUPORTE COMPLEMENTAR AO TEMA ESCURO GLOBAL --- */
+/* --- TELA E COMPONENTES DE CARREGAMENTO (AJUSTE DE API) --- */
+.loader-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background-color: var(--input-border);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+}
+
+/* ==========================================================================
+   --- ESTILOS DO ACCORDION DE MATÉRIAS (NAVEGAR CONTEÚDOS) ---
+   ========================================================================== */
+
+/* Botão Principal do Accordion */
+.btn-toggle-materias {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: linear-gradient(135deg, var(--purple-main), var(--purple-hover));
+    border: none;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(155, 81, 224, 0.2);
+}
+
+/* Força o texto e ícones do botão a ficarem brancos em qualquer tema */
+.btn-toggle-materias,
+.btn-toggle-materias span,
+.btn-toggle-materias i {
+    color: #ffffff !important;
+}
+
+.btn-toggle-materias:hover {
+    box-shadow: 0 6px 16px rgba(155, 81, 224, 0.35);
+    transform: translateY(-1px);
+}
+
+/* Container que agrupa a lista de matérias */
+.conteiner-materias-expansivel {
+    display: none;
+    margin-top: 15px;
+    flex-direction: column;
+    gap: 10px;
+    animation: fadeInAccordion 0.3s ease;
+}
+
+/* Card individual de cada matéria (ex: Física, Português) */
+.materia-accordion-item {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.materia-accordion-item.active {
+    border-color: #a78bfa;
+}
+
+/* Cabeçalho do item clicável */
+.materia-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+/* Garante cor escura estável no modo claro */
+.materia-accordion-header,
+.materia-accordion-header span {
+    color: #1e293b !important;
+}
+
+/* Restaura a cor clara nativa apenas se estiver ativo o dark theme */
+html.dark-theme .materia-accordion-header,
+html.dark-theme .materia-accordion-header span {
+    color: var(--text-primary) !important;
+}
+
+.materia-accordion-header:hover {
+    background-color: var(--row-hover);
+}
+
+/* Ícone de pasta à esquerda do título */
+.materia-accordion-header i.fa-folder {
+    margin-right: 8px;
+    color: var(--text-secondary) !important;
+}
+
+/* Seta (Chevron) à direita */
+.materia-accordion-header i.chevron {
+    color: var(--text-muted) !important;
+    font-size: 11px;
+    transition: transform 0.3s ease;
+}
+
+.materia-accordion-item.active .materia-accordion-header i.chevron {
+    transform: rotate(180deg);
+    color: var(--text-secondary) !important;
+}
+
+/* Área interna que revela a lista de tópicos */
+.materia-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: var(--card-bg); 
+}
+
+.materia-accordion-content ul {
+    list-style: none;
+    padding: 12px 18px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--row-border);
+}
+
+/* Linhas dos tópicos (ex: Ondulatória, Gramática) */
+.materia-accordion-content li {
+    font-size: 13px;
+    color: #334155 !important; /* Cor escura fixa de alta legibilidade para o Modo Claro */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+/* Altera a cor do texto para o tom claro correto apenas no Modo Escuro */
+html.dark-theme .materia-accordion-content li {
+    color: var(--text-body) !important;
+}
+
+/* Marcador de bolinha personalizado antes do texto */
+.materia-accordion-content li::before {
+    content: "•";
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Textos informativos de estado vazio */
+.materia-accordion-item .empty-state-select,
+.sidebar-historico .empty-state-select {
+    color: var(--text-muted);
+    padding: 15px 18px;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* Animação de surgimento do Accordion */
+@keyframes fadeInAccordion {
+    from { 
+        opacity: 0; 
+        transform: translateY(-5px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.progress-bar-fill {
+    width: 40%;
+    height: 100%;
+    background-color: var(--purple-main);
+    border-radius: 10px;
+    position: absolute;
+    animation: indeterminateProgress 1.5s infinite linear;
+}
+
+@keyframes indeterminateProgress {
+    0% { left: -40%; }
+    50% { left: 40%; width: 60%; }
+    100% { left: 100%; }
+}
+
+/* --- SUPORTE COMPLEMENTAR AO TEMA ESCURO GLOBAL REVISADO --- */
 html.dark-theme .sidebar,
 html.dark-theme .content-wrapper,
 html.dark-theme .main-content-card {
@@ -555,57 +758,13 @@ html.dark-theme h2 {
     color: #fff;
 }
 
-html.dark-theme p,
-html.dark-theme span {
+/* Correção crucial: removido seletores p e span genéricos que quebravam o modo claro */
+html.dark-theme .empty-history-wrapper p,
+html.dark-theme .title-left p {
     color: #b0aeb8;
 }
 
 html.dark-theme .book-item-card {
     background-color: #2d293d;
     border: 1px solid #3d3752;
-}
-
-/* --- TELA E COMPONENTES DE CARREGAMENTO (AJUSTE DE API) --- */
-.loader-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
-
-/* Container da Barra de Progresso */
-.progress-bar-container {
-    width: 100%;
-    height: 6px;
-    background-color: var(--input-border);
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-    margin-top: 10px;
-}
-
-/* Efeito da barra carregando infinitamente */
-.progress-bar-fill {
-    width: 40%;
-    height: 100%;
-    background-color: var(--purple-main);
-    border-radius: 10px;
-    position: absolute;
-    animation: indeterminateProgress 1.5s infinite linear;
-}
-
-@keyframes indeterminateProgress {
-    0% {
-        left: -40%;
-    }
-
-    50% {
-        left: 40%;
-        width: 60%;
-    }
-
-    100% {
-        left: 100%;
-    }
 }
