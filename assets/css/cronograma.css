@@ -458,11 +458,15 @@ html.dark-theme .btn-del {
     font-weight: 600;
 }
 
+/* --- AGENDA INTERNA EM IFRAME (Customizado Roxo) --- */
 .calendar-embed {
     width: 100%;
     height: 550px;
-    border: 1px solid var(--input-border);
-    border-radius: 12px;
+    border: 2px solid var(--text-secondary); /* Borda roxa fina */
+    border-radius: 16px;
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 15px var(--shadow); /* Sombra roxa suave do seu tema */
+    transition: all 0.3s ease;
 }
 
 /* --- FEEDBACKS E MODAL --- */
@@ -543,3 +547,4 @@ html.dark-theme .book-item-card {
     background-color: #2d293d;
     border: 1px solid #3d3752;
 }
+

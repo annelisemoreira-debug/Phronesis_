@@ -130,22 +130,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
 
         $cronograma_gerado = [];
         $data_atual = clone $data_inicio;
-        $materia_index = 0;
         $intervalo = $data_inicio->diff($data_fim);
 
+        // MODIFICAÇÃO CIRÚRGICA: Coloca todas as matérias no mesmo dia
         for ($i = 0; $i <= $intervalo->days; $i++) {
             if (in_array($data_atual->format('N'), $dias_permitidos)) {
-                $inicio_sessao = new DateTime($data_atual->format('Y-m-d') . ' ' . $_POST['hora_inicio']);
-                $fim_sessao = clone $inicio_sessao;
-                $fim_sessao->modify('+' . $_POST['horas_estudo'] . ' hours');
-                $id_da_vez = $materias_selecionadas[$materia_index % count($materias_selecionadas)];
-                $cronograma_gerado[] = [
-                    'id_materia' => $id_da_vez,
-                    'materia' => $nomes_map[$id_da_vez],
-                    'inicio_iso' => $inicio_sessao->format('Y-m-d\TH:i:s'),
-                    'fim_iso' => $fim_sessao->format('Y-m-d\TH:i:s')
-                ];
-                $materia_index++;
+                
+                // Iniciamos a primeira matéria no horário base escolhido pelo usuário
+                $horario_acumulado = new DateTime($data_atual->format('Y-m-d') . ' ' . $_POST['hora_inicio']);
+                
+                foreach ($materias_selecionadas as $id_da_vez) {
+                    $inicio_sessao = clone $horario_acumulado;
+                    
+                    $fim_sessao = clone $inicio_sessao;
+                    $fim_sessao->modify('+' . $_POST['horas_estudo'] . ' hours');
+                    
+                    $cronograma_gerado[] = [
+                        'id_materia' => $id_da_vez,
+                        'materia' => $nomes_map[$id_da_vez],
+                        'inicio_iso' => $inicio_sessao->format('Y-m-d\TH:i:s'),
+                        'fim_iso' => $fim_sessao->format('Y-m-d\TH:i:s')
+                    ];
+                    
+                    // Avança o horário acumulado para que a próxima matéria comece logo após o término desta
+                    $horario_acumulado->modify('+' . $_POST['horas_estudo'] . ' hours');
+                }
             }
             $data_atual->modify('+1 day');
         }
@@ -157,6 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
 
 // --- SALVAR ---
 if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
+    // Define que o script pode rodar por até 5 minutos (300 segundos) para dar tempo de salvar tudo no Google
+    set_time_limit(300);
     try {
         $pdo->beginTransaction(); 
         $id_usuario_logado = $_SESSION['id'] ?? 1;
@@ -279,14 +290,14 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 <h3><i class="fa-solid fa-calendar-days"></i> Agenda: <?= htmlspecialchars($_SESSION['meus_cronogramas'][$id_visualizacao]['titulo']) ?></h3>
                 <a href="cronograma.php" class="btn-novo-crono">+ Novo Cronograma</a>
             </div>
-            <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo" class="calendar-embed"></iframe>
+            <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo&wkst=1&bgcolor=%23fbf9ff&color=%237c3aed&showCalendars=0&showTabs=1" class="calendar-embed" style="border: none;" allowfullscreen></iframe>
         <?php else: ?>
             
             <div class="card-header">
                 <div class="title-left">
-                    <span class="icon-purple-box">
-                        <i class="fa-regular fa-calendar-plus"></i>
-                    </span>
+                    <div class="icon-purple-box">
+                    <i class="fa-regular fa-calendar-plus"></i>
+                </div>
                     <div>
                         <h2>Phronesis</h2>
                         <p>Crie e organize seu cronograma de estudos</p>
@@ -297,17 +308,17 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 </a>
             </div>
 
-            <form method="POST" class="form-grid">
+            <form method="POST" id="formCronograma" class="form-grid">
                 <div class="full-width field-group">
                     <label>Nome do seu Cronograma:</label>
                     <input type="text" name="nome_cronograma" placeholder="Ex: Maratona ENEM 2026" 
-                           value="<?= htmlspecialchars($dados_edicao['nome_cronograma'] ?? '') ?>" required>
+                           value="<?= htmlspecialchars($dados_edicao['nome_cronograma'] ?? $_POST['nome_cronograma'] ?? '') ?>" required>
                 </div>
                 
                 <div class="field-group input-icon-wrapper">
                     <label>Data Início:</label>
                     <div class="input-with-icon">
-                        <input type="date" name="data_inicio" min="<?= $hoje ?>" value="<?= $dados_edicao['data_inicio'] ?? $hoje ?>" required>
+                        <input type="date" name="data_inicio" id="data_inicio" min="<?= $hoje ?>" value="<?= $dados_edicao['data_inicio'] ?? $_POST['data_inicio'] ?? $hoje ?>" onchange="atualizarDiasSemana()" required>
                         <i class="fa-regular fa-calendar input-icon-right"></i>
                     </div>
                 </div>
@@ -315,7 +326,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 <div class="field-group input-icon-wrapper">
                     <label>Data Fim:</label>
                     <div class="input-with-icon">
-                        <input type="date" name="data_fim" min="<?= $hoje ?>" value="<?= $dados_edicao['data_fim'] ?? '' ?>" required>
+                        <input type="date" name="data_fim" id="data_fim" min="<?= $hoje ?>" value="<?= $dados_edicao['data_fim'] ?? $_POST['data_fim'] ?? '' ?>" onchange="atualizarDiasSemana()" required>
                         <i class="fa-regular fa-calendar input-icon-right"></i>
                     </div>
                 </div>
@@ -324,9 +335,35 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <label>Dias da Semana:</label>
                     <div class="list-container scrolling-list">
                         <?php 
-                        $dias = ['Segunda'=>1,'Terça'=>2,'Quarta'=>3,'Quinta'=>4,'Sexta'=>5,'Sábado'=>6,'Domingo'=>7];
-                        $selecionados = $dados_edicao['dias_semana'] ?? [1,2,3,4,5,6,7];
-                        foreach($dias as $n=>$v): ?>
+                        $dias_todos = ['Segunda-Feira'=>1,'Terça-Feira'=>2,'Quarta-Feira'=>3,'Quinta-Feira'=>4,'Sexta-Feira'=>5,'Sábado'=>6,'Domingo'=>7];
+                        $selecionados = $dados_edicao['dias_semana'] ?? $_POST['dias_semana'] ?? [1,2,3,4,5,6,7];
+                        
+                        $dt_ini_val = $dados_edicao['data_inicio'] ?? $_POST['data_inicio'] ?? $hoje;
+                        $dt_fim_val = $dados_edicao['data_fim'] ?? $_POST['data_fim'] ?? null;
+
+                        $dias_filtrados = $dias_todos; 
+
+                        if ($dt_fim_val) {
+                            $d1 = new DateTime($dt_ini_val);
+                            $d2 = new DateTime($dt_fim_val);
+                            $diff_dias = $d1->diff($d2)->days;
+
+                            if ($diff_dias < 6 && $d2 >= $d1) {
+                                $dias_filtrados = [];
+                                $temp_date = clone $d1;
+                                for ($i = 0; $i <= $diff_dias; $i++) {
+                                    $num_dia = (int)$temp_date->format('N'); 
+                                    $nome_dia = array_search($num_dia, $dias_todos);
+                                    if ($nome_dia !== false) {
+                                        $dias_filtrados[$nome_dia] = $num_dia;
+                                    }
+                                    $temp_date->modify('+1 day');
+                                }
+                                uasort($dias_filtrados, function($a, $b) { return $a <=> $b; });
+                            }
+                        }
+
+                        foreach($dias_filtrados as $n=>$v): ?>
                             <label class="row-item">
                                 <span><?=$n?></span>
                                 <input type="checkbox" name="dias_semana[]" value="<?=$v?>" 
@@ -339,21 +376,21 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 <div class="field-group input-icon-wrapper">
                     <label>Hora Início:</label>
                     <div class="input-with-icon">
-                        <input type="time" name="hora_inicio" value="<?= $dados_edicao['hora_inicio'] ?? '08:00' ?>" required>
+                        <input type="time" name="hora_inicio" value="<?= $dados_edicao['hora_inicio'] ?? $_POST['hora_inicio'] ?? '08:00' ?>" required>
                         <i class="fa-regular fa-clock input-icon-right"></i>
                     </div>
                 </div>
                 
                 <div class="field-group">
                     <label>Duração (horas):</label>
-                    <input type="number" name="horas_estudo" value="<?= $dados_edicao['horas_estudo'] ?? '2' ?>" required>
+                    <input type="number" name="horas_estudo" value="<?= $dados_edicao['horas_estudo'] ?? $_POST['horas_estudo'] ?? '2' ?>" required>
                 </div>
                 
                 <div class="full-width field-group">
                     <label>Matérias Disponíveis:</label>
                     <div class="list-container scrolling-list">
                         <?php 
-                        $mats_ativas = $dados_edicao['materias_id'] ?? [];
+                        $mats_ativas = $dados_edicao['materias_id'] ?? $_POST['materias_id'] ?? [];
                         if(empty($lista_materias_db)): ?>
                             <div class="row-item empty-state-select">Selecione as matérias que deseja estudar...</div>
                         <?php else:
@@ -412,6 +449,26 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 </main>
 
 <script>
+    function atualizarDiasSemana() {
+        const dataInicio = document.getElementById('data_inicio').value;
+        const dataFim = document.getElementById('data_fim').value;
+        
+        if (dataInicio && dataFim) {
+            const form = document.getElementById('formCronograma');
+            
+            const inputTrocaData = document.createElement('input');
+            inputTrocaData.type = 'hidden';
+            inputTrocaData.name = 'atualizando_datas';
+            inputTrocaData.value = '1';
+            form.appendChild(inputTrocaData);
+            
+            document.querySelectorAll('input[name="materias_id[]"]').forEach(el => el.removeAttribute('required'));
+            document.getElementsByName('nome_cronograma')[0].removeAttribute('required');
+
+            form.submit();
+        }
+    }
+
     (function () {
         const savedTheme = localStorage.getItem('site-theme') || 'light';
         if (savedTheme === 'dark') {
