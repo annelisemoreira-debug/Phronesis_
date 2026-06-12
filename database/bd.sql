@@ -446,7 +446,15 @@ CREATE TABLE IF NOT EXISTS vistos (
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
 );
 
--- 8. Definição dos Administradores do Sistema
+-- 8. Tópicos das Matérias (Gerenciado por Administradores)
+CREATE TABLE IF NOT EXISTS materia_topico (
+    id_topico INT AUTO_INCREMENT PRIMARY KEY,
+    id_materia INT NOT NULL,
+    nome_topico VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_materia) REFERENCES materia(id_materia) ON DELETE CASCADE
+);
+
+-- 9. Definição dos Administradores do Sistema
 UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'manuella@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'annelise@phronesis.com';
