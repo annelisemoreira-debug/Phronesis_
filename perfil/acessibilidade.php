@@ -163,7 +163,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 
                 <section class="libras-section">
                     <div class="libras-info">
-                        <h2>Acesse o conhecimento em Libras de forma rápida e intuitiva.</h2>
+                        <h2>Acesse o conhecimento in Libras de forma rápida e intuitiva.</h2>
                         <p>Integra a tradução em sinais à sua navegação, garantindo acesso pleno ao acervo da biblioteca.</p>
                     </div>
                     <div class="libras-controls">
@@ -178,22 +178,24 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
         </main>
     </div>
 
-<?php include 'vlibras.php'; ?>
+    <?php include 'vlibras.php'; ?>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const btnLight = document.getElementById("btn-light-theme");
             const btnDark = document.getElementById("btn-dark-theme");
+            const toggleLibras = document.getElementById("toggle-libras");
 
+            // --- 1. GERENCIAMENTO DE TEMA ---
             function alternarTema(tema) {
                 if (tema === 'dark') {
                     document.documentElement.classList.add('dark-theme');
-                    btnDark.classList.add('active-card');
-                    btnLight.classList.remove('active-card');
+                    if (btnDark) btnDark.classList.add('active-card');
+                    if (btnLight) btnLight.classList.remove('active-card');
                 } else {
                     document.documentElement.classList.remove('dark-theme');
-                    btnLight.classList.add('active-card');
-                    btnDark.classList.remove('active-card');
+                    if (btnLight) btnLight.classList.add('active-card');
+                    if (btnDark) btnDark.classList.remove('active-card');
                 }
                 localStorage.setItem('site-theme', tema);
             }
@@ -201,8 +203,48 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
             const temaAtual = localStorage.getItem('site-theme') || 'light';
             alternarTema(temaAtual);
 
-            btnLight.addEventListener("click", () => alternarTema('light'));
-            btnDark.addEventListener("click", () => alternarTema('dark'));
+            // Escutadores usando 'pointerdown': Captura o toque/clique no exato milissegundo inicial.
+            // Não usamos stopPropagation() aqui para permitir que o evento suba e o VLibras consiga ler os textos normalmente.
+            if (btnLight) {
+                btnLight.addEventListener("pointerdown", () => {
+                    alternarTema('light');
+                });
+                btnLight.addEventListener("click", () => {
+                    alternarTema('light');
+                });
+            }
+
+            if (btnDark) {
+                btnDark.addEventListener("pointerdown", () => {
+                    alternarTema('dark');
+                });
+                btnDark.addEventListener("click", () => {
+                    alternarTema('dark');
+                });
+            }
+
+            // --- 2. INTEGRAÇÃO E CONTROLE DO VLIBRAS ---
+            const librasAtivo = localStorage.getItem('vlibras-active') === 'true';
+            if (toggleLibras) {
+                toggleLibras.checked = librasAtivo;
+            }
+
+            if (toggleLibras) {
+                toggleLibras.addEventListener("change", (e) => {
+                    const ativo = e.target.checked;
+                    localStorage.setItem('vlibras-active', ativo);
+
+                    const vlibrasWidgetButton = document.querySelector('[vw-access-button]') || document.querySelector('.vw-access-button');
+
+                    if (ativo) {
+                        if (vlibrasWidgetButton && !document.querySelector('.expanded')) {
+                            vlibrasWidgetButton.click();
+                        }
+                    } else {
+                        window.location.reload(); 
+                    }
+                });
+            }
         });
     </script>
 </body>
