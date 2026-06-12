@@ -92,6 +92,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <title>Meu Perfil - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/configperfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     
     <script>
         (function () {

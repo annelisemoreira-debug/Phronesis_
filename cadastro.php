@@ -6,6 +6,7 @@
     <title>Faça parte do Phronesis!</title>
     <link rel="stylesheet" href="assets/css/cadastro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="https://accounts.google.com/gsi/client" async defer></script>

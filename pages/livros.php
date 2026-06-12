@@ -42,7 +42,8 @@ error_reporting(E_ALL);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leituras obrigatórias</title>
     <link class="open-modal-trigger" rel="stylesheet" href="../assets/css/livros.css">
-    <link rel="stylesheet" href="../assets/css/header.css"> 
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 </head>
 <body> 
     <?php include '../interface/header.php'; ?>

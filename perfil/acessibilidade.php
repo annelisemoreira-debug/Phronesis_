@@ -91,6 +91,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acessibilidade - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/acessibilidade.css">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     
     <script>
         (function () {
