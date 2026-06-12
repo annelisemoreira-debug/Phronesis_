@@ -1,19 +1,13 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['id'])) {
-    header("Location: ../login.php");
-    exit();
-}
-
 // Se o usuário NÃO estiver logado, manda ele para a tela de login
 if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     header("Location: login.php");
     exit(); // Interrompe a execução do script
 }
 
-//senha: Home@spSENAI2025!
-
+// senha: Home@spSENAI2025!
 $conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
 
 $id = $_SESSION['id'];
@@ -33,7 +27,16 @@ while ($f = $res_f->fetch_assoc()) {
     $meus_favs[] = $f['video_id'];
 }
 
-// --- CONFIGURAÇÃO API YOUTUBE (MANTIDA INTEGRALMENTE) ---
+// --- BUSCA O QUE O USUÁRIO JÁ ASSISTIU (VISTO) ---
+$meus_vistos = [];
+$res_v = $conn->query("SELECT video_id FROM vistos WHERE id_usuario = $id");
+if ($res_v) {
+    while ($v = $res_v->fetch_assoc()) {
+        $meus_vistos[] = $v['video_id'];
+    }
+}
+
+// --- CONFIGURAÇÃO API YOUTUBE ---
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $minha_chave = 'AIzaSyCENf31FjtasIsEqd20BTK53vrD_v3GuxQ';
@@ -49,10 +52,10 @@ $modoEconomico = false;
 try {
     if (!$modoEconomico) {
         $res = $youtube->search->listSearch('snippet', [
-            'q'             => $termoBuscaAPI,
-            'maxResults'    => 12,
-            'type'          => 'video',
-            'videoDuration' => 'medium',
+            'q'                 => $termoBuscaAPI,
+            'maxResults'        => 12,
+            'type'              => 'video',
+            'videoDuration'     => 'medium',
             'relevanceLanguage' => 'pt'
         ]);
         $videos = $res['items'];
@@ -79,12 +82,21 @@ try {
     <link rel="stylesheet" href="../assets/css/material.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <style>
+        .video-title-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .video-title-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
     <?php include '../interface/header.php'; ?>
 
-   <section class="banner">
+    <section class="banner">
         <img src="../assets/img/normalMateriais.webp" class="banner-img banner-light" alt="Banner">
         <img src="../assets/img/escuroMateriais.webp" class="banner-img banner-dark" alt="Banner">
     </section>
@@ -92,61 +104,24 @@ try {
     <div class="wrapper">
         <aside class="menuSidebar">
             <nav>
-
-                <a class="<?= $termoBuscaOriginal == 'Linguagens' ? 'active-subject' : '' ?>"
-                    href="?materia=Linguagens">
-                    Linguagens
-                </a>
-
-                <a class="<?= $termoBuscaOriginal == 'Matematica' ? 'active-subject' : '' ?>"
-                    href="?materia=Matematica">
-                    Matemática
-                </a>
-
-                <a class="<?= $termoBuscaOriginal == 'Fisica' ? 'active-subject' : '' ?>"
-                    href="?materia=Fisica">
-                    Física
-                </a>
-
-                <a class="<?= $termoBuscaOriginal == 'Biologia' ? 'active-subject' : '' ?>"
-                    href="?materia=Biologia">
-                    Biologia
-                </a>
-
-                <a class="<?= $termoBuscaOriginal == 'Quimica' ? 'active-subject' : '' ?>"
-                    href="?materia=Quimica">
-                    Química
-                </a>
-
-                <a class="<?= $termoBuscaOriginal == 'Historia' ? 'active-subject' : '' ?>"
-                    href="?materia=Historia">
-                    História
-                </a>
-
-                <a class="<?= $termoBuscaOriginal == 'Geografia' ? 'active-subject' : '' ?>"
-                    href="?materia=Geografia">
-                    Geografia
-                </a>
+                <a class="<?= $termoBuscaOriginal == 'Linguagens' ? 'active-subject' : '' ?>" href="?materia=Linguagens">Linguagens</a>
+                <a class="<?= $termoBuscaOriginal == 'Matematica' ? 'active-subject' : '' ?>" href="?materia=Matematica">Matemática</a>
+                <a class="<?= $termoBuscaOriginal == 'Fisica' ? 'active-subject' : '' ?>" href="?materia=Fisica">Física</a>
+                <a class="<?= $termoBuscaOriginal == 'Biologia' ? 'active-subject' : '' ?>" href="?materia=Biologia">Biologia</a>
+                <a class="<?= $termoBuscaOriginal == 'Quimica' ? 'active-subject' : '' ?>" href="?materia=Quimica">Química</a>
+                <a class="<?= $termoBuscaOriginal == 'Historia' ? 'active-subject' : '' ?>" href="?materia=Historia">História</a>
+                <a class="<?= $termoBuscaOriginal == 'Geografia' ? 'active-subject' : '' ?>" href="?materia=Geografia">Geografia</a>
 
                 <div class="sidebar-exam-container">
                     <h3 class="widget-title-sidebar">
                         <span class="titulo-main">Contagem regressiva</span>
                         <span class="tag-vestibulares">VESTIBULARES</span>
                     </h3>
-                    <div class="exam-card-mini mini-enem"><span class="exam-name-mini">ENEM 2026</span>
-                        <div id="timer-enem" class="countdown-mini">00d 00h 00min</div>
-                    </div>
-                    <div class="exam-card-mini mini-fuvest"><span class="exam-name-mini">FUVEST 2027</span>
-                        <div id="timer-fuvest" class="countdown-mini">00d 00h 00min</div>
-                    </div>
-                    <div class="exam-card-mini mini-unicamp"><span class="exam-name-mini">UNICAMP 2026</span>
-                        <div id="timer-unicamp" class="countdown-mini">00d 00h 00min</div>
-                    </div>
-                    <div class="exam-card-mini mini-unesp"><span class="exam-name-mini">UNESP 2027</span>
-                        <div id="timer-unesp" class="countdown-mini">00d 00h 00min</div>
-                    </div>
+                    <div class="exam-card-mini mini-enem"><span class="exam-name-mini">ENEM 2026</span><div id="timer-enem" class="countdown-mini">00d 00h 00min</div></div>
+                    <div class="exam-card-mini mini-fuvest"><span class="exam-name-mini">FUVEST 2027</span><div id="timer-fuvest" class="countdown-mini">00d 00h 00min</div></div>
+                    <div class="exam-card-mini mini-unicamp"><span class="exam-name-mini">UNICAMP 2026</span><div id="timer-unicamp" class="countdown-mini">00d 00h 00min</div></div>
+                    <div class="exam-card-mini mini-unesp"><span class="exam-name-mini">UNESP 2027</span><div id="timer-unesp" class="countdown-mini">00d 00h 00min</div></div>
                 </div>
-
             </nav>
         </aside>
 
@@ -173,18 +148,24 @@ try {
                                 $vId = $video['id']['videoId'];
                                 $vTitle = $video['snippet']['title'];
                                 $isFav = in_array($vId, $meus_favs);
+                                $isSeen = in_array($vId, $meus_vistos);
                             ?>
-                                <div class="video-card">
+                                <div class="video-card" data-id="<?= $vId ?>">
                                     <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
                                         <iframe class="video-frame" src="https://www.youtube.com/embed/<?= $vId ?>" frameborder="0" allowfullscreen></iframe>
                                     </div>
-                                    <p class="video-title-card">
-                                        <?= htmlspecialchars(mb_strimwidth($vTitle, 0, 45, "...")) ?>
-
-                                        <button class="fav-btn <?= $isFav ? 'star-on' : 'star-off' ?>"
-                                            onclick="toggleFav('<?= $vId ?>', '<?= addslashes($vTitle) ?>', this)">
-                                            ★
-                                        </button>
+                                    <p class="video-title-card <?= $isSeen ? 'video-visto' : '' ?>">
+                                        <a href="https://www.youtube.com/watch?v=<?= $vId ?>" target="_blank" class="video-title-link link-detectavel">
+                                            <?= htmlspecialchars(mb_strimwidth($vTitle, 0, 45, "...")) ?>
+                                        </a>
+                                        <span class="btn-actions-group">
+                                            <button class="seen-btn <?= $isSeen ? 'seen-on' : 'seen-off' ?>">
+                                                ✔
+                                            </button>
+                                            <button class="fav-btn <?= $isFav ? 'star-on' : 'star-off' ?>" onclick="toggleFav('<?= $vId ?>', '<?= addslashes($vTitle) ?>', this)">
+                                                ★
+                                            </button>
+                                        </span>
                                     </p>
                                 </div>
                             <?php endforeach; ?>
@@ -199,19 +180,25 @@ try {
                             <?php
                             $res_salvos = $conn->query("SELECT * FROM favoritos WHERE id_usuario = $id");
                             if ($res_salvos->num_rows > 0):
-                                gold:
-                                while ($f = $res_salvos->fetch_assoc()): ?>
-                                    <div class="video-card">
+                                while ($f = $res_salvos->fetch_assoc()): 
+                                    $isSeenFav = in_array($f['video_id'], $meus_vistos);
+                                ?>
+                                    <div class="video-card" data-id="<?= $f['video_id'] ?>">
                                         <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
                                             <iframe class="video-frame" src="https://www.youtube.com/embed/<?= $f['video_id'] ?>" frameborder="0" allowfullscreen></iframe>
                                         </div>
-                                        <p class="video-title-card">
-                                            <?= htmlspecialchars(mb_strimwidth($f['titulo_video'], 0, 45, "...")) ?>
-
-                                            <button class="fav-btn star-on"
-                                                onclick="toggleFav('<?= $f['video_id'] ?>', '<?= addslashes($f['titulo_video']) ?>', this)">
-                                                ★
-                                            </button>
+                                        <p class="video-title-card <?= $isSeenFav ? 'video-visto' : '' ?>">
+                                            <a href="https://www.youtube.com/watch?v=<?= $f['video_id'] ?>" target="_blank" class="video-title-link link-detectavel">
+                                                <?= htmlspecialchars(mb_strimwidth($f['titulo_video'], 0, 45, "...")) ?>
+                                            </a>
+                                            <span class="btn-actions-group">
+                                                <button class="seen-btn <?= $isSeenFav ? 'seen-on' : 'seen-off' ?>">
+                                                    ✔
+                                                </button>
+                                                <button class="fav-btn star-on" onclick="toggleFav('<?= $f['video_id'] ?>', '<?= addslashes($f['titulo_video']) ?>', this)">
+                                                    ★
+                                                </button>
+                                            </span>
                                         </p>
                                     </div>
                                 <?php endwhile;
@@ -225,20 +212,47 @@ try {
         </div>
     </div>
 
-    <script>
-    // === 1. LÓGICA DO FAVORITO ===
+<script>
+    // === 1. LÓGICA DO VÍDEO VISTO (MUDANÇA VISUAL FLUIDA E SELEÇÃO DE RELOAD) ===
+    function enviarDadosVisto(vId, card, seenBtn, titleCard, deveAtualizarPagina = true) {
+        const formData = new FormData();
+        formData.append('v_id', vId);
+
+        // Altera visualmente na hora (Instatâneo para o usuário ver)
+        if (titleCard) titleCard.classList.toggle('video-visto');
+        if (seenBtn) {
+            if (seenBtn.classList.contains('seen-off')) {
+                seenBtn.classList.remove('seen-off');
+                seenBtn.classList.add('seen-on');
+            } else {
+                seenBtn.classList.remove('seen-on');
+                seenBtn.classList.add('seen-off');
+            }
+        }
+
+        fetch('visto.php', { method: 'POST', body: formData })
+            .then(response => { 
+                // Se o clique veio do botão de check (✓), atualiza a página para consolidar.
+                // Se veio do Link externo, NÃO atualiza a página para não quebrar a abertura da aba!
+                if (deveAtualizarPagina) {
+                    location.reload(); 
+                }
+            })
+            .catch(err => {
+                console.error("Erro ao salvar visto:", err);
+                // Em caso de erro estrito, reverte o visual
+                if (titleCard) titleCard.classList.toggle('video-visto');
+            });
+    }
+
+    // === LÓGICA DO FAVORITO ===
     function toggleFav(vId, vTit, btn) {
         const formData = new FormData();
         formData.append('v_id', vId);
         formData.append('v_tit', vTit);
 
-        fetch('fav.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                location.reload();
-            })
+        fetch('fav.php', { method: 'POST', body: formData })
+            .then(response => { location.reload(); })
             .catch(err => console.error("Erro no favorito:", err));
     }
 
@@ -267,37 +281,58 @@ try {
     createTimer("timer-unicamp", "Oct 18, 2026 13:00:00");
     createTimer("timer-unesp", "Nov 15, 2026 13:00:00");
 
-// === 3. EVENTOS APÓS O CARREGAMENTO DO DOM ===
+    // === 3. CONTROLE DE CLIQUES APÓS O DOM CARREGAR ===
     document.addEventListener("DOMContentLoaded", function() {
-        
-        // Efeito de loading na Grid de Vídeos ao clicar nas matérias
         const videoGrid = document.getElementById("videoGrid");
+        
         const linksMaterias = document.querySelectorAll(".menuSidebar nav a");
         linksMaterias.forEach(link => {
             link.addEventListener("click", function() {
-                if (videoGrid) {
-                    videoGrid.classList.add("loading");
-                }
+                if (videoGrid) { videoGrid.classList.add("loading"); }
             });
         });
 
-        // Efeito de loading ao submeter a pesquisa
         const searchForm = document.querySelector(".search-box form");
         if (searchForm) {
             searchForm.addEventListener("submit", function() {
-                if (videoGrid) {
-                    videoGrid.classList.add("loading");
-                }
+                if (videoGrid) { videoGrid.classList.add("loading"); }
             });
         }
 
-        // A troca lógica do banner agora ocorre no topo de forma nativa e instantânea via CSS!
+        // GERENCIADOR DINÂMICO DE INTERCEPTAÇÃO
+        document.querySelectorAll('.video-card').forEach(card => {
+            const seenBtn = card.querySelector('.seen-btn');
+            const titleCard = card.querySelector('.video-title-card');
+            const titleLink = card.querySelector('.link-detectavel');
+            const videoId = card.getAttribute('data-id'); 
+
+            if (!videoId) return;
+
+            // Opção A: Clicar no botão de check manual (✓) -> Salva e Atualiza a página
+            if (seenBtn) {
+                seenBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    enviarDadosVisto(videoId, card, seenBtn, titleCard, true);
+                });
+            }
+
+            // Opção B: Clicar no Link do título -> Salva silenciosamente e deixa ir pro YouTube
+            if (titleLink) {
+                titleLink.addEventListener('click', function(e) {
+                    // Se o vídeo já estiver visto, não precisa reenviar o comando de inserção
+                    if (!titleCard.classList.contains('video-visto')) {
+                        // Passamos 'false' no final para NÃO dar reload na página atual!
+                        enviarDadosVisto(videoId, card, seenBtn, titleCard, false);
+                    }
+                });
+            }
+        });
     });
 
-    // Mantém apenas a injeção da classe no topo para evitar que a tela "pisque" em branco
-        if (localStorage.getItem('site-theme') === 'dark') {
-                document.documentElement.classList.add('dark-theme');
-            }
+    if (localStorage.getItem('site-theme') === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
 </script>
 
 <?php include '../perfil/vlibras.php'; ?>

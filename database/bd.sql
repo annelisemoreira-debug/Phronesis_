@@ -378,3 +378,75 @@ UPDATE usuario SET tipo = 'admin' WHERE email = 'dukye@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'narutomig@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'raoni@phronesis.com';
 
+
+
+-- Data base novo 12/06
+
+-- 1. Cria o banco de dados
+CREATE DATABASE IF NOT EXISTS phronesis;
+USE phronesis;
+
+-- 2. Tabela de usuários COM a coluna de tipo (admin/comum)
+CREATE TABLE IF NOT EXISTS usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    telefone VARCHAR(20),
+    foto VARCHAR(255) DEFAULT 'assets/img/default-user.webp',
+    tipo ENUM('comum', 'admin') DEFAULT 'comum' -- ADICIONADO AQUI
+);
+
+-- 3. TABELA FORTE: Materia
+CREATE TABLE IF NOT EXISTS materia (
+    id_materia INT AUTO_INCREMENT PRIMARY KEY,
+    nome_materia VARCHAR(100) NOT NULL UNIQUE,
+    cor_hex VARCHAR(7) DEFAULT '#4285F4'
+);
+
+-- 4. CABEÇALHO: Cronograma
+CREATE TABLE IF NOT EXISTS cronograma (
+    id_cronograma INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    titulo_cronograma VARCHAR(255) NOT NULL,
+    google_calendar_id VARCHAR(255), 
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+);
+
+-- 5. ITENS: Cronograma_item
+CREATE TABLE IF NOT EXISTS cronograma_item (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_cronograma INT NOT NULL,
+    id_materia INT NOT NULL,
+    google_event_id VARCHAR(255),
+    data_estudo DATETIME NOT NULL,
+    data_fim DATETIME NOT NULL,
+    status_estudo VARCHAR(50) DEFAULT 'pendente',
+    FOREIGN KEY (id_cronograma) REFERENCES cronograma(id_cronograma) ON DELETE CASCADE,
+    FOREIGN KEY (id_materia) REFERENCES materia(id_materia) ON DELETE RESTRICT
+);
+
+CREATE TABLE favoritos (
+    id_favorito INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    video_id VARCHAR(50) NOT NULL,
+    titulo_video VARCHAR(255),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS vistos (
+    id_visto INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    video_id VARCHAR(50) NOT NULL,
+    data_visto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+);
+
+UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'manuella@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'annelise@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'dukye@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'narutomig@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'raoni@phronesis.com';
+

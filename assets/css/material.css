@@ -301,6 +301,135 @@ html.dark-theme .banner .banner-dark {
     display: block; /* Revela o banner escuro instantaneamente */
 }
 
+/* Agrupamento dos botões no card */
+.btn-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Estilo Base do Botão de Visto */
+.seen-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+  line-height: 1;
+  padding: 0;
+}
+
+.seen-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Estados do botão visto */
+.seen-on {
+  color: #2ecc71; /* Verde clássico de sucesso/concluído */
+  font-weight: bold;
+}
+
+.seen-off {
+  color: #ccc; /* Cinza apagado */
+}
+
+
+/* ==========================================================================
+   FUNCIONALIDADE: VÍDEOS JÁ VISTOS (ATUALIZADO: AZUL)
+   ========================================================================== */
+
+/* Grupo para alinhar os botões lado a lado */
+.btn-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botão de Check (Visto) */
+.seen-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+  line-height: 1;
+  padding: 0;
+}
+
+.seen-btn:hover {
+  transform: scale(1.2);
+}
+
+/* --- Estados do botão visto (.seen-btn) --- */
+.seen-on { 
+  color: #00d2ff !important; /* Lindo Azul Claro quando ativo */
+  font-weight: bold;
+} 
+.seen-off { 
+  color: #ccc; /* Cinza quando desativado */
+}   
+
+/* --- Mudança de Cor do Título (Modo Claro) --- */
+/* Quando o vídeo JÁ FOI VISTO: o texto assume a cor Azul Escuro */
+.video-title-card.video-visto {
+  color: #0d3b66 !important; /* Azul Escuro corporativo/sólido */
+  opacity: 0.95;
+}
+
+/* --- Mudança de Cor do Título (Modo Escuro / Dark Theme) --- */
+/* Garante contraste e elegância ao Azul Escuro sobre o fundo cinza escuro */
+html.dark-theme .video-title-card.video-visto {
+  color: #5c9eff !important; /* Um azul ligeiramente compensado para brilhar perfeitamente no escuro */
+  opacity: 0.9;
+}
+
+/* Se você quiser mudar também a cor do botão visto especificamente dentro do card ativo no modo escuro */
+html.dark-theme .seen-on {
+  color: #38b6ff !important; /* Azul claro adaptado para painéis escuros */
+}
+
+/* ==========================================================================
+   ESTILIZAÇÃO DE VÍDEOS JÁ VISTOS (AZUL CLARO PERMANENTE)
+   ========================================================================== */
+
+/* --- MODO CLARO PADRÃO --- */
+
+/* Altera a cor do texto do título para Azul Claro */
+.video-title-card.video-visto {
+    color: #00b4d8 !important; /* Azul claro vivo */
+    font-weight: 600; /* Deixa o título levemente mais destacado */
+}
+
+/* Se dentro do seu título houver um link <a>, pinta ele também */
+.video-title-card.video-visto a {
+    color: #00b4d8 !important;
+}
+
+/* Deixa o botão de check (✓) azul claro e ativo */
+.seen-btn.seen-on {
+    color: #00b4d8 !important;
+    font-weight: bold;
+    transform: scale(1.1); /* Dá um leve destaque no ícone */
+}
+
+/* Mantém o botão cinza quando não foi visto */
+.seen-btn.seen-off {
+    color: #ccc !important;
+}
+
+
+/* --- MODO ESCURO (DARK THEME) --- */
+
+/* Se o usuário estiver usando o modo escuro, usamos um azul claro mais brilhante (neon) para dar contraste */
+html.dark-theme .video-title-card.video-visto,
+html.dark-theme .video-title-card.video-visto a {
+    color: #90e0ef !important; /* Azul celeste bem visível no fundo escuro */
+}
+
+html.dark-theme .seen-btn.seen-on {
+    color: #90e0ef !important;
+}
+
 /* ==========================================================================
    CONTAINERS BRANCOS COM ROLAGEM CUSTOMIZADA AMARELA
    ========================================================================== */
