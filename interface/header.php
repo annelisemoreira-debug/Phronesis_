@@ -24,9 +24,14 @@ if (isset($_SESSION['id'])) {
     if ($res) {
         $usuarioTipo = $res['tipo'];
         if (!empty($res['foto'])) {
-            // Remove barras iniciais da foto do banco para não quebrar com o $path
-            $fotoLimpa = ltrim($res['foto'], '/');
-            $fotoPerfil = $path . $fotoLimpa;
+            // CORREÇÃO CRUCIAL: Se a foto for uma URL externa (Google), usa ela diretamente
+            if (filter_var($res['foto'], FILTER_VALIDATE_URL)) {
+                $fotoPerfil = $res['foto'];
+            } else {
+                // Se for uma foto local do servidor, remove barras iniciais e concatena o $path
+                $fotoLimpa = ltrim($res['foto'], '/');
+                $fotoPerfil = $path . $fotoLimpa;
+            }
         }
     }
 }
@@ -45,7 +50,7 @@ if (isset($_SESSION['id'])) {
             <li class="materiais"><a href="<?php echo $path; ?>pages/material.php">Materiais</a></li>
             <li class="livros"><a href="<?php echo $path; ?>pages/livros.php">Obras Obrigatórias</a></li>
             <li class="cronogramas"><a href="<?php echo $path; ?>pages/meu_calendario.php">Cronogramas</a></li>
-            </ul>
+        </ul>
     </nav>
 
     <div class="perfil-wrapper">
@@ -92,5 +97,4 @@ if (isset($_SESSION['id'])) {
             });
         }
     });
-    
 </script>
