@@ -131,7 +131,6 @@
     background-color: #ffffff;
     border-radius: 10%;
     padding: 4px;
-    
 }
 
 /* --- ALINHAMENTO --- */
@@ -185,7 +184,60 @@
     margin-top: -20px;
 }
 
-/* Responsividade */
+/* =======================================================
+   PAINEL LATERAL DE PREENCHIMENTO RÁPIDO (ADICIONADO)
+   ======================================================= */
+.quick-fill-sidebar {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 9999;
+}
+
+.quick-fill-btn {
+    background-color: #001a8b;
+    color: white;
+    border: 2px solid transparent;
+    padding: 10px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    width: 125px;
+    text-align: center;
+}
+
+.quick-fill-btn:hover {
+    background-color: #031768;
+    border-color: #4fd6ff;
+    transform: scale(1.05);
+}
+
+/* Responsividade Geral e Ajustes do Painel */
+@media (max-width: 1200px) {
+    .quick-fill-sidebar {
+        position: static;
+        transform: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 20px auto 0 auto;
+        width: 100%;
+        max-width: 950px;
+        padding: 0 20px;
+    }
+    .quick-fill-btn {
+        width: calc(33.33% - 8px);
+    }
+}
+
 @media (max-width: 850px) {
     .glass-card {
         flex-direction: column;
@@ -194,5 +246,11 @@
     .linha_dupla {
         flex-direction: column;
         align-items: stretch;
+    }
+}
+
+@media (max-width: 600px) {
+    .quick-fill-btn {
+        width: calc(50% - 8px);
     }
 }

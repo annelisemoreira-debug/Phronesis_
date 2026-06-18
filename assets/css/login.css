@@ -216,6 +216,42 @@ form {
     margin-top: -32px;
 }
 
+/* =======================================================
+   PAINEL LATERAL DE PREENCHIMENTO RÁPIDO (ADICIONADO)
+   ======================================================= */
+.quick-fill-sidebar {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 9999;
+}
+
+.quick-fill-btn {
+    background-color: #001a8b;
+    color: white;
+    border: 2px solid transparent;
+    padding: 10px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    width: 125px;
+    text-align: center;
+}
+
+.quick-fill-btn:hover {
+    background-color: #031768;
+    border-color: #4fd6ff;
+    transform: scale(1.05);
+}
+
 /*Responsividade*/
 @media (max-width: 768px) {
     .glass-card {

@@ -42,6 +42,15 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
 <body>
     <img src="assets/img/fundoRoxo.webp" class="bg-html" alt="Fundo">
 
+        <div class="quick-fill-sidebar">
+        <button class="quick-fill-btn" onclick="preencherCampos(1)">João</button>
+        <button class="quick-fill-btn" onclick="preencherCampos(2)">Manuella</button>
+        <button class="quick-fill-btn" onclick="preencherCampos(3)">Annelise</button>
+        <button class="quick-fill-btn" onclick="preencherCampos(4)">Dukye</button>
+        <button class="quick-fill-btn" onclick="preencherCampos(5)">Narutomig</button>
+        <button class="quick-fill-btn" onclick="preencherCampos(6)">Raoni</button>
+    </div>
+
     <main>
         <div class="container">
             <div class="glass-card">
@@ -100,6 +109,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
         </div>
     </main>
 
+    
     <script src="assets/js/lib/login.js" defer></script>
 
     <?php include 'perfil/vlibras.php'; ?>

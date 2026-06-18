@@ -93,14 +93,10 @@ elseif ($acao == "nova_senha") {
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
-        // Sucesso: Mantemos o modal de confirmação ou usamos Toast se preferir
-        // Para consistência com seu pedido de aviso flutuante:
         $_SESSION['sucesso_login'] = "Senha alterada com sucesso!";
         header("Location: login.php");
         exit();
     } else {
-        // ERRO: Aqui é onde estava aquela tela branca com o modal
-        // Agora salvamos na sessão e voltamos para a página anterior
         $_SESSION['erro_recuperacao'] = "E-mail não encontrado ou senha igual à anterior.";
         header("Location: senhaPerdida.php?acao=recuperar");
         exit();
@@ -139,6 +135,7 @@ elseif ($acao == "google_login") {
     if (isset($payload['email'])) {
         $email = $payload['email'];
         $nome = $payload['name'] ?? 'Usuário Google';
+        $foto_google = $payload['picture'] ?? 'assets/img/default-user.webp'; // CAPTURA DA FOTO AQUI
         
         // Verifica se este e-mail do Google já está na nossa tabela local 'usuario'
         $sql = "SELECT id_usuario, nome FROM usuario WHERE email=?";
@@ -148,22 +145,29 @@ elseif ($acao == "google_login") {
         $result = $stmt->get_result();
 
         if ($result->num_rows == 1) {
-            // Cenário 1: Usuário já existe -> Realiza o login direto na sessão
+            // Cenário 1: Usuário já existe -> Realiza o login direto na sessão e atualiza a foto se mudou
             $user = $result->fetch_assoc();
+            
+            // Atualiza a URL da foto vinda do Google no banco de dados para sincronizar
+            $sql_upd_foto = "UPDATE usuario SET foto=? WHERE id_usuario=?";
+            $stmt_upd_foto = $conn->prepare($sql_upd_foto);
+            $stmt_upd_foto->bind_param("si", $foto_google, $user['id_usuario']);
+            $stmt_upd_foto->execute();
+
             $_SESSION['id'] = $user['id_usuario'];
             $_SESSION['nome'] = $user['nome'];
             $_SESSION['login_google'] = true; // Define que o usuário veio pelo Google
             header("Location: index.php");
             exit();
         } else {
-            // Cenário 2: Usuário não existe -> Cria o registro de forma automática e depois loga
-            // Como a autenticação é delegada ao Google, geramos uma hash aleatória irrelevante no banco para a senha tradicional
+            // Cenário 2: Usuário não existe -> Cria o registro de forma automática salvando a foto e depois loga
             $senhaProvisoria = password_hash(uniqid(rand(), true), PASSWORD_DEFAULT);
             $telefoneNulo = "";
 
-            $sql_cad = "INSERT INTO usuario (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
+            // Substituído o valor padrão de cadastro pela variável contendo a foto do Google
+            $sql_cad = "INSERT INTO usuario (nome, email, senha, telefone, foto) VALUES (?, ?, ?, ?, ?)";
             $stmt_cad = $conn->prepare($sql_cad);
-            $stmt_cad->bind_param("ssss", $nome, $email, $senhaProvisoria, $telefoneNulo);
+            $stmt_cad->bind_param("sssss", $nome, $email, $senhaProvisoria, $telefoneNulo, $foto_google);
             
             if ($stmt_cad->execute()) {
                 $_SESSION['id'] = $stmt_cad->insert_id;

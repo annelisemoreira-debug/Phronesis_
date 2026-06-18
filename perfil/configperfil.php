@@ -22,11 +22,21 @@ if (!$dadosUser) {
 }
 
 // =========================================================================
-// 3. LÓGICA DE PROCESSAMENTO DO BACK-END (APENAS PARA REQUISIÇÕES POST / AJAX)
+// 3. LOGICA DE PROCESSAMENTO DO BACK-END (APENAS PARA REQUISIÇÕES POST / AJAX)
 // =========================================================================
+
+// Identificação robusta: conta como Google se veio via sessão OU se a foto gravada for uma URL externa
+$isGoogleUser = (isset($_SESSION['login_google']) && $_SESSION['login_google'] === true) || filter_var($dadosUser['foto'], FILTER_VALIDATE_URL);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     ob_clean(); 
     header('Content-Type: application/json');
+
+    // --- SEGURANÇA: BLOQUEIO PARA USUÁRIOS GOOGLE ---
+    if (($_POST['action'] == 'delete_image' || $_POST['action'] == 'crop_image') && $isGoogleUser) {
+        echo json_encode(['status' => 'error', 'message' => 'Usuários do Google não podem alterar a foto de perfil.']);
+        exit();
+    }
 
     // --- AÇÃO: REMOVER FOTO (VOLTAR PADRÃO) ---
     if ($_POST['action'] == 'delete_image') {
@@ -36,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $busca->execute();
             $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
 
-            if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+            // Só tenta deletar fisicamente se NÃO for uma URL externa do Google
+            if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
                 $caminhoArquivoAntigo = "../" . $fotoAntiga;
                 if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
             }
@@ -76,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 $busca->execute();
                 $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
 
-                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+                // Só tenta deletar fisicamente se NÃO for uma URL externa do Google
+                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
                     $caminhoArquivoAntigo = "../" . $fotoAntiga;
                     if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
                 }
@@ -95,14 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    // --- AÇÃO: EXCLUIR CONTA TRADICIONAL (E-MAIL E SENHA) ---
+    // --- AÇÃO: EXCLUIR CONTA TRADICIONAL ---
     if ($_POST['action'] == 'delete_account') {
         try {
             $password = $_POST['password'] ?? '';
 
             if (password_verify($password, $dadosUser['senha'])) {
                 $fotoAntiga = $dadosUser['foto'];
-                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
                     $caminhoArquivoAntigo = "../" . $fotoAntiga;
                     if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
                 }
@@ -125,11 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    // --- AÇÃO: EXCLUIR CONTA DIRETO DO BANCO LOCAL (GOOGLE) ---
+    // --- AÇÃO: EXCLUIR CONTA DIRETO (GOOGLE) ---
     if ($_POST['action'] == 'delete_account_google') {
         try {
             $fotoAntiga = $dadosUser['foto'];
-            if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+            if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
                 $caminhoArquivoAntigo = "../" . $fotoAntiga;
                 if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
             }
@@ -149,26 +161,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 }
-// =========================================================================
-// FIM DO BLOCO POST
-// =========================================================================
 
-// 4. BUSCA DADOS PARA EXIBIÇÃO
+// =========================================================================
+// 4. BUSCA DADOS PARA EXIBIÇÃO ATUALIZADA
+// =========================================================================
 $stmt = $conn->prepare("SELECT nome, email, foto, senha FROM usuario WHERE id_usuario = ?");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
 $caminhoPadrao = "../assets/img/default-user.webp"; 
-$temFotoPersonalizada = (!empty($user['foto']) && $user['foto'] != 'assets/img/default-user.webp' && file_exists("../" . $user['foto']));
-$fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
 
-// Como as contas Google usam senhas geradas aleatoriamente no cad.php que começam de forma randômica, 
-// uma boa prática se você não tiver uma coluna "tipo_login" é identificar pela ausência de um fluxo normal, 
-// ou você pode criar uma lógica baseada na sessão se preferir. 
-// Mas para fins práticos, vamos passar para o HTML se a conta veio ou não pelo Google baseado em uma variável de sessão que você pode definir no login do Google, ou checar se o usuário quer usar o fluxo do Google.
-// Dica: No cad.php, adicione $_SESSION['login_google'] = true; dentro do "if (isset($payload['email']))".
-$isGoogleUser = isset($_SESSION['login_google']) && $_SESSION['login_google'] === true;
+// Tratamento dinâmico do caminho da foto
+if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
+    $fotoExibicao = $user['foto']; // Usa a URL externa do Google de forma direta
+    $temFotoPersonalizada = false;
+} else {
+    $temFotoPersonalizada = (!empty($user['foto']) && $user['foto'] != 'assets/img/default-user.webp' && file_exists("../" . $user['foto']));
+    $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
+}
 ?>
 
 <!DOCTYPE html>
@@ -206,7 +217,6 @@ $isGoogleUser = isset($_SESSION['login_google']) && $_SESSION['login_google'] ==
         .cropper-view-box, .cropper-face { border-radius: 50%; outline: none !important; }
         .btn-remove-foto { color: #FF4D4D !important; margin-left: 15px; }
         
-        /* Tema Escuro para Modais */
         .dark-theme .modal-crop-content { background-color: #1e1e1e; color: #fff; }
         .dark-theme .btn-crop-cancel { background-color: #333; color: #fff; }
         
@@ -260,19 +270,24 @@ $isGoogleUser = isset($_SESSION['login_google']) && $_SESSION['login_google'] ==
 
                 <div class="profile-upload">
                     <div class="avatar-wrapper">
-                        <img src="<?php echo $fotoExibicao; ?>?t=<?php echo time(); ?>" id="currentAvatar">
+                        <img src="<?php echo $fotoExibicao; ?><?php echo !filter_var($fotoExibicao, FILTER_VALIDATE_URL) ? '?t='.time() : ''; ?>" id="currentAvatar">
                     </div>
                     <div class="upload-info">
-                        <h3>Faça upload da sua foto de perfil</h3>
-                        <p>Ajuste sua imagem de exibição para facilitar a identificação.</p>
-                        <form id="formFotoPerfil">
-                            <input type="file" id="foto_perfil" hidden accept="image/*">
-                            <button type="button" id="btnSelectFoto">Selecionar Nova Foto</button>
-                            
-                            <?php if ($temFotoPersonalizada): ?>
-                                <button type="button" id="btnRemoveFoto" class="btn-remove-foto">Remover Foto</button>
-                            <?php endif; ?>
-                        </form>
+                        <?php if ($isGoogleUser): ?>
+                            <h3>Foto de Perfil do Google</h3>
+                            <p>Sua foto de perfil é gerenciada e sincronizada diretamente pela sua conta Google.</p>
+                        <?php else: ?>
+                            <h3>Faça upload da sua foto de perfil</h3>
+                            <p>Ajuste sua imagem de exibição para facilitar a identificação.</p>
+                            <form id="formFotoPerfil">
+                                <input type="file" id="foto_perfil" hidden accept="image/*">
+                                <button type="button" id="btnSelectFoto">Selecionar Nova Foto</button>
+                                
+                                <?php if ($temFotoPersonalizada): ?>
+                                    <button type="button" id="btnRemoveFoto" class="btn-remove-foto">Remover Foto</button>
+                                <?php endif; ?>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </div>
 
