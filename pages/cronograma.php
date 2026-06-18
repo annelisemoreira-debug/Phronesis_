@@ -629,5 +629,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
 
     <script src="../assets/js/lib/cronograma.js" defer></script>
+
+    <?php include '../perfil/vlibras.php'; ?>
 </body>
 </html>
