@@ -115,7 +115,7 @@
 }
 
 .input-group-password input {
-    padding-right: 45px; /* Espaço para o texto não passar sob o olho */
+    padding-right: 45px !important; /* Espaço aumentado para o texto nunca bater no olho */
     margin-top: 0 !important; /* Reseta margem para não quebrar o flex */
 }
 
@@ -124,8 +124,14 @@
     right: 15px;
     cursor: pointer;
     color: #001a8b;
-    font-size: 18px;
+    font-size: 16px; /* Tamanho levemente ajustado para encaixar melhor com o fundo */
     z-index: 10;
+    
+    /* --- ADICIONADO: Fundo branco protetor --- */
+    background-color: #ffffff;
+    border-radius: 10%;
+    padding: 4px;
+    
 }
 
 /* --- ALINHAMENTO --- */
@@ -175,7 +181,7 @@
     text-shadow: 0 0 8px rgba(97, 44, 167, 0.5);
 }
 
-.g_id_signin{
+.g_id_signin {
     margin-top: -20px;
 }
 
