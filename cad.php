@@ -152,6 +152,7 @@ elseif ($acao == "google_login") {
             $user = $result->fetch_assoc();
             $_SESSION['id'] = $user['id_usuario'];
             $_SESSION['nome'] = $user['nome'];
+            $_SESSION['login_google'] = true; // Define que o usuário veio pelo Google
             header("Location: index.php");
             exit();
         } else {
@@ -167,6 +168,7 @@ elseif ($acao == "google_login") {
             if ($stmt_cad->execute()) {
                 $_SESSION['id'] = $stmt_cad->insert_id;
                 $_SESSION['nome'] = $nome;
+                $_SESSION['login_google'] = true; // Define que o usuário veio pelo Google
                 header("Location: index.php");
                 exit();
             } else {

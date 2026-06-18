@@ -1,6 +1,6 @@
 // assets/js/lib/configperfil.js
 
-// Mantém a injeção da classe de tema no topo imediatamente para evitar o "flash" branco
+// Garante a aplicação do tema escuro no topo imediatamente para evitar o "flash" branco
 if (localStorage.getItem('site-theme') === 'dark') {
     document.documentElement.classList.add('dark-theme');
 }
@@ -89,16 +89,85 @@ $(document).ready(function() {
             }
         });
     });
-});
 
-(function () {
-        // Aplica o Tema Escuro imediatamente se estiver salvo
-        const savedTheme = localStorage.getItem('site-theme') || 'light';
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark-theme');
+    // =========================================================================
+    // --- LÓGICA DO MODAL DE EXCLUSÃO DE CONTA (GERAL) ---
+    // =========================================================================
+    var $deleteModal = $('#deleteAccountModal');
+
+    // Abre o modal de exclusão para qualquer tipo de usuário
+    $('#btnOpenDeleteModal').on('click', function() {
+        $('#confirmDeletePassword').val(''); 
+        $deleteModal.css('display', 'flex');
+    });
+
+    // Fecha o modal ao clicar em Cancelar
+    $('#btnCancelDelete').on('click', function() {
+        $deleteModal.hide();
+    });
+
+    // FLUXO 1: Envia a senha via AJAX (Apenas para contas comuns com senha)
+    $('#btnConfirmDelete').on('click', function() {
+        var password = $('#confirmDeletePassword').val();
+
+        if (!password) {
+            alert("Por favor, digite sua senha.");
+            return;
         }
 
-        // Aplica o Tamanho da Fonte imediatamente se estiver salvo
-        const savedSize = localStorage.getItem('site-font-size') || 'normal';
-        document.documentElement.classList.add('font-' + savedSize);
-    })();
+        $.ajax({
+            type: 'POST',
+            url: 'configperfil.php',
+            data: { 
+                action: 'delete_account', 
+                password: password 
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert("Sua conta e todos os dados foram excluídos com sucesso.");
+                    window.location.href = response.redirect;
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert("Erro técnico ao tentar processar a solicitação.");
+            }
+        });
+    });
+
+    // FLUXO 2: Envia a exclusão direta via AJAX (Apenas para contas conectadas pelo Google)
+    $('#btnConfirmDeleteGoogle').on('click', function() {
+        $.ajax({
+            type: 'POST',
+            url: 'configperfil.php',
+            data: { 
+                action: 'delete_account_google' 
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert("Seus dados foram removidos com sucesso do nosso sistema.");
+                    window.location.href = response.redirect;
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert("Erro técnico ao tentar apagar os dados.");
+            }
+        });
+    });
+});
+
+// Configurações adicionais de acessibilidade e tema carregadas imediatamente
+(function () {
+    const savedTheme = localStorage.getItem('site-theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+
+    const savedSize = localStorage.getItem('site-font-size') || 'normal';
+    document.documentElement.classList.add('font-' + savedSize);
+})();

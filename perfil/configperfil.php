@@ -12,7 +12,7 @@ include '../conexao.php';
 $id_usuario = $_SESSION['id'];
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
-$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id_usuario");
+$res = $conn->query("SELECT foto, email, senha FROM usuario WHERE id_usuario = $id_usuario");
 $dadosUser = $res->fetch_assoc();
 
 if (!$dadosUser) {
@@ -21,12 +21,14 @@ if (!$dadosUser) {
     exit();
 }
 
-// 3. LÓGICA DE PROCESSAMENTO DO CORTE / REMOÇÃO DA IMAGEM
+// =========================================================================
+// 3. LÓGICA DE PROCESSAMENTO DO BACK-END (APENAS PARA REQUISIÇÕES POST / AJAX)
+// =========================================================================
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     ob_clean(); 
     header('Content-Type: application/json');
 
-    // --- NOVA FUNÇÃO: REMOVER FOTO (VOLTAR PADRÃO) ---
+    // --- AÇÃO: REMOVER FOTO (VOLTAR PADRÃO) ---
     if ($_POST['action'] == 'delete_image') {
         try {
             $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
@@ -34,13 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $busca->execute();
             $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
 
-            // Apaga o arquivo físico se não for a padrão
             if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
                 $caminhoArquivoAntigo = "../" . $fotoAntiga;
                 if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
             }
 
-            // Define como NULL ou string vazia no banco
             $upd = $conn->prepare("UPDATE usuario SET foto = NULL WHERE id_usuario = ?");
             $upd->bind_param("i", $id_usuario);
             $upd->execute();
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    // --- CORTAR E SALVAR IMAGEM ---
+    // --- AÇÃO: CORTAR E SALVAR IMAGEM ---
     if ($_POST['action'] == 'crop_image') {
         try {
             $diretorioFisico = "../assets/img/perfis/";
@@ -94,10 +94,67 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
         exit();
     }
+
+    // --- AÇÃO: EXCLUIR CONTA TRADICIONAL (E-MAIL E SENHA) ---
+    if ($_POST['action'] == 'delete_account') {
+        try {
+            $password = $_POST['password'] ?? '';
+
+            if (password_verify($password, $dadosUser['senha'])) {
+                $fotoAntiga = $dadosUser['foto'];
+                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+                    $caminhoArquivoAntigo = "../" . $fotoAntiga;
+                    if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
+                }
+
+                $del = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
+                $del->bind_param("i", $id_usuario);
+                
+                if ($del->execute()) {
+                    session_destroy();
+                    echo json_encode(['status' => 'success', 'redirect' => '../index.php']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Erro ao deletar dados do banco.']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Senha incorreta!']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit();
+    }
+
+    // --- AÇÃO: EXCLUIR CONTA DIRETO DO BANCO LOCAL (GOOGLE) ---
+    if ($_POST['action'] == 'delete_account_google') {
+        try {
+            $fotoAntiga = $dadosUser['foto'];
+            if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
+                $caminhoArquivoAntigo = "../" . $fotoAntiga;
+                if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
+            }
+
+            $del = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
+            $del->bind_param("i", $id_usuario);
+            
+            if ($del->execute()) {
+                session_destroy();
+                echo json_encode(['status' => 'success', 'redirect' => '../index.php']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Erro ao deletar dados do banco.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit();
+    }
 }
+// =========================================================================
+// FIM DO BLOCO POST
+// =========================================================================
 
 // 4. BUSCA DADOS PARA EXIBIÇÃO
-$stmt = $conn->prepare("SELECT nome, email, foto FROM usuario WHERE id_usuario = ?");
+$stmt = $conn->prepare("SELECT nome, email, foto, senha FROM usuario WHERE id_usuario = ?");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -105,6 +162,13 @@ $user = $stmt->get_result()->fetch_assoc();
 $caminhoPadrao = "../assets/img/default-user.webp"; 
 $temFotoPersonalizada = (!empty($user['foto']) && $user['foto'] != 'assets/img/default-user.webp' && file_exists("../" . $user['foto']));
 $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
+
+// Como as contas Google usam senhas geradas aleatoriamente no cad.php que começam de forma randômica, 
+// uma boa prática se você não tiver uma coluna "tipo_login" é identificar pela ausência de um fluxo normal, 
+// ou você pode criar uma lógica baseada na sessão se preferir. 
+// Mas para fins práticos, vamos passar para o HTML se a conta veio ou não pelo Google baseado em uma variável de sessão que você pode definir no login do Google, ou checar se o usuário quer usar o fluxo do Google.
+// Dica: No cad.php, adicione $_SESSION['login_google'] = true; dentro do "if (isset($payload['email']))".
+$isGoogleUser = isset($_SESSION['login_google']) && $_SESSION['login_google'] === true;
 ?>
 
 <!DOCTYPE html>
@@ -136,13 +200,20 @@ $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
         }
         .img-container { max-height: 400px; margin-bottom: 20px; }
         .img-container img { max-width: 100%; display: block; }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
-        .btn-crop-confirm { background-color: #7B61FF; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn-crop-confirm { background-color: #7B61FF; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-crop-cancel { background-color: #e0e0e0; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
         .cropper-view-box, .cropper-face { border-radius: 50%; outline: none !important; }
-        
-        /* Estilo rápido para o botão de remover mantendo o padrão */
         .btn-remove-foto { color: #FF4D4D !important; margin-left: 15px; }
+        
+        /* Tema Escuro para Modais */
+        .dark-theme .modal-crop-content { background-color: #1e1e1e; color: #fff; }
+        .dark-theme .btn-crop-cancel { background-color: #333; color: #fff; }
+        
+        .input-delete-pass {
+            width: 100%; padding: 10px; margin-top: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        .dark-theme .input-delete-pass { background-color: #2a2a2a; color: #fff; border: 1px solid #444; }
     </style>
 </head>
 <body>
@@ -216,6 +287,12 @@ $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
                     </div>
                 </div>
 
+                <div class="danger-zone" style="margin-top: 30px; padding: 20px; border: 1px solid #FF4D4D; border-radius: 8px;">
+                    <h3 style="color: #FF4D4D; margin-top: 0;">Excluir Conta</h3>
+                    <p style="font-size: 14px; margin-bottom: 15px;">Excluir sua conta é um caminho sem volta. Todos os seus dados serão apagados permanentemente e você perderá o acesso imediato.</p>
+                    <button type="button" id="btnOpenDeleteModal" style="background-color: #FF4D4D; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">EXCLUIR CONTA</button>
+                </div>
+
                 <div class="footer-actions">
                     <a href="../logout.php">Desconectar</a>
                 </div>
@@ -234,12 +311,47 @@ $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
         </div>
     </div>
 
+    <div id="deleteAccountModal" class="modal-crop">
+        <div class="modal-crop-content">
+            <h3 style="color: #FF4D4D; margin-top: 0;">Confirmar Exclusão</h3>
+            
+            <p style="font-size: 15px; line-height: 1.5; margin-bottom: 15px;">
+                <strong>Atenção:</strong> Esta ação apagará permanentemente todos os seus dados, cronogramas e registros do nosso sistema (Phronesis).
+            </p>
+            
+            <p style="background-color: #FFF3CD; color: #856404; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 14px; border: 1px solid #ffeeba;">
+                ⚠️ VOCÊ É O ÚNICO RESPONSÁVEL POR ESTA AÇÃO. Tem certeza absoluta que deseja prosseguir?
+            </p>
+
+            <?php if ($isGoogleUser): ?>
+                <p style="font-size: 13px; color: #666; margin-top: 10px;">
+                    Sua conta foi criada via Google. Seus dados locais serão limpos, mas sua conta Google continuará intocada.
+                </p>
+                <div class="modal-footer" style="margin-top: 20px;">
+                    <button type="button" class="btn-crop-cancel" id="btnCancelDelete">Cancelar</button>
+                    <button type="button" class="btn-crop-confirm" id="btnConfirmDeleteGoogle" style="background-color: #FF4D4D; color: white;">Sim, sou responsável e quero excluir</button>
+                </div>
+            <?php else: ?>
+                <div style="margin-top: 15px; text-align: left;">
+                    <label for="confirmDeletePassword" style="font-weight: bold; font-size: 14px;">Confirme sua senha atual para prosseguir:</label>
+                    <input type="password" id="confirmDeletePassword" class="input-delete-pass" placeholder="Digite sua senha">
+                </div>
+                <div class="modal-footer" style="margin-top: 20px;">
+                    <button type="button" class="btn-crop-cancel" id="btnCancelDelete">Cancelar</button>
+                    <button type="button" class="btn-crop-confirm" id="btnConfirmDelete" style="background-color: #FF4D4D; color: white;">Confirmar com Senha e Excluir</button>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     
+    <script>
+        var isGoogleUser = <?php echo $isGoogleUser ? 'true' : 'false'; ?>;
+    </script>
     <script src="../assets/js/lib/configperfil.js" defer></script>
 
     <?php include '../perfil/vlibras.php'; ?>
-
 </body>
 </html>
