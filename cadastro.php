@@ -85,7 +85,7 @@
         </div>
     </main>
 
-    <script src="../assets/js/lib/cadastro.js"></script>
+    <script src="assets/js/lib/cadastro.js" defer></script>
 
     <?php include 'perfil/vlibras.php'; ?>
 </body>

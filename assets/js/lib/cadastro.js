@@ -1,6 +1,6 @@
 // assets/js/lib/cadastro.js
 
-// Configuração do SweetAlert2 (Toast)
+// Configuração global do SweetAlert2 (Toast)
 const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -9,7 +9,7 @@ const Toast = Swal.mixin({
     timerProgressBar: true
 });
 
-// Funções de máscara do telefone (deixadas fora para organização)
+// Funções de formatação e máscara para o telefone
 function telefoneMask(value) {
     if (!value) return "";
     value = value.replace(/\D/g, "");
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const inputSenha = document.getElementById('senha');
     const inputTelefone = document.getElementById('telefone');
 
-    // === 1. VERIFICA ERRO VINDO DO PHP VIA ATRIBUTO DATA ===
+    // === 1. LEITURA DE ALERTAS DE ERRO VINDOS DO PHP ===
     if (formCadastro) {
         const erroSession = formCadastro.dataset.erro;
         if (erroSession && erroSession.trim() !== "") {
@@ -41,7 +41,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // === 2. ALTERNAR VISIBILIDADE DA SENHA ===
+    // === 2. MÁSCARA EM TEMPO REAL NO INPUT DE TELEFONE ===
+    if (inputTelefone) {
+        inputTelefone.addEventListener('input', handleTelefone);
+    }
+
+    // === 3. ALTERNAR VISIBILIDADE DA SENHA ===
     if (btnSenha && inputSenha) {
         btnSenha.addEventListener('click', () => {
             if (inputSenha.type === 'password') {
@@ -54,12 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // === 3. APLICAR MÁSCARA AO DIGITAR NO TELEFONE ===
-    if (inputTelefone) {
-        inputTelefone.addEventListener('input', handleTelefone);
-    }
-
-    // === 4. VALIDAÇÕES DO FORMULÁRIO VIA JAVASCRIPT ===
+    // === 4. VALIDAÇÕES DO FORMULÁRIO (SUBMIT) ===
     if (formCadastro) {
         formCadastro.addEventListener('submit', function(e) {
             const nome = document.getElementById('nome').value;

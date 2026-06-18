@@ -110,12 +110,6 @@ $googleLogado = 'false';
             <i class="fa-brands fa-google"></i> Vincular Google Agenda
         </a>
 
-        <div class="login-options">
-            <a class="btn-secondary" id="btn-ja-conectei" href="cronograma.php">
-                Já conectei minha conta
-            </a>
-        </div>
-
         <div class="footer-link">
             <a href="../index.php">Voltar ao Início</a>
         </div>
