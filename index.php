@@ -15,6 +15,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     <title>Phronesis</title>
     <link class="js-theme-style" rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/header.css">
+        <link rel="stylesheet" href="assets/js/lib/index.js">
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     
     <script>
@@ -132,27 +133,8 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
         </div>
     </div>
 
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // --- Lógica do Carrossel ---
-        const track = document.querySelector('.carousel-track');
-        const nextBtn = document.querySelector('.next');
-        const prevBtn = document.querySelector('.prev');
-
-        if (nextBtn && prevBtn) {
-            nextBtn.addEventListener('click', () => {
-                const cards = document.querySelectorAll('.card');
-                track.appendChild(cards[0]);
-            });
-            prevBtn.addEventListener('click', () => {
-                const cards = document.querySelectorAll('.card');
-                track.insertBefore(cards[cards.length - 1], cards[0]);
-            });
-        }
-    });
-    </script>
-
-    <?php include 'perfil/vlibras.php'; ?>
+    <script src="assets/js/lib/index.js"></script>
+    <?php include 'perfil/vlibras.php';?>
 
 </body>
 </html>

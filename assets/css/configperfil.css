@@ -280,6 +280,22 @@ body {
 /* =======================================================
    REGRAS COMPLETAS E IDENTICAS DO MODO ESCURO
    ======================================================= */
+
+   /* =======================================================
+   REGRAS GLOBAIS DE ESCALA DE FONTES (AFETA TODO O SITE)
+   ======================================================= */
+html, html.font-normal {
+    font-size: 100%; /* Tamanho padrão do navegador (geralmente 16px) */
+}
+
+html.font-media {
+    font-size: 115%; /* Aumenta o texto e elementos em REM de todo o site em 15% */
+}
+
+html.font-grande {
+    font-size: 130%; /* Aumenta o texto e elementos em REM de todo o site em 30% */
+}
+
 html.dark-theme body {
     background-color: #1a1824; 
 }

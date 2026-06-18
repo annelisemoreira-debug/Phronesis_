@@ -25,16 +25,16 @@ body {
 
 
 /* ==========================================================================
-   SIDEBAR (MENU LATERAL DE MATÉRIAS)
+   SIDEBAR (MENU LATERAL DE MATÉRIAS) - CORRIGIDO PARA ESCALA REM
    ========================================================================== */
 .menuSidebar {
   position: sticky;
   top: 95px; 
-  width: 280px;
+  width: 17.5rem; /* Ajustado de 280px para rem */
   height: fit-content;
   background: #f6f5fb;
   border-radius: 18px;
-  padding: 25px 18px;
+  padding: 1.5rem 1.1rem; /* Ajustado para rem */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -42,15 +42,15 @@ body {
 .menuSidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem; /* Ajustado para rem */
 }
 
 .menuSidebar nav::before {
   content: "Explore por matéria:";
-  font-size: 13px;
+  font-size: 0.82rem; /* Convertido de 13px para responder ao slider */
   font-weight: 700;
   color: #3f007d;
-  margin: 0 0 10px 8px;
+  margin: 0 0 0.6rem 0.5rem; /* Ajustado para rem */
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -60,10 +60,10 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem; /* Ajustado de 12px 16px para rem */
   border-radius: 12px;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 0.94rem; /* Convertido de 15px para responder ao slider */
   font-weight: 600;
   color: #5b3aa6;
   transition: all 0.25s ease;
@@ -79,10 +79,61 @@ body {
   background: #e7f4ff;
   color: #3c2aa0 !important;
   border-left: 4px solid #7bbcff;
-  padding-left: 12px !important;
+  padding-left: 0.75rem !important; /* Ajustado para rem */
   box-shadow: 0 4px 12px rgba(123, 188, 255, 0.25);
 }
 
+/* ==========================================================================
+   WIDGETS DE CONTAGEM REGRESSIVA (DENTRO DA SIDEBAR)
+   ========================================================================== */
+.exam-name-mini {
+  font-size: 0.75rem; /* Convertido de 12px para rem */
+  font-weight: 700;
+  color: #555;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.countdown-mini {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 1rem; /* Já em rem, vai funcionar perfeito */
+  width: fit-content;
+}
+
+.titulo-main {
+  font-size: 0.87rem; /* Convertido de 14px para rem */
+  font-weight: 800;
+  color: #3f007d;
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   CONTEÚDO ADICIONAL: CARDS E PESQUISA (PARA COMPLEMENTAR A HARMONIA)
+   ========================================================================== */
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 8px 0;
+  font-size: 0.88rem; /* Convertido de 14px para rem */
+  color: #333;
+  background-color: transparent;
+}
+
+.video-title-card {
+  font-size: 0.88rem; /* Convertido de 14px para rem */
+  font-weight: 600;
+  color: #444;
+  line-height: 1.4;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 40px;
+  transition: color 0.3s ease;
+}
 /* ==========================================================================
    INDICADOR DE CARREGAMENTO (LOADING)
    ========================================================================== */
@@ -526,6 +577,21 @@ html.dark-theme .seen-btn.seen-on {
 .mini-unicamp .countdown-mini { color: #27ae60; }
 .mini-unesp { border-left: 4px solid #9b59b6; }
 .mini-unesp .countdown-mini { color: #9b59b6; }
+
+/* =======================================================
+   REGRAS GLOBAIS DE ESCALA DE FONTES (AFETA TODO O SITE)
+   ======================================================= */
+html, html.font-normal {
+    font-size: 100%; /* Tamanho padrão do navegador (geralmente 16px) */
+}
+
+html.font-media {
+    font-size: 115%; /* Aumenta o texto e elementos em REM de todo o site em 15% */
+}
+
+html.font-grande {
+    font-size: 130%; /* Aumenta o texto e elementos em REM de todo o site em 30% */
+}
 
 /* ==========================================================================
    IMPLEMENTAÇÃO COMPLETA DO TEMA ESCURO (DARK THEME)

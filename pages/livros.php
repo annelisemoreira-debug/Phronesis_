@@ -13,12 +13,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     exit(); 
 }
 
-// --- CONEXÃO ÚNICA ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
-
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+include '../conexao.php';
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
 $id = $_SESSION['id'];
@@ -163,73 +158,7 @@ error_reporting(E_ALL);
         </div>
     </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // === 1. LÓGICA DAS JANELAS MODAIS MÚLTIPLAS ===
-    const containersVest = document.querySelectorAll('.containerVest');
-
-    containersVest.forEach(container => {
-        const triggers = container.querySelectorAll('.open-modal-trigger');
-        const modal = container.querySelector('dialog');
-        const btnClose = container.querySelector('.close-button');
-
-        // Garante que o código só roda se o modal existir neste container específico
-        if (modal) {
-            if (triggers.length > 0) {
-                triggers.forEach(trigger => {
-                    trigger.addEventListener("click", () => {
-                        modal.showModal();
-                    });
-                });
-            }
-
-            if (btnClose) {
-                btnClose.addEventListener("click", () => {
-                    modal.close();
-                });
-            }
-
-            // Fechar ao clicar fora do modal (no backdrop)
-            modal.addEventListener("click", (e) => {
-                const dialogDimensions = modal.getBoundingClientRect();
-                if (
-                    e.clientX < dialogDimensions.left ||
-                    e.clientX > dialogDimensions.right ||
-                    e.clientY < dialogDimensions.top ||
-                    e.clientY > dialogDimensions.bottom
-                ) {
-                    modal.close();
-                }
-            });
-        }
-    });
-
-// === 2. TROCA DE IMAGENS DO MODO ESCURO (APÓS CARREGAR O HTML) ===
-    if (localStorage.getItem('site-theme') === 'dark') {
-        
-        // As linhas do banner foram removidas daqui pois o CSS já faz isso no topo!
-
-        // Substitui as logos dos vestibulares pelas versões escuras
-        const fuv = document.getElementById('logoFuvest');
-        const vun = document.getElementById('logoVunesp');
-        const uni = document.getElementById('logoUnicamp');
-        const ene = document.getElementById('logoEnem');
-
-        if (fuv) fuv.src = "../assets/img/fuvestescuro.webp";
-        if (vun) vun.src = "../assets/img/vunespescura.webp";
-        if (uni) uni.src = "../assets/img/unicampescuro.webp";
-        if (ene) ene.src = "../assets/img/enemescuro.webp";
-    }
-});
-
-
-
-// Mantém apenas a injeção da classe no topo para evitar "piscada" visual de fundo branco
-if (localStorage.getItem('site-theme') === 'dark') {
-    document.documentElement.classList.add('dark-theme');
-}
-</script>
+    <script src="../assets/js/lib/livros.js" defer></script>
 
 <?php include '../perfil/vlibras.php'; ?>
 

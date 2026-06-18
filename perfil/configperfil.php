@@ -7,14 +7,7 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-// --- CONEXÃO COM O BANCO ---
-$servername = "localhost";
-$username = "root";
-$password = "Home@spSENAI2025!";
-$dbname = "phronesis";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) { die("Erro: " . $conn->connect_error); }
+include '../conexao.php';
 
 $id_usuario = $_SESSION['id'];
 
@@ -244,85 +237,7 @@ $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     
-    <script>
-        $(document).ready(function() {
-            var $modal = $('#cropModal'), $image = $('#imageToCrop'), cropper;
-
-            $('#btnSelectFoto').on('click', function() { $('#foto_perfil').click(); });
-
-            // AÇÃO DO BOTÃO REMOVER FOTO
-            $('#btnRemoveFoto').on('click', function() {
-                if(confirm("Tem certeza que deseja remover sua foto de perfil e usar a padrão?")) {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'configperfil.php',
-                        data: { action: 'delete_image' },
-                        dataType: 'json',
-                        success: function(response) {
-                            if(response.status === 'success') {
-                                window.location.reload();
-                            } else {
-                                alert("Erro ao remover: " + response.message);
-                            }
-                        }
-                    });
-                }
-            });
-
-            $('#foto_perfil').on('change', function(e) {
-                var files = e.target.files;
-                if (files && files.length > 0) {
-                    var reader = new FileReader();
-                    reader.onload = function(event) {
-                        $image.attr('src', event.target.result);
-                        $modal.css('display', 'flex');
-                        if (cropper) cropper.destroy();
-                        cropper = new Cropper($image[0], { 
-                            aspectRatio: 1, 
-                            viewMode: 1, 
-                            dragMode: 'move',
-                            autoCropArea: 0.8
-                        });
-                    };
-                    reader.readAsDataURL(files[0]);
-                }
-            });
-
-            $('#btnCancelCrop').on('click', function() { 
-                $modal.hide(); 
-                if (cropper) cropper.destroy(); 
-                $('#foto_perfil').val('');
-            });
-
-            $('#btnConfirmCrop').on('click', function() {
-                var canvas = cropper.getCroppedCanvas({ 
-                    width: 400, 
-                    height: 400,
-                    imageSmoothingEnabled: true,
-                    imageSmoothingQuality: 'high'
-                });
-                var base64data = canvas.toDataURL('image/webp');
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'configperfil.php',
-                    data: { action: 'crop_image', image_data: base64data },
-                    dataType: 'json',
-                    success: function(response) { 
-                        if(response.status === 'success') {
-                            window.location.reload();
-                        } else {
-                            alert("Erro: " + response.message);
-                        }
-                    },
-                    error: function(xhr) {
-                        console.log(xhr.responseText);
-                        alert("Erro técnico ao salvar a imagem.");
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="../assets/js/lib/configperfil.js" defer></script>
 
     <?php include '../perfil/vlibras.php'; ?>
 

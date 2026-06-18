@@ -1,6 +1,6 @@
 <?php
 session_start();
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+include '../conexao.php';
 
 if (isset($_POST['v_id']) && isset($_SESSION['id'])) {
     $v_id = $_POST['v_id'];

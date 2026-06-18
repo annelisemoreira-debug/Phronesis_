@@ -7,8 +7,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     exit();
 }
 
-// --- CONEXÃO ---
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+include '../conexao.php';
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
 $id = intval($_SESSION['id']);
@@ -122,31 +121,7 @@ $googleLogado = 'false';
         </div>
     </div>
 
-    <script>
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: true
-        });
-
-        const estaLogadoNoGoogle = <?php echo $googleLogado; ?>;
-
-        document.getElementById('btn-ja-conectei').addEventListener('click', function(e) {
-            if (!estaLogadoNoGoogle) {
-                e.preventDefault();
-                Toast.fire({
-                    icon: 'warning',
-                    title: 'Você precisa clicar em "Vincular Google Agenda" primeiro!'
-                });
-            }
-        });
-
-        if (localStorage.getItem('site-theme') === 'dark') {
-            document.documentElement.classList.add('dark-theme');
-        }
-    </script>
+<script src="../assets/js/lib/meu_calendario.js" defer></script>
 
     <?php include '../perfil/vlibras.php'; ?>
         

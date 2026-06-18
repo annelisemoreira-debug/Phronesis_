@@ -1,19 +1,7 @@
 <?php
 session_start();
 
-// --- CONFIGURAÇÃO DE CONEXÃO ---
-// --- SENHA PARA CONEXÃO: Home@spSENAI2025! ---
-
-$servername = "localhost";
-$username = "root";
-$password = "Home@spSENAI2025!";
-$dbname = "phronesis";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Erro na conexão: " . $conn->connect_error);
-}
+include __DIR__ . '/conexao.php';
 
 // Captura a ação padrão vinda dos formulários tradicionais
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';

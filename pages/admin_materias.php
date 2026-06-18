@@ -1,13 +1,7 @@
 <?php
 session_start();
 
-// 1. CONEXÃO COM O BANCO
-$servername = "localhost";
-$username = "root";
-$password = "Home@spSENAI2025!";
-$dbname = "phronesis";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
+include '../conexao.php';
 
 // SEGURANÇA: Se não tiver ID na sessão, nem tenta o resto
 if (!isset($_SESSION['id'])) {
@@ -254,86 +248,7 @@ foreach ($topicos_brutos as $t) {
     </section>
 </main>
 
-<script>
-// Exibir/Ocultar painel de tópicos da matéria específica
-function toggleTopicosPanel(id) {
-    const painel = document.getElementById(`painel-topicos-${id}`);
-    painel.style.display = (painel.style.display === 'table-row') ? 'none' : 'table-row';
-}
-
-// Monitoramento dinâmico de edição inline de MATÉRIAS
-document.body.addEventListener('click', function(e) {
-    const btn = e.target.closest('.btn-ativar-edicao');
-    if (btn) {
-        const id = btn.getAttribute('data-id');
-        const nomeOriginal = btn.getAttribute('data-nome');
-        ativarEdicaoMateria(id, nomeOriginal);
-    }
-});
-
-function activarEdicao(id, nomeOriginal) {
-    const linha = document.getElementById(`linha-${id}`);
-    const colNome = linha.querySelector('.col-nome');
-    const colAcoes = linha.querySelector('.col-acoes');
-
-    const htmlOriginalNome = colNome.innerHTML;
-    const htmlOriginalAcoes = colAcoes.innerHTML;
-
-    colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}">`;
-    document.getElementById(`input-${id}`).value = nomeOriginal;
-    document.getElementById(`input-${id}`).focus();
-
-    colAcoes.innerHTML = `
-        <div class="action-buttons" style="justify-content: center;">
-            <form method="POST" style="display: inline;" onsubmit="prepararEnvio(${id});">
-                <input type="hidden" name="id_materia" value="${id}">
-                <input type="hidden" name="novo_nome" id="hidden-nome-${id}">
-                <button type="submit" name="edit_materia" class="btn-salvar">Salvar</button>
-            </form>
-            <button type="button" class="btn-cancelar" id="cancelar-${id}">X</button>
-        </div>
-    `;
-
-    document.getElementById(`cancelar-${id}`).addEventListener('click', () => {
-        colNome.innerHTML = htmlOriginalNome;
-        colAcoes.innerHTML = htmlOriginalAcoes;
-    });
-}
-
-function ativarEdicaoMateria(id, nomeOriginal) { activarEdicao(id, nomeOriginal); }
-
-function prepararEnvio(id) {
-    const valorInput = document.getElementById(`input-${id}`).value;
-    document.getElementById(`hidden-nome-${id}`).value = valorInput;
-}
-
-// NOVA: Ativar edição Inline de TÓPICOS
-function ativarEdicaoTopico(idTopico, nomeOriginal) {
-    const tag = document.getElementById(`tag-topico-${idTopico}`);
-    const htmlOriginal = tag.innerHTML;
-
-    tag.innerHTML = `
-        <form method="POST" style="display: flex; align-items: center; gap: 5px;">
-            <input type="hidden" name="id_topico" value="${idTopico}">
-            <input type="text" name="novo_nome_topico" value="${nomeOriginal}" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
-            <button type="submit" name="edit_topico" class="btn-salvar" style="padding: 4px 8px;">✔</button>
-            <button type="button" class="btn-cancelar" id="cancel-topico-${idTopico}" style="padding: 4px 8px; background: #ef4444;">X</button>
-        </form>
-    `;
-
-    document.getElementById(`cancel-topico-${idTopico}`).addEventListener('click', () => {
-        tag.innerHTML = htmlOriginal;
-    });
-}
-
-(function () {
-    const savedTheme = localStorage.getItem('site-theme');
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark-theme');
-        document.body.classList.add('dark-theme');
-    }
-})();
-</script>
+<script src="../assets/js/lib/admin_materias.js" defer></script>
 
 <?php include '../perfil/vlibras.php'; ?>
 

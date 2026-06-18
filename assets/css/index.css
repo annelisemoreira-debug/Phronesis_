@@ -371,6 +371,21 @@ html.dark-theme .subtitulo-principal {
     color: #f1c40f; /* Subtítulo amarelo destacado sob fundo escuro */
 }
 
+/* =======================================================
+   REGRAS GLOBAIS DE ESCALA DE FONTES (AFETA TODO O SITE)
+   ======================================================= */
+html, html.font-normal {
+    font-size: 100%; /* Tamanho padrão do navegador (geralmente 16px) */
+}
+
+html.font-media {
+    font-size: 115%; /* Aumenta o texto e elementos em REM de todo o site em 15% */
+}
+
+html.font-grande {
+    font-size: 130%; /* Aumenta o texto e elementos em REM de todo o site em 30% */
+}
+
 /* NOTA PARA A LOGO DO HEADER:
    Para alterar a logo de forma organizada, inclua no seu 'header.css' 
    ou arquivo correspondente as regras equivalentes de visualização:

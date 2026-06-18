@@ -8,8 +8,7 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-// 2. Conecta ao banco de dados (Mesma senha do seu material.php)
-$conn = new mysqli("localhost", "root", "Home@spSENAI2025!", "phronesis");
+include '../conexao.php';
 
 if ($conn->connect_error) {
     http_response_code(500);

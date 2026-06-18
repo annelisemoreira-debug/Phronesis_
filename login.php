@@ -100,62 +100,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
         </div>
     </main>
 
-    <script>
-        const btnSenha = document.getElementById('btn-senha');
-        const inputSenha = document.getElementById('senha');
-
-        btnSenha.addEventListener('click', () => {
-            if (inputSenha.type === 'password') {
-                inputSenha.setAttribute('type', 'text');
-                btnSenha.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                inputSenha.setAttribute('type', 'password');
-                btnSenha.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        });
-
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: true
-        });
-
-        <?php if(isset($_SESSION['erro_login'])): ?>
-            Toast.fire({
-                icon: 'error',
-                title: '<?php echo $_SESSION['erro_login']; ?>'
-            });
-        <?php unset($_SESSION['erro_login']); endif; ?>
-
-        <?php if(isset($_SESSION['sucesso_login'])): ?>
-            Toast.fire({
-                icon: 'success',
-                title: '<?php echo $_SESSION['sucesso_login']; ?>'
-            });
-        <?php unset($_SESSION['sucesso_login']); endif; ?>
-
-        document.getElementById('formLogin').addEventListener('submit', function(e) {
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!email || !senha) {
-                e.preventDefault();
-                Toast.fire({
-                    icon: 'warning',
-                    title: "Por favor, preencha todos os campos."
-                });
-            } else if (!emailRegex.test(email)) {
-                e.preventDefault();
-                Toast.fire({
-                    icon: 'warning',
-                    title: "Formato de e-mail inválido."
-                });
-            }
-        });
-    </script>
+    <script src="assets/js/lib/login.js" defer></script>
 
     <?php include 'perfil/vlibras.php'; ?>
 </body>

@@ -47,12 +47,14 @@ html.dark-theme body {
     --shadow: rgba(0, 0, 0, 0.4);
 }
 
+/* --- CONFIGURAÇÕES DO BODY --- */
 body {
     background-color: var(--bg-color);
     min-height: 100vh;
     padding-bottom: 40px;
     font-family: 'Poppins', sans-serif;
     color: var(--text-body);
+    font-size: 1rem; /* Define a base padrão */
     transition: background-color 0.3s ease;
 }
 
@@ -106,16 +108,17 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* --- TEXTOS DO HEADER DO CARD --- */
 .title-left h2 {
     color: var(--text-primary);
-    font-size: 24px;
+    font-size: 1.5rem; /* Convertido de 24px */
     font-weight: 700;
     line-height: 1.2;
 }
 
 .title-left p {
     color: var(--text-secondary);
-    font-size: 13px;
+    font-size: 0.81rem; /* Convertido de 13px */
     font-weight: 400;
     margin-top: 2px;
 }
@@ -123,7 +126,7 @@ body {
 .btn-desconectar {
     color: #e11d48;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 0.81rem; /* Convertido de 13px */
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -131,11 +134,7 @@ body {
     transition: opacity 0.2s;
 }
 
-.btn-desconectar:hover {
-    opacity: 0.7;
-}
-
-/* --- COMPONENTES DO FORMULÁRIO --- */
+/* --- COMPONENTES DO FORMULÁRIO (INPUTS E LABELS) --- */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -146,6 +145,14 @@ body {
     grid-column: span 2;
 }
 
+/* Força uma linha inteira a se dividir em duas colunas internas */
+.inline-grid {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
 .field-group {
     display: flex;
     flex-direction: column;
@@ -154,7 +161,7 @@ body {
 
 .field-group label {
     color: var(--text-secondary);
-    font-size: 13px;
+    font-size: 0.81rem; /* Convertido de 13px */
     font-weight: 700;
 }
 
@@ -168,7 +175,7 @@ input[type="number"] {
     background-color: var(--input-bg);
     border-radius: 10px;
     color: var(--text-body);
-    font-size: 13px;
+    font-size: 0.81rem; /* Convertido de 13px */
     outline: none;
     transition: all 0.3s ease;
 }
@@ -221,14 +228,15 @@ html.dark-theme input::-webkit-calendar-picker-indicator {
     border-radius: 4px;
 }
 
+/* --- ITENS DAS LISTAS E ACCORDION --- */
 .row-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
     border-bottom: 1px solid var(--row-border);
-    color: var(--text-body) !important; /* Força cor correta no modo claro */
-    font-size: 13px;
+    color: var(--text-body) !important;
+    font-size: 0.81rem; /* Convertido de 13px */
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
@@ -286,7 +294,7 @@ html.dark-theme .row-item {
     border: none;
     padding: 14px;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 0.94rem; /* Convertido de 15px */
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -312,7 +320,7 @@ html.dark-theme .row-item {
 
 .sidebar-header h3 {
     color: var(--text-primary);
-    font-size: 18px;
+    font-size: 1.12rem; /* Convertido de 18px */
     font-weight: 700;
     margin-bottom: 20px;
     display: flex;
@@ -411,13 +419,13 @@ html.dark-theme .row-item {
 
 .crono-title {
     color: var(--text-body);
-    font-size: 13px;
+    font-size: 0.81rem; /* Convertido de 13px */
     font-weight: 600;
 }
 
 .crono-date {
     color: var(--text-muted);
-    font-size: 11px;
+    font-size: 0.69rem; /* Convertido de 11px */
 }
 
 .cronograma-actions {
@@ -580,7 +588,7 @@ html.dark-theme .btn-del {
     border: none;
     padding: 14px 18px;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: 0.88rem; /* Convertido de 14px */
     font-weight: 600;
     cursor: pointer;
     margin-top: 20px;
@@ -588,7 +596,6 @@ html.dark-theme .btn-del {
     box-shadow: 0 4px 12px rgba(155, 81, 224, 0.2);
 }
 
-/* Força o texto e ícones do botão a ficarem brancos em qualquer tema */
 .btn-toggle-materias,
 .btn-toggle-materias span,
 .btn-toggle-materias i {
@@ -609,7 +616,7 @@ html.dark-theme .btn-del {
     animation: fadeInAccordion 0.3s ease;
 }
 
-/* Card individual de cada matéria (ex: Física, Português) */
+/* Card individual de cada matéria */
 .materia-accordion-item {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
@@ -630,17 +637,15 @@ html.dark-theme .btn-del {
     padding: 12px 18px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.88rem; /* Convertido de 14px */
     transition: background 0.2s;
 }
 
-/* Garante cor escura estável no modo claro */
 .materia-accordion-header,
 .materia-accordion-header span {
     color: #1e293b !important;
 }
 
-/* Restaura a cor clara nativa apenas se estiver ativo o dark theme */
 html.dark-theme .materia-accordion-header,
 html.dark-theme .materia-accordion-header span {
     color: var(--text-primary) !important;
@@ -650,13 +655,11 @@ html.dark-theme .materia-accordion-header span {
     background-color: var(--row-hover);
 }
 
-/* Ícone de pasta à esquerda do título */
 .materia-accordion-header i.fa-folder {
     margin-right: 8px;
     color: var(--text-secondary) !important;
 }
 
-/* Seta (Chevron) à direita */
 .materia-accordion-header i.chevron {
     color: var(--text-muted) !important;
     font-size: 11px;
@@ -668,7 +671,6 @@ html.dark-theme .materia-accordion-header span {
     color: var(--text-secondary) !important;
 }
 
-/* Área interna que revela a lista de tópicos */
 .materia-accordion-content {
     max-height: 0;
     overflow: hidden;
@@ -686,22 +688,19 @@ html.dark-theme .materia-accordion-header span {
     border-top: 1px solid var(--row-border);
 }
 
-/* Linhas dos tópicos (ex: Ondulatória, Gramática) */
 .materia-accordion-content li {
-    font-size: 13px;
-    color: #334155 !important; /* Cor escura fixa de alta legibilidade para o Modo Claro */
+    font-size: 0.81rem;
+    color: #334155 !important;
     display: flex;
     align-items: center;
     gap: 8px;
     font-weight: 500;
 }
 
-/* Altera a cor do texto para o tom claro correto apenas no Modo Escuro */
 html.dark-theme .materia-accordion-content li {
     color: var(--text-body) !important;
 }
 
-/* Marcador de bolinha personalizado antes do texto */
 .materia-accordion-content li::before {
     content: "•";
     color: var(--text-secondary);
@@ -709,7 +708,6 @@ html.dark-theme .materia-accordion-content li {
     line-height: 1;
 }
 
-/* Textos informativos de estado vazio */
 .materia-accordion-item .empty-state-select,
 .sidebar-historico .empty-state-select {
     color: var(--text-muted);
@@ -758,7 +756,6 @@ html.dark-theme h2 {
     color: #fff;
 }
 
-/* Correção crucial: removido seletores p e span genéricos que quebravam o modo claro */
 html.dark-theme .empty-history-wrapper p,
 html.dark-theme .title-left p {
     color: #b0aeb8;
@@ -767,4 +764,17 @@ html.dark-theme .title-left p {
 html.dark-theme .book-item-card {
     background-color: #2d293d;
     border: 1px solid #3d3752;
+}
+
+/* --- REGRAS GLOBAIS DE ESCALA DE FONTES --- */
+html, html.font-normal {
+    font-size: 100%;
+}
+
+html.font-media {
+    font-size: 115%;
+}
+
+html.font-grande {
+    font-size: 130%;
 }

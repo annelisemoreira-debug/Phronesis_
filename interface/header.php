@@ -1,10 +1,5 @@
 <?php
-// CONEXÃO
-$servername = "localhost";
-$username = "root";
-$password = "Home@spSENAI2025!";
-$dbname = "phronesis";
-$conn = new mysqli($servername, $username, $password, $dbname);
+include __DIR__ . '/../conexao.php';
 
 $script_name = $_SERVER['SCRIPT_NAME'];
 
@@ -97,4 +92,5 @@ if (isset($_SESSION['id'])) {
             });
         }
     });
+    
 </script>
