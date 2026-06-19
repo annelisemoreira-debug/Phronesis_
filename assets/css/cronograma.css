@@ -629,13 +629,11 @@ html.dark-theme .btn-del {
     border-color: #a78bfa;
 }
 
-/* ==========================================================================
-   --- ALTERAÇÃO PARA SIMETRIA: NOME DA MATÉRIA JUNTO DA BARRA DE PROGRESSO ---
-   ========================================================================== */
+/* ALTERAÇÃO PARA SIMETRIA: NOME DA MATÉRIA JUNTO DA BARRA DE PROGRESSO */
 .materia-accordion-header {
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-start !important; /* Agora tudo começa agrupado à esquerda */
+    justify-content: flex-start !important; /* Começa agrupado à esquerda */
     gap: 15px !important;                 /* Dá um espaçamento fixo e elegante entre o nome e a barra */
     width: 100% !important;
     padding: 12px 18px !important;
@@ -697,15 +695,16 @@ html.dark-theme .materia-accordion-header span {
     border-top: 1px solid var(--row-border);
 }
 
-/* Ajustado para seguir o padrão simétrico perfeito */
+/* CORREÇÃO DO ESPAÇAMENTO DOS CONTEÚDOS EXPANDIDOS (li) */
 .materia-accordion-content li {
     font-size: 0.81rem;
     color: #334155 !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important; /* Mantém os checks empurrados para a extrema direita */
+    justify-content: flex-start !important; /* Mudado de space-between para flex-start (Mantém colado no marcador) */
+    gap: 8px !important;                    /* Remove o espaço fantasma gigante no meio */
     width: 100% !important;
-    padding: 10px 18px !important;
+    padding: 6px 18px !important;
     font-weight: 500;
 }
 
@@ -718,7 +717,7 @@ html.dark-theme .materia-accordion-content li {
     color: var(--text-secondary);
     font-size: 16px;
     line-height: 1;
-    margin-right: 8px;
+    margin-right: 2px;
 }
 
 .materia-accordion-item .empty-state-select,
@@ -858,11 +857,11 @@ h3:has(+ p:contains("Monitore seu avanço")) {
     margin-top: 50px !important; 
 }
 
-/* 2. Flexbox estrutural para alinhar os componentes filhos perfeitamente com os pais */
+/* CORREÇÃO DO LABEL DO CHECKLIST INTERNO (Muda de space-between para flex) */
 .materia-accordion-content label {
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important; /* Mantém o texto grudado à esquerda com o marcador */
     width: 100% !important;
 }
 
