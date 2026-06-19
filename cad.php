@@ -21,22 +21,39 @@ if ($acao == "cadastro") {
 
     // Validação básica de campos vazios
     if (empty($email) || empty($senha)) {
-        $_SESSION['erro_cad'] = "E-mail e senha são obrigatórios.";
+        $_SESSION['status_cadastro'] = "erro_geral"; // Alinhado com o SweetAlert
         header("Location: cadastro.php");
         exit();
     }
 
+    // --- NOVA VALIDAÇÃO: VERIFICAR SE O E-MAIL JÁ ESTÁ CADASTRADO ---
+    $sqlCheck = "SELECT id_usuario FROM usuario WHERE email = ?";
+    $stmtCheck = $conn->prepare($sqlCheck);
+    $stmtCheck->bind_param("s", $email);
+    $stmtCheck->execute();
+    $resultCheck = $stmtCheck->get_result();
+
+    if ($resultCheck->num_rows > 0) {
+        // Encontrou um usuário com o mesmo e-mail! dispara o alerta do SweetAlert personalizado
+        $_SESSION['status_cadastro'] = "email_duplicado";
+        header("Location: cadastro.php");
+        exit();
+    }
+    $stmtCheck->close();
+    // -----------------------------------------------------------------
+
     // --- NOVA VALIDAÇÃO DE FORÇA DE SENHA ---
     // Regra: Mínimo 6 caracteres, 1 letra, 1 número e 1 caractere especial
-    $regex = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/";
+    $regex = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{6,}$/";
 
     if (!preg_match($regex, $senha)) {
-        $_SESSION['erro_cad'] = "A senha não atende aos requisitos: mínimo de 6 dígitos, uma letra, um número e um símbolo.";
+        $_SESSION['status_cadastro'] = "senha_incorreta"; // Alinhado com o SweetAlert
         header("Location: cadastro.php");
         exit();
     }
     // ----------------------------------------
 
+// --- FINAL DO BLOCO DE CADASTRO NO CAD.PHP ---
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
     $sql = "INSERT INTO usuario (nome, email, senha, telefone) VALUES (?, ?, ?, ?)";
@@ -44,11 +61,12 @@ if ($acao == "cadastro") {
     $stmt->bind_param("ssss", $nome, $email, $senhaHash, $telefone);
 
     if ($stmt->execute()) {
+        // SALVA O SUCESSO E REDIRECIONA DIRETO PARA O LOGIN!
         $_SESSION['sucesso_login'] = "Cadastro realizado com sucesso! Faça seu login.";
         header("Location: login.php");
         exit();
     } else {
-        $_SESSION['erro_cad'] = "Erro ao cadastrar: " . $conn->error;
+        $_SESSION['status_cadastro'] = "erro_geral";
         header("Location: cadastro.php");
         exit();
     }

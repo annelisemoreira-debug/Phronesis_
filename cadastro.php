@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php 
+// Garante que a sessão está iniciada para ler os alertas vindo do cad.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); 
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -97,5 +102,69 @@
     <script src="assets/js/lib/cadastro.js" defer></script>
 
     <?php include 'perfil/vlibras.php'; ?>
+
+    <script>
+        // Mantendo sua função de máscara original
+        function handleTelefone(event) {
+            let input = event.target;
+            input.value = telefoneMask(input.value);
+        }
+
+        function telefoneMask(value) {
+            if (!value) return "";
+            value = value.replace(/\D/g, "");
+            if (value.length > 0) value = "(" + value;
+            if (value.length > 3) value = value.substring(0, 3) + ") " + value.substring(3);
+            if (value.length > 10) value = value.substring(0, 10) + "- " + value.substring(10, 14);
+            return value;
+        }
+
+        // Substitua o bloco de alertas do seu cadastro.php por este:
+
+<?php if(isset($_SESSION['status_cadastro'])): ?>
+    // Configuração do Toast no canto superior direito
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true
+    });
+
+    const status = "<?php echo $_SESSION['status_cadastro']; ?>";
+    
+    if (status === "email_duplicado") {
+        Toast.fire({
+            icon: 'error',
+            title: 'Este e-mail já está cadastrado!'
+        });
+    } else if (status === "senha_incorreta" || status === "erro_senha") {
+        // Mantemos a janela grande para a senha porque ela tem a listinha HTML explicativa
+        Swal.fire({
+            icon: 'error',
+            title: 'Ops! Algo deu errado com a senha.',
+            html: `
+                <div style="text-align: left;">
+                    <p>A senha digitada não cumpre os requisitos mínimos:</p>
+                    <ul>
+                        <li>6 dígitos;</li>
+                        <li>uma letra;</li>
+                        <li>um número;</li>
+                        <li>um símbolo.</li>
+                    </ul>
+                </div>
+            `,
+            confirmButtonColor: '#001a8b'
+        });
+    } else if (status === "erro_geral") {
+        Toast.fire({
+            icon: 'error',
+            title: 'Não foi possível concluir a ação. Tente novamente.'
+        });
+    }
+
+    <?php unset($_SESSION['status_cadastro']); ?>
+<?php endif; ?>
+    </script>
 </body>
 </html>

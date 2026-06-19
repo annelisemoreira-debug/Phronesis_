@@ -1,5 +1,7 @@
 <?php 
-session_start(); 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); 
+}
 
 // Se as variáveis de sessão existirem, o usuário já está logado
 if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
@@ -42,7 +44,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
 <body>
     <img src="assets/img/fundoRoxo.webp" class="bg-html" alt="Fundo">
 
-        <div class="quick-fill-sidebar">
+    <div class="quick-fill-sidebar">
         <button class="quick-fill-btn" onclick="preencherCampos(1)">João</button>
         <button class="quick-fill-btn" onclick="preencherCampos(2)">Manuella</button>
         <button class="quick-fill-btn" onclick="preencherCampos(3)">Annelise</button>
@@ -109,9 +111,60 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
         </div>
     </main>
 
-    
     <script src="assets/js/lib/login.js" defer></script>
 
     <?php include 'perfil/vlibras.php'; ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuração padrão do Toast antigo
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+            });
+
+            // 1. Captura mensagens vindas das sessões do PHP
+            <?php if(isset($_SESSION['erro_login'])): ?>
+                Toast.fire({
+                    icon: 'error',
+                    title: '<?php echo $_SESSION['erro_login']; ?>'
+                });
+            <?php unset($_SESSION['erro_login']); endif; ?>
+
+            <?php if(isset($_SESSION['sucesso_login'])): ?>
+                Toast.fire({
+                    icon: 'success',
+                    title: '<?php echo $_SESSION['sucesso_login']; ?>'
+                });
+            <?php unset($_SESSION['sucesso_login']); endif; ?>
+
+            // 2. Validação Manual front-end ao enviar o formulário
+            const formLogin = document.getElementById('formLogin');
+            if (formLogin) {
+                formLogin.addEventListener('submit', function(e) {
+                    const email = document.getElementById('email').value.trim();
+                    const senha = document.getElementById('senha').value.trim();
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                    if (!email || !senha) {
+                        e.preventDefault();
+                        Toast.fire({
+                            icon: 'warning',
+                            title: "Por favor, preencha todos os campos."
+                        });
+                    } else if (!emailRegex.test(email)) {
+                        e.preventDefault();
+                        Toast.fire({
+                            icon: 'warning',
+                            title: "Formato de e-mail inválido."
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
