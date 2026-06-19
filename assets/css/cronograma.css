@@ -778,3 +778,44 @@ html.font-media {
 html.font-grande {
     font-size: 130%;
 }
+
+.conteiner-geral-checklist { /* Substitua pelo nome da sua classe pai */
+    height: auto; /* Permite que o container estique para mostrar tudo */
+    max-height: none; 
+    overflow: visible; /* Garante que os elementos filhos não sejam podados */
+}
+
+/* Container que agrupa o nome da matéria e a barra */
+.materia-container {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 500px; /* Ajuste o tamanho máximo conforme seu layout */
+}
+
+/* Alinha o nome da matéria de um lado e a porcentagem do outro */
+.materia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    font-family: sans-serif;
+    color: #333;
+}
+
+/* O fundo cinza da barra (onde ela fica quando está em 0%) */
+.progress-bar-container {
+    width: 100%;
+    height: 8px; /* Altura sutil e elegante */
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden; /* Garante que o preenchimento não saia das bordas arredondadas */
+}
+
+/* O preenchimento colorido que vai andar de 0% a 100% */
+.progress-bar-fill {
+    height: 100%;
+    background-color: #4285F4; /* O azul padrão do seu projeto */
+    border-radius: 4px;
+    width: 0%; /* Valor inicial padrão */
+    transition: width 0.4s ease-in-out; /* Efeito visual suave quando o usuário marcar o check */
+}

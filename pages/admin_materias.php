@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include '../conexao.php';
+include '../conexao.php'; // Usa o $conn nativo do seu sistema
 
 // SEGURANÇA: Se não tiver ID na sessão, nem tenta o resto
 if (!isset($_SESSION['id'])) {
@@ -22,27 +22,20 @@ if (!$user_data || $user_data['tipo'] !== 'admin') {
     exit();
 }
 
-// 2. LÓGICA PDO
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) { 
-    die("Erro: " . $e->getMessage()); 
-}
-
 $msg = "";
 
 // Lógica de Inserção de Matéria
 if (isset($_POST['add_materia'])) {
     $nome = trim($_POST['nome_materia']);
     if (!empty($nome)) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO materia (nome_materia) VALUES (?)");
-            $stmt->execute([$nome]);
+        $stmt = $conn->prepare("INSERT INTO materia (nome_materia) VALUES (?)");
+        $stmt->bind_param("s", $nome);
+        if ($stmt->execute()) {
             $msg = "✅ Matéria '$nome' adicionada!";
-        } catch (Exception $e) { 
+        } else { 
             $msg = "❌ Erro: Matéria já existe ou falha no banco."; 
         }
+        $stmt->close();
     }
 }
 
@@ -51,23 +44,30 @@ if (isset($_POST['edit_materia'])) {
     $id_edit = $_POST['id_materia'];
     $nome_edit = trim($_POST['novo_nome']);
     if (!empty($nome_edit) && !empty($id_edit)) {
-        try {
-            $stmt = $pdo->prepare("UPDATE materia SET nome_materia = ? WHERE id_materia = ?");
-            $stmt->execute([$nome_edit, $id_edit]);
+        $stmt = $conn->prepare("UPDATE materia SET nome_materia = ? WHERE id_materia = ?");
+        $stmt->bind_param("si", $nome_edit, $id_edit);
+        if ($stmt->execute()) {
             $msg = "📝 Matéria atualizada com sucesso!";
-        } catch (Exception $e) {
+        } else {
             $msg = "❌ Erro ao editar matéria.";
         }
+        $stmt->close();
     }
 }
 
 // Lógica de Exclusão de Matéria
 if (isset($_GET['del'])) {
+    $id_del = $_GET['del'];
     try {
-        $stmt = $pdo->prepare("DELETE FROM materia WHERE id_materia = ?");
-        $stmt->execute([$_GET['del']]);
-        $msg = "🗑️ Matéria removida!";
-    } catch (Exception $e) { 
+        $stmt = $conn->prepare("DELETE FROM materia WHERE id_materia = ?");
+        $stmt->bind_param("i", $id_del);
+        if ($stmt->execute()) {
+            $msg = "🗑️ Matéria removida!";
+        } else {
+            $msg = "⚠️ Não é possível remover: matéria está em uso em um cronograma.";
+        }
+        $stmt->close();
+    } catch (Exception $e) {
         $msg = "⚠️ Não é possível remover: matéria está em uso em um cronograma."; 
     }
 }
@@ -77,50 +77,62 @@ if (isset($_POST['add_topico'])) {
     $id_materia_topico = $_POST['id_materia'];
     $nome_topico = trim($_POST['nome_topico']);
     if (!empty($nome_topico) && !empty($id_materia_topico)) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO materia_topico (id_materia, nome_topico) VALUES (?, ?)");
-            $stmt->execute([$id_materia_topico, $nome_topico]);
+        $stmt = $conn->prepare("INSERT INTO materia_topico (id_materia, nome_topico) VALUES (?, ?)");
+        $stmt->bind_param("is", $id_materia_topico, $nome_topico);
+        if ($stmt->execute()) {
             $msg = "📌 Tópico adicionado com sucesso!";
-        } catch (Exception $e) {
+        } else {
             $msg = "❌ Erro ao adicionar tópico.";
         }
+        $stmt->close();
     }
 }
 
-// NOVA: Lógica de Edição de Tópico
+// Lógica de Edição de Tópico
 if (isset($_POST['edit_topico'])) {
     $id_topico = $_POST['id_topico'];
     $novo_nome_topico = trim($_POST['novo_nome_topico']);
     if (!empty($id_topico) && !empty($novo_nome_topico)) {
-        try {
-            $stmt = $pdo->prepare("UPDATE materia_topico SET nome_topico = ? WHERE id_topico = ?");
-            $stmt->execute([$novo_nome_topico, $id_topico]);
+        $stmt = $conn->prepare("UPDATE materia_topico SET nome_topico = ? WHERE id_topico = ?");
+        $stmt->bind_param("si", $novo_nome_topico, $id_topico);
+        if ($stmt->execute()) {
             $msg = "📝 Tópico atualizado com sucesso!";
-        } catch (Exception $e) {
+        } else {
             $msg = "❌ Erro ao editar tópico.";
         }
+        $stmt->close();
     }
 }
 
 // Lógica de Exclusão de Tópico
 if (isset($_GET['del_topico'])) {
-    try {
-        $stmt = $pdo->prepare("DELETE FROM materia_topico WHERE id_topico = ?");
-        $stmt->execute([$_GET['del_topico']]);
+    $id_del_topico = $_GET['del_topico'];
+    $stmt = $conn->prepare("DELETE FROM materia_topico WHERE id_topico = ?");
+    $stmt->bind_param("i", $id_del_topico);
+    if ($stmt->execute()) {
         $msg = "🗑️ Tópico removido!";
-    } catch (Exception $e) {
+    } else {
         $msg = "❌ Erro ao remover tópico.";
     }
+    $stmt->close();
 }
 
 // Buscar matérias existentes
-$materias = $pdo->query("SELECT * FROM materia ORDER BY nome_materia ASC")->fetchAll(PDO::FETCH_ASSOC);
+$materias = [];
+$res_materias = $conn->query("SELECT * FROM materia ORDER BY nome_materia ASC");
+if ($res_materias) {
+    while ($row = $res_materias->fetch_assoc()) {
+        $materias[] = $row;
+    }
+}
 
 // Buscar tópicos vinculados organizados por id_materia
-$topicos_brutos = $pdo->query("SELECT * FROM materia_topico ORDER BY nome_topico ASC")->fetchAll(PDO::FETCH_ASSOC);
 $topicos = [];
-foreach ($topicos_brutos as $t) {
-    $topicos[$t['id_materia']][] = $t;
+$res_topicos = $conn->query("SELECT * FROM materia_topico ORDER BY nome_topico ASC");
+if ($res_topicos) {
+    while ($t = $res_topicos->fetch_assoc()) {
+        $topicos[$t['id_materia']][] = $t;
+    }
 }
 ?>
 
@@ -154,7 +166,7 @@ foreach ($topicos_brutos as $t) {
         </div>
 
         <?php if($msg): ?>
-            <div class="alert-message"><?= $msg ?></div>
+            <div class="alert-message"><?= htmlspecialchars($msg) ?></div>
         <?php endif; ?>
         
         <form method="POST" class="input-group-append">

@@ -100,6 +100,8 @@ $id_visualizacao = $_GET['ver'] ?? null;
 $mostrar_modal = false;
 
 $calendar_id_exibir = null;
+$materias_checklist = [];
+
 if ($id_visualizacao !== null) {
     $stmtVis = $pdo->prepare("SELECT google_calendar_id, titulo_cronograma FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
     $stmtVis->execute([$id_visualizacao, $id]);
@@ -107,6 +109,57 @@ if ($id_visualizacao !== null) {
     if ($crono_ver) {
         $calendar_id_exibir = $crono_ver['google_calendar_id'];
         $titulo_exibir = $crono_ver['titulo_cronograma'];
+
+        // --- BUSCA AS MATÉRIAS SELECIONADAS PARA A CHECKLIST DO CRONOGRAMA ATIVO ---
+        $sql_mat_crono = "SELECT DISTINCT m.id_materia, m.nome_materia, m.cor_hex 
+                          FROM cronograma_item ci
+                          JOIN materia m ON ci.id_materia = m.id_materia
+                          WHERE ci.id_cronograma = ?";
+        $stmt_mat_crono = $pdo->prepare($sql_mat_crono);
+        $stmt_mat_crono->execute([$id_visualizacao]);
+        $lista_mat_crono = $stmt_mat_crono->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($lista_mat_crono as $mat) {
+            $id_materia = $mat['id_materia'];
+            
+            // Busca tópicos da matéria
+            $stmt_topico = $pdo->prepare("SELECT id_topico, nome_topico FROM materia_topico WHERE id_materia = ? ORDER BY nome_topico ASC");
+            $stmt_topico->execute([$id_materia]);
+            $todos_topicos = $stmt_topico->fetchAll(PDO::FETCH_ASSOC);
+
+            $topicos_formatados = [];
+            $concluidos = 0;
+            $total = count($todos_topicos);
+
+            foreach ($todos_topicos as $top) {
+                $id_topico = $top['id_topico'];
+                
+                // CORREÇÃO AQUI: Agora busca o status correto da tabela 'cronograma_topico_status'
+                $stmt_status = $pdo->prepare("SELECT status FROM cronograma_topico_status WHERE id_cronograma = ? AND id_topico = ?");
+                $stmt_status->execute([$id_visualizacao, $id_topico]);
+                $status_salvo = $stmt_status->fetchColumn();
+
+                // Como gravamos como inteiro 1 na tabela, comparamos se é igual a 1
+                $checado = ((int)$status_salvo === 1);
+                if ($checado) $concluidos++;
+
+                $topicos_formatados[] = [
+                    'id_topico' => $id_topico,
+                    'nome_topico' => $top['nome_topico'],
+                    'checado' => $checado
+                ];
+            }
+
+            $porcentagem = $total > 0 ? round(($concluidos / $total) * 100) : 0;
+
+            $materias_checklist[] = [
+                'id_materia' => $id_materia,
+                'nome_materia' => $mat['nome_materia'],
+                'cor_hex' => $mat['cor_hex'] ?? '#7c3aed',
+                'porcentagem' => $porcentagem,
+                'topicos' => $topicos_formatados
+            ];
+        }
     }
 }
 
@@ -132,7 +185,7 @@ if (isset($_GET['deletar_salvo'])) {
         }
     }
     header('Location: cronograma.php?msg=' . urlencode($msg_feedback));
-    exit;
+    exit();
 }
 
 // Prepara edição
@@ -270,7 +323,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
         unset($_SESSION['editando_id'], $_SESSION['temp_cronograma'], $_SESSION['temp_params']);
         
         header('Location: cronograma.php?ver=' . $idx_final . '&msg=' . urlencode("✅ Cronograma salvo com sucesso!"));
-        exit;
+        exit();
     } catch (Exception $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         $msg_feedback = "❌ Erro: " . $e->getMessage();
@@ -291,136 +344,45 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Função auxiliar interna para lidar com as chamadas AJAX do checkbox e atualizar as barras de progresso dinamicamente
+        function salvarProgressoTopico(checkbox) {
+            const idCronograma = checkbox.getAttribute('data-cronograma');
+            const idMateria = checkbox.getAttribute('data-materia');
+            const idTopico = checkbox.getAttribute('data-topico');
+            const status = checkbox.checked ? 1 : 0;
 
-    <style>
-        .history-list {
-            max-height: 480px; 
-            overflow-y: auto;
-            padding-right: 4px;
-        }
+            const formData = new FormData();
+            formData.append('id_cronograma', idCronograma);
+            formData.append('id_materia', idMateria);
+            formData.append('id_topico', idTopico);
+            formData.append('status', status);
 
-        .history-list::-webkit-scrollbar,
-        .conteiner-materias-expansivel::-webkit-scrollbar {
-            width: 6px;
+            fetch('atualizar_progresso.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    // Atualiza a barra de progresso da matéria específica
+                    const fillBar = document.getElementById(`chk-fill-${idMateria}`);
+                    const textPercent = document.getElementById(`chk-text-${idMateria}`);
+                    if (fillBar && textPercent) {
+                        fillBar.style.width = `${data.porcentagemMateria}%`;
+                        textPercent.innerText = `${data.porcentagemMateria}%`;
+                    }
+                } else {
+                    Swal.fire('Erro!', data.erro || 'Não foi possível atualizar o progresso.', 'error');
+                    checkbox.checked = !checkbox.checked; // Reverte se der erro
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                checkbox.checked = !checkbox.checked;
+            });
         }
-        .history-list::-webkit-scrollbar-track,
-        .conteiner-materias-expansivel::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
-        }
-        .history-list::-webkit-scrollbar-thumb,
-        .conteiner-materias-expansivel::-webkit-scrollbar-thumb {
-            background: rgba(124, 58, 237, 0.3);
-            border-radius: 10px;
-        }
-        .history-list::-webkit-scrollbar-thumb:hover,
-        .conteiner-materias-expansivel::-webkit-scrollbar-thumb:hover {
-            background: rgba(124, 58, 237, 0.6);
-        }
-
-        .btn-toggle-materias {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            color: #fff;
-            border: none;
-            padding: 14px 18px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);
-        }
-        .btn-toggle-materias:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .conteiner-materias-expansivel {
-            display: none; 
-            margin-top: 15px;
-            flex-direction: column;
-            gap: 10px;
-            animation: fadeIn 0.3s ease;
-            max-height: 280px; 
-            overflow-y: auto;  
-            padding-right: 4px;
-        }
-
-        .materia-accordion-item {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            flex-shrink: 0; 
-        }
-        .dark-theme .materia-accordion-item {
-            background-color: #26263b;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .materia-accordion-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            cursor: pointer;
-            font-weight: 500;
-            color: #fff;
-            background-color: rgba(255, 255, 255, 0.02);
-            transition: background 0.2s;
-        }
-        .materia-accordion-header:hover {
-            background-color: rgba(255, 255, 255, 0.07);
-        }
-        .materia-accordion-header i.fa-folder {
-            margin-right: 10px;
-            color: #a78bfa;
-        }
-        .materia-accordion-header i.chevron {
-            transition: transform 0.3s ease;
-        }
-        .materia-accordion-item.active .materia-accordion-header i.chevron {
-            transform: rotate(180deg);
-        }
-        .materia-accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background-color: rgba(0, 0, 0, 0.15);
-        }
-        .materia-accordion-content ul {
-            list-style: none;
-            padding: 12px 16px;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .materia-accordion-content li {
-            font-size: 0.9rem;
-            color: #cbd5e1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .materia-accordion-content li::before {
-            content: "•";
-            color: #7c3aed;
-            font-size: 1.2rem;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .dia-desabilitado {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-    </style>
+    </script>
 </head>
 
 <body>
@@ -461,6 +423,63 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <a href="cronograma.php" class="btn-novo-crono">+ Novo Cronograma</a>
                 </div>
                 <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo&wkst=1&bgcolor=%23fbf9ff&color=%237c3aed&showCalendars=0&showTabs=1" class="calendar-embed" style="border: none;" allowfullscreen></iframe>
+                
+                <div class="checklist-estudos-box">
+                    <h3><i class="fa-solid fa-list-check"></i> Gerenciar Conteúdos Concluídos</h3>
+                    <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 15px;">Monitore seu avanço marcando as matérias estudadas neste cronograma:</p>
+                    
+                    <div class="checklist-wrapper">
+                        <?php if (empty($materias_checklist)): ?>
+                            <p style="color: #cbd5e1; font-style: italic; font-size: 0.9rem; text-align: center; padding: 20px 0;">
+                                Nenhuma matéria vinculada encontrada para este cronograma.
+                            </p>
+                        <?php else: ?>
+                            <?php foreach ($materias_checklist as $mc): ?>
+                                <div class="checklist-item-container" id="checklist-materia-<?= $mc['id_materia'] ?>" style="display: block; width: 100%; margin-bottom: 10px;">
+                                    
+                                    <div class="checklist-folder-header" onclick="toggleChecklistFolder(<?= $mc['id_materia'] ?>)">
+                                        <div style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                                            <i class="fa-solid fa-folder" style="color: <?= htmlspecialchars($mc['cor_hex']) ?>;"></i>
+                                            <span><?= htmlspecialchars($mc['nome_materia']) ?></span>
+                                            <i class="fa-solid fa-chevron-down fold-chevron" id="chk-chevron-<?= $mc['id_materia'] ?>" style="font-size: 0.8rem; margin-left: 5px; transition: transform 0.2s;"></i>
+                                        </div>
+                                        <div class="checklist-progress-container" style="display: flex; align-items: center; gap: 10px; min-width: 140px; justify-content: flex-end;">
+                                            <div class="checklist-bar-bg" style="width: 100px; height: 8px; background-color: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                                <div class="checklist-bar-fill" id="chk-fill-<?= $mc['id_materia'] ?>" 
+                                                    style="width: <?= $mc['porcentagem'] ?>%; height: 100%; background: <?= htmlspecialchars($mc['cor_hex']) ?>; border-radius: 4px; transition: width 0.3s ease-in-out;">
+                                                </div>
+                                            </div>
+                                            <span class="checklist-percent-text" id="chk-text-<?= $mc['id_materia'] ?>" style="font-size: 0.85rem; font-weight: 600; color: #4a5568; min-width: 35px; text-align: right;">
+                                                <?= $mc['porcentagem'] ?>%
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="checklist-folder-content" id="chk-content-<?= $mc['id_materia'] ?>" style="display: none; clear: both; width: 100%;">
+                                        <?php if (empty($mc['topicos'])): ?>
+                                            <p style="color: #a0aec0; font-style: italic; font-size: 0.85rem; padding: 10px 15px;">Nenhum conteúdo cadastrado para esta disciplina.</p>
+                                        <?php else: ?>
+                                            <?php foreach ($mc['topicos'] as $tp): ?>
+                                                <div class="checklist-topico-row" style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span><?= htmlspecialchars($tp['nome_topico']) ?></span>
+                                                    <input type="checkbox" 
+                                                           class="custom-checkbox chk-async-box check-topico" 
+                                                           data-cronograma="<?= $id_visualizacao ?>"
+                                                           data-materia="<?= $mc['id_materia'] ?>"
+                                                           data-topico="<?= $tp['id_topico'] ?>"
+                                                           <?= $tp['checado'] ? 'checked' : '' ?>
+                                                           onclick="salvarProgressoTopico(this)">
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </div>
+
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
             <?php else: ?>
 
                 <div class="card-header">
@@ -488,7 +507,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="field-group input-icon-wrapper">
                         <label>Data Início:</label>
                         <div class="input-with-icon">
-                            <input type="date" name="data_inicio" id="data_inicio" min="<?= $hoje ?>" value="<?= $_POST['data_inicio'] ?? $hoje ?>" onchange="atualizarDiasSemana()" required>
+                            <input type="date" name="data_inicio" id="data_inicio" min="<?= $hoje ?>" value="<?= $_POST['data_inicio'] ?? $hoje ?>" required>
                             <i class="fa-regular fa-calendar input-icon-right"></i>
                         </div>
                     </div>
@@ -496,15 +515,14 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="field-group input-icon-wrapper">
                         <label>Data Fim:</label>
                         <div class="input-with-icon">
-                            <input type="date" name="data_fim" id="data_fim" min="<?= $hoje ?>" value="<?= $_POST['data_fim'] ?? '' ?>" onchange="atualizarDiasSemana()" required>
+                            <input type="date" name="data_fim" id="data_fim" min="<?= $hoje ?>" value="<?= $_POST['data_fim'] ?? '' ?>" required>
                             <i class="fa-regular fa-calendar input-icon-right"></i>
                         </div>
                     </div>
 
                     <div class="full-width field-group">
                         <label>Dias da Semana:</label>
-                        <div class="list-container scrolling-list" id="containerDiasSemana">
-                            </div>
+                        <div class="list-container scrolling-list" id="containerDiasSemana"></div>
                     </div>
 
                     <div class="field-group input-icon-wrapper">
@@ -534,7 +552,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                                         <input type="checkbox" name="materias_id[]" value="<?= $m['id_materia'] ?>"
                                             <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?> class="custom-checkbox">
                                     </label>
-                            <?php endforeach;
+                                <?php endforeach;
                             endif; ?>
                         </div>
                     </div>
@@ -616,17 +634,16 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     </main>
 
     <div id="deleteConfirmModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <h3>🗑️ Excluir Cronograma</h3>
-        <p>Título: <b id="deleteCronoTitle"></b></p>
-        <p>Isso removerá a agenda criada no Google Agenda definitivamente!</p>
-        <div class="modal-actions-custom">
-            <button type="button" id="btnConfirmarExclusaoFinal" class="btn-del-modal">Sim, excluir!</button>
-            <button type="button" onclick="fecharModalExclusao()" class="btn-cancel-modal">Cancelar</button>
+        <div class="modal-content">
+            <h3>🗑️ Excluir Cronograma</h3>
+            <p>Título: <b id="deleteCronoTitle"></b></p>
+            <p>Isso removerá a agenda criada no Google Agenda definitivamente!</p>
+            <div class="modal-actions-custom">
+                <button type="button" id="btnConfirmarExclusaoFinal" class="btn-del-modal">Sim, excluir!</button>
+                <button type="button" onclick="fecharModalExclusao()" class="btn-cancel-modal">Cancelar</button>
+            </div>
         </div>
     </div>
-</div>
-
 
     <script src="../assets/js/lib/cronograma.js" defer></script>
 

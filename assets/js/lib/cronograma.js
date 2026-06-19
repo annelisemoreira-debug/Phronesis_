@@ -144,17 +144,102 @@ function confirmDelete(event, id) {
     });
 }
 
+/**
+ * Abre e fecha as pastas da checklist
+ */
+function toggleChecklistFolder(idMateria) {
+    const content = document.getElementById(`chk-content-${idMateria}`);
+    const chevron = document.getElementById(`chk-chevron-${idMateria}`);
+    
+    if (content) {
+        const isVisible = content.style.display === 'block';
+        content.style.display = isVisible ? 'none' : 'block';
+        
+        if (chevron) {
+            chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+    }
+}
+
+/**
+ * Salva o progresso do tópico assincronamente via Fetch API
+ * Suporta múltiplos layouts (containers de matéria, chk-fill, etc)
+ */
+function salvarProgressoTopico(element) {
+    const idCronograma = element.getAttribute('data-cronograma');
+    const idMateria = element.getAttribute('data-materia');
+    const idTopico = element.getAttribute('data-topico');
+    const status = element.checked ? 1 : 0;
+
+    element.disabled = true;
+
+    const formData = new FormData();
+    formData.append('id_cronograma', idCronograma);
+    formData.append('id_materia', idMateria);
+    formData.append('id_topico', idTopico);
+    formData.append('status', status);
+
+    fetch('atualizar_progresso.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            // 1. Atualização via .materia-container (Layout Alternativo)
+            const containerMateria = document.querySelector(`.materia-container[data-materia-id="${idMateria}"]`);
+            if (containerMateria) {
+                const textoPorcentagem = containerMateria.querySelector(".texto-porcentagem");
+                const barraProgresso = containerMateria.querySelector(".barra-progresso");
+                if (textoPorcentagem) textoPorcentagem.textContent = `${Math.round(data.porcentagemMateria)}%`;
+                if (barraProgresso) barraProgresso.style.width = `${data.porcentagemMateria}%`;
+            }
+
+            // 2. Atualização via IDs diretos (Layout Padrão / Checklist)
+            const barraMateria = document.getElementById(`chk-fill-${idMateria}`) || document.getElementById(`barra-materia-${idMateria}`);
+            const textoMateria = document.getElementById(`chk-text-${idMateria}`) || document.getElementById(`texto-materia-${idMateria}`);
+            
+            if (barraMateria) barraMateria.style.width = data.porcentagemMateria + '%';
+            if (textoMateria) textoMateria.textContent = Math.round(data.porcentagemMateria) + '%';
+
+            // 3. Atualização da porcentagem Geral do Cronograma
+            const barraGeral = document.getElementById(`barra-geral-${idCronograma}`);
+            const textoGeral = document.getElementById("porcentagem-geral-cronograma") || document.getElementById(`texto-geral-${idCronograma}`);
+            
+            if (barraGeral) barraGeral.style.width = data.porcentagemGeral + '%';
+            if (textoGeral) textoGeral.textContent = Math.round(data.porcentagemGeral) + '%';
+        } else {
+            element.checked = !element.checked;
+            console.error("Erro no servidor: ", data.erro);
+            Swal.fire('Oops!', 'Não foi possível salvar o progresso. Tente novamente.', 'error');
+        }
+    })
+    .catch(error => {
+        element.checked = !element.checked;
+        console.error("Erro na requisição Fetch:", error);
+        Swal.fire('Erro de Conexão', 'Houve um problema ao se comunicar com o servidor.', 'error');
+    })
+    .finally(() => {
+        element.disabled = false;
+    });
+}
+
 // Inicialização dos Event Listeners após o carregamento do DOM
 document.addEventListener("DOMContentLoaded", function() {
-    // Escuta mudanças nos inputs de data para atualizar os dias dinamicamente
     const inputInicio = document.getElementById('data_inicio');
     const inputFim = document.getElementById('data_fim');
     
     if (inputInicio) inputInicio.addEventListener('change', atualizarDiasSemana);
     if (inputFim) inputFim.addEventListener('change', atualizarDiasSemana);
 
-    // Executa a primeira renderização dos dias
     atualizarDiasSemana();
+
+    // Captura os elementos com a classe .check-topico (Layout Alternativo) e vincula a função unificada
+    document.querySelectorAll(".check-topico").forEach(checkbox => {
+        checkbox.addEventListener("change", function() {
+            salvarProgressoTopico(this);
+        });
+    });
 
     const modalForm = document.querySelector("#confirmModal form");
     const confirmModal = document.getElementById("confirmModal");
@@ -163,7 +248,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (modalForm) {
         modalForm.addEventListener("submit", function() {
             if (confirmModal) confirmModal.style.display = "none";
-            
             document.getElementById('loadingText').innerText = "🗓️ Sincronizando com o Google Agenda...";
             document.getElementById('loadingSubtext').innerText = "Isso pode levar alguns segundos dependendo do tamanho do seu cronograma.";
             if (loadingScreen) loadingScreen.style.display = "flex";
@@ -209,13 +293,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 (function () {
-        // Aplica o Tema Escuro imediatamente se estiver salvo
-        const savedTheme = localStorage.getItem('site-theme') || 'light';
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark-theme');
-        }
-
-        // Aplica o Tamanho da Fonte imediatamente se estiver salvo
-        const savedSize = localStorage.getItem('site-font-size') || 'normal';
-        document.documentElement.classList.add('font-' + savedSize);
-    })();
+    const savedSize = localStorage.getItem('site-font-size') || 'normal';
+    document.documentElement.classList.add('font-' + savedSize);
+})();
