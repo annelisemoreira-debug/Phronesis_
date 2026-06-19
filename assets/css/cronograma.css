@@ -233,7 +233,7 @@ html.dark-theme input::-webkit-calendar-picker-indicator {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 20px;
+    padding: 8px 20px; /* Reduzido de 12px para 8px acompanhando o novo padrão */
     border-bottom: 1px solid var(--row-border);
     color: var(--text-body) !important;
     font-size: 0.81rem; /* Convertido de 13px */
@@ -555,7 +555,7 @@ html.dark-theme .btn-del {
     cursor: pointer;
 }
 
-/* --- TELA E COMPONENTES DE CARREGAMENTO (AJUSTE DE API) --- */
+/* --- TELA E COMPONENTES DE CARREGAMENTO --- */
 .loader-box {
     display: flex;
     flex-direction: column;
@@ -629,16 +629,25 @@ html.dark-theme .btn-del {
     border-color: #a78bfa;
 }
 
-/* Cabeçalho do item clicável */
+/* ==========================================================================
+   --- ALTERAÇÃO PARA SIMETRIA: NOME DA MATÉRIA JUNTO DA BARRA DE PROGRESSO ---
+   ========================================================================== */
 .materia-accordion-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 18px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important; /* Agora tudo começa agrupado à esquerda */
+    gap: 15px !important;                 /* Dá um espaçamento fixo e elegante entre o nome e a barra */
+    width: 100% !important;
+    padding: 12px 18px !important;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.88rem; /* Convertido de 14px */
+    font-size: 0.88rem;
     transition: background 0.2s;
+}
+
+/* Força o chevron (ícone de seta) a ir para o final da linha de forma independente */
+.materia-accordion-header i.chevron {
+    margin-left: auto !important; 
 }
 
 .materia-accordion-header,
@@ -656,7 +665,7 @@ html.dark-theme .materia-accordion-header span {
 }
 
 .materia-accordion-header i.fa-folder {
-    margin-right: 8px;
+    margin-right: 4px;
     color: var(--text-secondary) !important;
 }
 
@@ -688,12 +697,15 @@ html.dark-theme .materia-accordion-header span {
     border-top: 1px solid var(--row-border);
 }
 
+/* Ajustado para seguir o padrão simétrico perfeito */
 .materia-accordion-content li {
     font-size: 0.81rem;
     color: #334155 !important;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important; /* Mantém os checks empurrados para a extrema direita */
+    width: 100% !important;
+    padding: 10px 18px !important;
     font-weight: 500;
 }
 
@@ -706,6 +718,7 @@ html.dark-theme .materia-accordion-content li {
     color: var(--text-secondary);
     font-size: 16px;
     line-height: 1;
+    margin-right: 8px;
 }
 
 .materia-accordion-item .empty-state-select,
@@ -779,17 +792,17 @@ html.font-grande {
     font-size: 130%;
 }
 
-.conteiner-geral-checklist { /* Substitua pelo nome da sua classe pai */
-    height: auto; /* Permite que o container estique para mostrar tudo */
+.conteiner-geral-checklist { 
+    height: auto; 
     max-height: none; 
-    overflow: visible; /* Garante que os elementos filhos não sejam podados */
+    overflow: visible; 
 }
 
 /* Container que agrupa o nome da matéria e a barra */
 .materia-container {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     width: 100%;
-    max-width: 500px; /* Ajuste o tamanho máximo conforme seu layout */
+    max-width: 500px; 
 }
 
 /* Alinha o nome da matéria de um lado e a porcentagem do outro */
@@ -802,20 +815,78 @@ html.font-grande {
     color: #333;
 }
 
-/* O fundo cinza da barra (onde ela fica quando está em 0%) */
+/* O fundo cinza da barra (Garante tamanho idêntico e fixo de 120px) */
 .progress-bar-container {
-    width: 100%;
-    height: 8px; /* Altura sutil e elegante */
-    background-color: #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden; /* Garante que o preenchimento não saia das bordas arredondadas */
+    width: 120px !important; 
+    height: 8px !important; 
+    background-color: #e0e0e0 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important; 
+    position: relative !important;
+    margin: 0 !important;
 }
 
 /* O preenchimento colorido que vai andar de 0% a 100% */
 .progress-bar-fill {
     height: 100%;
-    background-color: #4285F4; /* O azul padrão do seu projeto */
+    background-color: #4285F4; 
     border-radius: 4px;
-    width: 0%; /* Valor inicial padrão */
-    transition: width 0.4s ease-in-out; /* Efeito visual suave quando o usuário marcar o check */
+    width: 0%; 
+    transition: width 0.4s ease-in-out; 
+}
+
+/* --- ESTILO PARA OS DIAS DA SEMANA DESABILITADOS --- */
+.row-item.dia-desabilitado {
+    opacity: 0.25;                 /* Deixa o elemento bem transparente */
+    cursor: not-allowed !important;/* Muda o cursor para o símbolo de bloqueado */
+    pointer-events: none;          /* Impede completamente cliques, hovers e interações */
+    user-select: none;            /* Impede que o usuário selecione o texto */
+}
+
+/* Garante que o checkbox dentro do label desabilitado também acompanhe o estilo */
+.row-item.dia-desabilitado .custom-checkbox {
+    cursor: not-allowed !important;
+    opacity: 0.5;
+}
+
+/* --- NOVOS AJUSTES VISUAIS DE ESPAÇAMENTO REFINADOS --- */
+
+/* 1. Respiro de 50px acima do checklist para afastar do Google Agenda */
+.checklist-section-title,
+div.checklist-container,
+h3:has(+ p:contains("Monitore seu avanço")) {
+    margin-top: 50px !important; 
+}
+
+/* 2. Flexbox estrutural para alinhar os componentes filhos perfeitamente com os pais */
+.materia-accordion-content label {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+/* Mantém caixas organizadas sem quebras ou desalinhamentos por texto de tamanho diferente (ex: 50% vs 100%) */
+.progress-wrapper-checklist span,
+.progress-wrapper-checklist .porcentagem-texto {
+    min-width: 45px !important;
+    text-align: right !important;
+    font-size: 0.81rem !important;
+    font-weight: 600 !important;
+}
+
+/* Espaça o input de checkbox customizado na ponta direita */
+.custom-checkbox,
+input[type="checkbox"].check-topico {
+    margin: 0 0 0 16px !important; 
+    flex-shrink: 0 !important;
+}
+
+/* Alinhamento refinado para as barras e porcentagens ficarem juntas antes do checkbox */
+.progress-wrapper-checklist {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;         /* Espaço estável entre a barra e a porcentagem */
+    margin-left: auto !important; /* Gruda o bloco todo na direita */
 }

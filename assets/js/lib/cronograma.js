@@ -31,14 +31,15 @@ function obterDiasSelecionados() {
 }
 
 function atualizarDiasSemana() {
-    const inputInicio = document.getElementById('data_inicio').value;
-    const inputFim = document.getElementById('data_fim').value;
+    const inputInicio = document.getElementById('data_inicio')?.value;
+    const inputFim = document.getElementById('data_fim')?.value;
     const container = document.getElementById('containerDiasSemana');
     
     if (!container) return;
 
     const diasSelecionadosAnteriormente = obterDiasSelecionados();
 
+    // Se as datas não estiverem preenchidas corretamente, renderiza sem restrição (null)
     if (!inputInicio || !inputFim || inputInicio.length !== 10 || inputFim.length !== 10) {
         renderizarDias(diasSelecionadosAnteriormente, null);
         return;
@@ -55,13 +56,14 @@ function atualizarDiasSemana() {
     const diffTempo = Math.abs(d2 - d1);
     const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
 
+    // Regra: Se o intervalo for menor que 6 dias, filtra e bloqueia os dias fora do range
     if (diffDias < 6) {
         let diasValidos = [];
         let dataVar = new Date(d1.getTime());
 
         for (let i = 0; i <= diffDias; i++) {
             let numDia = dataVar.getDay(); 
-            let diaIso = numDia === 0 ? 7 : numDia;
+            let diaIso = numDia === 0 ? 7 : numDia; // Converte Domingo de 0 para 7
             if (!diasValidos.includes(diaIso)) {
                 diasValidos.push(diaIso);
             }
@@ -69,6 +71,7 @@ function atualizarDiasSemana() {
         }
         renderizarDias(diasSelecionadosAnteriormente, diasValidos);
     } else {
+        // Se for maior ou igual a 6 dias, todos os dias da semana ficam liberados
         renderizarDias(diasSelecionadosAnteriormente, null);
     }
 }
@@ -82,6 +85,7 @@ function renderizarDias(selecionados, filtrados) {
         const label = document.createElement('label');
         label.className = 'row-item';
 
+        // Se o dia não estiver na lista de filtrados, ele será desabilitado
         const estaDisponivel = filtrados === null || filtrados.includes(dia.valor);
         if (!estaDisponivel) {
             label.classList.add('dia-desabilitado');
@@ -96,11 +100,15 @@ function renderizarDias(selecionados, filtrados) {
         checkbox.value = dia.valor;
         checkbox.className = 'custom-checkbox';
         
+        // Mantém marcado se estivesse selecionado anteriormente E estiver disponível
         if (estaDisponivel && selecionados.map(Number).includes(dia.valor)) {
             checkbox.checked = true;
         }
+        
+        // Bloqueia o input se ele não fizer parte do intervalo de datas
         if (!estaDisponivel) {
             checkbox.disabled = true;
+            checkbox.checked = false; // Garante que dias fora do range não fiquem marcados
         }
 
         label.appendChild(span);
@@ -163,7 +171,6 @@ function toggleChecklistFolder(idMateria) {
 
 /**
  * Salva o progresso do tópico assincronamente via Fetch API
- * Suporta múltiplos layouts (containers de matéria, chk-fill, etc)
  */
 function salvarProgressoTopico(element) {
     const idCronograma = element.getAttribute('data-cronograma');
@@ -232,9 +239,10 @@ document.addEventListener("DOMContentLoaded", function() {
     if (inputInicio) inputInicio.addEventListener('change', atualizarDiasSemana);
     if (inputFim) inputFim.addEventListener('change', atualizarDiasSemana);
 
+    // Roda uma vez no início para aplicar bloqueios se já houver datas vindas do PHP
     atualizarDiasSemana();
 
-    // Captura os elementos com a classe .check-topico (Layout Alternativo) e vincula a função unificada
+    // Vincula elementos com classe .check-topico à função unificada de progresso
     document.querySelectorAll(".check-topico").forEach(checkbox => {
         checkbox.addEventListener("change", function() {
             salvarProgressoTopico(this);

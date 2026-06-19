@@ -425,10 +425,10 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                 <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo&wkst=1&bgcolor=%23fbf9ff&color=%237c3aed&showCalendars=0&showTabs=1" class="calendar-embed" style="border: none;" allowfullscreen></iframe>
                 
                 <div class="checklist-estudos-box">
-                    <h3><i class="fa-solid fa-list-check"></i> Gerenciar Conteúdos Concluídos</h3>
+                    <br><h3><i class="fa-solid fa-list-check"></i> Gerenciar Conteúdos Concluídos</h3>
                     <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 15px;">Monitore seu avanço marcando as matérias estudadas neste cronograma:</p>
                     
-                    <div class="checklist-wrapper">
+                    <div class="checklist-wrapper"> <hr><br>
                         <?php if (empty($materias_checklist)): ?>
                             <p style="color: #cbd5e1; font-style: italic; font-size: 0.9rem; text-align: center; padding: 20px 0;">
                                 Nenhuma matéria vinculada encontrada para este cronograma.
