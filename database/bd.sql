@@ -464,6 +464,7 @@ UPDATE usuario SET tipo = 'admin' WHERE email = 'raoni@phronesis.com';
 
 
 
+-- Data base novo 19/06
 
 
 CREATE DATABASE IF NOT EXISTS phronesis;
