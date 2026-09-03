@@ -39,6 +39,16 @@ error_reporting(E_ALL);
     <link class="open-modal-trigger" rel="stylesheet" href="../assets/css/livros.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('site-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
+    
 </head>
 <body> 
     <?php include '../interface/header.php'; ?>

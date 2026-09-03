@@ -345,6 +345,13 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+
+        (function () {
+            const savedTheme = localStorage.getItem('site-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
         // Função auxiliar interna para lidar com as chamadas AJAX do checkbox e atualizar as barras de progresso dinamicamente
         function salvarProgressoTopico(checkbox) {
             const idCronograma = checkbox.getAttribute('data-cronograma');

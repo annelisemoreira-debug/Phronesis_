@@ -81,6 +81,16 @@ try {
     <link rel="stylesheet" href="../assets/css/material.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('site-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
+
     <style>
         .video-title-link {
             text-decoration: none;
