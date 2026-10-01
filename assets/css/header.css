@@ -43,15 +43,16 @@ header {
 /* ==========================================================================
    REGRAS DE VISIBILIDADE DAS LOGOS (DESKTOP E TABLET)
    ========================================================================== */
-/* Oculta todas por padrão para evitar imagens sobrepostas */
+/* Oculta todas as logos por padrão */
 .logoMarca img { display: none !important; }
 
-/* Exibe APENAS a logo Desktop Light por padrão */
-.logoMarca .logo-desktop.logo-light { display: block !important; }
+/* DESKTOP / TABLET: só vale acima de 768px */
+@media (min-width: 769px) {
+    .logoMarca .logo-desktop.logo-light { display: block !important; }
 
-/* Alternância Dark Mode da Logo Desktop */
-html.dark-theme .logoMarca .logo-desktop.logo-light { display: none !important; }
-html.dark-theme .logoMarca .logo-desktop.logo-dark { display: block !important; }
+    html.dark-theme .logoMarca .logo-desktop.logo-light { display: none !important; }
+    html.dark-theme .logoMarca .logo-desktop.logo-dark { display: block !important; }
+}
 
 /* Coluna 2: Menu Centralizado */
 .menuNav {
@@ -303,12 +304,9 @@ html.dark-theme .botao-nav-adm:hover {
         position: relative !important;
     }
 
-    /* ESCONDE LOGOS DESKTOP / EXIBE APENAS MOBILE LIGHT */
-    .logoMarca .logo-desktop { display: none !important; }
+    /* Logos MOBILE */
     .logoMarca .logo-mobile.logo-light { display: block !important; }
-    .logoMarca .logo-mobile.logo-dark { display: none !important; }
 
-    /* Alternância Dark Mode da Logo Mobile */
     html.dark-theme .logoMarca .logo-mobile.logo-light { display: none !important; }
     html.dark-theme .logoMarca .logo-mobile.logo-dark { display: block !important; }
 
@@ -316,6 +314,9 @@ html.dark-theme .botao-nav-adm:hover {
         background: transparent !important;
         padding: 0 !important;
     }
+
+    /* ... resto do bloco continua igual ... */
+}
 
     /* Oculta texto e alinha ícones à direita */
     .texto-painel {
@@ -381,4 +382,3 @@ html.dark-theme .botao-nav-adm:hover {
         background-color: #272530 !important;
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
-}
