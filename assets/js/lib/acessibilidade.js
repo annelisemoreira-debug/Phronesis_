@@ -15,7 +15,6 @@ document.documentElement.classList.add(`font-${tamanhoSalvo}`);
 document.addEventListener("DOMContentLoaded", () => {
     const btnLight = document.getElementById("btn-light-theme");
     const btnDark = document.getElementById("btn-dark-theme");
-    const toggleLibras = document.getElementById("toggle-libras");
     const fontSlider = document.getElementById("font-slider");
 
     // --- GERENCIAMENTO DE TEMA (FUNÇÃO VISUAL) ---
@@ -35,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sincroniza o estado visual dos cards/botões na tela
     alternarTema(temaSalvo);
 
-    // Escutadores usando 'pointerdown' e 'click'
     if (btnLight) {
         btnLight.addEventListener("pointerdown", () => alternarTema('light'));
         btnLight.addEventListener("click", () => alternarTema('light'));
@@ -51,51 +49,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const fontValues = { 'normal': 1, 'media': 2, 'grande': 3 };
 
     if (fontSlider) {
-        // Define o slider na posição correta baseado no que estava salvo
         fontSlider.value = fontValues[tamanhoSalvo] || 1;
 
         fontSlider.addEventListener("input", (e) => {
             const valor = e.target.value;
             const tamanhoSelecionado = fontSizes[valor];
 
-            // Altera as classes na tag html raiz
             document.documentElement.classList.remove('font-normal', 'font-media', 'font-grande');
             document.documentElement.classList.add(`font-${tamanhoSelecionado}`);
 
-            // Salva a preferência
             localStorage.setItem('site-font-size', tamanhoSelecionado);
         });
     }
 
-    // Permite que os "ticks" (linhas clicáveis) mudem o valor do slider
-    window.setSliderValue = function(val) {
+    // Permite que os "ticks" mudem o valor do slider
+    window.setSliderValue = function (val) {
         if (fontSlider) {
             fontSlider.value = val;
             fontSlider.dispatchEvent(new Event('input'));
         }
-    }
+    };
 
-    // --- 2. INTEGRAÇÃO E CONTROLE DO VLIBRAS ---
-    const librasAtivo = localStorage.getItem('vlibras-active') === 'true';
-    if (toggleLibras) {
-        toggleLibras.checked = librasAtivo;
-    }
-
-    if (toggleLibras) {
-        toggleLibras.addEventListener("change", (e) => {
-            const ativo = e.target.checked;
-            localStorage.setItem('vlibras-active', ativo);
-
-            const vlibrasWidgetButton = document.querySelector('[vw-access-button]') || document.querySelector('.vw-access-button');
-
-            if (ativo) {
-                if (vlibrasWidgetButton && !document.querySelector('.expanded')) {
-                    vlibrasWidgetButton.click();
-                }
-            } else {
-                window.location.reload(); 
-            }
-        });
-    }
-    
+    // OBS: o controle do Libras (switch) agora fica SOMENTE no vlibras.php
 });
