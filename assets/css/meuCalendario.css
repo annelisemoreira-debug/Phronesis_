@@ -146,7 +146,7 @@ body {
 
 /* 1. Altera a imagem de fundo e remove a opacidade no modo escuro */
 html.dark-theme .bg-html {
-    content: url("../img/fundoAmareloEscuro.webp"); /* <--- COLOQUE O CAMINHO DA SUA IMAGEM ESCURA AQUI */
+    content: url("../img/fundos/fundoAmareloEscuro.webp"); /* <--- COLOQUE O CAMINHO DA SUA IMAGEM ESCURA AQUI */
     opacity: 1; /* 100% de opacidade, sem transparência */
 }
 

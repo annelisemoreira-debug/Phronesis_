@@ -201,7 +201,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <title>Meu Perfil - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/configperfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
     <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
     
@@ -243,8 +243,8 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
    <div class="main-wrapper">
         <aside class="sidebar">
             <div class="logo">
-                <img src="../assets/img/logoSite.webp" alt="Phronesis" class="logo-light">
-                <img src="../assets/img/logoescuro.webp" alt="Phronesis" class="logo-dark">
+                <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
+                <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
             </div>
             <nav>
                 <p class="nav-title">Conta Pessoal</p>
@@ -252,7 +252,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                     <li><a href="configperfil.php" class="active"><span>👤</span> Meu perfil</a></li>
                     <li>
                         <a href="../perfil/acessibilidade.php" class="nav-link-acessibilidade">
-                            <img src="../assets/img/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
+                            <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
                             <span>Acessibilidade</span>
                         </a>
                     </li>
@@ -269,8 +269,8 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
 
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/meuperfilclaro.webp" alt="Banner" class="banner-img banner-light">
-                <img src="../assets/img/escuroperfil.webp" alt="Banner" class="banner-img banner-dark">
+                <img src="../assets/img/banners/meuperfilclaro.webp" alt="Banner" class="banner-img banner-light">
+                <img src="../assets/img/banners/escuroperfil.webp" alt="Banner" class="banner-img banner-dark">
             </header>
 
             <section class="container-dados">

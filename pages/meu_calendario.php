@@ -93,12 +93,13 @@ $googleLogado = 'false';
     <meta charset="UTF-8">
     <title>Sincronizar Agenda - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/meuCalendario.css">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     
-    <img src="../assets/img/fundoAmarelo02.webp" class="bg-html" alt="Fundo">
+    <img src="../assets/img/fundos/fundoAmarelo02.webp" class="bg-html" alt="Fundo">
+    
 
     <div class="login-card">
         <h2>Conectar para criar!</h2>

@@ -84,7 +84,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acessibilidade - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/acessibilidade.css">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     
     <script>
         (function () {
@@ -100,8 +100,8 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <div class="main-wrapper">
         <aside class="sidebar">
             <div class="logo">
-                <img src="../assets/img/logoSite.webp" alt="Phronesis" class="logo-light">
-                <img src="../assets/img/logoescuro.webp" alt="Phronesis" class="logo-dark">
+                <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
+                <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
             </div>
             <nav>
                 <p class="nav-title">Conta Pessoal</p>
@@ -109,7 +109,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                     <li><a href="configperfil.php"><span>👤</span> Meu perfil</a></li>
                     <li>
                         <a href="acessibilidade.php" class="nav-link-acessibilidade active">
-                            <img src="../assets/img/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
+                            <img src="../assets/img/acessibilidade/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
                             <span>Acessibilidade</span>
                         </a>
                     </li>
@@ -126,8 +126,8 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/acessibilidadeclaro.webp" alt="Banner" class="banner-img banner-light">
-                <img src="../assets/img/escuroacessibilidade.webp" alt="Banner" class="banner-img banner-dark">
+                <img src="../assets/img/banners/acessibilidadeclaro.webp" alt="Banner" class="banner-img banner-light">
+                <img src="../assets/img/banners/escuroacessibilidade.webp" alt="Banner" class="banner-img banner-dark">
             </header>
 
             <div class="container-acessibilidade">
@@ -140,7 +140,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                             <h3>Claro</h3>
                             <p>Ideal para: Ambientes muito iluminados ou sob luz solar direta.</p>
                             <div class="preview-box">
-                                <img src="../assets/img/modoclaro.webp" alt="Prévia Modo Claro">
+                                <img src="../assets/img/acessibilidades/modoclaro.webp" alt="Prévia Modo Claro">
                             </div>
                         </div>
 
@@ -148,7 +148,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                             <h3>Escuro</h3>
                             <p>Ambientes com pouca luz ou períodos noturnos.</p>
                             <div class="preview-box">
-                                <img src="../assets/img/modoescuro.webp" alt="Prévia Modo Escuro">
+                                <img src="../assets/img/acessibilidades/modoescuro.webp" alt="Prévia Modo Escuro">
                             </div>
                         </div>
                     </div>
@@ -178,7 +178,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                         <p>Integra a tradução em sinais à sua navegação, garantindo acesso pleno ao acervo da biblioteca.</p>
                     </div>
                     <div class="libras-controls">
-                        <img src="../assets/img/acessibilidade.webp" alt="Ícone de Libras" class="libras-icon">
+                        <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Ícone de Libras" class="libras-icon">
                         <label class="switch">
                             <input type="checkbox" id="toggle-libras">
                             <span class="slider round"></span>
