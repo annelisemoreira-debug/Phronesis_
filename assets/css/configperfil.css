@@ -360,6 +360,15 @@ html.dark-theme .user-info-fields p.user-value {
     color:#b0aec2; 
 }
 
+/* Cor do parágrafo da danger-zone no modo escuro */
+html.dark-theme .danger-zone p {
+    color: #a5a3b3;
+}
+
+/* Garante que o título continue visível e destacado */
+html.dark-theme .danger-zone h3 {
+    color: #FF4D4D;
+}
 
 /* =======================================================
    ESTILIZAÇÃO PERSONALIZADA DA BARRA DE ROLAGEM (SCROLLBAR)
