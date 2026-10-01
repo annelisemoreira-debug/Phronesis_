@@ -35,20 +35,20 @@ if (isset($_SESSION['id'])) {
 
 
 <header>
-    <!-- LOGO (Coluna Esquerda) -->
-    <a href="../index.php" class="logoMarca">
-        <img src="../assets/img/logoComEscrita.png" class="logo-desktop logo-light" alt="Phronesis">
-        <img src="../assets/img/logoComEscritaEscura.png" class="logo-desktop logo-dark" alt="Phronesis">
-        <img src="../assets/img/logoSemEscrita.png" class="logo-mobile logo-light" alt="Phronesis">
-        <img src="../assets/img/logoSemEscritaEscura.png" class="logo-mobile logo-dark" alt="Phronesis">
-    </a>
+<!-- LOGO (Coluna Esquerda) -->
+<a href="./index.php" class="logoMarca">
+    <img src="./assets/img/logoSite.webp" class="logo-desktop logo-light" alt="Phronesis">
+    <img src="./assets/img/logoescuro.webp" class="logo-desktop logo-dark" alt="Phronesis">
+    <img src="./assets/img/logoCelularClaro.webp" class="logo-mobile logo-light" alt="Phronesis">
+    <img src="./assets/img/logoCelularEscuro.webp" class="logo-mobile logo-dark" alt="Phronesis">
+</a>
 
     <!-- MENU PRINCIPAL (Desktop e Mobile) -->
     <nav class="menuNav" id="menuNav">
         <ul class="menu">
-            <li class="materiais"><a href="../pages/material.php">Materiais</a></li>
-            <li class="livros"><a href="../pages/obras.php">Obras Obrigatórias</a></li>
-            <li class="cronogramas"><a href="../pages/cronograma.php">Cronogramas</a></li>
+            <li class="materiais"><a href="./pages/material.php">Materiais</a></li>
+            <li class="livros"><a href="./pages/obras.php">Obras Obrigatórias</a></li>
+            <li class="cronogramas"><a href="./pages/cronograma.php">Cronogramas</a></li>
         </ul>
     </nav>
 
@@ -68,7 +68,7 @@ if (isset($_SESSION['id'])) {
             <img src="<?= !empty($dadosUser['foto']) ? '../' . $dadosUser['foto'] : '../assets/img/perfil-padrao.png' ?>" class="foto-perfil" alt="Perfil">
             
             <div class="menu-dropdown" id="menuDropdown">
-                <a href="../perfil/configperfil.php">Meu Perfil</a>
+                <a href="./perfil/configperfil.php">Meu Perfil</a>
                 <a href="../logout.php">Sair</a>
             </div>
         </div>
