@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. RESET E ESTILOS BASE GLOBAL
+   ========================================================================== */
 * {
   margin: 0;
   padding: 0;
@@ -13,7 +16,24 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Wrapper Principal (Layout Lado a Lado - Sidebar + Conteúdo) */
+/* ==========================================================================
+   2. REGRAS GLOBAIS DE ESCALA DE FONTES
+   ========================================================================== */
+html, html.font-normal {
+  font-size: 100%;
+}
+
+html.font-media {
+  font-size: 115%;
+}
+
+html.font-grande {
+  font-size: 130%;
+}
+
+/* ==========================================================================
+   3. LAYOUT PRINCIPAL (WRAPPER & ESTRUTURA)
+   ========================================================================== */
 .wrapper {
   display: flex;
   min-height: 100vh;
@@ -23,18 +43,28 @@ body {
   margin: 0 auto;
 }
 
+.principalContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.areaContent {
+  width: 100%;
+}
 
 /* ==========================================================================
-   SIDEBAR (MENU LATERAL DE MATÉRIAS) - CORRIGIDO PARA ESCALA REM
+   4. SIDEBAR (MENU LATERAL DE MATÉRIAS E WIDGETS)
    ========================================================================== */
 .menuSidebar {
   position: sticky;
-  top: 95px; 
-  width: 17.5rem; /* Ajustado de 280px para rem */
+  top: 95px;
+  width: 17.5rem;
   height: fit-content;
   background: #f6f5fb;
   border-radius: 18px;
-  padding: 1.5rem 1.1rem; /* Ajustado para rem */
+  padding: 1.5rem 1.1rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -42,15 +72,15 @@ body {
 .menuSidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* Ajustado para rem */
+  gap: 0.5rem;
 }
 
 .menuSidebar nav::before {
   content: "Explore por matéria:";
-  font-size: 0.82rem; /* Convertido de 13px para responder ao slider */
+  font-size: 0.82rem;
   font-weight: 700;
   color: #3f007d;
-  margin: 0 0 0.6rem 0.5rem; /* Ajustado para rem */
+  margin: 0 0 0.6rem 0.5rem;
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -60,10 +90,10 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 0.75rem 1rem; /* Ajustado de 12px 16px para rem */
+  padding: 0.75rem 1rem;
   border-radius: 12px;
   text-decoration: none;
-  font-size: 0.94rem; /* Convertido de 15px para responder ao slider */
+  font-size: 0.94rem;
   font-weight: 600;
   color: #5b3aa6;
   transition: all 0.25s ease;
@@ -79,15 +109,55 @@ body {
   background: #e7f4ff;
   color: #3c2aa0 !important;
   border-left: 4px solid #7bbcff;
-  padding-left: 0.75rem !important; /* Ajustado para rem */
+  padding-left: 0.75rem !important;
   box-shadow: 0 4px 12px rgba(123, 188, 255, 0.25);
 }
 
-/* ==========================================================================
-   WIDGETS DE CONTAGEM REGRESSIVA (DENTRO DA SIDEBAR)
-   ========================================================================== */
+/* --- Widgets de Contagem Regressiva na Sidebar --- */
+.sidebar-exam-container {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e2dbf5;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.widget-title-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.titulo-main {
+  font-size: 0.87rem;
+  font-weight: 800;
+  color: #3f007d;
+  text-transform: uppercase;
+}
+
+.tag-vestibulares {
+  background: #9fe0ff;
+  color: #1a658f;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 0 #60b3df;
+}
+
+.exam-card-mini {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
 .exam-name-mini {
-  font-size: 0.75rem; /* Convertido de 12px para rem */
+  font-size: 0.75rem;
   font-weight: 700;
   color: #555;
   display: block;
@@ -97,33 +167,191 @@ body {
 .countdown-mini {
   font-family: monospace;
   font-weight: 700;
-  font-size: 1rem; /* Já em rem, vai funcionar perfeito */
+  font-size: 1rem;
   width: fit-content;
 }
 
-.titulo-main {
-  font-size: 0.87rem; /* Convertido de 14px para rem */
-  font-weight: 800;
-  color: #3f007d;
-  text-transform: uppercase;
-}
-
+.mini-enem { border-left: 4px solid #f1c40f; }
+.mini-enem .countdown-mini { color: #d4ac0d; }
+.mini-fuvest { border-left: 4px solid #e74c3c; }
+.mini-fuvest .countdown-mini { color: #e74c3c; }
+.mini-unicamp { border-left: 4px solid #2ecc71; }
+.mini-unicamp .countdown-mini { color: #27ae60; }
+.mini-unesp { border-left: 4px solid #9b59b6; }
+.mini-unesp .countdown-mini { color: #9b59b6; }
 
 /* ==========================================================================
-   CONTEÚDO ADICIONAL: CARDS E PESQUISA (PARA COMPLEMENTAR A HARMONIA)
+   5. BANNER PRINCIPAL
    ========================================================================== */
+.banner {
+  width: 100%;
+  max-width: 1600px;
+  height: 160px;
+  margin: 20px auto 0 auto;
+  display: block;
+  overflow: hidden;
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 15px;
+}
+
+.banner .banner-dark { display: none; }
+.banner .banner-light { display: block; }
+
+html.dark-theme .banner .banner-light { display: none; }
+html.dark-theme .banner .banner-dark { display: block; }
+
+/* ==========================================================================
+   6. CONTAINERS DE CONTEÚDO E ROLAGEM AMARELA
+   ========================================================================== */
+.video-container-white,
+.caixa-favoritos-nova {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 5px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-height: 720px;
+  overflow-y: scroll !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Customização WebKit para Scrollbar Amarela */
+.video-container-white::-webkit-scrollbar,
+.caixa-favoritos-nova::-webkit-scrollbar {
+  width: 12px !important;
+}
+
+.video-container-white::-webkit-scrollbar-track,
+.caixa-favoritos-nova::-webkit-scrollbar-track {
+  background: #fffae6 !important;
+  border-radius: 20px !important;
+  margin: 15px 0;
+}
+
+.video-container-white::-webkit-scrollbar-thumb,
+.caixa-favoritos-nova::-webkit-scrollbar-thumb {
+  background: #ffca28 !important;
+  border-radius: 20px !important;
+  border: 2px solid #fffae6 !important;
+}
+
+.video-container-white::-webkit-scrollbar-thumb:hover,
+.caixa-favoritos-nova::-webkit-scrollbar-thumb:hover {
+  background: #f5b041 !important;
+}
+
+/* Headers internos */
+.video-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.video-title {
+  color: #6837af;
+  font-size: 1.4rem;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.caixa-favoritos-nova .titulo-salvos {
+  color: #4B0082;
+}
+
+/* Caixa de Pesquisa */
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 2px solid #e0d5fa;
+  border-radius: 50px;
+  padding: 4px 16px;
+  width: 320px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+  border-color: #a370f7;
+  box-shadow: 0 0 0 3px rgba(163, 112, 247, 0.15);
+}
+
 .search-box input {
   border: none;
   outline: none;
   width: 100%;
   padding: 8px 0;
-  font-size: 0.88rem; /* Convertido de 14px para rem */
+  font-size: 0.88rem;
   color: #333;
   background-color: transparent;
 }
 
+.search-box button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6837af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+/* ==========================================================================
+   7. GRADE DE VÍDEOS & CARDS
+   ========================================================================== */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 25px;
+  width: 100%;
+}
+
+.video-card {
+  background-color: #f9f8ff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 12px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  background-color: #fff;
+}
+
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.video-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .video-title-card {
-  font-size: 0.88rem; /* Convertido de 14px para rem */
+  font-size: 0.88rem;
   font-weight: 600;
   color: #444;
   line-height: 1.4;
@@ -134,8 +362,51 @@ body {
   min-height: 40px;
   transition: color 0.3s ease;
 }
+
+/* --- Botões e Ações nos Cards --- */
+.btn-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fav-btn,
+.seen-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+  line-height: 1;
+  padding: 0;
+}
+
+.fav-btn { font-size: 1.4rem; }
+.fav-btn:hover, .seen-btn:hover { transform: scale(1.2); }
+
+.star-on { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
+.star-off { color: #ccc; }
+
+.seen-on {
+  color: #00b4d8 !important;
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.seen-off {
+  color: #ccc !important;
+}
+
+/* --- Estilização de Vídeos Já Vistos --- */
+.video-title-card.video-visto,
+.video-title-card.video-visto a {
+  color: #5b3aa6 !important;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
 /* ==========================================================================
-   INDICADOR DE CARREGAMENTO (LOADING)
+   8. INDICADOR DE CARREGAMENTO (SPINNER LOADING)
    ========================================================================== */
 .video-grid.loading {
   position: relative;
@@ -164,575 +435,252 @@ body {
 }
 
 /* ==========================================================================
-   CONTEÚDO PRINCIPAL E BANNER
-   ========================================================================== */
-.principalContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.areaContent {
-  width: 100%;
-}
-/* --- BANNER --- */
-.banner {
-    width: 100%; 
-    max-width: 1600px; 
-    height: 160px;       
-    margin: 20px auto 0 auto; 
-    display: block;
-    overflow: hidden;
-}
-
-.banner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 15px;
-}
-
-/* --- LOGICA DE EXIBIÇÃO DO BANNER POR TEMA --- */
-.banner .banner-dark {
-    display: none; /* Esconde o banner escuro no modo padrão (claro) */
-}
-
-.banner .banner-light {
-    display: block; /* Garante a exibição do banner claro por padrão */
-}
-
-/* Quando a classe do tema escuro estiver ativa no HTML */
-html.dark-theme .banner .banner-light {
-    display: none; /* Oculta o banner claro */
-}
-
-html.dark-theme .banner .banner-dark {
-    display: block; /* Revela o banner escuro instantaneamente */
-}
-
-/* Agrupamento dos botões no card */
-.btn-actions-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Estilo Base do Botão de Visto */
-.seen-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-  transition: transform 0.2s ease, color 0.2s ease;
-  line-height: 1;
-  padding: 0;
-}
-
-.seen-btn:hover {
-  transform: scale(1.2);
-}
-
-/* Estados do botão visto */
-.seen-on {
-  color: #2ecc71; /* Verde clássico de sucesso/concluído */
-  font-weight: bold;
-}
-
-.seen-off {
-  color: #ccc; /* Cinza apagado */
-}
-
-
-/* ==========================================================================
-   FUNCIONALIDADE: VÍDEOS JÁ VISTOS (ATUALIZADO: AZUL)
-   ========================================================================== */
-
-/* Grupo para alinhar os botões lado a lado */
-.btn-actions-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Botão de Check (Visto) */
-.seen-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-  transition: transform 0.2s ease, color 0.2s ease;
-  line-height: 1;
-  padding: 0;
-}
-
-.seen-btn:hover {
-  transform: scale(1.2);
-}
-
-/* --- Estados do botão visto (.seen-btn) --- */
-.seen-on { 
-  color: #00d2ff !important; /* Lindo Azul Claro quando ativo */
-  font-weight: bold;
-} 
-.seen-off { 
-  color: #ccc; /* Cinza quando desativado */
-}   
-
-/* --- Mudança de Cor do Título (Modo Claro) --- */
-/* Quando o vídeo JÁ FOI VISTO: o texto assume a cor Azul Escuro */
-.video-title-card.video-visto {
-  color: #0d3b66 !important; /* Azul Escuro corporativo/sólido */
-  opacity: 0.95;
-}
-
-/* --- Mudança de Cor do Título (Modo Escuro / Dark Theme) --- */
-/* Garante contraste e elegância ao Azul Escuro sobre o fundo cinza escuro */
-html.dark-theme .video-title-card.video-visto {
-  color: #5c9eff !important; /* Um azul ligeiramente compensado para brilhar perfeitamente no escuro */
-  opacity: 0.9;
-}
-
-/* Se você quiser mudar também a cor do botão visto especificamente dentro do card ativo no modo escuro */
-html.dark-theme .seen-on {
-  color: #38b6ff !important; /* Azul claro adaptado para painéis escuros */
-}
-
-/* ==========================================================================
-   ESTILIZAÇÃO DE VÍDEOS JÁ VISTOS (AZUL CLARO PERMANENTE)
-   ========================================================================== */
-
-/* --- MODO CLARO PADRÃO --- */
-
-/* Altera a cor do texto do título para Azul Claro */
-.video-title-card.video-visto {
-    color: #5b3aa6 !important; /* Azul claro vivo */
-    font-weight: 600; /* Deixa o título levemente mais destacado */
-}
-
-/* Se dentro do seu título houver um link <a>, pinta ele também */
-.video-title-card.video-visto a {
-    color: #5b3aa6 !important;
-}
-
-/* Deixa o botão de check (✓) azul claro e ativo */
-.seen-btn.seen-on {
-    color: #00b4d8 !important;
-    font-weight: bold;
-    transform: scale(1.1); /* Dá um leve destaque no ícone */
-}
-
-/* Mantém o botão cinza quando não foi visto */
-.seen-btn.seen-off {
-    color: #ccc !important;
-}
-
-
-/* --- MODO ESCURO (DARK THEME) --- */
-
-/* Se o usuário estiver usando o modo escuro, usamos um azul claro mais brilhante (neon) para dar contraste */
-html.dark-theme .video-title-card.video-visto,
-html.dark-theme .video-title-card.video-visto a {
-    color: #90e0ef !important; /* Azul celeste bem visível no fundo escuro */
-}
-
-html.dark-theme .seen-btn.seen-on {
-    color: #90e0ef !important;
-}
-
-/* ==========================================================================
-   CONTAINERS BRANCOS COM ROLAGEM CUSTOMIZADA AMARELA
-   ========================================================================== */
-.video-container-white, 
-.caixa-favoritos-nova {
-  background-color: white;
-  border-radius: 20px;
-  padding: 30px;
-  margin-bottom: 5px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  width: 100%;
-  max-height: 720px; 
-  overflow-y: scroll !important; 
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Customização WebKit para a barra de rolagem amarela */
-.video-container-white::-webkit-scrollbar,
-.caixa-favoritos-nova::-webkit-scrollbar {
-  width: 12px !important;
-}
-
-.video-container-white::-webkit-scrollbar-track,
-.caixa-favoritos-nova::-webkit-scrollbar-track {
-  background: #fffae6 !important; 
-  border-radius: 20px !important; 
-  margin: 15px 0; 
-}
-
-.video-container-white::-webkit-scrollbar-thumb,
-.caixa-favoritos-nova::-webkit-scrollbar-thumb {
-  background: #ffca28 !important; 
-  border-radius: 20px !important; 
-  border: 2px solid #fffae6 !important; 
-}
-
-.video-container-white::-webkit-scrollbar-thumb:hover,
-.caixa-favoritos-nova::-webkit-scrollbar-thumb:hover {
-  background: #f5b041 !important; 
-}
-
-/* Componentes internos dos blocos brancos */
-.video-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.video-title {
-  color: #6837af;
-  font-size: 1.4rem;
-  font-weight: 700;
-  transition: color 0.3s ease;
-}
-
-.caixa-favoritos-nova .titulo-salvos {
-  color: #4B0082;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  border: 2px solid #e0d5fa;
-  border-radius: 50px;
-  padding: 4px 16px;
-  width: 320px;
-  background: #fff;
-  transition: all 0.3s ease;
-}
-
-.search-box:focus-within {
-  border-color: #a370f7;
-  box-shadow: 0 0 0 3px rgba(163, 112, 247, 0.15);
-}
-
-.search-box input {
-  border: none;
-  outline: none;
-  width: 100%;
-  padding: 8px 0;
-  font-size: 14px;
-  color: #333;
-  background-color: transparent;
-}
-
-.search-box button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #6837af;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s;
-}
-
-/* Grid de cards */
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(200px, 1fr)); 
-  gap: 25px;
-  width: 100%;
-}
-
-.video-card {
-  background-color: #f9f8ff;
-  border: 1px solid #eee;
-  border-radius: 16px;
-  padding: 12px;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.video-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-  background-color: #fff;
-}
-
-.video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.video-frame {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.video-title-card {
-  font-size: 14px;
-  font-weight: 600;
-  color: #444;
-  line-height: 1.4;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  min-height: 40px;
-  transition: color 0.3s ease;
-}
-
-.fav-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.4rem;
-  transition: transform 0.2s ease, color 0.2s ease;
-  line-height: 1;
-  padding: 0;
-}
-
-.fav-btn:hover { transform: scale(1.2); }
-.star-on { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
-.star-off { color: #ccc; }
-
-/* ==========================================================================
-   WIDGETS DE CONTAGEM REGRESSIVA (SIDEBAR)
-   ========================================================================== */
-.sidebar-exam-container {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 2px solid #e2dbf5;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.widget-title-sidebar {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.titulo-main {
-  font-size: 14px;
-  font-weight: 800;
-  color: #3f007d;
-  text-transform: uppercase;
-}
-
-.tag-vestibulares {
-  background: #9fe0ff;
-  color: #1a658f;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  box-shadow: 0 3px 0 #60b3df;
-}
-
-.exam-card-mini {
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-  transition: all 0.2s ease;
-}
-
-.exam-name-mini {
-  font-size: 12px;
-  font-weight: 700;
-  color: #555;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.countdown-mini {
-  font-family: monospace;
-  font-weight: 700;
-  font-size: 1rem;
-  width: fit-content;
-}
-
-.mini-enem { border-left: 4px solid #f1c40f; }
-.mini-enem .countdown-mini { color: #d4ac0d; }
-.mini-fuvest { border-left: 4px solid #e74c3c; }
-.mini-fuvest .countdown-mini { color: #e74c3c; }
-.mini-unicamp { border-left: 4px solid #2ecc71; }
-.mini-unicamp .countdown-mini { color: #27ae60; }
-.mini-unesp { border-left: 4px solid #9b59b6; }
-.mini-unesp .countdown-mini { color: #9b59b6; }
-
-/* =======================================================
-   REGRAS GLOBAIS DE ESCALA DE FONTES (AFETA TODO O SITE)
-   ======================================================= */
-html, html.font-normal {
-    font-size: 100%; /* Tamanho padrão do navegador (geralmente 16px) */
-}
-
-html.font-media {
-    font-size: 115%; /* Aumenta o texto e elementos em REM de todo o site em 15% */
-}
-
-html.font-grande {
-    font-size: 130%; /* Aumenta o texto e elementos em REM de todo o site em 30% */
-}
-
-/* ==========================================================================
-   IMPLEMENTAÇÃO COMPLETA DO TEMA ESCURO (DARK THEME)
+   9. IMPLEMENTAÇÃO MODO ESCURO (DARK THEME)
    ========================================================================== */
 html.dark-theme body {
-    background-color: #1a1824; 
+  background-color: #1a1824;
 }
 
-/* Bloco da Sidebar */
 html.dark-theme .menuSidebar {
-    background-color: #1D1B26;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  background-color: #1D1B26;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-html.dark-theme .menuSidebar nav::before {
-    color: #BFA2FF;
+html.dark-theme .menuSidebar nav::before,
+html.dark-theme .titulo-main {
+  color: #ffffff;
 }
 
 html.dark-theme .menuSidebar nav a {
-    color: #BFA2FF;
+  color: #BFA2FF;
 }
 
 html.dark-theme .menuSidebar nav a:hover {
-    background: rgba(134, 84, 243, 0.2);
-    color: #FFFFFF;
+  background: rgba(134, 84, 243, 0.2);
+  color: #FFFFFF;
 }
 
-/* ==========================================================================
-   RESET DOS BOTÕES DO HEADER NO MODO ESCURO (CORREÇÃO DE CONFLITO)
-   ========================================================================== */
+html.dark-theme .active-subject {
+  background: #252233;
+  color: #FFFFFF !important;
+  border-left: 4px solid #8654f3;
+  box-shadow: 0 4px 12px rgba(134, 84, 243, 0.2);
+}
+
 html.dark-theme .menu li.materiais a,
 html.dark-theme .menu li.obras a, 
 html.dark-theme .menu li.livros a, 
 html.dark-theme .menu li.cronogramas a {
-    background-color: transparent !important;
+  background-color: transparent !important;
 }
 
-html.dark-theme .active-subject {
-    background: #252233;
-    color: #FFFFFF !important;
-    border-left: 4px solid #8654f3;
-    box-shadow: 0 4px 12px rgba(134, 84, 243, 0.2);
-}
-
-/* Cards dos Vestibulares na Sidebar */
 html.dark-theme .exam-card-mini {
-    background: #252230;
-    box-shadow: none;
+  background: #252230;
+  box-shadow: none;
 }
 
 html.dark-theme .exam-name-mini {
-    color: #E2E0E6;
+  color: #E2E0E6;
 }
 
-/* Blocos Principais de Vídeos e Salvos */
 html.dark-theme .video-container-white,
 html.dark-theme .caixa-favoritos-nova {
-    background-color: #1D1B26;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background-color: #1D1B26;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 html.dark-theme .video-title {
-    color: #A380F9;
+  color: #A380F9;
 }
 
 html.dark-theme .caixa-favoritos-nova .titulo-salvos {
-    color: #BFA2FF;
+  color: #BFA2FF;
 }
 
-/* Caixa de Pesquisa */
 html.dark-theme .search-box {
-    background-color: #252230;
-    border-color: #38344A;
-}
-
-/* Caixa de Pesquisa */
-html.dark-theme .titulo-main {
-    color: white;
-}
-
-/* Caixa de Pesquisa */
-html.dark-theme .menuSidebar nav::before  {
-    color: white;
+  background-color: #252230;
+  border-color: #38344A;
 }
 
 html.dark-theme .search-box input {
-    color: #FFFFFF;
+  color: #FFFFFF;
 }
 
 html.dark-theme .search-box button {
-    color: #A380F9;
+  color: #A380F9;
 }
 
-/* Grade de Cards e Vídeos */
 html.dark-theme .video-card {
-    background-color: #252230;
-    border-color: #332F44;
+  background-color: #252230;
+  border-color: #332F44;
 }
 
 html.dark-theme .video-card:hover {
-    background-color: #2C2838;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  background-color: #2C2838;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
 }
 
 html.dark-theme .video-title-card {
-    color: #E2E0E6;
+  color: #E2E0E6;
 }
 
 html.dark-theme .sem-favoritos {
-    color: #6C687A !important;
+  color: #6C687A !important;
 }
 
-/* Customização WebKit para a barra de rolagem no Dark Mode */
+/* Modificações de Vídeos Vistos no Dark Mode */
+html.dark-theme .video-title-card.video-visto,
+html.dark-theme .video-title-card.video-visto a {
+  color: #90e0ef !important;
+  opacity: 0.9;
+}
+
+html.dark-theme .seen-btn.seen-on {
+  color: #90e0ef !important;
+}
+
+/* Scrollbar Customizada Dark Mode */
 html.dark-theme .video-container-white::-webkit-scrollbar-track,
 html.dark-theme .caixa-favoritos-nova::-webkit-scrollbar-track {
-  background: #252230 !important; 
+  background: #252230 !important;
 }
 
 html.dark-theme .video-container-white::-webkit-scrollbar-thumb,
 html.dark-theme .caixa-favoritos-nova::-webkit-scrollbar-thumb {
-  background: #8654f3 !important; 
-  border: 2px solid #252230 !important; 
+  background: #8654f3 !important;
+  border: 2px solid #252230 !important;
 }
 
 html.dark-theme .video-container-white::-webkit-scrollbar-thumb:hover,
 html.dark-theme .caixa-favoritos-nova::-webkit-scrollbar-thumb:hover {
-  background: #7342e3 !important; 
+  background: #7342e3 !important;
+}
+
+/* Esconde logos mobile por padrão nas telas de Computador */
+.logo-mobile {
+  display: none !important;
 }
 
 /* ==========================================================================
-   MEDIA QUERIES (RESPONSIVIDADE)
+   10. MEDIA QUERIES (RESPONSIVIDADE AJUSTADA)
    ========================================================================== */
-@media (max-width: 1024px) {
-  header {
-    padding: 15px 20px;
-  }
+
+/* --- TABLET (769px a 1024px) - 3 colunas --- */
+@media (max-width: 1024px) and (min-width: 769px) {
   .video-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 15px;
   }
-  .video-container-white, 
+}
+
+/* --- MOBILE (até 768px) - Layout e Responsividade do Menu de Celular --- */
+@media (max-width: 768px) {
+  /* Alternância de logos para Mobile (Logo Celular Claro / Escuro) */
+  .logo-desktop {
+    display: none !important;
+  }
+
+  .logo-mobile.logo-light {
+    display: block !important;
+  }
+
+  html.dark-theme .logo-mobile.logo-light {
+    display: none !important;
+  }
+
+  html.dark-theme .logo-mobile.logo-dark {
+    display: block !important;
+  }
+
+  /* Alinhamento da barra do topo: Logo à esquerda, Hambúrguer e Perfil à direita */
+  header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 16px !important;
+  }
+
+  .header-right-mobile {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+  }
+
+  /* Oculta texto "Painel do Estudante" em telas pequenas */
+  .texto-painel {
+    display: none !important;
+  }
+
+  /* Layout geral da página */
+  .banner {
+    height: auto;
+    margin-top: 10px;
+    padding: 0 10px;
+  }
+
+  .banner img {
+    border-radius: 10px;
+  }
+
+  .wrapper {
+    flex-direction: column;
+    padding: 10px;
+    gap: 20px;
+  }
+
+  .menuSidebar {
+    position: static;
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .menuSidebar nav a {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .video-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  /* 1 fileira no celular conforme especificado */
+  .video-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  /* Exibe 3 linhas e libera scroll a partir da 4ª */
+  .video-container-white,
   .caixa-favoritos-nova {
-    max-height: none; 
+    max-height: 860px !important;
+    overflow-y: auto !important;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .video-title {
+    font-size: 1.15rem;
+  }
+
+  .video-title-card {
+    font-size: 0.78rem;
+    min-height: auto;
+  }
+}
+
+/* --- DISPOSITIVOS PEQUENOS (até 480px) --- */
+@media (max-width: 480px) {
+  .video-card {
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .btn-actions-group button {
+    font-size: 0.95rem;
   }
 }
