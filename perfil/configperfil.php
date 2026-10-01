@@ -170,16 +170,27 @@ $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
-$caminhoPadrao = "../assets/img/default-user.webp"; 
+$caminhoPadrao = "../assets/img/default-user.webp";
+
+// Redimensiona a foto do Google para um tamanho adequado ao avatar
+function otimizarFotoGoogle($url, $tamanho = 192) {
+    if (strpos($url, 'googleusercontent.com') === false) {
+        return $url;
+    }
+    // remove qualquer parâmetro de tamanho existente (=s96-c, =w100-h100, etc.)
+    $url = preg_replace('/=[a-z0-9\-]+$/i', '', $url);
+    return $url . '=s' . $tamanho . '-c';
+}
 
 // Tratamento dinâmico do caminho da foto
 if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
-    $fotoExibicao = $user['foto']; // Usa a URL externa do Google de forma direta
+    $fotoExibicao = otimizarFotoGoogle($user['foto']);
     $temFotoPersonalizada = false;
 } else {
     $temFotoPersonalizada = (!empty($user['foto']) && $user['foto'] != 'assets/img/default-user.webp' && file_exists("../" . $user['foto']));
     $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -191,6 +202,8 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <link rel="stylesheet" href="../assets/css/configperfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <link rel="preconnect" href="https://lh3.googleusercontent.com">
+    <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
     
     <script>
         (function () {
@@ -270,7 +283,13 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
 
                 <div class="profile-upload">
                     <div class="avatar-wrapper">
-                        <img src="<?php echo $fotoExibicao; ?><?php echo !filter_var($fotoExibicao, FILTER_VALIDATE_URL) ? '?t='.time() : ''; ?>" id="currentAvatar">
+                        <img src="<?php echo htmlspecialchars($fotoExibicao); ?><?php echo !filter_var($fotoExibicao, FILTER_VALIDATE_URL) ? '?t='.time() : ''; ?>"
+                            id="currentAvatar"
+                            referrerpolicy="no-referrer"
+                            decoding="async"
+                            fetchpriority="high"
+                            alt="Foto de perfil"
+                            onerror="this.onerror=null; this.src='../assets/img/default-user.webp';">
                     </div>
                     <div class="upload-info">
                         <?php if ($isGoogleUser): ?>
