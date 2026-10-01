@@ -16,7 +16,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
     <link class="js-theme-style" rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/header.css">
         <link rel="stylesheet" href="assets/js/lib/index.js">
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="assets/img/logos/favicon.png">
     
     <script>
         // Anti-Flicker nativo executado no Head (Evita tela piscar em branco)
@@ -33,8 +33,8 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
         <div class="principalContent">
             
             <section class="banner">
-                <img src="assets/img/bannerInicio.webp" alt="Fundo" class="banner-img banner-light">
-                <img src="assets/img/escurophronesis.webp" alt="Fundo Escuro" class="banner-img banner-dark">
+                <img src="assets/img/banners/bannerInicio.webp" alt="Fundo" class="banner-img banner-light">
+                <img src="assets/img/banners/escurophronesis.webp" alt="Fundo Escuro" class="banner-img banner-dark">
             </section>
 
             <section class="sobre-nos-container">
@@ -42,19 +42,19 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['nome'])) {
                     <div class="bento-grid">
                         <div class="grid-col-left">
                             <div class="box item-1">
-                                <img src="assets/img/vini.webp" alt="Pessoas">
+                                <img src="assets/img/index/vini.webp" alt="Pessoas">
                             </div>
                         </div>
                         <div class="grid-col-right">
                             <div class="box item-2">
-                                <img src="assets/img/qualquer.webp" alt="Pessoas">
+                                <img src="assets/img/index/qualquer.webp" alt="Pessoas">
                             </div>
                             <div class="grid-row-bottom">
                                 <div class="box item-3">
-                                    <img src="assets/img/joao.webp" alt="Pessoas">
+                                    <img src="assets/img/index/joao.webp" alt="Pessoas">
                                 </div>
                                 <div class="box item-4">
-                                    <img src="assets/img/nos.webp" alt="Pessoas">
+                                    <img src="assets/img/index/nos.webp" alt="Pessoas">
                                 </div>
                             </div>
                         </div>

@@ -1,12 +1,12 @@
 header {
     background-color: #8c52ff;
-    padding: 10px 4%; 
-    
+    padding: 10px 4%;
+
     /* Layout CSS Grid em 3 colunas simétricas */
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    
+
     width: 100%;
     position: sticky;
     top: 0;
@@ -16,11 +16,11 @@ header {
     transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* Coluna 1: Alinha a Logo totalmente para a esquerda */
+/* Coluna 1: Logo */
 .logoMarca {
     grid-column: 1;
     justify-self: start;
-    
+
     background: white !important;
     padding: 6px 20px !important;
     border-radius: 8px !important;
@@ -41,12 +41,12 @@ header {
 }
 
 /* ==========================================================================
-   REGRAS DE VISIBILIDADE DAS LOGOS (DESKTOP E TABLET)
+   VISIBILIDADE DAS LOGOS
    ========================================================================== */
 /* Oculta todas as logos por padrão */
 .logoMarca img { display: none !important; }
 
-/* DESKTOP / TABLET: só vale acima de 768px */
+/* DESKTOP / TABLET: acima de 768px */
 @media (min-width: 769px) {
     .logoMarca .logo-desktop.logo-light { display: block !important; }
 
@@ -113,7 +113,7 @@ header {
     transition: 0.3s;
 }
 
-/* Coluna 3: Perfil mantido totalmente à direita */
+/* Coluna 3: Perfil */
 .perfil-wrapper {
     grid-column: 3;
     justify-self: end;
@@ -195,7 +195,7 @@ header {
 }
 
 /* ==========================================================================
-   CONFIGURAÇÃO DO MODO ESCURO (DARK THEME - PC / TABLET)
+   MODO ESCURO (DARK THEME - PC / TABLET)
    ========================================================================== */
 html.dark-theme header {
     background-color: #272530;
@@ -265,7 +265,7 @@ html.dark-theme .botao-nav-adm:hover {
 }
 
 /* ==========================================================================
-   ESTILOS DO MENU HAMBÚRGUER (MOBILE)
+   BOTÃO HAMBÚRGUER (escondido por padrão; aparece só no celular)
    ========================================================================== */
 .hamburger-btn {
     display: none;
@@ -293,7 +293,7 @@ html.dark-theme .botao-nav-adm:hover {
 .hamburger-btn.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
 /* ==========================================================================
-   MÍDIA RESPONSIVA APENAS PARA CELULAR (até 768px)
+   CELULAR (até 768px)  -- tudo daqui até o final fica DENTRO do @media
    ========================================================================== */
 @media (max-width: 768px) {
     header {
@@ -315,9 +315,6 @@ html.dark-theme .botao-nav-adm:hover {
         padding: 0 !important;
     }
 
-    /* ... resto do bloco continua igual ... */
-}
-
     /* Oculta texto e alinha ícones à direita */
     .texto-painel {
         display: none !important;
@@ -331,14 +328,14 @@ html.dark-theme .botao-nav-adm:hover {
 
     .hamburger-btn {
         display: flex !important;
-        order: 1; /* Hambúrguer em primeiro */
+        order: 1;
     }
 
     .perfil-container {
-        order: 2; /* Perfil em segundo */
+        order: 2;
     }
 
-    /* MENU HAMBÚRGUER SUSPENSO (MENU DROPDOWN MOBILE) */
+    /* Menu suspenso do celular */
     .menuNav {
         display: none !important;
         position: absolute !important;
@@ -351,7 +348,6 @@ html.dark-theme .botao-nav-adm:hover {
         z-index: 99999 !important;
     }
 
-    /* Classe ativada pelo JS */
     .menuNav.open {
         display: block !important;
     }
@@ -377,8 +373,8 @@ html.dark-theme .botao-nav-adm:hover {
         box-sizing: border-box !important;
     }
 
-    /* Tema Escuro para o Menu Hambúrguer */
     html.dark-theme .menuNav {
         background-color: #272530 !important;
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
+}

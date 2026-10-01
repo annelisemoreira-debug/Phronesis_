@@ -72,12 +72,12 @@ if (isset($_SESSION['id'])) {
     <!-- CONTAINER DA LOGO (Com todas as 4 variações) -->
     <a href="<?= $path ?>index.php" class="logoMarca">
         <!-- VERSÕES DESKTOP (PC) -->
-        <img src="<?= $path ?>assets/img/logoSite.webp" class="logo-desktop logo-light" alt="Phronesis">
-        <img src="<?= $path ?>assets/img/logoescuro.webp" class="logo-desktop logo-dark" alt="Phronesis">
+        <img src="<?= $path ?>assets/img/logos/logoSite.webp" class="logo-desktop logo-light" alt="Phronesis">
+        <img src="<?= $path ?>assets/img/logos/logoescuro.webp" class="logo-desktop logo-dark" alt="Phronesis">
 
         <!-- VERSÕES MOBILE (CELULAR) -->
-        <img src="<?= $path ?>assets/img/logoCelularClaro.webp" class="logo-mobile logo-light" alt="Phronesis">
-        <img src="<?= $path ?>assets/img/logoCelularEscuro.webp" class="logo-mobile logo-dark" alt="Phronesis">
+        <img src="<?= $path ?>assets/img/logos/logoCelularClaro.webp" class="logo-mobile logo-light" alt="Phronesis">
+        <img src="<?= $path ?>assets/img/logos/logoCelularEscuro.webp" class="logo-mobile logo-dark" alt="Phronesis">
     </a>
 
     <!-- MENU PRINCIPAL -->
@@ -102,7 +102,11 @@ if (isset($_SESSION['id'])) {
 
         <!-- CONTAINER DO PERFIL -->
         <div class="perfil-container">
-            <img src="<?= htmlspecialchars($fotoPerfil) ?>" class="foto-perfil" alt="Perfil">
+            <img src="<?= htmlspecialchars($fotoPerfil) ?>"
+                class="foto-perfil"
+                alt="Perfil"
+                referrerpolicy="no-referrer"
+                onerror="this.onerror=null; this.src='<?= $path ?>assets/img/default-user.webp';">
             
             <div class="menu-dropdown" id="menuDropdown">
                 <a href="<?= $path ?>perfil/configperfil.php">Meu Perfil</a>
