@@ -178,7 +178,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                         <p>Integra a tradução em sinais à sua navegação, garantindo acesso pleno ao acervo da biblioteca.</p>
                     </div>
                     <div class="libras-controls">
-                        <img src="../assets/img/acessabilidades/acessibilidade.webp" alt="Ícone de Libras" class="libras-icon">
+                        <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Ícone de Libras" class="libras-icon">
                         <label class="switch">
                             <input type="checkbox" id="toggle-libras">
                             <span class="slider round"></span>
