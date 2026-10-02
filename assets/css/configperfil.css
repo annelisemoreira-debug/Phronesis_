@@ -278,6 +278,86 @@ body {
 }
 
 /* =======================================================
+   ESTILOS DO PREVIEW / EXPANSÃO DA FOTO DE PERFIL
+   ======================================================= */
+
+/* Cursor indicando ação na foto */
+.avatar-wrapper img {
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.avatar-wrapper img:hover {
+    transform: scale(1.03);
+    filter: brightness(0.95);
+}
+
+/* Modal Lightbox de Visualização */
+.modal-preview {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+
+/* Quando visível (com efeito fade-in) */
+.modal-preview.show {
+    opacity: 1;
+}
+
+/* Imagem dentro do Modal */
+.modal-preview-content {
+    max-width: 90%;
+    max-height: 85vh;
+    border-radius: 12px;
+    object-fit: contain;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    transform: scale(0.9);
+    transition: transform 0.25s ease-in-out;
+}
+
+.modal-preview.show .modal-preview-content {
+    transform: scale(1);
+}
+
+/* Botão Fechar (X) */
+.close-preview {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    line-height: 1;
+}
+
+.close-preview:hover {
+    color: #bfa2ff;
+    transform: scale(1.1);
+}
+
+/* Ajustes para o modo escuro (Dark Theme) */
+html.dark-theme .modal-preview {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+html.dark-theme .close-preview:hover {
+    color: #7B61FF;
+}
+
+/* =======================================================
    REGRAS COMPLETAS E IDENTICAS DO MODO ESCURO
    ======================================================= */
 

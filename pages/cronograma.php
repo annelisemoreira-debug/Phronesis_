@@ -212,8 +212,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     
     $intervalo_seguranca = $data_inicio->diff($data_fim);
 
+    $intervalo_seguranca = $data_inicio->diff($data_fim);
+
+    // --- VALIDAÇÃO DO LIMITE DE 24H ---
+    $horas_estudo_val = (float) ($_POST['horas_estudo'] ?? 0);
+    $partes_hora = explode(':', $_POST['hora_inicio'] ?? '00:00');
+    $inicio_em_minutos = ((int)$partes_hora[0] * 60) + (int)($partes_hora[1] ?? 0);
+    $total_em_minutos = (int) round($horas_estudo_val * 60 * count($materias_selecionadas));
+    $fim_em_minutos = $inicio_em_minutos + $total_em_minutos;
+
     if (empty($materias_selecionadas)) {
         $msg_feedback = "❌ Erro: Selecione ao menos uma matéria.";
+    } elseif ($horas_estudo_val <= 0) {
+        $msg_feedback = "❌ Erro: A duração deve ser maior que zero.";
+    } elseif ($horas_estudo_val >= 24) {
+        $msg_feedback = "❌ O limite de horas permitidas é abaixo de 24h.";
+    } elseif ($fim_em_minutos > 1440) {
+        $msg_feedback = "❌ O limite de horas permitidas é abaixo de 24h. Com "
+            . count($materias_selecionadas) . " matéria(s) de " . $horas_estudo_val
+            . "h começando às " . sprintf('%02d:%02d', $partes_hora[0], $partes_hora[1] ?? 0)
+            . ", o cronograma passaria da meia-noite. Reduza a duração, o nº de matérias ou adiante o horário de início.";
     } elseif ($data_fim < $data_inicio) {
         $msg_feedback = "❌ Erro: Data final não pode ser menor que a inicial.";
     } elseif ($intervalo_seguranca->days > 366) { 
@@ -541,7 +559,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     </div>
 
                     <div class="field-group">
-                        <label>Duração (horas):</label>
+                        <label>Duração por matéria (horas):</label>
                         <input type="number" name="horas_estudo" value="<?= $_POST['horas_estudo'] ?? '2' ?>" required>
                     </div>
 

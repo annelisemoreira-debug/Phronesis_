@@ -171,3 +171,4 @@ $(document).ready(function() {
     const savedSize = localStorage.getItem('site-font-size') || 'normal';
     document.documentElement.classList.add('font-' + savedSize);
 })();
+

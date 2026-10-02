@@ -11,17 +11,20 @@ include '../conexao.php';
 
 $id_usuario = $_SESSION['id'];
 
-// Verifica se o ID da sessão ainda é válido no banco de dados
-$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id_usuario");
-$dadosUser = $res->fetch_assoc();
+// 2. Verifica se o ID da sessão é válido e busca a foto e permissão (tipo/nivel) do usuário
+$stmtUser = $conn->prepare("SELECT nome, email, foto, tipo FROM usuario WHERE id_usuario = ?");
+$stmtUser->bind_param("i", $id_usuario);
+$stmtUser->execute();
+$resUser = $stmtUser->get_result();
+$user = $resUser->fetch_assoc();
 
-if (!$dadosUser) {
+if (!$user) {
     session_destroy();
     header("Location: ../login.php");
     exit();
 }
 
-// 3. LÓGICA DE PROCESSAMENTO DO CORTE
+// 3. LÓGICA DE PROCESSAMENTO DO CORTE DA IMAGEM
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'crop_image') {
     ob_clean(); 
     header('Content-Type: application/json');
@@ -46,11 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
             $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
             $busca->bind_param("i", $id_usuario);
             $busca->execute();
-            $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
+            $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'] ?? null;
 
             if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp') {
                 $caminhoArquivoAntigo = "../" . $fotoAntiga;
-                if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
+                if (file_exists($caminhoArquivoAntigo)) { 
+                    @unlink($caminhoArquivoAntigo); 
+                }
             }
 
             $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
@@ -67,12 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     exit();
 }
 
-// 4. BUSCA DADOS PARA EXIBIÇÃO
-$stmt = $conn->prepare("SELECT nome, email, foto FROM usuario WHERE id_usuario = ?");
-$stmt->bind_param("i", $id_usuario);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
-
 $caminhoPadrao = "../assets/img/default-user.webp"; 
 $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? "../" . $user['foto'] : $caminhoPadrao;
 ?>
@@ -86,14 +85,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <link rel="stylesheet" href="../assets/css/acessibilidade.css">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem('site-theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-theme');
-            }
-        })();
-    </script>
+    <script src="../assets/js/lib/acessibilidade.js"></script>
 </head>
 <body>
 
@@ -109,11 +101,19 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                     <li><a href="configperfil.php"><span>👤</span> Meu perfil</a></li>
                     <li>
                         <a href="acessibilidade.php" class="nav-link-acessibilidade active">
-                            <img src="../assets/img/acessibilidade/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
+                            <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade" onerror="this.outerHTML='<span>♿</span>'">
                             <span>Acessibilidade</span>
                         </a>
                     </li>
                 </ul>
+
+                <?php if (isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1)): ?>
+                    <p class="nav-title">ADMINISTRAÇÃO</p>
+                    <ul>
+                        <li><a href="../pages/admin_materias.php"><span>🛠️</span> Painel ADM</a></li>
+                    </ul>
+                <?php endif; ?>
+
                 <p class="nav-title">Voltar</p>
                 <ul>
                     <li><a href="../index.php"><span>🏠</span> Início</a></li>
@@ -178,7 +178,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                         <p>Integra a tradução em sinais à sua navegação, garantindo acesso pleno ao acervo da biblioteca.</p>
                     </div>
                     <div class="libras-controls">
-                        <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Ícone de Libras" class="libras-icon">
+                        <img src="../assets/img/acessabilidades/acessibilidade.webp" alt="Ícone de Libras" class="libras-icon">
                         <label class="switch">
                             <input type="checkbox" id="toggle-libras">
                             <span class="slider round"></span>
@@ -190,7 +190,5 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     </div>
 
     <?php include 'vlibras.php'; ?>
-
-    <script src="../assets/js/lib/acessibilidade.js" defer></script>
 </body>
 </html>

@@ -233,6 +233,45 @@ function salvarProgressoTopico(element) {
 
 // Inicialização dos Event Listeners após o carregamento do DOM
 document.addEventListener("DOMContentLoaded", function() {
+        // --- VALIDAÇÃO DO LIMITE DE 24H ANTES DE ENVIAR ---
+    const formCronograma = document.getElementById('formCronograma');
+
+    if (formCronograma) {
+        formCronograma.addEventListener('submit', function (e) {
+            const horaInicio = formCronograma.querySelector('[name="hora_inicio"]').value;
+            const horas = parseFloat(formCronograma.querySelector('[name="horas_estudo"]').value);
+            const qtdMaterias = formCronograma.querySelectorAll('input[name="materias_id[]"]:checked').length;
+
+            if (!horaInicio || isNaN(horas)) return;
+
+            const [h, m] = horaInicio.split(':').map(Number);
+            const inicioMin = h * 60 + m;
+            const totalMin = Math.round(horas * 60 * Math.max(qtdMaterias, 1));
+            const fimMin = inicioMin + totalMin;
+
+            let erro = null;
+
+            if (horas <= 0) {
+                erro = 'A duração deve ser maior que zero.';
+            } else if (horas >= 24) {
+                erro = 'O limite de horas permitidas é abaixo de 24h.';
+            } else if (fimMin > 1440) {
+                const fimReal = fimMin % 1440;
+                const fimTxt = String(Math.floor(fimReal / 60)).padStart(2, '0') + ':' + String(fimReal % 60).padStart(2, '0');
+                erro = `O limite de horas permitidas é abaixo de 24h. Com ${Math.max(qtdMaterias, 1)} matéria(s) de ${horas}h começando às ${horaInicio}, o estudo terminaria às ${fimTxt} do dia seguinte. Reduza a duração, o número de matérias ou adiante o horário de início.`;
+            }
+
+            if (erro) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Limite de horas excedido',
+                    text: erro,
+                    confirmButtonColor: '#7c3aed'
+                });
+            }
+        });
+    }
     const inputInicio = document.getElementById('data_inicio');
     const inputFim = document.getElementById('data_fim');
     
