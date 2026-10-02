@@ -22,23 +22,20 @@ if (!$dadosUser) {
 }
 
 // =========================================================================
-// 3. LOGICA DE PROCESSAMENTO DO BACK-END (APENAS PARA REQUISIÇÕES POST / AJAX)
+// 3. LÓGICA DE PROCESSAMENTO DO BACK-END (REQUISIÇÕES POST / AJAX)
 // =========================================================================
 
-// Identificação robusta: conta como Google se veio via sessão OU se a foto gravada for uma URL externa
 $isGoogleUser = (isset($_SESSION['login_google']) && $_SESSION['login_google'] === true) || filter_var($dadosUser['foto'], FILTER_VALIDATE_URL);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     ob_clean(); 
     header('Content-Type: application/json');
 
-    // --- SEGURANÇA: BLOQUEIO PARA USUÁRIOS GOOGLE ---
     if (($_POST['action'] == 'delete_image' || $_POST['action'] == 'crop_image') && $isGoogleUser) {
         echo json_encode(['status' => 'error', 'message' => 'Usuários do Google não podem alterar a foto de perfil.']);
         exit();
     }
 
-    // --- AÇÃO: REMOVER FOTO (VOLTAR PADRÃO) ---
     if ($_POST['action'] == 'delete_image') {
         try {
             $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
@@ -46,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $busca->execute();
             $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
 
-            // Só tenta deletar fisicamente se NÃO for uma URL externa do Google
             if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
                 $caminhoArquivoAntigo = "../" . $fotoAntiga;
                 if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
@@ -63,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    // --- AÇÃO: CORTAR E SALVAR IMAGEM ---
     if ($_POST['action'] == 'crop_image') {
         try {
             $diretorioFisico = "../assets/img/perfis/";
@@ -87,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 $busca->execute();
                 $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
 
-                // Só tenta deletar fisicamente se NÃO for uma URL externa do Google
                 if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
                     $caminhoArquivoAntigo = "../" . $fotoAntiga;
                     if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
@@ -107,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    // --- AÇÃO: EXCLUIR CONTA TRADICIONAL ---
     if ($_POST['action'] == 'delete_account') {
         try {
             $password = $_POST['password'] ?? '';
@@ -137,7 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    // --- AÇÃO: EXCLUIR CONTA DIRETO (GOOGLE) ---
     if ($_POST['action'] == 'delete_account_google') {
         try {
             $fotoAntiga = $dadosUser['foto'];
@@ -172,17 +164,14 @@ $user = $stmt->get_result()->fetch_assoc();
 
 $caminhoPadrao = "../assets/img/default-user.webp";
 
-// Redimensiona a foto do Google para um tamanho adequado ao avatar
 function otimizarFotoGoogle($url, $tamanho = 192) {
     if (strpos($url, 'googleusercontent.com') === false) {
         return $url;
     }
-    // remove qualquer parâmetro de tamanho existente (=s96-c, =w100-h100, etc.)
     $url = preg_replace('/=[a-z0-9\-]+$/i', '', $url);
     return $url . '=s' . $tamanho . '-c';
 }
 
-// Tratamento dinâmico do caminho da foto
 if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     $fotoExibicao = otimizarFotoGoogle($user['foto']);
     $temFotoPersonalizada = false;
@@ -190,7 +179,6 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     $temFotoPersonalizada = (!empty($user['foto']) && $user['foto'] != 'assets/img/default-user.webp' && file_exists("../" . $user['foto']));
     $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -240,41 +228,95 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     </style>
 </head>
 <body>
-   <div class="main-wrapper">
-        <aside class="sidebar">
-            <div class="logo">
+    <div class="main-wrapper">
+
+        <!-- Header topo (Celular e Tablet) -->
+        <header class="mobile-header">
+            <div class="mobile-logo-container">
                 <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
                 <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
             </div>
-            <nav>
-                <p class="nav-title">Conta Pessoal</p>
+            <button type="button" class="mobile-menu-toggle" id="btnOpenSidebar"
+                    aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </header>
+
+        <!-- Fundo escurecido (Overlay) -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar / Menu Drawer -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header-mobile">
+                <div class="sidebar-brand">
+                    <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
+                    <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
+                </div>
+                <button type="button" class="btn-close-sidebar" id="btnCloseSidebar" aria-label="Fechar menu">&times;</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-title">CONTA PESSOAL</p>
                 <ul>
-                    <li><a href="configperfil.php" class="active"><span>👤</span> Meu perfil</a></li>
+                    <li>
+                        <a href="configperfil.php" class="active">
+                            <span class="nav-icon">👤</span> 
+                            <span class="nav-text">Meu perfil</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="../perfil/acessibilidade.php" class="nav-link-acessibilidade">
                             <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
-                            <span>Acessibilidade</span>
+                            <span class="nav-text">Acessibilidade</span>
                         </a>
                     </li>
                 </ul>
 
                 <?php if (isset($user['tipo']) && $user['tipo'] === 'admin'): ?>
-                    <p class="nav-title">Administração</p>
+                    <p class="nav-title">ADMINISTRAÇÃO</p>
                     <ul>
-                        <li><a href="../pages/admin_materias.php"><span>🛠️</span> Painel ADM</a></li>
+                        <li>
+                            <a href="../pages/admin_materias.php">
+                                <span class="nav-icon">🛠️</span> 
+                                <span class="nav-text">Painel ADM</span>
+                            </a>
+                        </li>
                     </ul>
                 <?php endif; ?>
 
-                <p class="nav-title">Voltar</p>
+                <p class="nav-title">VOLTAR</p>
                 <ul>
-                    <li><a href="../index.php"><span>🏠</span> Início</a></li>
-                    <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
-                    <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
-                    <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
+                    <li>
+                        <a href="../index.php">
+                            <span class="nav-icon">🏠</span> 
+                            <span class="nav-text">Início</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/livros.php">
+                            <span class="nav-icon">📚</span> 
+                            <span class="nav-text">Livros</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/material.php">
+                            <span class="nav-icon">📝</span> 
+                            <span class="nav-text">Matérias</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/cronograma.php">
+                            <span class="nav-icon">📅</span> 
+                            <span class="nav-text">Cronograma</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </aside>
 
+        <!-- Conteúdo Principal -->
         <main class="content">
             <header class="profile-banner">
                 <img src="../assets/img/banners/meuperfilclaro.webp" alt="Banner" class="banner-img banner-light">
@@ -342,24 +384,23 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         </main>
     </div>
 
-        <!-- Modal de visualização ampliada da foto -->
-        <div id="previewModal" class="modal-preview" aria-hidden="true">
-            <span class="close-preview" id="btnClosePreview" title="Fechar" role="button" aria-label="Fechar visualização">&times;</span>
+    <!-- Modal de visualização ampliada da foto -->
+    <div id="previewModal" class="modal-preview" aria-hidden="true">
+        <span class="close-preview" id="btnClosePreview" title="Fechar" role="button" aria-label="Fechar visualização">&times;</span>
 
-            <div class="preview-stage" id="previewStage">
-                <img class="modal-preview-content" id="previewImage" alt="Foto de perfil ampliada" draggable="false" referrerpolicy="no-referrer">
-            </div>
-
-            <div class="preview-controls">
-                <button type="button" id="btnZoomOut" aria-label="Diminuir zoom">&minus;</button>
-                <span id="zoomLevel">100%</span>
-                <button type="button" id="btnZoomIn" aria-label="Aumentar zoom">+</button>
-                <button type="button" id="btnZoomReset">Redefinir</button>
-            </div>
+        <div class="preview-stage" id="previewStage">
+            <img class="modal-preview-content" id="previewImage" alt="Foto de perfil ampliada" draggable="false" referrerpolicy="no-referrer">
         </div>
 
-    
+        <div class="preview-controls">
+            <button type="button" id="btnZoomOut" aria-label="Diminuir zoom">&minus;</button>
+            <span id="zoomLevel">100%</span>
+            <button type="button" id="btnZoomIn" aria-label="Aumentar zoom">+</button>
+            <button type="button" id="btnZoomReset">Redefinir</button>
+        </div>
+    </div>
 
+    <!-- Modal de Crop da Imagem -->
     <div id="cropModal" class="modal-crop">
         <div class="modal-crop-content">
             <h3>Ajuste sua foto</h3>
@@ -371,6 +412,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         </div>
     </div>
 
+    <!-- Modal de Exclusão de Conta -->
     <div id="deleteAccountModal" class="modal-crop">
         <div class="modal-crop-content">
             <h3 style="color: #FF4D4D; margin-top: 0;">Confirmar Exclusão</h3>

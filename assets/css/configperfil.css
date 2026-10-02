@@ -25,16 +25,23 @@ body {
     gap: 20px;
 }
 
+/* --- ELEMENTOS MÓVEIS (Escondidos por padrão no Desktop) --- */
+.mobile-header,
+.sidebar-header-mobile,
+.sidebar-overlay {
+    display: none;
+}
+
 /* --- SIDEBAR (Esquerda) --- */
 .sidebar {
     width: 250px;
-    background-color: white;
+    background-color: #ffffff;
     border-radius: 15px;
     padding: 30px 15px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0; /* Impede que a sidebar amasse */
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .logo {
@@ -52,6 +59,7 @@ body {
     max-width: 95%;
     height: auto;
 }
+
 .logo-dark {
     display: none;
 }
@@ -77,7 +85,7 @@ body {
 
 .sidebar ul li a {
     text-decoration: none;
-    color: #555;
+    color: #555555;
     font-size: 1rem;
     display: flex;
     align-items: center;
@@ -131,7 +139,7 @@ body {
 /* --- CONTEÚDO PRINCIPAL (Direita com Rolagem Interna) --- */
 .content {
     flex: 1;
-    background-color: white;
+    background-color: #ffffff;
     border-radius: 15px;
     overflow-y: auto; /* Permite rolagem apenas dentro do painel de dados */
     overflow-x: hidden; /* Corta vazamentos horizontais */
@@ -148,12 +156,11 @@ body {
     box-sizing: border-box;
 }
 
-/* --- BANNER COMPORTAMENTO --- */
 .banner {
     width: 100%; 
     max-width: 1650px; 
     height: 160px;       
-    margin: 0 auto 0 auto; 
+    margin: 0 auto; 
     display: block;
     overflow: hidden;
 }
@@ -195,11 +202,11 @@ body {
     display: block;
     font-size: 1.05rem;
     margin-bottom: 5px;
-    color: #000;
+    color: #000000;
 }
 
 .alert-info p {
-    color: #666;
+    color: #666666;
     font-size: 0.9rem;
     line-height: 1.4;
 }
@@ -218,17 +225,24 @@ body {
     border-radius: 50%;
     object-fit: cover;
     border: none !important;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.avatar-wrapper img:hover {
+    transform: scale(1.03);
+    filter: brightness(0.95);
 }
 
 /* Rótulos e botões */
 .upload-info h3 {
     font-size: 1.1rem;
     margin-bottom: 5px;
-    color: #000;
+    color: #000000;
 }
 
 .upload-info p {
-    color: #666;
+    color: #666666;
     font-size: 0.9rem;
     margin-bottom: 15px;
 }
@@ -252,12 +266,12 @@ body {
     display: block;
     font-size: 1rem;
     margin-bottom: 5px;
-    color: #000;
+    color: #000000;
 }
 
 .user-info-fields p.user-value {
     font-size: 1rem;
-    color: #333;
+    color: #333333;
 }
 
 /* Botão Desconectar */
@@ -281,18 +295,6 @@ body {
    ESTILOS DO PREVIEW / EXPANSÃO DA FOTO DE PERFIL
    ======================================================= */
 
-/* Cursor indicando ação na foto */
-.avatar-wrapper img {
-    cursor: pointer;
-    transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.avatar-wrapper img:hover {
-    transform: scale(1.03);
-    filter: brightness(0.95);
-}
-
-/* Modal Lightbox de Visualização */
 .modal-preview {
     display: none;
     position: fixed;
@@ -307,14 +309,13 @@ body {
     backdrop-filter: blur(4px);
     opacity: 0;
     transition: opacity 0.25s ease-in-out;
+    overflow: hidden;
 }
 
-/* Quando visível (com efeito fade-in) */
 .modal-preview.show {
     opacity: 1;
 }
 
-/* Imagem dentro do Modal */
 .modal-preview-content {
     max-width: 90%;
     max-height: 85vh;
@@ -329,7 +330,6 @@ body {
     transform: scale(1);
 }
 
-/* Botão Fechar (X) */
 .close-preview {
     position: absolute;
     top: 20px;
@@ -341,6 +341,7 @@ body {
     user-select: none;
     transition: color 0.2s ease, transform 0.2s ease;
     line-height: 1;
+    z-index: 2001;
 }
 
 .close-preview:hover {
@@ -348,23 +349,7 @@ body {
     transform: scale(1.1);
 }
 
-/* Ajustes para o modo escuro (Dark Theme) */
-html.dark-theme .modal-preview {
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-html.dark-theme .close-preview:hover {
-    color: #7B61FF;
-}
-
-/* =======================================================
-   ZOOM DENTRO DO PREVIEW
-   ======================================================= */
-.modal-preview {
-    overflow: hidden;
-}
-
-/* Contêiner que recebe o zoom e o arraste */
+/* Zoom dentro do preview */
 .preview-stage {
     display: flex;
     align-items: center;
@@ -374,7 +359,6 @@ html.dark-theme .close-preview:hover {
     will-change: transform;
 }
 
-/* Enquanto arrasta ou faz pinça, sem atraso na animação */
 .preview-stage.dragging {
     transition: none;
 }
@@ -385,7 +369,7 @@ html.dark-theme .close-preview:hover {
     cursor: zoom-in;
     user-select: none;
     -webkit-user-drag: none;
-    touch-action: none; /* necessário para pinça e arraste no celular */
+    touch-action: none;
 }
 
 .modal-preview.zoomed .preview-stage .modal-preview-content {
@@ -408,14 +392,14 @@ html.dark-theme .close-preview:hover {
     padding: 8px 14px;
     background-color: rgba(30, 30, 30, 0.85);
     border-radius: 30px;
-    color: #fff;
+    color: #ffffff;
     font-size: 0.95rem;
-    z-index: 2;
+    z-index: 2001;
 }
 
 .preview-controls button {
     background: rgba(255, 255, 255, 0.12);
-    color: #fff;
+    color: #ffffff;
     border: none;
     min-width: 36px;
     height: 36px;
@@ -440,24 +424,24 @@ html.dark-theme .close-preview:hover {
 }
 
 /* =======================================================
-   REGRAS COMPLETAS E IDENTICAS DO MODO ESCURO
+   REGRAS GLOBAIS DE ESCALA DE FONTES
    ======================================================= */
-
-   /* =======================================================
-   REGRAS GLOBAIS DE ESCALA DE FONTES (AFETA TODO O SITE)
-   ======================================================= */
-html, html.font-normal {
-    font-size: 100%; /* Tamanho padrão do navegador (geralmente 16px) */
+html, 
+html.font-normal {
+    font-size: 100%;
 }
 
 html.font-media {
-    font-size: 115%; /* Aumenta o texto e elementos em REM de todo o site em 15% */
+    font-size: 115%;
 }
 
 html.font-grande {
-    font-size: 130%; /* Aumenta o texto e elementos em REM de todo o site em 30% */
+    font-size: 130%;
 }
 
+/* =======================================================
+   ESTILOS DO MODO ESCURO (DARK THEME)
+   ======================================================= */
 html.dark-theme body {
     background-color: #1a1824; 
 }
@@ -467,15 +451,17 @@ html.dark-theme .sidebar {
     background-color: #272530; 
 }
 
-/* CHAVEAMENTO DOS BANNERS */
 html.dark-theme .banner-light { display: none !important; }
 html.dark-theme .banner-dark { display: block !important; }
 
-/* CHAVEAMENTO DAS LOGOS */
 html.dark-theme .logo-light { display: none !important; }
-html.dark-theme .logo-dark { display: block !important; width: 220px; max-width: 95%; height: auto; }
+html.dark-theme .logo-dark { 
+    display: block !important; 
+    width: 220px; 
+    max-width: 95%; 
+    height: auto; 
+}
 
-/* LINKS DA SIDEBAR NO MODO ESCURO */
 html.dark-theme .sidebar ul li a {
     color: #b0aec2;
 }
@@ -490,7 +476,6 @@ html.dark-theme .nav-title {
     color: #7b61ff;
 }
 
-/* ELEMENTOS DE TEXTO CONFORME O MOCKUP */
 html.dark-theme .alert-info,
 html.dark-theme .alert-info strong {
     color: #ffffff;
@@ -512,6 +497,7 @@ html.dark-theme .upload-info button {
     color: #bfa2ff;
 }
 
+html.dark-theme .user-info-fields label,
 html.dark-theme .user-info-fields label strong,
 html.dark-theme .sidebar ul li a:hover span,
 html.dark-theme .sidebar ul li a.active span {
@@ -519,56 +505,416 @@ html.dark-theme .sidebar ul li a.active span {
 }
 
 html.dark-theme .user-info-fields p.user-value {
-    color:#b0aec2; 
+    color: #b0aec2; 
 }
 
-/* Cor do parágrafo da danger-zone no modo escuro */
 html.dark-theme .danger-zone p {
     color: #a5a3b3;
 }
 
-/* Garante que o título continue visível e destacado */
 html.dark-theme .danger-zone h3 {
     color: #FF4D4D;
 }
 
-/* =======================================================
-   ESTILIZAÇÃO PERSONALIZADA DA BARRA DE ROLAGEM (SCROLLBAR)
-   ======================================================= */
-
-/* Definições de tamanho da barra */
-.content::-webkit-scrollbar {
-    width: 10px;
+html.dark-theme .modal-preview {
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
-/* O fundo da barra (O trilho por onde ela passa) */
+html.dark-theme .close-preview:hover {
+    color: #7B61FF;
+}
+
+/* =======================================================
+   ESTILIZAÇÃO DA BARRA DE ROLAGEM (SCROLLBAR)
+   ======================================================= */
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
 .content::-webkit-scrollbar-track {
     background: #f0ecff; 
-    border-radius: 0 15px 15px 0; /* Mantém o alinhamento arredondado com as quinas */
+    border-radius: 0 15px 15px 0;
 }
 
-/* O indicador que se move (Scroll handle) */
 .content::-webkit-scrollbar-thumb {
-    background-color: #7B61FF; /* Roxo principal do Phronesis */
+    background-color: #7B61FF;
     border-radius: 10px;
-    border: 2px solid #f0ecff; /* Cria margem interna flutuante */
+    border: 2px solid #f0ecff;
 }
 
-/* Cor do indicador ao passar o mouse */
 .content::-webkit-scrollbar-thumb:hover {
     background-color: #6346eb;
 }
 
-/* Customização da barra adaptada ao Modo Escuro */
 html.dark-theme .content::-webkit-scrollbar-track {
     background: #272530;
 }
 
 html.dark-theme .content::-webkit-scrollbar-thumb {
-    background-color: #bfa2ff; /* Lilás claro no modo escuro */
+    background-color: #bfa2ff;
     border: 2px solid #272530;
 }
 
 html.dark-theme .content::-webkit-scrollbar-thumb:hover {
     background-color: #a385f0;
+}
+
+/* =======================================================
+   RESPONSIVIDADE MÓVEL (TELAS ATÉ 768px)
+   ======================================================= */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+        align-items: flex-start;
+        background-color: #f8f7fc;
+    }
+
+    .main-wrapper {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        background-color: #ffffff;
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .mobile-header .logo-light,
+    .mobile-header .logo-dark {
+        width: 140px;
+        margin-bottom: 0;
+    }
+
+    .mobile-menu-toggle {
+        background: #f0ecff;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 10px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .mobile-menu-toggle .bar {
+        width: 18px;
+        height: 2px;
+        background-color: #7B61FF;
+        border-radius: 2px;
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 1000;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 82%;
+        max-width: 320px;
+        height: 100vh;
+        z-index: 1001;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px 0 0 20px;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+        padding: 20px 20px 30px 20px;
+        overflow-y: auto;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar .logo {
+        display: none;
+    }
+
+    .sidebar-header-mobile {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0ecff;
+    }
+
+    .sidebar-header-mobile .logo-light,
+    .sidebar-header-mobile .logo-dark {
+        width: 130px;
+        margin-bottom: 0;
+    }
+
+    .btn-close-sidebar {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #7B61FF;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0 5px;
+    }
+
+    .content {
+        border-radius: 0;
+        overflow-y: visible;
+        min-height: calc(100vh - 60px);
+    }
+
+    .profile-banner {
+        padding: 15px 15px 0 15px;
+    }
+
+    .banner {
+        height: 120px;
+    }
+
+    .container-dados {
+        padding: 20px !important;
+    }
+
+    .profile-upload {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .avatar-wrapper img {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .upload-info h3 {
+        font-size: 1rem;
+    }
+
+    .upload-info p {
+        font-size: 0.85rem;
+    }
+
+    .user-info-fields .field {
+        margin-bottom: 20px !important;
+    }
+
+    .footer-actions {
+        padding-top: 25px;
+        margin-top: 10px;
+    }
+}
+
+/* Ajustes de Modo Escuro no Mobile */
+@media (max-width: 768px) {
+    html.dark-theme body {
+        background-color: #1a1824;
+    }
+
+    html.dark-theme .mobile-header {
+        background-color: #272530;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    html.dark-theme .mobile-menu-toggle {
+        background: #2d2940;
+    }
+
+    html.dark-theme .mobile-menu-toggle .bar {
+        background-color: #bfa2ff;
+    }
+
+    html.dark-theme .sidebar-header-mobile {
+        border-bottom-color: #2d2940;
+    }
+
+    html.dark-theme .btn-close-sidebar {
+        color: #bfa2ff;
+    }
+}
+
+/* =======================================================
+   REGRAS DE TRAVA DE SCROLL NO MOBILE
+   ======================================================= */
+body.menu-open {
+    overflow: hidden !important;
+}
+
+/* =======================================================
+   ESTILOS DOS MODAIS (Corte de Foto e Exclusão de Conta)
+   ======================================================= */
+.modal-custom {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 1500;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-custom-content {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-custom-content h3 {
+    font-size: 1.2rem;
+    color: #111827;
+}
+
+.modal-custom-content p {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+/* Container de visualização da imagem no Cropper */
+.crop-container {
+    width: 100%;
+    max-height: 350px;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: #000000;
+}
+
+.crop-container img {
+    max-width: 100%;
+    display: block;
+}
+
+/* Inputs dentro de modais */
+.modal-custom input[type="password"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modal-custom input[type="password"]:focus {
+    border-color: #7B61FF;
+}
+
+/* Ações / Botões do Modal */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: #374151;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+.btn-primary {
+    background-color: #7B61FF;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #6346eb;
+}
+
+.btn-danger {
+    background-color: #FF4D4D;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #e03e3e;
+}
+
+/* Tema Escuro para Modais Genericos */
+html.dark-theme .modal-custom-content {
+    background-color: #272530;
+    color: #ffffff;
+}
+
+html.dark-theme .modal-custom-content h3 {
+    color: #ffffff;
+}
+
+html.dark-theme .modal-custom-content p {
+    color: #b0aec2;
+}
+
+html.dark-theme .modal-custom input[type="password"] {
+    background-color: #1a1824;
+    border-color: #3a364d;
+    color: #ffffff;
+}
+
+html.dark-theme .btn-secondary {
+    background-color: #3a364d;
+    color: #ffffff;
+}
+
+html.dark-theme .btn-secondary:hover {
+    background-color: #4a4661;
 }

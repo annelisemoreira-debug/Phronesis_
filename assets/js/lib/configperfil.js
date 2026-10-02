@@ -8,6 +8,42 @@ if (localStorage.getItem('site-theme') === 'dark') {
 $(document).ready(function() {
     var $modal = $('#cropModal'), $image = $('#imageToCrop'), cropper;
 
+        // =========================================================================
+    // --- MENU LATERAL MOBILE / TABLET (DRAWER) ---
+    // =========================================================================
+    var $sidebar = $('#sidebar');
+    var $overlay = $('#sidebarOverlay');
+    var $btnOpenSidebar = $('#btnOpenSidebar');
+
+    function abrirMenu() {
+        $sidebar.addClass('active');
+        $overlay.addClass('active');
+        $('body').addClass('menu-open');
+        $btnOpenSidebar.attr('aria-expanded', 'true');
+    }
+
+    function fecharMenu() {
+        $sidebar.removeClass('active');
+        $overlay.removeClass('active');
+        $('body').removeClass('menu-open');
+        $btnOpenSidebar.attr('aria-expanded', 'false');
+    }
+
+    $btnOpenSidebar.on('click', abrirMenu);
+    $('#btnCloseSidebar').on('click', fecharMenu);
+    $overlay.on('click', fecharMenu);
+    $sidebar.find('a').on('click', fecharMenu);
+
+    // ESC fecha o menu
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $sidebar.hasClass('active')) fecharMenu();
+    });
+
+    // Se girar o tablet / aumentar a janela até o modo desktop, fecha o menu
+    $(window).on('resize', function() {
+        if (window.innerWidth > 1024) fecharMenu();
+    });
+
       // =========================================================================
     // --- EXPANDIR FOTO DE PERFIL (LIGHTBOX COM ZOOM) ---
     // =========================================================================
