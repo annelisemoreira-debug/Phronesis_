@@ -358,6 +358,88 @@ html.dark-theme .close-preview:hover {
 }
 
 /* =======================================================
+   ZOOM DENTRO DO PREVIEW
+   ======================================================= */
+.modal-preview {
+    overflow: hidden;
+}
+
+/* Contêiner que recebe o zoom e o arraste */
+.preview-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(0, 0) scale(1);
+    transition: transform 0.2s ease;
+    will-change: transform;
+}
+
+/* Enquanto arrasta ou faz pinça, sem atraso na animação */
+.preview-stage.dragging {
+    transition: none;
+}
+
+.preview-stage .modal-preview-content {
+    max-width: 90vw;
+    max-height: 85vh;
+    cursor: zoom-in;
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: none; /* necessário para pinça e arraste no celular */
+}
+
+.modal-preview.zoomed .preview-stage .modal-preview-content {
+    cursor: grab;
+}
+
+.modal-preview.zoomed .preview-stage.dragging .modal-preview-content {
+    cursor: grabbing;
+}
+
+/* Barra de controles */
+.preview-controls {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background-color: rgba(30, 30, 30, 0.85);
+    border-radius: 30px;
+    color: #fff;
+    font-size: 0.95rem;
+    z-index: 2;
+}
+
+.preview-controls button {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border: none;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 18px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.preview-controls button:hover {
+    background: #7B61FF;
+}
+
+#btnZoomReset {
+    font-size: 0.85rem;
+}
+
+#zoomLevel {
+    min-width: 48px;
+    text-align: center;
+}
+
+/* =======================================================
    REGRAS COMPLETAS E IDENTICAS DO MODO ESCURO
    ======================================================= */
 

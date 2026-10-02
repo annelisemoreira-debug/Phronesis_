@@ -342,6 +342,24 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         </main>
     </div>
 
+        <!-- Modal de visualização ampliada da foto -->
+        <div id="previewModal" class="modal-preview" aria-hidden="true">
+            <span class="close-preview" id="btnClosePreview" title="Fechar" role="button" aria-label="Fechar visualização">&times;</span>
+
+            <div class="preview-stage" id="previewStage">
+                <img class="modal-preview-content" id="previewImage" alt="Foto de perfil ampliada" draggable="false" referrerpolicy="no-referrer">
+            </div>
+
+            <div class="preview-controls">
+                <button type="button" id="btnZoomOut" aria-label="Diminuir zoom">&minus;</button>
+                <span id="zoomLevel">100%</span>
+                <button type="button" id="btnZoomIn" aria-label="Aumentar zoom">+</button>
+                <button type="button" id="btnZoomReset">Redefinir</button>
+            </div>
+        </div>
+
+    
+
     <div id="cropModal" class="modal-crop">
         <div class="modal-crop-content">
             <h3>Ajuste sua foto</h3>
