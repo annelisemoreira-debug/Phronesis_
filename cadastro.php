@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <title>Faça parte do Phronesis!</title>
     <link rel="stylesheet" href="assets/css/cadastro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="assets/img/logos/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -26,13 +26,13 @@ if (session_status() === PHP_SESSION_NONE) {
         <button class="quick-fill-btn" onclick="preencherCampos(6)">Raoni</button>
     </div>
 
-    <img src="assets/img/fundoRoxo.webp" class="bg-html" alt="Fundo">
+    <img src="assets/img/fundos/fundoRoxo.webp" class="bg-html" alt="Fundo">
 
     <main>
         <div class="container">
             <div class="glass-card">
                 <div class="logo-section">
-                    <img src="assets/img/phronesisLogo.webp" alt="Logo oficial da Phronesis">
+                    <img src="assets/img/logos/phronesisLogo.webp" alt="Logo oficial da Phronesis">
                 </div>
 
                 <div class="mainContainer">

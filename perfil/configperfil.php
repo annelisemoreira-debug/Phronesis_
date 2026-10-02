@@ -12,7 +12,7 @@ include '../conexao.php';
 $id_usuario = $_SESSION['id'];
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
-$res = $conn->query("SELECT foto, email, senha FROM usuario WHERE id_usuario = $id_usuario");
+$res = $conn->query("SELECT foto, email, senha, tipo FROM usuario WHERE id_usuario = $id_usuario");
 $dadosUser = $res->fetch_assoc();
 
 if (!$dadosUser) {
@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 // =========================================================================
 // 4. BUSCA DADOS PARA EXIBIÇÃO ATUALIZADA
 // =========================================================================
-$stmt = $conn->prepare("SELECT nome, email, foto, senha FROM usuario WHERE id_usuario = ?");
+$stmt = $conn->prepare("SELECT nome, email, foto, senha, tipo FROM usuario WHERE id_usuario = ?");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -257,6 +257,14 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                         </a>
                     </li>
                 </ul>
+
+                <?php if (isset($user['tipo']) && $user['tipo'] === 'admin'): ?>
+                    <p class="nav-title">Administração</p>
+                    <ul>
+                        <li><a href="../pages/admin_materias.php"><span>🛠️</span> Painel ADM</a></li>
+                    </ul>
+                <?php endif; ?>
+
                 <p class="nav-title">Voltar</p>
                 <ul>
                     <li><a href="../index.php"><span>🏠</span> Início</a></li>

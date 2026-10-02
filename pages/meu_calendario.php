@@ -95,6 +95,15 @@ $googleLogado = 'false';
     <link rel="stylesheet" href="../assets/css/meuCalendario.css">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+                (function () {
+            const savedTheme = localStorage.getItem('site-theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
 </head>
 <body>
     
