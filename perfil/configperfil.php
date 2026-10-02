@@ -249,12 +249,11 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
 
         <!-- Sidebar / Menu Drawer -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header-mobile">
+            <div class="sidebar-header">
                 <div class="sidebar-brand">
                     <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
                     <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
                 </div>
-                <button type="button" class="btn-close-sidebar" id="btnCloseSidebar" aria-label="Fechar menu">&times;</button>
             </div>
 
             <nav class="sidebar-nav">
