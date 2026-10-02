@@ -193,14 +193,24 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
     <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
     
+    <!-- Aplicação Imediata de Tema e Escala de Fontes de Acessibilidade -->
     <script>
         (function () {
             const savedTheme = localStorage.getItem('site-theme') || 'light';
             if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark-theme');
             }
+            const savedFont = localStorage.getItem('site-font-size') || 'normal';
+            if (savedFont === 'media') {
+                document.documentElement.classList.add('font-media');
+            } else if (savedFont === 'grande') {
+                document.documentElement.classList.add('font-grande');
+            } else {
+                document.documentElement.classList.add('font-normal');
+            }
         })();
     </script>
+    <script src="../assets/js/lib/acessibilidade.js"></script>
 
     <style>
         .modal-crop {
@@ -266,14 +276,14 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                         </a>
                     </li>
                     <li>
-                        <a href="../perfil/acessibilidade.php" class="nav-link-acessibilidade">
-                            <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade">
+                        <a href="acessibilidade.php" class="nav-link-acessibilidade">
+                            <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade" onerror="this.outerHTML='<span>♿</span>'">
                             <span class="nav-text">Acessibilidade</span>
                         </a>
                     </li>
                 </ul>
 
-                <?php if (isset($user['tipo']) && $user['tipo'] === 'admin'): ?>
+                <?php if (isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1)): ?>
                     <p class="nav-title">ADMINISTRAÇÃO</p>
                     <ul>
                         <li>
@@ -453,6 +463,6 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     </script>
     <script src="../assets/js/lib/configperfil.js" defer></script>
 
-    <?php include '../perfil/vlibras.php'; ?>
+    <?php include 'vlibras.php'; ?>
 </body>
 </html>
