@@ -817,9 +817,6 @@ INSERT INTO livro (titulo, autor, resumo, capa) VALUES
 'Seleção de contos que capturam a angústia existencial, a contracultura e o desejo de afeto de uma juventude sufocada durante a ditadura militar.', 
 'assets/img/livros/morangos_mofados.webp'),
 
-('Canções Escolhidas', 'Paulo César Pinheiro', 
-'Coletânea de composições poéticas e musicais que exploram a identidade nacional, as tradições populares e as feridas sociais do Brasil.', 
-'assets/img/livros/cancoes_escolhidas.webp'),
 
 
 
