@@ -243,8 +243,8 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         <!-- Header topo (Celular e Tablet) -->
         <header class="mobile-header">
             <div class="mobile-logo-container">
-                <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
-                <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
+                 <a href="../index.php"><img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light"></a>
+                 <a href="../index.php"><img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark"></a>
             </div>
             <button type="button" class="mobile-menu-toggle" id="btnOpenSidebar"
                     aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
@@ -261,8 +261,8 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-brand">
-                    <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
-                    <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
+                    <a href="../index.php"><img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light"></a>
+                    <a href="../index.php"><img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark"></a>
                 </div>
             </div>
 

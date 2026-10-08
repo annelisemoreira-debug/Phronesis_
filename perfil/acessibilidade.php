@@ -82,27 +82,59 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acessibilidade - Phronesis</title>
-    <link rel="stylesheet" href="../assets/css/acessibilidade.css">
+    <?php
+        // Versiona CSS/JS pela data de modificação, evitando que o navegador use arquivo antigo em cache
+        $verCss = @filemtime(__DIR__ . '/../assets/css/acessibilidade.css') ?: time();
+        $verJs  = @filemtime(__DIR__ . '/../assets/js/lib/acessibilidade.js') ?: time();
+    ?>
+    <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=<?php echo $verCss; ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     
-    <script src="../assets/js/lib/acessibilidade.js"></script>
+    <script src="../assets/js/lib/acessibilidade.js?v=<?php echo $verJs; ?>"></script>
 </head>
 <body>
 
     <div class="main-wrapper">
-        <aside class="sidebar">
-            <div class="logo">
-                <img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light">
-                <img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark">
+
+        <!-- Header topo (Celular e Tablet) -->
+        <header class="mobile-header">
+            <div class="mobile-logo-container">
+                <a href="../index.php"><img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light"></a>
+                <a href="../index.php"><img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark"></a>
             </div>
-            <nav>
+            <button type="button" class="mobile-menu-toggle" id="btnOpenSidebar"
+                    aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </header>
+
+        <!-- Fundo escurecido (Overlay) -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar / Menu Drawer -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <a href="../index.php"><img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light"></a>
+                    <a href="../index.php"><img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark"></a>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
                 <p class="nav-title">Conta Pessoal</p>
                 <ul>
-                    <li><a href="configperfil.php"><span>👤</span> Meu perfil</a></li>
+                    <li>
+                        <a href="configperfil.php">
+                            <span class="nav-icon">👤</span>
+                            <span class="nav-text">Meu perfil</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="acessibilidade.php" class="nav-link-acessibilidade active">
                             <img src="../assets/img/acessibilidades/acessibilidade.webp" alt="Acessibilidade" class="icon-acessibilidade" onerror="this.outerHTML='<span>♿</span>'">
-                            <span>Acessibilidade</span>
+                            <span class="nav-text">Acessibilidade</span>
                         </a>
                     </li>
                 </ul>
@@ -110,20 +142,46 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                 <?php if (isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1)): ?>
                     <p class="nav-title">ADMINISTRAÇÃO</p>
                     <ul>
-                        <li><a href="../pages/admin_materias.php"><span>🛠️</span> Painel ADM</a></li>
+                        <li>
+                            <a href="../pages/admin_materias.php">
+                                <span class="nav-icon">🛠️</span>
+                                <span class="nav-text">Painel ADM</span>
+                            </a>
+                        </li>
                     </ul>
                 <?php endif; ?>
 
                 <p class="nav-title">Voltar</p>
                 <ul>
-                    <li><a href="../index.php"><span>🏠</span> Início</a></li>
-                    <li><a href="../pages/livros.php"><span>📚</span> Livros</a></li>
-                    <li><a href="../pages/material.php"><span>📝</span> Matérias</a></li>
-                    <li><a href="../pages/cronograma.php"><span>📅</span> Cronograma</a></li>
+                    <li>
+                        <a href="../index.php">
+                            <span class="nav-icon">🏠</span>
+                            <span class="nav-text">Início</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/livros.php">
+                            <span class="nav-icon">📚</span>
+                            <span class="nav-text">Livros</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/material.php">
+                            <span class="nav-icon">📝</span>
+                            <span class="nav-text">Matérias</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/cronograma.php">
+                            <span class="nav-icon">📅</span>
+                            <span class="nav-text">Cronograma</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </aside>
 
+        <!-- Conteúdo Principal -->
         <main class="content">
             <header class="profile-banner">
                 <img src="../assets/img/banners/acessibilidadeclaro.webp" alt="Banner" class="banner-img banner-light">

@@ -70,5 +70,42 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    // --- MENU LATERAL MOBILE / TABLET (DRAWER) ---
+    // Só ativa se a página tiver o botão do menu. As ações são idempotentes
+    // (abrir/fechar), então não há conflito caso outra página já tenha seu próprio script.
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+    const btnOpenSidebar = document.getElementById("btnOpenSidebar");
+
+    if (sidebar && overlay && btnOpenSidebar) {
+        function abrirMenu() {
+            sidebar.classList.add("active");
+            overlay.classList.add("active");
+            document.body.classList.add("menu-open");
+            btnOpenSidebar.setAttribute("aria-expanded", "true");
+        }
+
+        function fecharMenu() {
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+            document.body.classList.remove("menu-open");
+            btnOpenSidebar.setAttribute("aria-expanded", "false");
+        }
+
+        btnOpenSidebar.addEventListener("click", abrirMenu);
+        overlay.addEventListener("click", fecharMenu);
+        sidebar.querySelectorAll("a").forEach((link) => link.addEventListener("click", fecharMenu));
+
+        // ESC fecha o menu
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && sidebar.classList.contains("active")) fecharMenu();
+        });
+
+        // Se a janela crescer até o modo desktop, fecha o menu
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 768) fecharMenu();
+        });
+    }
+
     // OBS: o controle do Libras (switch) agora fica SOMENTE no vlibras.php
 });
