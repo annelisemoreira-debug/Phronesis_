@@ -106,8 +106,8 @@ try {
     <?php include '../interface/header.php'; ?>
 
     <section class="banner">
-        <img src="../assets/img/normalMateriais.webp" class="banner-img banner-light" alt="Banner">
-        <img src="../assets/img/escuroMateriais.webp" class="banner-img banner-dark" alt="Banner">
+        <img src="../assets/img/banners/normalMateriais.webp" class="banner-img banner-light" alt="Banner">
+        <img src="../assets/img/banners/escuroMateriais.webp" class="banner-img banner-dark" alt="Banner">
     </section>
     
     <div class="wrapper">

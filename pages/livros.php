@@ -86,8 +86,15 @@ $stmt->close();
 <body>
     <?php include '../interface/header.php'; ?>
 
-    <div class="wrapper">
 
+    <!-- ================= BANNER PRINCIPAL (MODO CLARO E ESCURO) ================= -->
+<!-- BANNER FORA DO WRAPPER (Posição exata do material.php) -->
+    <section class="banner">
+        <img src="../assets/img/banners/claroLivros.webp" class="banner-img banner-light" alt="Banner Biblioteca">
+        <img src="../assets/img/banners/escuroLivros.webp" class="banner-img banner-dark" alt="Banner Biblioteca Escuro">
+    </section>
+    
+    <div class="wrapper">
         <!-- ================= BARRA LATERAL ================= -->
         <aside class="sidebar">
             <section class="side-bloco">
@@ -145,13 +152,6 @@ $stmt->close();
 
         <!-- ================= CONTEÚDO ================= -->
         <div class="principalContent">
-
-            <section class="banner">
-                <span class="banner-faixa banner-faixa-e"></span>
-                <span class="banner-faixa banner-faixa-d"></span>
-                <h1 class="banner-titulo">BIBLIOTECA</h1>
-                <p class="banner-sub">Clique nas imagens para explorar!</p>
-            </section>
 
             <main class="areaContent">
                 <div class="toolbar">
