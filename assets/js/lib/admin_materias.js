@@ -93,3 +93,36 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+// ===== ADICIONE AO FINAL DE assets/js/lib/admin_materias.js =====
+
+// === 6. EDIÇÃO DE LIVROS (janela modal) ===
+document.addEventListener('DOMContentLoaded', function () {
+    const dlg = document.getElementById('dlg-livro');
+    if (!dlg) return;
+
+    document.querySelectorAll('.btn-editar-livro').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const d = btn.dataset;
+            dlg.querySelector('[name="id_livro"]').value = d.id;
+            dlg.querySelector('[name="titulo"]').value = d.titulo;
+            dlg.querySelector('[name="autor"]').value = d.autor;
+            dlg.querySelector('[name="resumo"]').value = d.resumo;
+            dlg.querySelector('[name="capa"]').value = '';
+
+            const marcados = d.vests ? d.vests.split(',') : [];
+            dlg.querySelectorAll('input[name="vestibulares[]"]').forEach(c => {
+                c.checked = marcados.includes(c.value);
+            });
+            dlg.showModal();
+        });
+    });
+
+    dlg.querySelector('.fechar-dlg').addEventListener('click', () => dlg.close());
+
+    // Fecha ao clicar fora
+    dlg.addEventListener('click', (e) => {
+        const r = dlg.getBoundingClientRect();
+        if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+    });
+});

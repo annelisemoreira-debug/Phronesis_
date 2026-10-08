@@ -355,3 +355,93 @@ body.dark-theme .input-inline {
 .btn-back-home:hover {
     color: var(--purple-hover);
 }
+
+/* ===== ADICIONE AO FINAL DE assets/css/admin_materias.css ===== */
+
+/* O segundo card precisa de espaço em relação ao primeiro */
+.card-livros { margin-top: 30px; }
+
+.form-livro { display: flex; flex-direction: column; gap: 14px; margin-bottom: 25px; }
+.grid-livro { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.campo-livro {
+    width: 100%;
+    padding: 13px 18px;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    border-radius: 10px;
+    color: var(--text-body);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+.campo-livro:focus {
+    border-color: var(--purple-main);
+    background-color: var(--input-bg-focus);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+}
+
+/* Vestibulares como "chips" marcáveis */
+.vest-checks { display: flex; gap: 10px; flex-wrap: wrap; }
+.chip-check input { position: absolute; opacity: 0; pointer-events: none; }
+.chip-check span {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.chip-check input:checked + span {
+    background: var(--purple-main);
+    border-color: var(--purple-main);
+    color: #fff;
+}
+.chip-check input:focus-visible + span { outline: 3px solid var(--purple-main); outline-offset: 2px; }
+
+.linha-envio { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.btn-adicionar { padding: 12px 30px; }
+
+.upload-capa {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text-body); cursor: pointer;
+}
+.upload-capa i { color: var(--icon-box-color); }
+.upload-capa input[type="file"] { font-size: 12px; color: var(--text-muted); max-width: 260px; }
+
+/* Tabela de livros */
+.thumb-livro { width: 44px; height: 62px; object-fit: cover; border-radius: 6px; display: block; }
+.thumb-vazio {
+    background: var(--icon-box-bg); color: var(--icon-box-color);
+    display: flex; align-items: center; justify-content: center;
+}
+.tag-adm {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 6px; margin: 2px 4px 2px 0; border: 1.5px solid;
+}
+.tag-adm-fuvest { background: #d8f0ff; border-color: #3e93c9; color: #1d5f8a; }
+.tag-adm-unicamp { background: #fff6c9; border-color: #f0cf4a; color: #b08800; }
+.tag-adm-vunesp { background: #d9f9e5; border-color: #1db97a; color: #0f7a4d; }
+.tag-adm-enem { background: #ffd5cc; border-color: #c8402a; color: #9a2a17; }
+html.dark-theme .tag-adm-fuvest { background: #17364a; color: #8dd4ff; }
+html.dark-theme .tag-adm-unicamp { background: #3d3510; color: #ffe066; }
+html.dark-theme .tag-adm-vunesp { background: #123a29; color: #5fe0a6; }
+html.dark-theme .tag-adm-enem { background: #451e18; color: #ff9b88; }
+
+/* Janela de edição */
+.dlg-livro {
+    position: fixed; inset: 0; margin: auto;
+    width: 92%; max-width: 640px; max-height: 90vh; overflow-y: auto;
+    border: none; border-radius: 16px; padding: 28px;
+    background: var(--card-bg); color: var(--text-body);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+.dlg-livro::backdrop { background: rgba(0, 0, 0, 0.45); }
+.dlg-livro h3 { color: var(--text-primary); font-size: 18px; }
+.dlg-livro .form-livro { margin-bottom: 0; }

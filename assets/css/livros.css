@@ -1,391 +1,276 @@
 /* assets/css/livros.css */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg: #d6c6f7;
+    --panel: #ffffff;
+    --ink: #3b0f7a;
+    --ink-soft: #7a4fd6;
+    --line: #d3bff5;
+    --card: #e3d8ff;
+    --card-and: #fefed3;
+    --card-ok: #dcfcd8;
+    --capa: #c4a3ff;
+    --purple: #8654f3;
+    --gold: #f5b100;
+    --shadow: 0 4px 18px rgba(80, 40, 160, 0.10);
+}
+
+html.dark-theme {
+    --bg: #1a1824;
+    --panel: #1d1b26;
+    --ink: #f1ecff;
+    --ink-soft: #c3a9ff;
+    --line: #38334a;
+    --card: #2a2540;
+    --card-and: #38351f;
+    --card-ok: #1d3827;
+    --capa: #6f4ec2;
+    --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 body {
-    background-color: #bfa2ff;
-    transition: background-color 0.3s ease;
+    background-color: var(--bg);
+    color: var(--ink);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s ease;
 }
 
-/* Wrapper */
+button { font-family: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+
+/* ---------- Layout ---------- */
 .wrapper {
-    display: flex;
-    min-height: 100vh;
-    padding: 20px 30px; 
-    gap: 30px;
-    max-width: 1650px;  
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+    gap: 22px;
+    max-width: 1500px;
     margin: 0 auto;
+    padding: 24px 30px 40px;
+    align-items: start;
 }
 
-/* Conteúdo Principal */
-.principalContent {
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-    gap: 25px;         
-    padding: 0;        
+.principalContent { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+/* ---------- Barra lateral ---------- */
+.sidebar {
+    background: var(--panel);
+    border-radius: 16px;
+    padding: 6px 0;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 16px;
 }
 
-/* Menu Superior */
-.menu {
-    display: flex;
-    list-style: none;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center; 
+.side-bloco { padding: 16px 20px; border-bottom: 2px solid var(--line); }
+.side-bloco:last-child { border-bottom: none; }
+
+.side-titulo { font-size: 0.78rem; font-weight: 800; color: var(--ink); margin-bottom: 12px; letter-spacing: .02em; }
+.side-linha { display: flex; justify-content: space-between; align-items: baseline; }
+.ver-todos { font-size: 0.75rem; font-weight: 700; color: var(--ink-soft); text-decoration: none; }
+.ver-todos:hover { text-decoration: underline; }
+.side-vazio { font-size: 0.75rem; color: var(--ink-soft); }
+
+.filtro-vest, .filtro-status, .contagem { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.vest-btn, .status-btn {
+    background: none; border: none; display: flex; align-items: center; gap: 12px;
+    font-size: 0.72rem; font-weight: 700; color: var(--ink-soft);
+    padding: 3px 4px; border-radius: 6px; width: 100%; text-align: left;
 }
+.vest-btn:hover, .status-btn:hover { background: rgba(134, 84, 243, .08); }
+.vest-btn.ativo, .status-btn.ativo { color: var(--ink); background: rgba(134, 84, 243, .14); }
 
-.menu li {
-    border-radius: 15px;
-    overflow: hidden;
+.quad { width: 17px; height: 17px; border-radius: 3px; display: inline-block; flex: none; }
+.q-todos { background: #8654f3; }
+.q-fuvest { background: #8dd4ff; }
+.q-unicamp { background: #ffe066; }
+.q-vunesp { background: #1db97a; }
+.q-enem { background: #c8402a; }
+
+.status-btn i { width: 18px; text-align: center; font-size: 0.95rem; }
+.ic-todas { color: var(--purple); }
+.ic-and { color: #e9b949; }
+.ic-ok { color: #0a8f3d; }
+.ic-nao { color: #a01818; }
+.ic-fav { color: var(--gold); }
+
+/* Contagem regressiva */
+.prova { padding: 2px 0 4px 12px; border-left: 3px solid; border-radius: 10px 0 0 10px; display: flex; flex-direction: column; gap: 2px; }
+.prova-nome { font-family: Georgia, 'Times New Roman', serif; font-size: 0.68rem; font-weight: 700; color: var(--ink-soft); }
+.prova-tempo { font-size: 0.8rem; font-weight: 800; border-bottom: 2px solid; width: fit-content; padding-bottom: 1px; font-variant-numeric: tabular-nums; }
+.prova-amarelo { border-color: #f2c744; } .prova-amarelo .prova-tempo { color: #e0ac1a; border-color: #f2c744; }
+.prova-vermelho { border-color: #e5604f; } .prova-vermelho .prova-tempo { color: #d9503f; border-color: #e5604f; }
+.prova-verde { border-color: #2bc07f; } .prova-verde .prova-tempo { color: #1fa86d; border-color: #2bc07f; }
+.prova-roxo { border-color: #a35bc0; } .prova-roxo .prova-tempo { color: #8e44ad; border-color: #a35bc0; }
+
+/* Favoritos (vídeos) */
+.video-fav {
+    display: grid; grid-template-columns: 62px 1fr auto; gap: 8px; align-items: start;
+    text-decoration: none; color: var(--ink); font-size: 0.7rem; font-weight: 700; margin-top: 10px;
 }
+.video-fav img { width: 62px; height: 40px; object-fit: cover; border-radius: 4px; background: var(--capa); }
+.video-fav span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.video-fav i { color: var(--gold); font-size: 0.7rem; }
 
-.menu li a {
-    text-decoration: none;
-    display: block;
-    padding: 12px 25px; 
-    color: black;
-    font-weight: bold;
-    font-size: 1rem;
-    text-align: center;
-}
-
-/* Cores do Menu */
-.menu li.cronogramas { background-color: #bfa2ff; }
-.menu li.materiais { background-color: #8dd4ff; }
-.menu li.home { background-color: #ffe57e; }
-
-/* Botão Entrar */
-.menu li.entrar {
-    background-color: #47b1f2;
-    border-radius: 25px;
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 60px; 
-    height: 50px;    
-    padding: 0 10px;
-    isolation: isolate;
-}
-
-.user-profile-top {
-    width: 40px;      
-    height: 40px;     
-    border-radius: 50%; 
-    object-fit: cover;  
-    border: 2px solid white; 
-    display: block;
-}
-
-/* Main section */
-.areaContent {
-    border-radius: 20px;   
-    padding: 40px 50px;    
-    width: 100%; 
-    max-width: 1650px;     
-    flex: 1;
-    background-color: white;
-    margin: 0 auto 30px auto;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); 
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Estilização da Seção do Banner */
+/* ---------- Banner ---------- */
 .banner {
-    width: 100%; 
-    max-width: 1650px; 
-    height: 160px;       
-    margin: 0 auto 0 auto; 
-    display: block;
-    overflow: hidden;
+    position: relative; height: 92px; border-radius: 12px; overflow: hidden;
+    background: linear-gradient(90deg, #6f8df2, #7d93f5 50%, #6f8df2);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+}
+.banner-faixa { position: absolute; top: 0; bottom: 0; width: 110px; background: #ffe066; }
+.banner-faixa-e { left: 0; clip-path: polygon(0 0, 100% 0, 40% 100%, 0 100%); box-shadow: inset 28px 0 0 #9b4dff; }
+.banner-faixa-d { right: 0; clip-path: polygon(60% 0, 100% 0, 100% 100%, 0 100%); box-shadow: inset -28px 0 0 #9b4dff; }
+.banner-titulo { font-family: Georgia, 'Times New Roman', serif; font-size: 1.9rem; letter-spacing: .06em; color: #ffe066; position: relative; z-index: 1; }
+.banner-sub { color: #fff; font-size: 0.62rem; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; position: relative; z-index: 1; }
+
+/* ---------- Área principal ---------- */
+.areaContent {
+    background: var(--panel); border-radius: 14px; padding: 22px 26px 18px;
+    box-shadow: var(--shadow); transition: background-color .3s ease;
 }
 
-.banner-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 15px;
+.toolbar { display: flex; justify-content: center; align-items: center; gap: 36px; flex-wrap: wrap; margin-bottom: 16px; }
+.abas { display: flex; gap: 22px; flex-wrap: wrap; }
+.aba {
+    background: none; border: none; font-size: 0.78rem; font-weight: 800; color: var(--ink);
+    padding: 4px 0; border-bottom: 2px solid transparent;
 }
+.aba:hover { color: var(--purple); }
+.aba.ativo { border-bottom-color: var(--purple); }
 
-/* LOGICA DE EXIBIÇÃO DO BANNER POR TEMA */
-.banner .banner-dark { display: none; }
-.banner .banner-light { display: block; }
-
-/* Vestibulares */
-.listaLivros {
-    width: 100%;
-    display: flex;
-    flex-direction: column; 
-    gap: 80px; 
-    padding: 20px 40px; 
+.busca {
+    display: flex; align-items: center; gap: 8px; border: 1.5px solid #b89cf5; border-radius: 20px;
+    padding: 5px 14px; min-width: 200px;
 }
+.busca input { border: none; outline: none; background: transparent; color: var(--ink); font-size: 0.75rem; width: 100%; font-family: inherit; }
+.busca input::placeholder { color: var(--ink-soft); opacity: .8; }
+.busca:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(134, 84, 243, .2); }
+.busca i { color: var(--purple); font-size: 0.85rem; }
 
-/* Containers (imagem na esquerda, conteúdo na direita) */
-.containerVest {
-    width: 100%;
-    display: flex;
-    flex-direction: row; 
-    align-items: center; 
-    gap: 50px; 
+/* ---------- Lista de obras ---------- */
+.lista-obras {
+    display: flex; flex-direction: column; gap: 14px;
+    max-height: min(68vh, 640px); overflow-y: auto; padding-right: 14px;
 }
+.lista-obras::-webkit-scrollbar { width: 9px; }
+.lista-obras::-webkit-scrollbar-track { background: #fffae6; border-radius: 20px; }
+.lista-obras::-webkit-scrollbar-thumb { background: #ffca28; border-radius: 20px; border: 2px solid #fffae6; }
+html.dark-theme .lista-obras::-webkit-scrollbar-track { background: #252230; }
+html.dark-theme .lista-obras::-webkit-scrollbar-thumb { background: #8654f3; border-color: #252230; }
 
-.descricaoVest {
-    flex: 1; 
-    display: flex;
-    flex-direction: column; 
-    align-items: flex-start; 
-    text-align: left;        
-    gap: 15px;
+.livro-card {
+    position: relative; display: flex; gap: 14px; align-items: stretch;
+    background: var(--card); border-radius: 12px; padding: 12px 14px; flex: none;
+    cursor: pointer; transition: background-color .25s ease, box-shadow .2s ease, transform .2s ease;
 }
+.livro-card[hidden] { display: none; }
+.livro-card:hover { box-shadow: 0 6px 16px rgba(134, 84, 243, .22); transform: translateY(-2px); }
+.livro-card.st-em_andamento { background: var(--card-and); }
+.livro-card.st-concluida { background: var(--card-ok); }
 
-/* Logos dos Vestibulares */
-.fuvestImg, .vunestImg, .unicampImg, .enemImg {
-    flex: 0 0 280px;
-    cursor: pointer;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; 
+.livro-capa {
+    flex: 0 0 76px; height: 110px; border-radius: 9px; background: var(--capa); overflow: hidden;
+    display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, .85); font-size: 1.6rem;
 }
+.livro-capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.fuvestImg:hover, .vunestImg:hover, .unicampImg:hover, .enemImg:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 12px 24px rgba(134, 84, 243, 0.2); 
+.livro-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; padding-right: 56px; }
+.livro-titulo { font-size: 0.82rem; font-weight: 800; color: var(--ink); }
+.livro-autor { font-size: 0.75rem; color: var(--ink); }
+.livro-desc {
+    font-size: 0.72rem; color: var(--ink); margin-top: 12px; line-height: 1.45;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
+.livro-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin-top: auto; padding-top: 6px; }
 
-.containerVest img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    border-radius: 12px; 
-}
+.tag { font-size: 0.64rem; font-weight: 800; padding: 3px 14px; border-radius: 6px; border: 1.5px solid; }
+.tag-fuvest { background: #d8f0ff; border-color: #3e93c9; color: #1d5f8a; }
+.tag-unicamp { background: #fff6c9; border-color: #f0cf4a; color: #b08800; }
+.tag-vunesp { background: #d9f9e5; border-color: #1db97a; color: #0f7a4d; }
+.tag-enem { background: #ffd5cc; border-color: #c8402a; color: #9a2a17; }
+html.dark-theme .tag-fuvest { background: #17364a; color: #8dd4ff; }
+html.dark-theme .tag-unicamp { background: #3d3510; color: #ffe066; }
+html.dark-theme .tag-vunesp { background: #123a29; color: #5fe0a6; }
+html.dark-theme .tag-enem { background: #451e18; color: #ff9b88; }
 
-.descricaoVest p {
-    font-size: 1.05rem;
-    color: #000;
-    line-height: 1.6;
-    max-width: 95%; 
-    transition: color 0.3s ease;
-}
+/* Indicadores (canto superior direito) */
+.livro-indicadores { position: absolute; top: 10px; right: 14px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+.ico-and, .ico-ok { display: none; }
+.st-em_andamento .ico-and { display: inline; color: #e0c04a; }
+.st-concluida .ico-ok { display: inline; color: #0a8f3d; }
 
-/* Estilo Padrão do Rótulo (Título) */
-.nome {
-    color: white;
-    padding: 8px 45px; 
-    border-radius: 50px; 
-    font-weight: bold;
-    font-size: 1.25rem;
-    display: inline-block; 
-    width: fit-content; 
-    text-transform: uppercase;
-    margin-bottom: 5px;
-    background-color: #8654f3;
-}
+.btn-fav { background: none; border: none; font-size: 0.95rem; color: rgba(134, 84, 243, .28); padding: 2px; transition: transform .15s ease, color .15s ease; }
+.btn-fav:hover { color: var(--gold); transform: scale(1.15); }
+.is-fav .btn-fav { color: var(--gold); }
 
-/* Texto embutido "Ler mais..." */
-.texto-ler-mais {
-    color: #8654f3;             
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 5px;
-    display: inline-block;
-    transition: color 0.2s ease;
-}
+.sem-resultados { text-align: center; padding: 40px 10px; color: var(--ink-soft); font-size: 0.85rem; font-weight: 600; }
+.sem-resultados[hidden] { display: none; }
 
-.texto-ler-mais:hover {
-    color: #592cb3;             
-    text-decoration: underline; 
+/* ---------- Modal ---------- */
+.modal-livro {
+    position: fixed; inset: 0; margin: auto; border: none; border-radius: 16px;
+    width: 92%; max-width: 640px; max-height: 86vh; overflow-y: auto; padding: 30px;
+    background: var(--panel); color: var(--ink); box-shadow: 0 10px 40px rgba(0, 0, 0, .3);
 }
-
-/* Janelas Modais (Dialog) */
-.containerVest dialog {
-    position: fixed;
-    inset: 0;  
-    margin: auto;
-    border: none;
-    border-radius: 15px;
-    padding: 40px 35px 40px 40px; 
-    width: 90%;
-    max-width: 520px;
-    max-height: 80vh; 
-    overflow-y: scroll; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    text-align: center;
-    outline: none;
-    background-color: white;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Customização do Scrollbar do Modal */
-.containerVest dialog::-webkit-scrollbar {
-    width: 10px;
-}
-
-.containerVest dialog::-webkit-scrollbar-track {
-    background: #fffae6; 
-    border-radius: 20px;
-    margin: 20px 0;
-}
-
-.containerVest dialog::-webkit-scrollbar-thumb {
-    background: #ffca28; 
-    border-radius: 20px;
-    border: 2px solid white;
-}
-
-.containerVest dialog::-webkit-scrollbar-thumb:hover {
-    background: #f5b041;
-}
-
-.containerVest dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.containerVest dialog h2 {
-    color: white;
-    padding: 10px 40px;
-    border-radius: 15px;
-    display: inline-block;
-    margin-bottom: 25px;
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    background-color: #8654f3;
-}
-
-.containerVest dialog h3 {
-    font-size: 0.95rem;
-    letter-spacing: 3px;
-    margin-bottom: 10px;
-    color: #333;
-    text-transform: uppercase;
-    transition: color 0.3s ease;
-}
-
-.containerVest dialog p {
-    font-size: 1rem;
-    line-height: 1.8;
-    text-align: left; 
-    margin: 20px 0;
-    color: #444;
-    white-space: pre-line;
-    padding-right: 15px; 
-    transition: color 0.3s ease;
-}
+.modal-livro::backdrop { background: rgba(0, 0, 0, .45); }
 
 .close-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: none;
-    background-color: #8654f3;
-    color: #ffffff;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
+    position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 50%; border: none;
+    background: var(--purple); color: #fff; font-size: 1.2rem; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; z-index: 2;
 }
 
-/* ==========================================================================
-   IMPLEMENTAÇÃO DO TEMA ESCURO (DARK THEME)
-   ========================================================================== */
-html.dark-theme body {
-    background-color: #1a1824; 
+.modal-corpo { display: flex; gap: 22px; }
+.modal-capa {
+    flex: 0 0 150px; height: 220px; border-radius: 12px; overflow: hidden; background: var(--capa);
+    display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, .85); font-size: 2.6rem;
 }
+.modal-capa img { width: 100%; height: 100%; object-fit: cover; }
+.modal-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.modal-texto h2 { font-size: 1.25rem; padding-right: 30px; }
+.modal-autor { font-weight: 700; color: var(--ink-soft); font-size: 0.9rem; }
+.modal-texto .livro-tags { justify-content: flex-start; margin: 4px 0 6px; padding: 0; }
+.modal-resumo { font-size: 0.9rem; line-height: 1.7; }
 
-html.dark-theme .areaContent {
-    background-color: #1D1B26; 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
+.modal-acoes { margin-top: 24px; padding-top: 18px; border-top: 2px solid var(--line); display: flex; gap: 14px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.seg { display: flex; border: 1.5px solid var(--purple); border-radius: 10px; overflow: hidden; }
+.seg button { background: none; border: none; padding: 8px 14px; font-size: 0.78rem; font-weight: 700; color: var(--ink); display: flex; gap: 6px; align-items: center; }
+.seg button + button { border-left: 1.5px solid var(--purple); }
+.seg button:hover { background: rgba(134, 84, 243, .12); }
+.seg button.ativo { background: var(--purple); color: #fff; }
+.btn-fav-modal { background: none; border: 1.5px solid var(--gold); color: var(--ink); border-radius: 10px; padding: 8px 14px; font-size: 0.78rem; font-weight: 700; display: flex; gap: 6px; align-items: center; }
+.btn-fav-modal i { color: rgba(245, 177, 0, .4); }
+.btn-fav-modal.ativo { background: var(--gold); color: #3b2a00; }
+.btn-fav-modal.ativo i { color: #3b2a00; }
+.modal-erro { margin-top: 12px; color: #c0392b; font-size: 0.8rem; font-weight: 600; }
+.modal-erro[hidden] { display: none; }
 
-html.dark-theme .descricaoVest p {
-    color: #FFFFFF;
-}
-
-html.dark-theme .texto-ler-mais {
-    color: #A380F9;
-}
-
-html.dark-theme .texto-ler-mais:hover {
-    color: #C3A9FF;
-}
-
-html.dark-theme .banner .banner-light { display: none; }
-html.dark-theme .banner .banner-dark { display: block; }
-
-html.dark-theme .fuvestImg, 
-html.dark-theme .vunestImg, 
-html.dark-theme .unicampImg, 
-html.dark-theme .enemImg {
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-}
-
-html.dark-theme .containerVest dialog {
-    background-color: #1D1B26;
-    color: #FFFFFF;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-}
-
-html.dark-theme .containerVest dialog h3 {
-    color: #BFA2FF; 
-}
-
-html.dark-theme .containerVest dialog p {
-    color: #E2E0E6;
-}
-
-html.dark-theme .containerVest dialog::-webkit-scrollbar-track {
-    background: #252230;
-}
-
-html.dark-theme .containerVest dialog::-webkit-scrollbar-thumb {
-    background: #8654f3;
-    border: 2px solid #1D1B26;
-}
-
-html.dark-theme .containerVest dialog::-webkit-scrollbar-thumb:hover {
-    background: #7342e3;
-}
-
-/* =======================================================
-   REGRAS GLOBAIS DE ESCALA DE FONTES (AFETA TODO O SITE)
-   ======================================================= */
+/* ---------- Escala de fontes (global) ---------- */
 html, html.font-normal { font-size: 100%; }
 html.font-media { font-size: 115%; }
 html.font-grande { font-size: 130%; }
 
-/* --- RESPONSIVIDADE --- */
-@media (max-width: 1024px) {
-    .principalContent { padding: 18px 20px; }
-    .areaContent { padding: 30px; }
-    .listaLivros { padding: 10px 5px; }
+/* ---------- Responsivo ---------- */
+@media (max-width: 960px) {
+    .wrapper { grid-template-columns: 1fr; padding: 16px; }
+    .sidebar { position: static; }
 }
 
-@media (max-width: 768px) {
-    .containerVest {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    .containerVest .descricaoVest {
-        align-items: center;
-        text-align: center; 
-    }
-    .fuvestImg, .vunestImg, .unicampImg, .enemImg {
-        flex: 0 0 auto;
-        width: 180px;
-    }
-    .menu li.entrar { margin-left: 0; }
-    .descricaoVest p { max-width: 100%; }
+@media (max-width: 600px) {
+    .areaContent { padding: 16px; }
+    .toolbar { gap: 14px; }
+    .livro-info { padding-right: 0; }
+    .livro-capa { flex-basis: 62px; height: 92px; }
+    .livro-indicadores { top: 8px; right: 10px; }
+    .modal-corpo { flex-direction: column; align-items: center; }
+    .modal-capa { flex-basis: auto; width: 150px; }
+    .seg { width: 100%; flex-direction: column; }
+    .seg button + button { border-left: none; border-top: 1.5px solid var(--purple); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
 }

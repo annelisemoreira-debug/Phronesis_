@@ -586,3 +586,171 @@ select * from usuario
 select * from favoritos
 
 drop database phronesis
+
+
+--alteração 08/10
+CREATE DATABASE IF NOT EXISTS phronesis;
+USE phronesis;
+
+-- 2. Tabela de usuários
+CREATE TABLE IF NOT EXISTS usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    telefone VARCHAR(20) NULL,
+    foto VARCHAR(255) DEFAULT 'assets/img/default-user.webp',
+    tipo ENUM('user', 'admin') DEFAULT 'user',
+    google_token TEXT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 3. TABELA FORTE: Materia
+CREATE TABLE IF NOT EXISTS materia (
+    id_materia INT AUTO_INCREMENT PRIMARY KEY,
+    nome_materia VARCHAR(100) NOT NULL UNIQUE,
+    cor_hex VARCHAR(7) DEFAULT '#4285F4'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 4. Tópicos das Matérias (Gerenciado por Administradores)
+CREATE TABLE IF NOT EXISTS materia_topico (
+    id_topico INT AUTO_INCREMENT PRIMARY KEY,
+    id_materia INT NOT NULL,
+    nome_topico VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_materia) REFERENCES materia(id_materia) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 5. CABEÇALHO: Cronograma
+CREATE TABLE IF NOT EXISTS cronograma (
+    id_cronograma INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    titulo_cronograma VARCHAR(255) NOT NULL,
+    google_calendar_id VARCHAR(255), 
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 6. ITENS: Cronograma_item
+CREATE TABLE IF NOT EXISTS cronograma_item (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_cronograma INT NOT NULL,
+    id_materia INT NOT NULL,
+    google_event_id VARCHAR(255),
+    data_estudo DATETIME NOT NULL,
+    data_fim DATETIME NOT NULL,
+    status_estudo VARCHAR(50) DEFAULT 'pendente',
+    FOREIGN KEY (id_cronograma) REFERENCES cronograma(id_cronograma) ON DELETE CASCADE,
+    FOREIGN KEY (id_materia) REFERENCES materia(id_materia) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 7. Favoritos (Vídeos)
+CREATE TABLE IF NOT EXISTS favoritos (
+    id_favorito INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    video_id VARCHAR(50) NOT NULL,
+    titulo_video VARCHAR(255),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 8. Vistos (Histórico de Vídeos)
+CREATE TABLE IF NOT EXISTS vistos (
+    id_visto INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    video_id VARCHAR(50) NOT NULL,
+    data_visto TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+USE phronesis;
+
+-- ============================================================
+-- LIVROS (cadastrados pelo ADM em admin_materias.php)
+-- Cole este bloco no seu bd.sql, depois da tabela "vistos".
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS livro (
+    id_livro INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    autor VARCHAR(255) NOT NULL,
+    resumo TEXT NOT NULL,
+    capa VARCHAR(255) NULL,                 -- caminho relativo, ex: assets/img/livros/abc123.webp
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Um livro pode cair em vários vestibulares (relação N:N simples)
+CREATE TABLE IF NOT EXISTS livro_vestibular (
+    id_livro INT NOT NULL,
+    vestibular ENUM('fuvest','unicamp','vunesp','enem') NOT NULL,
+    PRIMARY KEY (id_livro, vestibular),
+    FOREIGN KEY (id_livro) REFERENCES livro(id_livro) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Livros favoritos de cada usuário
+CREATE TABLE IF NOT EXISTS livro_favorito (
+    id_usuario INT NOT NULL,
+    id_livro INT NOT NULL,
+    data_favorito TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_usuario, id_livro),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_livro) REFERENCES livro(id_livro) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Progresso de leitura. "Não iniciada" = não existe linha para o par usuário/livro.
+CREATE TABLE IF NOT EXISTS livro_progresso (
+    id_usuario INT NOT NULL,
+    id_livro INT NOT NULL,
+    status ENUM('em_andamento','concluida') NOT NULL,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_usuario, id_livro),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_livro) REFERENCES livro(id_livro) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- 9. Progresso dos Tópicos dos Usuários
+CREATE TABLE IF NOT EXISTS usuario_topico_progresso (
+    id_progresso INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_cronograma INT NOT NULL,
+    id_materia INT NOT NULL,
+    id_topico INT NOT NULL,
+    concluido TINYINT(1) DEFAULT 1,
+    data_conclusao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_progresso (id_usuario, id_cronograma, id_topico),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_cronograma) REFERENCES cronograma(id_cronograma) ON DELETE CASCADE,
+    FOREIGN KEY (id_materia) REFERENCES materia(id_materia) ON DELETE CASCADE,
+    FOREIGN KEY (id_topico) REFERENCES materia_topico(id_topico) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS cronograma_topico_status (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_cronograma INT NOT NULL,
+    id_materia INT NOT NULL,
+    id_topico INT NOT NULL,
+    status INT DEFAULT 0,
+    data_alteracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_progresso (id_cronograma, id_materia, id_topico)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- =========================================================================
+-- SOLUÇÃO DE COMPATIBILIDADE:
+-- Cria o espelho 'cod_topicos' apontando para a tabela real 'materia_topico'
+-- =========================================================================
+CREATE OR REPLACE VIEW cod_topicos AS 
+SELECT id_topico, id_materia, nome_topico 
+FROM materia_topico;
+
+
+
+UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'manuella@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'annelise@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'dukye@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'narutomig@phronesis.com';
+UPDATE usuario SET tipo = 'admin' WHERE email = 'raoni@phronesis.com';
+
+select * from materia_topico
+select * from usuario
+select * from favoritos
+
+drop database phronesis
