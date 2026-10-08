@@ -94,9 +94,12 @@ $stmt->close();
         <img src="../assets/img/banners/escuroLivros.webp" class="banner-img banner-dark" alt="Banner Biblioteca Escuro">
     </section>
     
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="wrapper">
         <!-- ================= BARRA LATERAL ================= -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
+            <button type="button" class="sidebar-close" id="btnFecharSidebar" aria-label="Fechar menu">&times;</button>
+
             <section class="side-bloco">
                 <h2 class="side-titulo">Explore por vestibular:</h2>
                 <ul class="filtro-vest">
@@ -225,6 +228,22 @@ $stmt->close();
     </dialog>
 
     <script src="../assets/js/lib/livros.js" defer></script>
+
+        <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <nav class="bottom-nav" aria-label="Navegação principal">
+        <a href="../index.php" class="bn-item">
+            <i class="fa-solid fa-house"></i><span>Início</span>
+        </a>
+        <a href="livros.php" class="bn-item ativo" aria-current="page">
+            <i class="fa-solid fa-book"></i><span>Biblioteca</span>
+        </a>
+        <a href="cronograma.php" class="bn-item">
+            <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
+        </a>
+        <a href="../perfil/configperfil.php" class="bn-item">
+            <i class="fa-regular fa-user"></i><span>Perfil</span>
+        </a>
+    </nav>
 
 <?php include '../perfil/vlibras.php'; ?>
 

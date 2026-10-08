@@ -193,3 +193,42 @@ document.addEventListener('DOMContentLoaded', function () {
     tick();
     setInterval(tick, 1000);
 });
+
+    // === 6. MENU LATERAL (DRAWER) NO CELULAR ===
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const btnFechar = document.getElementById('btnFecharSidebar');
+    const ehCelular = () => window.matchMedia('(max-width: 768px)').matches;
+
+    function abrirMenu() {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        document.body.classList.add('menu-open');
+    }
+
+    function fecharMenu() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    }
+
+    // Intercepta o hambúrguer do header (só no celular) e abre a sidebar
+    document.addEventListener('click', (e) => {
+        if (!ehCelular() || !e.target.closest('#hamburgerBtn')) return;
+        e.stopPropagation();
+        sidebar.classList.contains('active') ? fecharMenu() : abrirMenu();
+    }, true);
+
+    overlay.addEventListener('click', fecharMenu);
+    btnFechar.addEventListener('click', fecharMenu);
+
+    // Ao escolher um filtro no menu, ele fecha
+    sidebar.querySelectorAll('[data-status-filter], [data-vest-filter]').forEach(b =>
+        b.addEventListener('click', () => { if (ehCelular()) fecharMenu(); }));
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) fecharMenu();
+    });
+
+    // Se a tela crescer até o PC/tablet, fecha o menu
+    window.addEventListener('resize', () => { if (!ehCelular()) fecharMenu(); });

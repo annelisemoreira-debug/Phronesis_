@@ -8,7 +8,7 @@
     --ink: #3b0f7a;
     --ink-soft: #7a4fd6;
     --line: #d3bff5;
-    --card: #e3d8ff;
+    --card: #f2f2f7;
     --card-and: #fefed3;
     --card-ok: #dcfcd8;
     --capa: #c4a3ff;
@@ -41,23 +41,23 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
 
 /* ==========================================================================
-   5. BANNER PRINCIPAL (EXATAMENTE IGUAL AO MATERIAL.CSS)
+   BANNER PRINCIPAL (PC)
    ========================================================================== */
 .banner {
-  width: 100%;
-  max-width: 1600px;
-  height: 160px;
-  margin: 20px auto 0 auto;
-  display: block;
-  overflow: hidden;
+    width: 100%;
+    max-width: 1600px;
+    height: 160px;
+    margin: 20px auto 0 auto;
+    display: block;
+    overflow: hidden;
 }
 
 .banner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 15px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 15px;
 }
 
 .banner .banner-dark { display: none; }
@@ -66,7 +66,7 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 html.dark-theme .banner .banner-light { display: none; }
 html.dark-theme .banner .banner-dark { display: block; }
 
-/* ---------- Layout ---------- */
+/* ---------- Layout (PC) ---------- */
 .wrapper {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr);
@@ -75,18 +75,7 @@ html.dark-theme .banner .banner-dark { display: block; }
     max-width: 1670px;
     margin: 0 auto;
     padding: 20px 40px 40px;
-    align-items: stretch; /* Alterado de 'start' para 'stretch' */
-}
-
-/* ---------- Barra lateral ---------- */
-.sidebar {
-    background: var(--panel);
-    border-radius: 16px;
-    padding: 6px 0;
-    box-shadow: var(--shadow);
-    height: 100%; /* Garante que a sidebar ocupe toda a altura do grid */
-    display: flex;
-    flex-direction: column;
+    align-items: stretch;
 }
 
 .principalContent { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
@@ -97,15 +86,15 @@ html.dark-theme .banner .banner-dark { display: block; }
     border-radius: 16px;
     padding: 6px 0;
     box-shadow: var(--shadow);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     position: sticky;
     top: 16px;
 }
 
 .side-bloco { padding: 16px 20px; border-bottom: 2px solid var(--line); }
-.side-bloco:last-child { 
-    border-bottom: none; 
-    flex: 1; 
-}
+.side-bloco:last-child { border-bottom: none; flex: 1; }
 
 .side-titulo { font-size: 0.78rem; font-weight: 800; color: var(--ink); margin-bottom: 12px; letter-spacing: .02em; }
 .side-linha { display: flex; justify-content: space-between; align-items: baseline; }
@@ -282,34 +271,208 @@ html, html.font-normal { font-size: 100%; }
 html.font-media { font-size: 115%; }
 html.font-grande { font-size: 130%; }
 
-/* ---------- Responsivo ---------- */
-@media (max-width: 960px) {
-    .wrapper { grid-template-columns: 1fr; padding: 16px; }
-    .sidebar { position: static; }
+/* Barra inferior: escondida no PC */
+.bottom-nav { display: none; }
+.sidebar-close { display: none; }
+
+/* ==========================================================================
+   TABLET (até 1024px): mantém a sidebar, mais compacta
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .wrapper {
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 18px;
+        padding: 16px 20px 30px;
+    }
+    .sidebar { position: static; height: auto; }
+    .side-bloco { padding: 14px 16px; }
+    .areaContent { padding: 18px 20px; }
+    .lista-obras { max-height: none; overflow: visible; padding-right: 0; }
+    .toolbar { gap: 20px; }
+    .banner { padding: 0 20px; }
 }
 
+/* ==========================================================================
+   CELULAR (até 768px)
+   ========================================================================== */
 @media (max-width: 768px) {
-  .banner {
-    height: auto;
-    margin-top: 10px;
-    padding: 0 10px;
-  }
 
-  .banner img {
-    border-radius: 10px;
-  }
-}
+    /* evita rolagem lateral sem quebrar o header sticky */
+    html, body { overflow-x: clip; }
+    body { padding-bottom: 84px; }
 
-@media (max-width: 600px) {
-    .areaContent { padding: 16px; }
-    .toolbar { gap: 14px; }
-    .livro-info { padding-right: 0; }
-    .livro-capa { flex-basis: 62px; height: 92px; }
-    .livro-indicadores { top: 8px; right: 10px; }
+    
+
+    /* Banner */
+    .banner { height: 120px; margin-top: 10px; padding: 0 12px; }
+    .banner img { border-radius: 12px; }
+
+    /* Coluna única, sem sidebar */
+    .wrapper {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 12px 12px 24px;
+        gap: 0;
+    }
+    .principalContent, .areaContent, .toolbar { min-width: 0; max-width: 100%; }
+        /* Sidebar vira menu lateral (abre pelo hambúrguer do header) */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 82%;
+        max-width: 320px;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 1001;
+        overflow-y: auto;
+        border-radius: 20px 0 0 20px;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    }
+    .sidebar.active { transform: translateX(0); visibility: visible; }
+
+    .sidebar-close {
+        display: flex;
+        position: absolute;
+        top: 12px;
+        right: 14px;
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 50%;
+        background: var(--purple);
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: bold;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 1000;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active { display: block; opacity: 1; }
+
+    body.menu-open { overflow: hidden; }
+
+    /* Conteúdo sem o "painel" em volta */
+    .areaContent {
+        background: transparent;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    /* Abas em pílula + busca em largura total */
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .abas {
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 2px;
+        overflow: visible;
+    }
+    .aba {
+        flex: 1 1 auto;
+        text-align: center;
+        font-size: 0.7rem;
+        padding: 7px 6px;
+        border: 1.5px solid transparent;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+    .aba.ativo { border-color: var(--purple); }
+    .busca {
+        width: 100%;
+        min-width: 0;
+        padding: 10px 16px;
+        border-color: var(--purple);
+        border-radius: 14px;
+        background: var(--panel);
+    }
+    .busca input { font-size: 0.85rem; }
+
+    /* Lista: a própria página rola */
+    .lista-obras {
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+        gap: 12px;
+    }
+
+    /* Cards compactos */
+    .livro-card { padding: 12px; gap: 12px; border-radius: 14px; }
+    .livro-capa { flex: 0 0 66px; height: 92px; border-radius: 8px; }
+    .livro-info { padding-right: 24px; gap: 2px; }
+    .livro-titulo { font-size: 0.85rem; }
+    .livro-autor { font-size: 0.74rem; color: var(--ink-soft); }
+    .livro-desc { font-size: 0.7rem; margin-top: 6px; -webkit-line-clamp: 3; }
+    .livro-tags { padding-top: 8px; }
+    .tag { font-size: 0.62rem; padding: 3px 12px; }
+
+    /* Marcador roxo no canto */
+    .livro-indicadores { top: 10px; right: 12px; }
+    .btn-fav { color: rgba(134, 84, 243, .28); opacity: .9; font-size: 1rem; }
+    .is-fav .btn-fav { color: var(--gold); opacity: 1; }
+
+    /* Modal */
+    .modal-livro { padding: 22px 18px; width: 94%; }
     .modal-corpo { flex-direction: column; align-items: center; }
     .modal-capa { flex-basis: auto; width: 150px; }
+    .modal-texto { width: 100%; }
     .seg { width: 100%; flex-direction: column; }
+    .seg button { justify-content: center; }
     .seg button + button { border-left: none; border-top: 1.5px solid var(--purple); }
+    .btn-fav-modal { width: 100%; justify-content: center; }
+
+    /* Barra inferior fixa */
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 900;
+        background: var(--panel);
+        border-top: 1px solid var(--line);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, .12);
+        padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+        justify-content: space-around;
+    }
+    .bn-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        text-decoration: none;
+        color: var(--ink-soft);
+        font-size: 0.66rem;
+        font-weight: 700;
+        padding: 4px 0;
+    }
+    .bn-item i { font-size: 1.15rem; }
+    .bn-item.ativo { color: var(--purple); }
+    html.dark-theme .bn-item.ativo { color: #b58cff; }
+}
+
+/* Celulares bem pequenos */
+@media (max-width: 380px) {
+    .aba { font-size: 0.66rem; padding: 6px 4px; }
+    .livro-capa { flex-basis: 58px; height: 84px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
