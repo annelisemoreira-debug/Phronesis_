@@ -116,6 +116,152 @@ if (isset($_GET['del_topico'])) {
     }
     $stmt->close();
 }
+ 
+// ===================== LIVROS =====================
+$VESTIBULARES = ['fuvest' => 'Fuvest', 'unicamp' => 'Unicamp', 'vunesp' => 'Vunesp', 'enem' => 'Enem'];
+ 
+// Valida e salva a capa. Retorna: caminho (sucesso) | null (nenhum arquivo) | false (erro)
+function salvarCapa($file, &$erro) {
+    if (empty($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return null;
+    if ($file['error'] !== UPLOAD_ERR_OK || $file['size'] > 3 * 1024 * 1024) {
+        $erro = 'Capa inválida ou maior que 3 MB.';
+        return false;
+    }
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
+    $ext = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'][$mime] ?? null;
+    if (!$ext) {
+        $erro = 'A capa precisa ser JPG, PNG ou WEBP.';
+        return false;
+    }
+    $dir = __DIR__ . '/../assets/img/livros/';
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $nome = bin2hex(random_bytes(8)) . '.' . $ext;
+    if (!move_uploaded_file($file['tmp_name'], $dir . $nome)) {
+        $erro = 'Não foi possível salvar a imagem da capa.';
+        return false;
+    }
+    return 'assets/img/livros/' . $nome;
+}
+ 
+function apagarArquivoCapa($caminho) {
+    if ($caminho && strpos($caminho, 'assets/img/livros/') === 0) {
+        $f = __DIR__ . '/../' . $caminho;
+        if (is_file($f)) @unlink($f);
+    }
+}
+ 
+function salvarVestibulares($conn, $idLivro, $lista, $validos) {
+    $stmt = $conn->prepare("DELETE FROM livro_vestibular WHERE id_livro = ?");
+    $stmt->bind_param("i", $idLivro);
+    $stmt->execute();
+    $stmt->close();
+ 
+    $stmt = $conn->prepare("INSERT INTO livro_vestibular (id_livro, vestibular) VALUES (?, ?)");
+    foreach ((array) $lista as $v) {
+        if (isset($validos[$v])) {
+            $stmt->bind_param("is", $idLivro, $v);
+            $stmt->execute();
+        }
+    }
+    $stmt->close();
+}
+ 
+// Adicionar livro
+if (isset($_POST['add_livro'])) {
+    $titulo = trim($_POST['titulo'] ?? '');
+    $autor  = trim($_POST['autor'] ?? '');
+    $resumo = trim($_POST['resumo'] ?? '');
+ 
+    if ($titulo === '' || $autor === '' || $resumo === '') {
+        $msg = "❌ Preencha título, autor e resumo.";
+    } else {
+        $erroCapa = '';
+        $capa = salvarCapa($_FILES['capa'] ?? [], $erroCapa);
+        if ($capa === false) {
+            $msg = "❌ $erroCapa";
+        } else {
+            $stmt = $conn->prepare("INSERT INTO livro (titulo, autor, resumo, capa) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $titulo, $autor, $resumo, $capa);
+            if ($stmt->execute()) {
+                salvarVestibulares($conn, $conn->insert_id, $_POST['vestibulares'] ?? [], $VESTIBULARES);
+                $msg = "📚 Livro '$titulo' adicionado!";
+            } else {
+                $msg = "❌ Erro ao adicionar livro.";
+            }
+            $stmt->close();
+        }
+    }
+}
+ 
+// Editar livro
+if (isset($_POST['edit_livro'])) {
+    $idLivro = (int) ($_POST['id_livro'] ?? 0);
+    $titulo  = trim($_POST['titulo'] ?? '');
+    $autor   = trim($_POST['autor'] ?? '');
+    $resumo  = trim($_POST['resumo'] ?? '');
+ 
+    if ($idLivro <= 0 || $titulo === '' || $autor === '' || $resumo === '') {
+        $msg = "❌ Preencha título, autor e resumo.";
+    } else {
+        $erroCapa = '';
+        $capaNova = salvarCapa($_FILES['capa'] ?? [], $erroCapa);
+        if ($capaNova === false) {
+            $msg = "❌ $erroCapa";
+        } else {
+            if ($capaNova !== null) {
+                $st = $conn->prepare("SELECT capa FROM livro WHERE id_livro = ?");
+                $st->bind_param("i", $idLivro);
+                $st->execute();
+                $antiga = $st->get_result()->fetch_assoc()['capa'] ?? null;
+                $st->close();
+                apagarArquivoCapa($antiga);
+            }
+            $stmt = $conn->prepare("UPDATE livro SET titulo = ?, autor = ?, resumo = ?, capa = COALESCE(?, capa) WHERE id_livro = ?");
+            $stmt->bind_param("ssssi", $titulo, $autor, $resumo, $capaNova, $idLivro);
+            if ($stmt->execute()) {
+                salvarVestibulares($conn, $idLivro, $_POST['vestibulares'] ?? [], $VESTIBULARES);
+                $msg = "📝 Livro atualizado com sucesso!";
+            } else {
+                $msg = "❌ Erro ao editar livro.";
+            }
+            $stmt->close();
+        }
+    }
+}
+ 
+// Excluir livro
+if (isset($_GET['del_livro'])) {
+    $idLivro = (int) $_GET['del_livro'];
+    $st = $conn->prepare("SELECT capa FROM livro WHERE id_livro = ?");
+    $st->bind_param("i", $idLivro);
+    $st->execute();
+    $antiga = $st->get_result()->fetch_assoc()['capa'] ?? null;
+    $st->close();
+ 
+    $stmt = $conn->prepare("DELETE FROM livro WHERE id_livro = ?");
+    $stmt->bind_param("i", $idLivro);
+    if ($stmt->execute()) {
+        apagarArquivoCapa($antiga);
+        $msg = "🗑️ Livro removido!";
+    } else {
+        $msg = "❌ Erro ao remover livro.";
+    }
+    $stmt->close();
+}
+ 
+// Buscar livros cadastrados
+$livros = [];
+$res_livros = $conn->query(
+    "SELECT l.*, GROUP_CONCAT(lv.vestibular) AS vests
+       FROM livro l
+       LEFT JOIN livro_vestibular lv ON lv.id_livro = l.id_livro
+      GROUP BY l.id_livro
+      ORDER BY l.titulo ASC"
+);
+if ($res_livros) {
+    while ($row = $res_livros->fetch_assoc()) { $livros[] = $row; }
+}
+ 
 
 // Buscar matérias existentes
 $materias = [];
@@ -163,7 +309,130 @@ if ($res_topicos) {
 
 <main class="main-container">
     <section class="card-principal">
-        
+    
+    <section class="card-principal card-livros" id="livros-adm">
+        <div class="card-header">
+            <span class="icon-purple-box"><i class="fa-solid fa-book-bookmark"></i></span>
+            <div>
+                <h2>Gerenciar Leituras Obrigatórias</h2>
+                <p>Cadastre os livros, o resumo e em quais vestibulares eles são cobrados.</p>
+            </div>
+        </div>
+    
+        <form method="POST" enctype="multipart/form-data" class="form-livro">
+            <div class="grid-livro">
+                <input type="text" name="titulo" class="campo-livro" placeholder="Título da obra" maxlength="255" required>
+                <input type="text" name="autor" class="campo-livro" placeholder="Autor(a)" maxlength="255" required>
+            </div>
+            <textarea name="resumo" class="campo-livro" rows="4" placeholder="Breve resumo da obra" required></textarea>
+    
+            <div class="vest-checks">
+                <?php foreach ($VESTIBULARES as $k => $nomeV): ?>
+                    <label class="chip-check">
+                        <input type="checkbox" name="vestibulares[]" value="<?= $k ?>">
+                        <span><?= $nomeV ?></span>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+    
+            <div class="linha-envio">
+                <label class="upload-capa">
+                    <i class="fa-solid fa-image"></i> Capa (JPG, PNG ou WEBP, até 3 MB)
+                    <input type="file" name="capa" accept="image/jpeg,image/png,image/webp">
+                </label>
+                <button type="submit" name="add_livro" class="btn-adicionar">
+                    Adicionar livro <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </form>
+    
+        <?php if (empty($livros)): ?>
+            <div class="empty-table-state">
+                <div class="book-purple-icon"><i class="fa-solid fa-book-open"></i></div>
+                <h4>Nenhum livro cadastrado.</h4>
+                <p>Adicione a primeira obra para ela aparecer na página de leituras.</p>
+            </div>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Capa</th>
+                            <th style="width: 40%;">Obra</th>
+                            <th style="width: 30%;">Vestibulares</th>
+                            <th style="width: 20%; text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($livros as $l): $vl = $l['vests'] ? explode(',', $l['vests']) : []; ?>
+                        <tr>
+                            <td>
+                                <?php if ($l['capa']): ?>
+                                    <img class="thumb-livro" src="../<?= htmlspecialchars($l['capa']) ?>" alt="">
+                                <?php else: ?>
+                                    <span class="thumb-livro thumb-vazio"><i class="fa-solid fa-book"></i></span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <b><?= htmlspecialchars($l['titulo']) ?></b><br>
+                                <small><?= htmlspecialchars($l['autor']) ?></small>
+                            </td>
+                            <td>
+                                <?php foreach ($vl as $v): ?>
+                                    <span class="tag-adm tag-adm-<?= htmlspecialchars($v) ?>"><?= htmlspecialchars($VESTIBULARES[$v] ?? $v) ?></span>
+                                <?php endforeach; ?>
+                            </td>
+                            <td>
+                                <div class="action-buttons" style="justify-content: center;">
+                                    <button type="button" class="btn-table-action btn-table-edit btn-editar-livro" title="Editar livro"
+                                        data-id="<?= (int)$l['id_livro'] ?>"
+                                        data-titulo="<?= htmlspecialchars($l['titulo'], ENT_QUOTES, 'UTF-8') ?>"
+                                        data-autor="<?= htmlspecialchars($l['autor'], ENT_QUOTES, 'UTF-8') ?>"
+                                        data-resumo="<?= htmlspecialchars($l['resumo'], ENT_QUOTES, 'UTF-8') ?>"
+                                        data-vests="<?= htmlspecialchars(implode(',', $vl), ENT_QUOTES, 'UTF-8') ?>">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <a href="?del_livro=<?= (int)$l['id_livro'] ?>" class="btn-table-action btn-table-del"
+                                    onclick="return confirm('Excluir este livro? Favoritos e progresso dos usuários nele também serão apagados.')" title="Excluir">×</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    
+        <!-- Janela de edição -->
+        <dialog id="dlg-livro" class="dlg-livro">
+            <form method="POST" enctype="multipart/form-data" class="form-livro">
+                <h3>Editar livro</h3>
+                <input type="hidden" name="id_livro">
+                <div class="grid-livro">
+                    <input type="text" name="titulo" class="campo-livro" maxlength="255" required>
+                    <input type="text" name="autor" class="campo-livro" maxlength="255" required>
+                </div>
+                <textarea name="resumo" class="campo-livro" rows="6" required></textarea>
+                <div class="vest-checks">
+                    <?php foreach ($VESTIBULARES as $k => $nomeV): ?>
+                        <label class="chip-check">
+                            <input type="checkbox" name="vestibulares[]" value="<?= $k ?>">
+                            <span><?= $nomeV ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+                <label class="upload-capa">
+                    <i class="fa-solid fa-image"></i> Trocar capa (opcional)
+                    <input type="file" name="capa" accept="image/jpeg,image/png,image/webp">
+                </label>
+                <div class="linha-envio">
+                    <button type="button" class="btn-cancelar fechar-dlg">Cancelar</button>
+                    <button type="submit" name="edit_livro" class="btn-salvar">Salvar alterações</button>
+                </div>
+            </form>
+        </dialog>
+    </section>
+
         <div class="card-header">
             <span class="icon-purple-box">
                 <i class="fa-solid fa-book"></i>
