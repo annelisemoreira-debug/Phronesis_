@@ -103,7 +103,6 @@ $stmt->close();
                     <li><button type="button" class="vest-btn ativo" data-vest-filter="todos"><i class="quad q-todos"></i>Todos</button></li>
                     <li><button type="button" class="vest-btn" data-vest-filter="fuvest"><i class="quad q-fuvest"></i>Fuvest</button></li>
                     <li><button type="button" class="vest-btn" data-vest-filter="unicamp"><i class="quad q-unicamp"></i>Unicamp</button></li>
-                    <li><button type="button" class="vest-btn" data-vest-filter="vunesp"><i class="quad q-vunesp"></i>Vunesp</button></li>
                     <li><button type="button" class="vest-btn" data-vest-filter="enem"><i class="quad q-enem"></i>Enem</button></li>
                 </ul>
             </section>

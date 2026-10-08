@@ -600,7 +600,7 @@ drop database phronesis
 
 
 
---alteração 08/10
+-- alteração 08/10
 CREATE DATABASE IF NOT EXISTS phronesis;
 USE phronesis;
 
@@ -751,6 +751,36 @@ CREATE TABLE IF NOT EXISTS cronograma_topico_status (
 CREATE OR REPLACE VIEW cod_topicos AS 
 SELECT id_topico, id_materia, nome_topico 
 FROM materia_topico;
+
+USE phronesis;
+
+INSERT INTO livro (titulo, autor, resumo, capa) VALUES
+('Dom Casmurro', 'Machado de Assis',
+ 'Bentinho narra sua vida e a dúvida sobre a suposta traição de Capitu com seu amigo Escobar.',
+ 'assets/img/livros/domcasmurro.jpg'),
+
+('Vidas Secas', 'Graciliano Ramos',
+ 'A saga da família de retirantes de Fabiano, Sinhá Vitória, seus dois filhos e a cachorra Baleia no sertão nordestino.',
+'assets/img/livros/domcasmurro.jpg'),
+
+('O Cortiço', 'Aluísio Azevedo',
+ 'Retrato do naturalismo brasileiro, mostrando a vida em um cortiço do Rio de Janeiro e a ascensão de João Romão.',
+'assets/img/livros/domcasmurro.jpg');
+ 
+ 
+-- =========================================================================
+
+INSERT INTO livro_vestibular (id_livro, vestibular)
+SELECT id_livro, v.vest
+FROM livro
+JOIN (
+    SELECT 'Dom Casmurro' AS titulo, 'fuvest'  AS vest UNION ALL
+    SELECT 'Dom Casmurro',           'enem'            UNION ALL
+    SELECT 'Vidas Secas',            'unicamp'         UNION ALL
+    SELECT 'Vidas Secas',            'enem'            UNION ALL
+    SELECT 'O Cortiço',              'fuvest'          UNION ALL
+    SELECT 'O Cortiço',              'vunesp'
+) v ON v.titulo = livro.titulo;
 
 
 

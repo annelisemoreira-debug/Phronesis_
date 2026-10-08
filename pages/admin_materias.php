@@ -118,7 +118,7 @@ if (isset($_GET['del_topico'])) {
 }
  
 // ===================== LIVROS =====================
-$VESTIBULARES = ['fuvest' => 'Fuvest', 'unicamp' => 'Unicamp', 'vunesp' => 'Vunesp', 'enem' => 'Enem'];
+$VESTIBULARES = ['fuvest' => 'Fuvest', 'unicamp' => 'Unicamp', 'enem' => 'Enem'];
  
 // Valida e salva a capa. Retorna: caminho (sucesso) | null (nenhum arquivo) | false (erro)
 function salvarCapa($file, &$erro) {
