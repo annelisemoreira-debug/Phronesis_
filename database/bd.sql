@@ -591,15 +591,6 @@ drop database phronesis
 
 
 
-
-
-
-
-
-
-
-
-
 -- alteração 08/10
 CREATE DATABASE IF NOT EXISTS phronesis;
 USE phronesis;
@@ -756,39 +747,39 @@ INSERT INTO livro (titulo, autor, resumo, capa) VALUES
 -- FUVEST
 ('Opúsculo Humanitário', 'Nísia Floresta',
  'Ensaio pioneiro que defende a emancipação feminina e a importância da educação das mulheres para o progresso social.',
- 'assets/img/livros/opusculo_humanitario.jpg'),
+ 'assets/img/livros/opusculoHumanitario.webp'),
 
 ('Nebulosas', 'Narcisa Amália',
  'Coletânea de poemas românticos que abordam o sofrimento humano, a natureza e o papel social da mulher no século XIX.',
- 'assets/img/livros/nebulosas.jpg'),
+ 'assets/img/livros/nebulosas.webp'),
 
 ('Memórias de Martha', 'Julia Lopes de Almeida',
  'Romance de tom memorialista que retrata as vivências de uma jovem na corte carioca e os dilemas urbanos da época.',
- 'assets/img/livros/memorias_de_martha.jpg'),
+ 'assets/img/livros/mmemoriasMarta.webp'),
 
 ('Caminho de Pedras', 'Rachel de Queiroz',
  'Obra que aborda o engajamento político, a militância de esquerda e os dilemas afetivos e sociais de seus personagens no Ceará.',
- 'assets/img/livros/caminho_de_pedras.jpg'),
+ 'assets/img/livros/caminhoPedras.webp'),
 
 ('A Paixão Segundo G. H.', 'Clarice Lispector',
  'Monólogo interior profundo desencadeado pelo encontro de uma mulher com uma barata, gerando uma crise existencial e filosófica.',
- 'assets/img/livros/a_paixao_segundo_gh.jpg'),
+ 'assets/img/livros/paixaoSegundo.webp'),
 
 ('Geografia', 'Sophia de Mello Breyner Andresen',
  'Livro de poesia que explora a relação do ser humano com o espaço, a natureza, a justiça e a busca pela lucidez.',
- 'assets/img/livros/geografia.jpg'),
+ 'assets/img/livros/geografia.webp'),
 
 ('Balada de Amor ao Vento', 'Paulina Chiziane',
  'Narrativa moçambicana sobre as dores e os encantos de um amor trágico, marcada pelas pressões de uma sociedade patriarcal.',
- 'assets/img/livros/balada_de_amor_ao_vento.jpg'),
+ 'assets/img/livros/baladaAmor.webp'),
 
 ('Canção para Ninar Menino Grande', 'Conceição Evaristo',
  'Romance que investiga as contradições da masculinidade negra e as teias afetivas de mulheres marcadas por vivências intensas.',
- 'assets/img/livros/cancao_para_ninar_menino_grande.jpg'),
+ 'assets/img/livros/cancaoMenino.webp'),
 
 ('A Visão das Plantas', 'Djaimilia Pereira de Almeida',
  'A história de um ex-traficante de escravizados que retorna a Portugal e passa a velhice dedicando-se de forma obsessiva ao seu jardim.',
- 'assets/img/livros/a_visao_das_plantas.jpg'),
+ 'assets/img/livros/visaoPlantas.webp'),
  
  
  
@@ -796,39 +787,39 @@ INSERT INTO livro (titulo, autor, resumo, capa) VALUES
 
 ('A Vida Não é Útil', 'Ailton Krenak', 
 'Ensaios que criticam as bases da civilização ocidental, o consumo desenfreado e propõem uma profunda reconexão com a Terra.', 
-'assets/img/livros/a_vida_nao_e_util.jpg'),
+'assets/img/livros/a_vida_nao_e_util.webp'),
 
 ('Memórias Póstumas de Brás Cubas', 'Machado de Assis', 
 'Romance realista narrado por um defunto autor que satiriza com ironia a hipocrisia e os privilégios da elite brasileira do século XIX.', 
-'assets/img/livros/memorias_postumas_de_bras_cubas.jpg'),
+'assets/img/livros/memorias_postumas_de_bras_cubas.webp'),
 
 ('No seu Pescoço', 'Chimamanda Ngozi Adichie', 
 'Coletânea de contos que abordam a imigração, os choques culturais, o racismo e as complexas dinâmicas sociais entre Nigéria e Estados Unidos.', 
-'assets/img/livros/no_seu_pescoco.jpg'),
+'assets/img/livros/no_seu_pescoco.webp'),
 
 ('Olhos d''Água', 'Conceição Evaristo', 
 'Contos marcados pelo conceito de escrevivência que retratam a violência, a ancestralidade e a resistência da população negra urbana.', 
-'assets/img/livros/olhos_dagua.jpg'),
+'assets/img/livros/olhos_dagua.webp'),
 
 ('Os Funerais da Mamãe Grande', 'Gabriel García Márquez', 
 'Contos de realismo fantástico que giram em torno do universo mítico de Macondo e trazem críticas ao poder oligárquico na América Latina.', 
-'assets/img/livros/os_funerais_da_mamae_grande.jpg'),
+'assets/img/livros/osFunerais.webp'),
 
 ('Prosas Seguidas de Odes Mínimas', 'José Paulo Paes', 
 'Reunião de textos poéticos e em prosa marcados pela concisão formal, pelo lirismo crítico, humor e reflexões do cotidiano.', 
-'assets/img/livros/prosas_seguidas_de_odes_minimas.jpg'),
+'assets/img/livros/prosasSeguidas.webp'),
 
 ('Vida e Morte de M. J. Gonzaga de Sá', 'Lima Barreto', 
 'Romance satírico que critica a burocracia estatal, o preconceito racial e as transformações urbanas do Rio de Janeiro no início do século XX.', 
-'assets/img/livros/vida_e_morte_de_m_j_gonzaga_de_sa.jpg'),
+'assets/img/livros/vidaMorte.webp'),
 
 ('Morangos Mofados', 'Caio Fernando Abreu', 
 'Seleção de contos que capturam a angústia existencial, a contracultura e o desejo de afeto de uma juventude sufocada durante a ditadura militar.', 
-'assets/img/livros/morangos_mofados.jpg'),
+'assets/img/livros/morangos_mofados.webp'),
 
 ('Canções Escolhidas', 'Paulo César Pinheiro', 
 'Coletânea de composições poéticas e musicais que exploram a identidade nacional, as tradições populares e as feridas sociais do Brasil.', 
-'assets/img/livros/cancoes_escolhidas.jpg'),
+'assets/img/livros/cancoes_escolhidas.webp'),
 
 
 
@@ -836,35 +827,35 @@ INSERT INTO livro (titulo, autor, resumo, capa) VALUES
 
 ('Dom Casmurro', 'Machado de Assis',
 'Análise da elite carioca do século XIX marcada pela dubiedade da traição, ironia refinada e a desconstrução psicológica das relações humanas sob a ótica de um narrador não confiável.',
-'assets/img/livros/dom_casmurro.jpg'),
+'assets/img/livros/domCasmurro.webp'),
 
 ('Memórias Póstumas de Brás Cubas', 'Machado de Assis',
 'Romance realista narrado por um defunto autor que satiriza com ironia a hipocrisia, o parasitismo e os privilégios da elite aristocrática brasileira do século XIX.',
-'assets/img/livros/memorias_postumas_de_bras_cubas.jpg'),
+'assets/img/livros/memoriasPostumas.webp'),
 
 ('Vidas Secas', 'Graciliano Ramos',
 'Romance regionalista modernista que denuncia o sofrimento da miséria, a opressão social, a desumanização e a migração forçada de uma família de retirantes no sertão nordestino.',
-'assets/img/livros/vidas_secas.jpg'),
+'assets/img/livros/vidasSecas.webp'),
 
 ('A Hora da Estrela', 'Clarice Lispector',
 'Narrativa existencialista que acompanha a invisibilidade social, a alienação urbana e a pobreza da jovem nordestina Macabéa sob o olhar de um escritor reflexivo.',
-'assets/img/livros/a_hora_da_estrela.jpg'),
+'assets/img/livros/horaEstrela.webp'),
 
 ('Quarto de Despejo: Diário de uma Favelada', 'Carolina Maria de Jesus',
 'Relato autobiográfico em formato de diário que expõe de forma crua as mazelas da fome, da extrema pobreza, do racismo e da exclusão socioeconômica na favela de São Paulo.',
-'assets/img/livros/quarto_de_despejo.jpg'),
+'assets/img/livros/quartoDespejo.webp'),
 
 ('O Cortiço', 'Aluísio Azevedo',
 'Romance naturalista que retrata a habitação coletiva carioca como um organismno vivo onde o meio social, o determinismo biológico e a exploração degradam os indivíduos.',
-'assets/img/livros/o_cortico.jpg'),
+'assets/img/livros/cortico.webp'),
 
 ('Capitães da Areia', 'Jorge Amado',
 'Narrativa engajada que denuncia o abandono e a criminalização de um grupo de meninos de rua em Salvador, destacando a desigualdade e a busca por afeto.',
-'assets/img/livros/capitaes_da_areia.jpg'),
+'assets/img/livros/capitaesAreia.webp'),
 
 ('Morte e Vida Severina', 'João Cabral de Melo Neto',
 'Auto de natal em poesia que acompanha a jornada fúnebre do retirante Severino, enfrentando o ciclo contínuo de fome, seca e opressão até o reencontro com a esperança.',
-'assets/img/livros/morte_e_vida_severina.jpg');
+'assets/img/livros/vidaSeverina.webp');
 
 
  
@@ -918,8 +909,8 @@ UPDATE usuario SET tipo = 'admin' WHERE email = 'dukye@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'narutomig@phronesis.com';
 UPDATE usuario SET tipo = 'admin' WHERE email = 'raoni@phronesis.com';
 
-select * from materia_topico
-select * from usuario
-select * from favoritos
+select * from materia_topico;
+select * from usuario;
+select * from favoritos;
 
-drop database phronesis
+drop database phronesis;
