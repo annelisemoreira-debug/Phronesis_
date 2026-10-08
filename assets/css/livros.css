@@ -75,7 +75,18 @@ html.dark-theme .banner .banner-dark { display: block; }
     max-width: 1670px;
     margin: 0 auto;
     padding: 20px 40px 40px;
-    align-items: start;
+    align-items: stretch; /* Alterado de 'start' para 'stretch' */
+}
+
+/* ---------- Barra lateral ---------- */
+.sidebar {
+    background: var(--panel);
+    border-radius: 16px;
+    padding: 6px 0;
+    box-shadow: var(--shadow);
+    height: 100%; /* Garante que a sidebar ocupe toda a altura do grid */
+    display: flex;
+    flex-direction: column;
 }
 
 .principalContent { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
@@ -91,7 +102,10 @@ html.dark-theme .banner .banner-dark { display: block; }
 }
 
 .side-bloco { padding: 16px 20px; border-bottom: 2px solid var(--line); }
-.side-bloco:last-child { border-bottom: none; }
+.side-bloco:last-child { 
+    border-bottom: none; 
+    flex: 1; 
+}
 
 .side-titulo { font-size: 0.78rem; font-weight: 800; color: var(--ink); margin-bottom: 12px; letter-spacing: .02em; }
 .side-linha { display: flex; justify-content: space-between; align-items: baseline; }

@@ -591,6 +591,7 @@ drop database phronesis
 
 
 
+
 -- alteração 08/10
 CREATE DATABASE IF NOT EXISTS phronesis;
 USE phronesis;
@@ -755,7 +756,7 @@ INSERT INTO livro (titulo, autor, resumo, capa) VALUES
 
 ('Memórias de Martha', 'Julia Lopes de Almeida',
  'Romance de tom memorialista que retrata as vivências de uma jovem na corte carioca e os dilemas urbanos da época.',
- 'assets/img/livros/mmemoriasMarta.webp'),
+ 'assets/img/livros/memoriasMarta.webp'),
 
 ('Caminho de Pedras', 'Rachel de Queiroz',
  'Obra que aborda o engajamento político, a militância de esquerda e os dilemas afetivos e sociais de seus personagens no Ceará.',
@@ -788,10 +789,6 @@ INSERT INTO livro (titulo, autor, resumo, capa) VALUES
 ('A Vida Não é Útil', 'Ailton Krenak', 
 'Ensaios que criticam as bases da civilização ocidental, o consumo desenfreado e propõem uma profunda reconexão com a Terra.', 
 'assets/img/livros/a_vida_nao_e_util.webp'),
-
-('Memórias Póstumas de Brás Cubas', 'Machado de Assis', 
-'Romance realista narrado por um defunto autor que satiriza com ironia a hipocrisia e os privilégios da elite brasileira do século XIX.', 
-'assets/img/livros/memorias_postumas_de_bras_cubas.webp'),
 
 ('No seu Pescoço', 'Chimamanda Ngozi Adichie', 
 'Coletânea de contos que abordam a imigração, os choques culturais, o racismo e as complexas dinâmicas sociais entre Nigéria e Estados Unidos.', 
