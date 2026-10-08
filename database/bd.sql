@@ -752,20 +752,121 @@ CREATE OR REPLACE VIEW cod_topicos AS
 SELECT id_topico, id_materia, nome_topico 
 FROM materia_topico;
 
-USE phronesis;
-
 INSERT INTO livro (titulo, autor, resumo, capa) VALUES
+-- FUVEST
+('Opúsculo Humanitário', 'Nísia Floresta',
+ 'Ensaio pioneiro que defende a emancipação feminina e a importância da educação das mulheres para o progresso social.',
+ 'assets/img/livros/opusculo_humanitario.jpg'),
+
+('Nebulosas', 'Narcisa Amália',
+ 'Coletânea de poemas românticos que abordam o sofrimento humano, a natureza e o papel social da mulher no século XIX.',
+ 'assets/img/livros/nebulosas.jpg'),
+
+('Memórias de Martha', 'Julia Lopes de Almeida',
+ 'Romance de tom memorialista que retrata as vivências de uma jovem na corte carioca e os dilemas urbanos da época.',
+ 'assets/img/livros/memorias_de_martha.jpg'),
+
+('Caminho de Pedras', 'Rachel de Queiroz',
+ 'Obra que aborda o engajamento político, a militância de esquerda e os dilemas afetivos e sociais de seus personagens no Ceará.',
+ 'assets/img/livros/caminho_de_pedras.jpg'),
+
+('A Paixão Segundo G. H.', 'Clarice Lispector',
+ 'Monólogo interior profundo desencadeado pelo encontro de uma mulher com uma barata, gerando uma crise existencial e filosófica.',
+ 'assets/img/livros/a_paixao_segundo_gh.jpg'),
+
+('Geografia', 'Sophia de Mello Breyner Andresen',
+ 'Livro de poesia que explora a relação do ser humano com o espaço, a natureza, a justiça e a busca pela lucidez.',
+ 'assets/img/livros/geografia.jpg'),
+
+('Balada de Amor ao Vento', 'Paulina Chiziane',
+ 'Narrativa moçambicana sobre as dores e os encantos de um amor trágico, marcada pelas pressões de uma sociedade patriarcal.',
+ 'assets/img/livros/balada_de_amor_ao_vento.jpg'),
+
+('Canção para Ninar Menino Grande', 'Conceição Evaristo',
+ 'Romance que investiga as contradições da masculinidade negra e as teias afetivas de mulheres marcadas por vivências intensas.',
+ 'assets/img/livros/cancao_para_ninar_menino_grande.jpg'),
+
+('A Visão das Plantas', 'Djaimilia Pereira de Almeida',
+ 'A história de um ex-traficante de escravizados que retorna a Portugal e passa a velhice dedicando-se de forma obsessiva ao seu jardim.',
+ 'assets/img/livros/a_visao_das_plantas.jpg'),
+ 
+ 
+ 
+-- UNICAMP 
+
+('A Vida Não é Útil', 'Ailton Krenak', 
+'Ensaios que criticam as bases da civilização ocidental, o consumo desenfreado e propõem uma profunda reconexão com a Terra.', 
+'assets/img/livros/a_vida_nao_e_util.jpg'),
+
+('Memórias Póstumas de Brás Cubas', 'Machado de Assis', 
+'Romance realista narrado por um defunto autor que satiriza com ironia a hipocrisia e os privilégios da elite brasileira do século XIX.', 
+'assets/img/livros/memorias_postumas_de_bras_cubas.jpg'),
+
+('No seu Pescoço', 'Chimamanda Ngozi Adichie', 
+'Coletânea de contos que abordam a imigração, os choques culturais, o racismo e as complexas dinâmicas sociais entre Nigéria e Estados Unidos.', 
+'assets/img/livros/no_seu_pescoco.jpg'),
+
+('Olhos d''Água', 'Conceição Evaristo', 
+'Contos marcados pelo conceito de escrevivência que retratam a violência, a ancestralidade e a resistência da população negra urbana.', 
+'assets/img/livros/olhos_dagua.jpg'),
+
+('Os Funerais da Mamãe Grande', 'Gabriel García Márquez', 
+'Contos de realismo fantástico que giram em torno do universo mítico de Macondo e trazem críticas ao poder oligárquico na América Latina.', 
+'assets/img/livros/os_funerais_da_mamae_grande.jpg'),
+
+('Prosas Seguidas de Odes Mínimas', 'José Paulo Paes', 
+'Reunião de textos poéticos e em prosa marcados pela concisão formal, pelo lirismo crítico, humor e reflexões do cotidiano.', 
+'assets/img/livros/prosas_seguidas_de_odes_minimas.jpg'),
+
+('Vida e Morte de M. J. Gonzaga de Sá', 'Lima Barreto', 
+'Romance satírico que critica a burocracia estatal, o preconceito racial e as transformações urbanas do Rio de Janeiro no início do século XX.', 
+'assets/img/livros/vida_e_morte_de_m_j_gonzaga_de_sa.jpg'),
+
+('Morangos Mofados', 'Caio Fernando Abreu', 
+'Seleção de contos que capturam a angústia existencial, a contracultura e o desejo de afeto de uma juventude sufocada durante a ditadura militar.', 
+'assets/img/livros/morangos_mofados.jpg'),
+
+('Canções Escolhidas', 'Paulo César Pinheiro', 
+'Coletânea de composições poéticas e musicais que exploram a identidade nacional, as tradições populares e as feridas sociais do Brasil.', 
+'assets/img/livros/cancoes_escolhidas.jpg'),
+
+
+
+-- ENEM
+
 ('Dom Casmurro', 'Machado de Assis',
- 'Bentinho narra sua vida e a dúvida sobre a suposta traição de Capitu com seu amigo Escobar.',
- 'assets/img/livros/domcasmurro.jpg'),
+'Análise da elite carioca do século XIX marcada pela dubiedade da traição, ironia refinada e a desconstrução psicológica das relações humanas sob a ótica de um narrador não confiável.',
+'assets/img/livros/dom_casmurro.jpg'),
+
+('Memórias Póstumas de Brás Cubas', 'Machado de Assis',
+'Romance realista narrado por um defunto autor que satiriza com ironia a hipocrisia, o parasitismo e os privilégios da elite aristocrática brasileira do século XIX.',
+'assets/img/livros/memorias_postumas_de_bras_cubas.jpg'),
 
 ('Vidas Secas', 'Graciliano Ramos',
- 'A saga da família de retirantes de Fabiano, Sinhá Vitória, seus dois filhos e a cachorra Baleia no sertão nordestino.',
-'assets/img/livros/domcasmurro.jpg'),
+'Romance regionalista modernista que denuncia o sofrimento da miséria, a opressão social, a desumanização e a migração forçada de uma família de retirantes no sertão nordestino.',
+'assets/img/livros/vidas_secas.jpg'),
+
+('A Hora da Estrela', 'Clarice Lispector',
+'Narrativa existencialista que acompanha a invisibilidade social, a alienação urbana e a pobreza da jovem nordestina Macabéa sob o olhar de um escritor reflexivo.',
+'assets/img/livros/a_hora_da_estrela.jpg'),
+
+('Quarto de Despejo: Diário de uma Favelada', 'Carolina Maria de Jesus',
+'Relato autobiográfico em formato de diário que expõe de forma crua as mazelas da fome, da extrema pobreza, do racismo e da exclusão socioeconômica na favela de São Paulo.',
+'assets/img/livros/quarto_de_despejo.jpg'),
 
 ('O Cortiço', 'Aluísio Azevedo',
- 'Retrato do naturalismo brasileiro, mostrando a vida em um cortiço do Rio de Janeiro e a ascensão de João Romão.',
-'assets/img/livros/domcasmurro.jpg');
+'Romance naturalista que retrata a habitação coletiva carioca como um organismno vivo onde o meio social, o determinismo biológico e a exploração degradam os indivíduos.',
+'assets/img/livros/o_cortico.jpg'),
+
+('Capitães da Areia', 'Jorge Amado',
+'Narrativa engajada que denuncia o abandono e a criminalização de um grupo de meninos de rua em Salvador, destacando a desigualdade e a busca por afeto.',
+'assets/img/livros/capitaes_da_areia.jpg'),
+
+('Morte e Vida Severina', 'João Cabral de Melo Neto',
+'Auto de natal em poesia que acompanha a jornada fúnebre do retirante Severino, enfrentando o ciclo contínuo de fome, seca e opressão até o reencontro com a esperança.',
+'assets/img/livros/morte_e_vida_severina.jpg');
+
+
  
  
 -- =========================================================================
@@ -774,14 +875,40 @@ INSERT INTO livro_vestibular (id_livro, vestibular)
 SELECT id_livro, v.vest
 FROM livro
 JOIN (
-    SELECT 'Dom Casmurro' AS titulo, 'fuvest'  AS vest UNION ALL
-    SELECT 'Dom Casmurro',           'enem'            UNION ALL
-    SELECT 'Vidas Secas',            'unicamp'         UNION ALL
-    SELECT 'Vidas Secas',            'enem'            UNION ALL
-    SELECT 'O Cortiço',              'fuvest'          UNION ALL
-    SELECT 'O Cortiço',              'vunesp'
-) v ON v.titulo = livro.titulo;
+    -- FUVEST
+    SELECT 'Opúsculo Humanitário' AS titulo, 'fuvest' AS vest UNION ALL
+    SELECT 'Nebulosas', 'fuvest' UNION ALL
+    SELECT 'Memórias de Martha', 'fuvest' UNION ALL
+    SELECT 'Caminho de Pedras', 'fuvest' UNION ALL
+    SELECT 'A Paixão Segundo G. H.', 'fuvest' UNION ALL
+    SELECT 'Geografia', 'fuvest' UNION ALL
+    SELECT 'Balada de Amor ao Vento', 'fuvest' UNION ALL
+    SELECT 'Canção para Ninar Menino Grande', 'fuvest' UNION ALL
+    SELECT 'A Visão das Plantas', 'fuvest' UNION ALL
 
+    -- UNICAMP
+    SELECT 'A Vida Não é Útil', 'unicamp' UNION ALL
+    SELECT 'Memórias Póstumas de Brás Cubas', 'unicamp' UNION ALL
+    SELECT 'No seu Pescoço', 'unicamp' UNION ALL
+    SELECT 'Olhos d''Água', 'unicamp' UNION ALL
+    SELECT 'Os Funerais da Mamãe Grande', 'unicamp' UNION ALL
+    SELECT 'Prosas Seguidas de Odes Mínimas', 'unicamp' UNION ALL
+    SELECT 'Vida e Morte de M. J. Gonzaga de Sá', 'unicamp' UNION ALL
+    SELECT 'Morangos Mofados', 'unicamp' UNION ALL
+    SELECT 'Canções Escolhidas', 'unicamp' UNION ALL
+
+    -- ENEM
+    SELECT 'Dom Casmurro', 'enem' UNION ALL
+    SELECT 'Memórias Póstumas de Brás Cubas', 'enem' UNION ALL
+    SELECT 'Vidas Secas', 'enem' UNION ALL
+    SELECT 'A Hora da Estrela', 'enem' UNION ALL
+    SELECT 'Quarto de Despejo: Diário de uma Favelada', 'enem' UNION ALL
+    SELECT 'O Cortiço', 'enem' UNION ALL
+    SELECT 'Capitães da Areia', 'enem' UNION ALL
+    SELECT 'Morte e Vida Severina', 'enem' UNION ALL
+    SELECT 'Olhos d''Água', 'enem' UNION ALL
+    SELECT 'Canção para Ninar Menino Grande', 'enem'
+) v ON v.titulo = livro.titulo;
 
 
 UPDATE usuario SET tipo = 'admin' WHERE email = 'joao@phronesis.com';

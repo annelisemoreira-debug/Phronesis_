@@ -129,24 +129,6 @@ $stmt->close();
                     <li><button type="button" class="status-btn" data-status-filter="favoritas"><i class="fa-solid fa-bookmark ic-fav"></i>Favoritas</button></li>
                 </ul>
             </section>
-
-            <section class="side-bloco">
-                <div class="side-linha">
-                    <h2 class="side-titulo">Meus favoritos</h2>
-                    <a class="ver-todos" href="../favoritos.php">Ver todos</a> <!-- AJUSTE o link -->
-                </div>
-                <?php if (empty($videosFav)): ?>
-                    <p class="side-vazio">Nenhum vídeo favoritado ainda.</p>
-                <?php else: ?>
-                    <?php foreach ($videosFav as $v): ?>
-                        <a class="video-fav" href="https://www.youtube.com/watch?v=<?= e($v['video_id']) ?>" target="_blank" rel="noopener">
-                            <img src="https://img.youtube.com/vi/<?= e($v['video_id']) ?>/mqdefault.jpg" alt="" loading="lazy">
-                            <span><?= e($v['titulo_video'] ?: 'Vídeo') ?></span>
-                            <i class="fa-solid fa-bookmark"></i>
-                        </a>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </section>
         </aside>
 
         <!-- ================= CONTEÚDO ================= -->
