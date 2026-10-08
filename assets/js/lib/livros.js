@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
             b.classList.toggle('ativo', b.dataset.setStatus === (cardAberto.dataset.status || 'nao_iniciada')));
         const fav = cardAberto.dataset.fav === '1';
         mFav.classList.toggle('ativo', fav);
-        mFav.querySelector('span').textContent = fav ? 'Favoritada' : 'Favoritar';
+        mFav.querySelector('span').textContent = fav ? 'Favoritado' : 'Favoritar';
     }
 
     function abrirModal(card) {

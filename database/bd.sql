@@ -588,6 +588,18 @@ select * from favoritos
 drop database phronesis
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 --alteração 08/10
 CREATE DATABASE IF NOT EXISTS phronesis;
 USE phronesis;
