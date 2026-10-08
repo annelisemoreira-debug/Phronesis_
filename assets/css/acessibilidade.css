@@ -15,7 +15,6 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px 0;
-    transition: background-color 0.3s ease;
 }
 
 .main-wrapper {
@@ -41,7 +40,6 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0; /* Impede a sidebar de espremer se a tela diminuir */
-    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -153,7 +151,6 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    transition: background-color 0.3s ease;
 }
 
 /* --- BANNER SUPERIOR --- */
