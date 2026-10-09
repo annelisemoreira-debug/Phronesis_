@@ -140,6 +140,38 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                     </li>
                 </ul>
 
+                            <nav class="sidebar-nav">
+                <!-- Navegação entre páginas (só PC) -->
+                <div class="nav-desktop">
+                    <p class="nav-title">Navegação</p>
+                    <ul>
+                        <li>
+                            <a href="../index.php">
+                                <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+                                <span class="nav-text">Início</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/livros.php">
+                                <span class="nav-icon"><i class="fa-solid fa-book"></i></span>
+                                <span class="nav-text">Biblioteca</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/material.php">
+                                <span class="nav-icon"><i class="fa-solid fa-tv"></i></span>
+                                <span class="nav-text">Material</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/cronograma.php">
+                                <span class="nav-icon"><i class="fa-regular fa-calendar-days"></i></span>
+                                <span class="nav-text">Cronogramas</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
                 <?php if (isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1)): ?>
                     <p class="nav-title">ADMINISTRAÇÃO</p>
                     <ul>

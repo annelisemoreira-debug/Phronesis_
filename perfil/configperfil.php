@@ -187,7 +187,8 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Phronesis</title>
-    <link rel="stylesheet" href="../assets/css/configperfil.css">
+    <?php $verCss = @filemtime(__DIR__ . '/../assets/css/configperfil.css') ?: time(); ?>
+<link rel="stylesheet" href="../assets/css/configperfil.css?v=<?php echo $verCss; ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
@@ -267,7 +268,6 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                 </div>
             </div>
 
-            <nav class="sidebar-nav">
                 <p class="nav-title">CONTA PESSOAL</p>
                 <ul>
                     <li>
@@ -284,6 +284,39 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                     </li>
                 </ul>
 
+                            <nav class="sidebar-nav">
+                <!-- Navegação entre páginas (só PC) -->
+                <div class="nav-desktop">
+                    <p class="nav-title">Navegação</p>
+                    <ul>
+                        <li>
+                            <a href="../index.php">
+                                <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+                                <span class="nav-text">Início</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/livros.php">
+                                <span class="nav-icon"><i class="fa-solid fa-book"></i></span>
+                                <span class="nav-text">Biblioteca</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/material.php">
+                                <span class="nav-icon"><i class="fa-solid fa-tv"></i></span>
+                                <span class="nav-text">Material</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/cronograma.php">
+                                <span class="nav-icon"><i class="fa-regular fa-calendar-days"></i></span>
+                                <span class="nav-text">Cronogramas</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+
                 <?php if (isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1)): ?>
                     <p class="nav-title">ADMINISTRAÇÃO</p>
                     <ul>
@@ -295,6 +328,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                         </li>
                     </ul>
                 <?php endif; ?>
+                
                 </ul>
             </nav>
         </aside>
