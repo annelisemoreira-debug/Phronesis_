@@ -485,3 +485,4 @@ html.font-grande { font-size: 130%; }
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
 }
+}
