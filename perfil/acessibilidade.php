@@ -88,6 +88,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
         $verJs  = @filemtime(__DIR__ . '/../assets/js/lib/acessibilidade.js') ?: time();
     ?>
     <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=<?php echo $verCss; ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     
     <script src="../assets/js/lib/acessibilidade.js?v=<?php echo $verJs; ?>"></script>
@@ -150,34 +151,6 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                         </li>
                     </ul>
                 <?php endif; ?>
-
-                <p class="nav-title">Voltar</p>
-                <ul>
-                    <li>
-                        <a href="../index.php">
-                            <span class="nav-icon">🏠</span>
-                            <span class="nav-text">Início</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/livros.php">
-                            <span class="nav-icon">📚</span>
-                            <span class="nav-text">Livros</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/material.php">
-                            <span class="nav-icon">📝</span>
-                            <span class="nav-text">Matérias</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/cronograma.php">
-                            <span class="nav-icon">📅</span>
-                            <span class="nav-text">Cronograma</span>
-                        </a>
-                    </li>
-                </ul>
             </nav>
         </aside>
 
@@ -246,6 +219,25 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
             </div>
         </main>
     </div>
+
+        <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <nav class="bottom-nav" aria-label="Navegação principal">
+        <a href="../index.php" class="bn-item">
+            <i class="fa-solid fa-house"></i><span>Início</span>
+        </a>
+        <a href="../pages/livros.php" class="bn-item">
+            <i class="fa-solid fa-book"></i><span>Biblioteca</span>
+        </a>
+        <a href="../pages/material.php" class="bn-item">
+            <i class="fa-solid fa-tv"></i><span>Material</span>
+        </a>
+        <a href="../pages/cronograma.php" class="bn-item">
+            <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
+        </a>
+        <a href="configperfil.php" class="bn-item ativo" aria-current="page">
+            <i class="fa-regular fa-user"></i><span>Perfil</span>
+        </a>
+    </nav>
 
     <?php include 'vlibras.php'; ?>
 </body>

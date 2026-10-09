@@ -189,6 +189,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <title>Meu Perfil - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/configperfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
     <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
@@ -294,33 +295,6 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                         </li>
                     </ul>
                 <?php endif; ?>
-
-                <p class="nav-title">VOLTAR</p>
-                <ul>
-                    <li>
-                        <a href="../index.php">
-                            <span class="nav-icon">🏠</span> 
-                            <span class="nav-text">Início</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/livros.php">
-                            <span class="nav-icon">📚</span> 
-                            <span class="nav-text">Livros</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/material.php">
-                            <span class="nav-icon">📝</span> 
-                            <span class="nav-text">Matérias</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/cronograma.php">
-                            <span class="nav-icon">📅</span> 
-                            <span class="nav-text">Cronograma</span>
-                        </a>
-                    </li>
                 </ul>
             </nav>
         </aside>
@@ -462,6 +436,25 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         var isGoogleUser = <?php echo $isGoogleUser ? 'true' : 'false'; ?>;
     </script>
     <script src="../assets/js/lib/configperfil.js" defer></script>
+
+        <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <nav class="bottom-nav" aria-label="Navegação principal">
+        <a href="../index.php" class="bn-item">
+            <i class="fa-solid fa-house"></i><span>Início</span>
+        </a>
+        <a href="../pages/livros.php" class="bn-item">
+            <i class="fa-solid fa-book"></i><span>Biblioteca</span>
+        </a>
+        <a href="../pages/material.php" class="bn-item">
+            <i class="fa-solid fa-tv"></i><span>Material</span>
+        </a>
+        <a href="../pages/cronograma.php" class="bn-item">
+            <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
+        </a>
+        <a href="configperfil.php" class="bn-item ativo" aria-current="page">
+            <i class="fa-regular fa-user"></i><span>Perfil</span>
+        </a>
+    </nav>
 
     <?php include 'vlibras.php'; ?>
 </body>

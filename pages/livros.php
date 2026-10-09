@@ -237,6 +237,9 @@ $stmt->close();
         <a href="livros.php" class="bn-item ativo" aria-current="page">
             <i class="fa-solid fa-book"></i><span>Biblioteca</span>
         </a>
+        <a href="material.php" class="bn-item">
+            <i class="fa-solid fa-tv"></i><span>Material</span>
+        </a>
         <a href="cronograma.php" class="bn-item">
             <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
         </a>

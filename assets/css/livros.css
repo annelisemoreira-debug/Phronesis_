@@ -446,7 +446,7 @@ html.font-grande { font-size: 130%; }
         position: fixed;
         left: 0; right: 0; bottom: 0;
         z-index: 900;
-        background: var(--panel);
+        background: #272530;
         border-top: 1px solid var(--line);
         box-shadow: 0 -4px 16px rgba(0, 0, 0, .12);
         padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
@@ -465,8 +465,8 @@ html.font-grande { font-size: 130%; }
         padding: 4px 0;
     }
     .bn-item i { font-size: 1.15rem; }
-    .bn-item.ativo { color: var(--purple); }
-    html.dark-theme .bn-item.ativo { color: #b58cff; }
+    html.dark-theme .bn-item { color: #b0aec2; }
+    html.dark-theme .bn-item.ativo { color: #bfa2ff; }
 }
 
 /* Celulares bem pequenos */
