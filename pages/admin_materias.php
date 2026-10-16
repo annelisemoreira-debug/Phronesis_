@@ -353,10 +353,10 @@ if ($res_topicos) {
                 <p>Adicione a primeira obra para ela aparecer na página de leituras.</p>
             </div>
         <?php else: ?>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
+                <div class="table-wrapper tabela-livros <?= count($livros) > 5 ? 'rolagem' : '' ?>">
+                    <table>
+                        <thead>
+                            <tr>
                             <th style="width: 10%;">Capa</th>
                             <th style="width: 40%;">Obra</th>
                             <th style="width: 30%;">Vestibulares</th>

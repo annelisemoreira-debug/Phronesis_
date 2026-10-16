@@ -125,4 +125,23 @@ document.addEventListener('DOMContentLoaded', function () {
         const r = dlg.getBoundingClientRect();
         if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
     });
+
+    // === 7. ROLAGEM DA LISTA DE LIVROS (após o 5º) ===
+function ajustarRolagemLivros() {
+    const wrap = document.querySelector('.tabela-livros.rolagem');
+    if (!wrap) return;
+
+    const linhas = wrap.querySelectorAll('tbody tr');
+    if (linhas.length <= 5) return;
+
+    let altura = wrap.querySelector('thead').offsetHeight;
+    for (let i = 0; i < 5; i++) altura += linhas[i].offsetHeight;
+
+    wrap.style.maxHeight = altura + 'px';
+}
+
+document.addEventListener('DOMContentLoaded', ajustarRolagemLivros);
+window.addEventListener('load', ajustarRolagemLivros);
+window.addEventListener('resize', ajustarRolagemLivros);
 });
+

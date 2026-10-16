@@ -358,6 +358,30 @@ body.dark-theme .input-inline {
 
 /* ===== ADICIONE AO FINAL DE assets/css/admin_materias.css ===== */
 
+/* Rolagem da lista de livros (após o 5º) */
+.tabela-livros.rolagem {
+    overflow-y: auto;
+    max-height: 510px; /* fallback; o JS ajusta para a altura exata de 5 linhas */
+    scrollbar-width: thin;
+    scrollbar-color: var(--purple-main) transparent;
+}
+
+/* Cabeçalho fixo enquanto rola */
+.tabela-livros.rolagem thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* Scrollbar (Chrome/Edge/Safari) */
+.tabela-livros.rolagem::-webkit-scrollbar { width: 8px; }
+.tabela-livros.rolagem::-webkit-scrollbar-track { background: transparent; }
+.tabela-livros.rolagem::-webkit-scrollbar-thumb {
+    background: var(--purple-main);
+    border-radius: 999px;
+}
+.tabela-livros.rolagem::-webkit-scrollbar-thumb:hover { background: var(--purple-hover); }
+
 /* O segundo card precisa de espaço em relação ao primeiro */
 .card-livros { margin-top: 30px; }
 
