@@ -15,6 +15,8 @@
     --purple: #8654f3;
     --gold: #f5b100;
     --shadow: 0 4px 18px rgba(80, 40, 160, 0.10);
+    --lista-altura: min(68vh, 640px);
+    --cabecalho-altura: 44px;
 }
 
 html.dark-theme {
@@ -171,7 +173,7 @@ html.dark-theme .banner .banner-dark { display: block; }
 /* ---------- Lista de obras ---------- */
 .lista-obras {
     display: flex; flex-direction: column; gap: 14px;
-    max-height: min(68vh, 640px); overflow-y: auto; padding-right: 14px;
+    max-height: var(--lista-altura); overflow-y: auto; padding-right: 14px;
 }
 .lista-obras::-webkit-scrollbar { width: 9px; }
 .lista-obras::-webkit-scrollbar-track { background: #fffae6; border-radius: 20px; }
@@ -478,7 +480,7 @@ html.font-grande { font-size: 130%; }
 
 /* Celulares bem pequenos */
 @media (max-width: 380px) {
-    .aba { font-size: 0.66rem; padding: 6px 4px; }
+    .aba { font-size: 0.66rem; padding: 6px 4px; }  
     .livro-capa { flex-basis: 58px; height: 84px; }
 }
 

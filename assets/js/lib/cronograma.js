@@ -16,6 +16,44 @@ const DIAS_MAP = [
     if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark-theme');
     }
+
+    
+})();
+
+// ===== MENU LATERAL (DRAWER) NO CELULAR =====
+(function () {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const btnFechar = document.getElementById('btnFecharSidebar');
+    if (!sidebar || !overlay || !btnFechar) return;
+
+    const ehCelular = () => window.matchMedia('(max-width: 768px)').matches;
+
+    function abrirMenu() {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        document.body.classList.add('menu-open');
+    }
+    function fecharMenu() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    }
+
+    // Intercepta o hambúrguer do header (só no celular)
+    document.addEventListener('click', (e) => {
+        if (!ehCelular() || !e.target.closest('#hamburgerBtn')) return;
+        e.stopPropagation();
+        sidebar.classList.contains('active') ? fecharMenu() : abrirMenu();
+    }, true);
+
+    overlay.addEventListener('click', fecharMenu);
+    btnFechar.addEventListener('click', fecharMenu);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) fecharMenu();
+    });
+    window.addEventListener('resize', () => { if (!ehCelular()) fecharMenu(); });
 })();
 
 function obterDiasSelecionados() {
@@ -233,6 +271,59 @@ function salvarProgressoTopico(element) {
 
 // Inicialização dos Event Listeners após o carregamento do DOM
 document.addEventListener("DOMContentLoaded", function() {
+
+    // ----- Dropdown de matérias (mobile) -----
+const btnDrop = document.getElementById('btnDropMaterias');
+const listaMat = document.getElementById('listaMaterias');
+const labelMat = document.getElementById('labelMaterias');
+
+function atualizarLabelMaterias() {
+    if (!labelMat || !listaMat) return;
+    const n = listaMat.querySelectorAll('input:checked').length;
+    labelMat.textContent = n === 0
+        ? 'Selecione as matérias que deseja estudar…'
+        : `${n} matéria${n > 1 ? 's' : ''} selecionada${n > 1 ? 's' : ''}`;
+}
+if (btnDrop && listaMat) {
+    btnDrop.addEventListener('click', () => {
+        btnDrop.classList.toggle('aberto');
+        listaMat.classList.toggle('aberto');
+    });
+    listaMat.addEventListener('change', atualizarLabelMaterias);
+    atualizarLabelMaterias();
+}
+
+// ----- Filtro de matérias pelo menu hambúrguer -----
+const checksMenu = document.querySelectorAll('.mm-check');
+function aplicarFiltroMaterias() {
+    checksMenu.forEach(chk => {
+        const row = document.querySelector(`#listaMaterias [data-materia-id="${chk.value}"]`);
+        if (!row) return;
+        row.style.display = chk.checked ? '' : 'none';
+        if (!chk.checked) row.querySelector('input').checked = false;
+    });
+    atualizarLabelMaterias();
+}
+checksMenu.forEach(chk => chk.addEventListener('change', aplicarFiltroMaterias));
+document.getElementById('btnVerTodas')?.addEventListener('click', () => {
+    checksMenu.forEach(c => c.checked = true);
+    aplicarFiltroMaterias();
+});
+
+// ----- Visualização do Google Agenda (celular/tablet) -----
+const iframeAgenda = document.querySelector('.calendar-embed');
+const botoesModo = document.querySelectorAll('.view-toggle button');
+if (iframeAgenda && botoesModo.length) {
+    const base = iframeAgenda.src.replace(/&mode=\w+/, '');
+    const definirModo = (modo) => {
+        iframeAgenda.src = base + '&mode=' + modo;
+        botoesModo.forEach(b => b.classList.toggle('ativo', b.dataset.mode === modo));
+    };
+    botoesModo.forEach(b => b.addEventListener('click', () => definirModo(b.dataset.mode)));
+    // No celular o modo "Agenda" (lista) é bem mais legível que o mês
+    definirModo(window.innerWidth < 700 ? 'AGENDA' : 'MONTH');
+}
+
         // --- VALIDAÇÃO DO LIMITE DE 24H ANTES DE ENVIAR ---
     const formCronograma = document.getElementById('formCronograma');
 

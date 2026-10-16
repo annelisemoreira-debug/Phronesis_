@@ -1,10 +1,22 @@
-/* --- RESET E DESIGN BASE SYSTEM --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* ==========================================================================
+   ADMIN: LEITURAS OBRIGATÓRIAS + MATÉRIAS E TÓPICOS
+   Sumário:
+   1. Variáveis (claro / escuro)
+   2. Reset e base
+   3. Layout: container, cards, cabeçalho, alerta
+   4. Botões
+   5. Formulário de matéria
+   6. Formulário de livro (campos, chips, upload)
+   7. Tabelas (base, ações, edição inline)
+   8. Livros: miniatura, tags, rolagem
+   9. Matérias: painel de tópicos
+   10. Estado vazio
+   11. Janela de edição (dialog)
+   12. Link "Voltar"
+   13. Responsivo
+   ========================================================================== */
 
+/* 1. VARIÁVEIS */
 :root {
     --bg-system: #cbb4f9;
     --card-bg: #fbf9ff;
@@ -21,19 +33,21 @@
     --btn-del-color: #dc2626;
     --btn-del-bg: #fee2e2;
     --btn-del-hover: #fecaca;
+    --btn-edit-color: #0284c7;
+    --btn-edit-bg: #e0f2fe;
+    --btn-edit-hover: #bae6fd;
     --table-th-bg: #f3e8ff;
     --table-th-color: #6d28d9;
     --table-border: #f1f5f9;
 }
 
-html.dark-theme, body.dark-theme {
+html.dark-theme,
+body.dark-theme {
     --bg-system: #121118;
     --card-bg: #1e1b26;
     --text-primary: #ffffff;
     --text-body: #cbd5e1;
     --text-muted: #64748b;
-    --purple-main: #7c3aed;
-    --purple-hover: #6d28d9;
     --icon-box-bg: #2d263f;
     --icon-box-color: #b77eff;
     --input-bg: #16141d;
@@ -42,9 +56,19 @@ html.dark-theme, body.dark-theme {
     --btn-del-color: #f87171;
     --btn-del-bg: #3b1818;
     --btn-del-hover: #582323;
+    --btn-edit-color: #38bdf8;
+    --btn-edit-bg: #14283b;
+    --btn-edit-hover: #1e3a5f;
     --table-th-bg: #252136;
     --table-th-color: #b77eff;
     --table-border: #23202e;
+}
+
+/* 2. RESET E BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -54,7 +78,7 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-/* --- CONTAINER DO CARD CENTRAL --- */
+/* 3. LAYOUT */
 .main-container {
     max-width: 1200px;
     margin: 50px auto 0 auto;
@@ -68,24 +92,18 @@ body {
     box-shadow: 0 10px 25px rgba(121, 40, 202, 0.15);
 }
 
-/* CARD HEADER */
+/* Cards separados, com respiro entre eles */
+.card-principal + .card-principal {
+    margin-top: 32px;
+}
+
 .card-header {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 30px;
-}
-
-.icon-purple-box {
-    background-color: var(--icon-box-bg);
-    color: var(--icon-box-color);
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 22px;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--input-border);
 }
 
 .card-header h2 {
@@ -100,19 +118,65 @@ body {
     font-weight: 400;
 }
 
-/* ALERT FEEDBACK */
+.icon-purple-box {
+    background-color: var(--icon-box-bg);
+    color: var(--icon-box-color);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
 .alert-message {
     background-color: var(--icon-box-bg);
     color: var(--table-th-color);
     padding: 12px 20px;
-    border-radius: 10px;
     border: 1px solid var(--input-border);
+    border-radius: 10px;
     margin-bottom: 25px;
     font-size: 13px;
     font-weight: 500;
 }
 
-/* FORMULÁRIO DE INSERÇÃO */
+/* 4. BOTÕES */
+.btn-adicionar {
+    background-color: var(--purple-main);
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-adicionar:hover {
+    background-color: var(--purple-hover);
+    transform: translateY(-1px);
+}
+
+.btn-salvar,
+.btn-cancelar {
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+.btn-salvar { background: #0284c7; }
+.btn-cancelar { background: #64748b; }
+
+/* 5. FORMULÁRIO DE MATÉRIA */
 .input-group-append {
     display: flex;
     gap: 15px;
@@ -137,27 +201,101 @@ input[type="text"].input-materia:focus {
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
 }
 
-.btn-adicionar {
-    background-color: var(--purple-main);
-    color: white;
-    border: none;
-    padding: 0 30px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+/* 6. FORMULÁRIO DE LIVRO */
+.form-livro {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 25px;
+}
+
+.grid-livro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.campo-livro {
+    width: 100%;
+    padding: 13px 18px;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    border-radius: 10px;
+    color: var(--text-body);
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    resize: vertical;
     transition: all 0.2s ease;
 }
 
-.btn-adicionar:hover {
-    background-color: var(--purple-hover);
-    transform: translateY(-1px);
+.campo-livro:focus {
+    border-color: var(--purple-main);
+    background-color: var(--input-bg-focus);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
 }
 
-/* Tabela Estilizada */
+/* Vestibulares como chips marcáveis */
+.vest-checks {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.chip-check input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.chip-check span {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chip-check input:checked + span {
+    background: var(--purple-main);
+    border-color: var(--purple-main);
+    color: #fff;
+}
+
+.chip-check input:focus-visible + span {
+    outline: 3px solid var(--purple-main);
+    outline-offset: 2px;
+}
+
+.linha-envio {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.upload-capa {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-body);
+    cursor: pointer;
+}
+.upload-capa i { color: var(--icon-box-color); }
+.upload-capa input[type="file"] {
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 260px;
+}
+
+/* 7. TABELAS */
 .table-wrapper {
     background: var(--input-bg-focus);
     border: 1px solid var(--input-border);
@@ -189,11 +327,9 @@ td {
     vertical-align: middle;
 }
 
-tr:last-child td {
-    border-bottom: none;
-}
+tr:last-child td { border-bottom: none; }
 
-/* Ações da Tabela */
+/* Botões de ação */
 .action-buttons {
     display: flex;
     gap: 10px;
@@ -213,18 +349,27 @@ tr:last-child td {
     transition: all 0.2s ease;
 }
 
-.btn-table-edit { background-color: #e0f2fe; color: #0284c7; }
-.btn-table-edit:hover { background-color: #bae6fd; }
-.btn-table-del { background-color: var(--btn-del-bg); color: var(--btn-del-color); font-weight: bold; font-size: 16px; }
+.btn-table-edit { background-color: var(--btn-edit-bg); color: var(--btn-edit-color); }
+.btn-table-edit:hover { background-color: var(--btn-edit-hover); }
+
+.btn-table-del {
+    background-color: var(--btn-del-bg);
+    color: var(--btn-del-color);
+    font-weight: bold;
+    font-size: 16px;
+}
 .btn-table-del:hover { background-color: var(--btn-del-hover); }
 
-body.dark-theme .btn-table-edit { background-color: #14283b; color: #38bdf8; }
-body.dark-theme .btn-table-edit:hover { background-color: #1e3a5f; }
+.btn-table-topicos {
+    background-color: var(--icon-box-bg);
+    color: var(--icon-box-color);
+}
+.btn-table-topicos:hover { opacity: 0.8; }
 
-/* Edição Inline */
+/* Edição inline */
 .input-inline {
     padding: 8px 12px;
-    border: 1px solid #0284c7;
+    border: 1px solid var(--btn-edit-color);
     background-color: var(--input-bg-focus);
     color: var(--text-primary);
     border-radius: 6px;
@@ -234,63 +379,118 @@ body.dark-theme .btn-table-edit:hover { background-color: #1e3a5f; }
     outline: none;
 }
 
-body.dark-theme .input-inline {
-    border-color: #38bdf8;
+/* 8. LIVROS */
+.thumb-livro {
+    width: 44px;
+    height: 62px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
 }
 
-.btn-salvar { background: #0284c7; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
-.btn-cancelar { background: #64748b; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+.thumb-vazio {
+    background: var(--icon-box-bg);
+    color: var(--icon-box-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-/* CSS extra para suportar o painel inline de tópicos na tabela do adm */
-.sub-row-topicos { 
-    display: none; 
-    background-color: var(--input-bg); 
+.tag-adm {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    margin: 2px 4px 2px 0;
+    border-radius: 6px;
+    border: 1.5px solid;
 }
-.box-topicos-adm { 
-    padding: 20px; 
-    border-top: 1px dashed var(--input-border); 
+.tag-adm-fuvest  { background: #d8f0ff; border-color: #3e93c9; color: #1d5f8a; }
+.tag-adm-unicamp { background: #fff6c9; border-color: #f0cf4a; color: #b08800; }
+.tag-adm-vunesp  { background: #d9f9e5; border-color: #1db97a; color: #0f7a4d; }
+.tag-adm-enem    { background: #ffd5cc; border-color: #c8402a; color: #9a2a17; }
+html.dark-theme .tag-adm-fuvest  { background: #17364a; color: #8dd4ff; }
+html.dark-theme .tag-adm-unicamp { background: #3d3510; color: #ffe066; }
+html.dark-theme .tag-adm-vunesp  { background: #123a29; color: #5fe0a6; }
+html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
+
+/* Rolagem da lista (após o 5º livro) */
+.tabela-livros.rolagem {
+    overflow-y: auto;
+    max-height: 510px; /* fallback; o JS ajusta para a altura exata de 5 linhas */
+    scrollbar-width: thin;
+    scrollbar-color: var(--purple-main) transparent;
 }
-.box-topicos-adm h4 { 
-    font-size: 14px; 
-    color: var(--text-primary); 
-    margin-bottom: 15px; 
+
+.tabela-livros.rolagem thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
-.lista-topicos-atuais { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 10px; 
-    margin-bottom: 20px; 
-    list-style: none; 
-    padding: 0; 
+
+.tabela-livros.rolagem::-webkit-scrollbar { width: 8px; }
+.tabela-livros.rolagem::-webkit-scrollbar-track { background: transparent; }
+.tabela-livros.rolagem::-webkit-scrollbar-thumb { background: var(--purple-main); border-radius: 999px; }
+.tabela-livros.rolagem::-webkit-scrollbar-thumb:hover { background: var(--purple-hover); }
+
+/* 9. MATÉRIAS: PAINEL DE TÓPICOS */
+.sub-row-topicos {
+    display: none;
+    background-color: var(--input-bg);
 }
-.tag-topico-adm { 
-    background-color: var(--card-bg); 
-    border: 1px solid var(--input-border); 
-    padding: 6px 12px; 
-    border-radius: 8px; 
-    font-size: 13px; 
-    color: var(--text-body); 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 10px; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+
+.box-topicos-adm {
+    padding: 20px;
+    border-top: 1px dashed var(--input-border);
 }
+
+.box-topicos-adm h4 {
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.lista-topicos-atuais {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.tag-topico-adm {
+    background-color: var(--card-bg);
+    border: 1px solid var(--input-border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-body);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
 .tag-topico-adm .btn-topic-edit {
-    color: #0284c7;
+    color: var(--btn-edit-color);
     cursor: pointer;
     font-size: 11px;
 }
-.tag-topico-adm .btn-topic-del { 
-    color: var(--btn-del-color); 
-    text-decoration: none; 
-    font-weight: bold; 
-    font-size: 15px; 
+
+.tag-topico-adm .btn-topic-del {
+    color: var(--btn-del-color);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
 }
-.form-add-topico-inline { 
-    display: flex; 
-    gap: 10px; 
-    max-width: 500px; 
+
+.form-add-topico-inline {
+    display: flex;
+    gap: 10px;
+    max-width: 500px;
 }
+
 .form-add-topico-inline input[type="text"] {
     flex: 1;
     padding: 10px 14px;
@@ -300,15 +500,8 @@ body.dark-theme .input-inline {
     color: var(--text-body);
     outline: none;
 }
-.btn-table-topicos { 
-    background-color: var(--icon-box-bg); 
-    color: var(--icon-box-color); 
-}
-.btn-table-topicos:hover {
-    opacity: 0.8;
-}
 
-/* ESTADO VAZIO DA TABELA */
+/* 10. ESTADO VAZIO */
 .empty-table-state {
     display: flex;
     flex-direction: column;
@@ -319,9 +512,12 @@ body.dark-theme .input-inline {
     background: var(--input-bg-focus);
 }
 
+.empty-table-state h4 { color: var(--text-primary); font-size: 15px; font-weight: 700; }
+.empty-table-state p  { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+
 .book-purple-icon {
     background-color: #9b51e0;
-    color: white;
+    color: #fff;
     width: 80px;
     height: 70px;
     border-radius: 12px 12px 25px 25px;
@@ -337,10 +533,27 @@ body.dark-theme .input-inline {
 .sparkle-1 { position: absolute; top: -15px; right: -15px; color: #fcd34d; font-size: 18px; }
 .sparkle-2 { position: absolute; top: 15px; left: -20px; color: #fcd34d; font-size: 14px; }
 
-.empty-table-state h4 { color: var(--text-primary); font-size: 15px; font-weight: 700; }
-.empty-table-state p { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+/* 11. JANELA DE EDIÇÃO */
+.dlg-livro {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: 92%;
+    max-width: 640px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: none;
+    border-radius: 16px;
+    padding: 28px;
+    background: var(--card-bg);
+    color: var(--text-body);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+.dlg-livro::backdrop { background: rgba(0, 0, 0, 0.45); }
+.dlg-livro h3 { color: var(--text-primary); font-size: 18px; }
+.dlg-livro .form-livro { margin-bottom: 0; }
 
-/* LINK VOLTAR */
+/* 12. LINK VOLTAR */
 .btn-back-home {
     display: inline-flex;
     align-items: center;
@@ -352,120 +565,17 @@ body.dark-theme .input-inline {
     font-weight: 600;
     transition: color 0.2s;
 }
-.btn-back-home:hover {
-    color: var(--purple-hover);
-}
+.btn-back-home:hover { color: var(--purple-hover); }
 
-/* ===== ADICIONE AO FINAL DE assets/css/admin_materias.css ===== */
-
-/* Rolagem da lista de livros (após o 5º) */
-.tabela-livros.rolagem {
-    overflow-y: auto;
-    max-height: 510px; /* fallback; o JS ajusta para a altura exata de 5 linhas */
-    scrollbar-width: thin;
-    scrollbar-color: var(--purple-main) transparent;
+/* 13. RESPONSIVO */
+@media (max-width: 768px) {
+    .main-container { margin-top: 20px; padding: 0 14px; }
+    .card-principal { padding: 22px 16px; }
+    .grid-livro { grid-template-columns: 1fr; }
+    .input-group-append { flex-direction: column; }
+    .btn-adicionar { justify-content: center; padding: 12px 20px; }
+    .table-wrapper { overflow-x: auto; }
+    .table-wrapper table { min-width: 520px; }
+    .linha-envio { flex-direction: column; align-items: stretch; }
+    .linha-envio .btn-adicionar { width: 100%; }
 }
-
-/* Cabeçalho fixo enquanto rola */
-.tabela-livros.rolagem thead th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-
-/* Scrollbar (Chrome/Edge/Safari) */
-.tabela-livros.rolagem::-webkit-scrollbar { width: 8px; }
-.tabela-livros.rolagem::-webkit-scrollbar-track { background: transparent; }
-.tabela-livros.rolagem::-webkit-scrollbar-thumb {
-    background: var(--purple-main);
-    border-radius: 999px;
-}
-.tabela-livros.rolagem::-webkit-scrollbar-thumb:hover { background: var(--purple-hover); }
-
-/* O segundo card precisa de espaço em relação ao primeiro */
-.card-livros { margin-top: 30px; }
-
-.form-livro { display: flex; flex-direction: column; gap: 14px; margin-bottom: 25px; }
-.grid-livro { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-.campo-livro {
-    width: 100%;
-    padding: 13px 18px;
-    border: 1px solid var(--input-border);
-    background-color: var(--input-bg);
-    border-radius: 10px;
-    color: var(--text-body);
-    font-family: inherit;
-    font-size: 14px;
-    outline: none;
-    resize: vertical;
-    transition: all 0.2s ease;
-}
-.campo-livro:focus {
-    border-color: var(--purple-main);
-    background-color: var(--input-bg-focus);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
-}
-
-/* Vestibulares como "chips" marcáveis */
-.vest-checks { display: flex; gap: 10px; flex-wrap: wrap; }
-.chip-check input { position: absolute; opacity: 0; pointer-events: none; }
-.chip-check span {
-    display: inline-block;
-    padding: 8px 18px;
-    border-radius: 999px;
-    border: 1.5px solid var(--input-border);
-    background: var(--input-bg);
-    color: var(--text-body);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.chip-check input:checked + span {
-    background: var(--purple-main);
-    border-color: var(--purple-main);
-    color: #fff;
-}
-.chip-check input:focus-visible + span { outline: 3px solid var(--purple-main); outline-offset: 2px; }
-
-.linha-envio { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-.btn-adicionar { padding: 12px 30px; }
-
-.upload-capa {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-size: 13px; color: var(--text-body); cursor: pointer;
-}
-.upload-capa i { color: var(--icon-box-color); }
-.upload-capa input[type="file"] { font-size: 12px; color: var(--text-muted); max-width: 260px; }
-
-/* Tabela de livros */
-.thumb-livro { width: 44px; height: 62px; object-fit: cover; border-radius: 6px; display: block; }
-.thumb-vazio {
-    background: var(--icon-box-bg); color: var(--icon-box-color);
-    display: flex; align-items: center; justify-content: center;
-}
-.tag-adm {
-    display: inline-block; font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 6px; margin: 2px 4px 2px 0; border: 1.5px solid;
-}
-.tag-adm-fuvest { background: #d8f0ff; border-color: #3e93c9; color: #1d5f8a; }
-.tag-adm-unicamp { background: #fff6c9; border-color: #f0cf4a; color: #b08800; }
-.tag-adm-vunesp { background: #d9f9e5; border-color: #1db97a; color: #0f7a4d; }
-.tag-adm-enem { background: #ffd5cc; border-color: #c8402a; color: #9a2a17; }
-html.dark-theme .tag-adm-fuvest { background: #17364a; color: #8dd4ff; }
-html.dark-theme .tag-adm-unicamp { background: #3d3510; color: #ffe066; }
-html.dark-theme .tag-adm-vunesp { background: #123a29; color: #5fe0a6; }
-html.dark-theme .tag-adm-enem { background: #451e18; color: #ff9b88; }
-
-/* Janela de edição */
-.dlg-livro {
-    position: fixed; inset: 0; margin: auto;
-    width: 92%; max-width: 640px; max-height: 90vh; overflow-y: auto;
-    border: none; border-radius: 16px; padding: 28px;
-    background: var(--card-bg); color: var(--text-body);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-}
-.dlg-livro::backdrop { background: rgba(0, 0, 0, 0.45); }
-.dlg-livro h3 { color: var(--text-primary); font-size: 18px; }
-.dlg-livro .form-livro { margin-bottom: 0; }

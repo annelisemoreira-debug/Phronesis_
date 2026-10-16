@@ -59,7 +59,7 @@ try {
     if ($modoEconomico) throw new Exception("Modo Econômico");
     $res = $youtube->search->listSearch('snippet', [
         'q'                 => $termoBuscaAPI,
-        'maxResults'        => 12,
+        'maxResults'        => 18,
         'type'              => 'video',
         'videoDuration'     => 'medium',
         'relevanceLanguage' => 'pt'
@@ -104,31 +104,40 @@ $paginaAtual = 'material';
         <img src="../assets/img/banners/escuroMateriais.webp" class="banner-img banner-dark" alt="Banner Materiais Escuro">
     </section>
 
-    <!-- BUSCA: centralizada abaixo do banner, expande ao clicar -->
-    <div class="busca-area">
-        <form class="busca-form <?= $busca !== '' ? 'aberta' : '' ?>" id="buscaForm" action="material.php" method="GET" role="search">
-            <button type="button" class="busca-toggle" id="buscaToggle" aria-label="Pesquisar vídeo" aria-expanded="<?= $busca !== '' ? 'true' : 'false' ?>">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-            <input type="search" name="search" id="searchInput" placeholder="Pesquisar vídeo..."
-                   maxlength="80" autocomplete="off" value="<?= e($busca) ?>">
-        </form>
-    </div>
+    <!-- nada entre o banner e o wrapper -->
 
     <div class="wrapper">
         <?php include __DIR__ . '/_material_sidebar.php'; ?>
 
         <div class="principalContent">
             <main class="areaContent">
+
+                <!-- ÚNICO cabeçalho: título + busca, dentro do card dos vídeos -->
                 <div class="video-header">
                     <h1 class="video-title">Materiais Complementares (<?= e($termoBuscaOriginal) ?>)</h1>
+
+                    <form class="busca-form" id="buscaForm" action="material.php" method="GET" role="search">
+                        <button type="submit" class="busca-toggle" aria-label="Pesquisar vídeo">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        <input type="search" name="search" id="searchInput" placeholder="Pesquisar vídeo..."
+                               maxlength="80" autocomplete="off" value="<?= e($busca) ?>">
+                    </form>
                 </div>
 
-                <div class="video-grid" id="videoGrid" data-lista>
-                    <?php foreach ($videos as $video):
-                        $vId = $video['id']['videoId'];
-                        renderVideoCard($vId, $video['snippet']['title'], in_array($vId, $meus_favs, true), in_array($vId, $meus_vistos, true));
-                    endforeach; ?>
+                <div class="video-scroll" id="videoScroll">
+                    <div class="video-grid" id="videoGrid" data-lista>
+                        <?php foreach ($videos as $video):
+                            $vId = $video['id']['videoId'];
+                            renderVideoCard($vId, $video['snippet']['title'], in_array($vId, $meus_favs, true), in_array($vId, $meus_vistos, true));
+                        endforeach; ?>
+                    </div>
+
+                    <div class="mais-wrap" id="maisWrap" hidden>
+                        <button type="button" class="btn-mais" id="btnMais">
+                            Mostrar mais <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
                 </div>
             </main>
         </div>

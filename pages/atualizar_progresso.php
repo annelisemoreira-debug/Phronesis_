@@ -49,7 +49,7 @@ try {
     $stmt->execute($params);
 
     // 1. Total de tópicos existentes para esta matéria específica (Ajuste o nome da tabela se não for 'cod_topicos')
-    $stmtTotalMateria = $pdo->prepare("SELECT COUNT(*) FROM cod_topicos WHERE id_materia = :id_materia");
+    $stmtTotalMateria = $pdo->prepare("SELECT COUNT(*) FROM materia_topico WHERE id_materia = :id_materia");
     $stmtTotalMateria->execute([':id_materia' => $id_materia]);
     $totalTopicosMateria = (int)$stmtTotalMateria->fetchColumn();
 
@@ -62,7 +62,7 @@ try {
     $porcentagemMateria = $totalTopicosMateria > 0 ? ($concluidosMateria / $totalTopicosMateria) * 100 : 0;
 
     // 3. Porcentagem Geral do Cronograma (Total de tópicos de todas as matérias envolvidas neste cronograma)
-    $stmtTotalGeral = $pdo->prepare("SELECT COUNT(*) FROM cod_topicos WHERE id_materia IN (SELECT DISTINCT id_materia FROM cronograma_topico_status WHERE id_cronograma = :id_cronograma)");
+    $stmtTotalGeral = $pdo->prepare("SELECT COUNT(*) FROM materia_topico WHERE id_materia IN (SELECT DISTINCT id_materia FROM cronograma_topico_status WHERE id_cronograma = :id_cronograma)");
     $stmtTotalGeral->execute([':id_cronograma' => $id_cronograma]);
     $totalTopicosGeral = (int)$stmtTotalGeral->fetchColumn();
 

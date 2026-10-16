@@ -34,7 +34,7 @@ try {
 }
 
 // Busca matérias para o formulário
-$sql = "SELECT id_materia, nome_materia FROM materia ORDER BY nome_materia ASC";
+$sql = "SELECT id_materia, nome_materia, cor_hex FROM materia ORDER BY nome_materia ASC";
 $consulta = $pdo->query($sql);
 $lista_materias_db = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
@@ -413,6 +413,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 <body>
 
     <?php include '../interface/header.php'; ?>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div id="confirmModal" class="modal" style="<?= $mostrar_modal ? 'display:flex;' : '' ?>">
         <div class="modal-content">
@@ -447,6 +448,12 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <h3><i class="fa-solid fa-calendar-days"></i> Agenda: <?= htmlspecialchars($titulo_exibir) ?></h3>
                     <a href="cronograma.php" class="btn-novo-crono">+ Novo Cronograma</a>
                 </div>
+
+                    <div class="view-toggle">
+                        <button type="button" data-mode="MONTH">Mês</button>
+                        <button type="button" data-mode="WEEK">Semana</button>
+                        <button type="button" data-mode="AGENDA">Agenda</button>
+                    </div>
                 <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo&wkst=1&bgcolor=%23fbf9ff&color=%237c3aed&showCalendars=0&showTabs=1" class="calendar-embed" style="border: none;" allowfullscreen></iframe>
                 
                 <div class="checklist-estudos-box">
@@ -493,7 +500,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                                                            data-materia="<?= $mc['id_materia'] ?>"
                                                            data-topico="<?= $tp['id_topico'] ?>"
                                                            <?= $tp['checado'] ? 'checked' : '' ?>
-                                                           onclick="salvarProgressoTopico(this)">
+                                                            >
                                                 </div>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
@@ -565,20 +572,21 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
                     <div class="full-width field-group">
                         <label>Matérias Disponíveis:</label>
-                        <div class="list-container scrolling-list">
-                            <?php
-                            $mats_ativas = $_POST['materias_id'] ?? [];
+                        <button type="button" class="dropdown-toggle-materias" id="btnDropMaterias">
+                            <span id="labelMaterias">Selecione as matérias que deseja estudar…</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="list-container scrolling-list" id="listaMaterias">
+                            <?php $mats_ativas = $_POST['materias_id'] ?? [];
                             if (empty($lista_materias_db)): ?>
-                                <div class="row-item empty-state-select">Selecione as matérias que deseja estudar...</div>
-                            <?php else:
-                                foreach ($lista_materias_db as $m): ?>
-                                    <label class="row-item">
-                                        <span><?= htmlspecialchars($m['nome_materia']) ?></span>
-                                        <input type="checkbox" name="materias_id[]" value="<?= $m['id_materia'] ?>"
-                                            <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?> class="custom-checkbox">
-                                    </label>
-                                <?php endforeach;
-                            endif; ?>
+                                <div class="row-item empty-state-select">Nenhuma matéria cadastrada pelo administrador.</div>
+                            <?php else: foreach ($lista_materias_db as $m): ?>
+                                <label class="row-item" data-materia-id="<?= $m['id_materia'] ?>">
+                                    <span><?= htmlspecialchars($m['nome_materia']) ?></span>
+                                    <input type="checkbox" name="materias_id[]" value="<?= $m['id_materia'] ?>"
+                                        <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?> class="custom-checkbox">
+                                </label>
+                            <?php endforeach; endif; ?>
                         </div>
                     </div>
 
@@ -589,10 +597,9 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             <?php endif; ?>
         </section>
 
-        <aside class="sidebar-historico">
-            <div class="sidebar-header">
-                <h3><i class="fa-regular fa-clock"></i> Histórico</h3>
-            </div>
+    <aside class="sidebar-historico" id="sidebar">
+        <button type="button" class="sidebar-close" id="btnFecharSidebar" aria-label="Fechar menu">&times;</button>
+        <div class="sidebar-header">
 
             <?php if (empty($meus_cronogramas_db)): ?>
                 <div class="empty-history-wrapper">
@@ -671,6 +678,14 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
     </div>
 
     <script src="../assets/js/lib/cronograma.js" defer></script>
+
+    <nav class="bottom-nav" aria-label="Navegação principal">
+    <a href="../index.php" class="bn-item"><i class="fa-solid fa-house"></i><span>Início</span></a>
+    <a href="livros.php" class="bn-item"><i class="fa-solid fa-book"></i><span>Biblioteca</span></a>
+    <a href="material.php" class="bn-item"><i class="fa-solid fa-tv"></i><span>Material</span></a>
+    <a href="cronograma.php" class="bn-item ativo" aria-current="page"><i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span></a>
+    <a href="../perfil/configperfil.php" class="bn-item"><i class="fa-regular fa-user"></i><span>Perfil</span></a>
+</nav>
 
     <?php include '../perfil/vlibras.php'; ?>
 </body>

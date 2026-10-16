@@ -308,8 +308,12 @@ if ($res_topicos) {
 <?php include '../interface/header.php'; ?>
 
 <main class="main-container">
-    <section class="card-principal">
-    
+
+    <?php if ($msg): ?>
+        <div class="alert-message"><?= htmlspecialchars($msg) ?></div>
+    <?php endif; ?>
+
+    <!-- ================= CARD 1: LEITURAS OBRIGATÓRIAS ================= -->
     <section class="card-principal card-livros" id="livros-adm">
         <div class="card-header">
             <span class="icon-purple-box"><i class="fa-solid fa-book-bookmark"></i></span>
@@ -433,6 +437,8 @@ if ($res_topicos) {
         </dialog>
     </section>
 
+    <!-- ================= CARD 2: MATÉRIAS E TÓPICOS ================= -->
+    <section class="card-principal card-materias" id="materias-adm">
         <div class="card-header">
             <span class="icon-purple-box">
                 <i class="fa-solid fa-book"></i>
@@ -442,10 +448,6 @@ if ($res_topicos) {
                 <p>Adicione as matérias e liste os subtópicos cobrados para direcionar os estudantes.</p>
             </div>
         </div>
-
-        <?php if($msg): ?>
-            <div class="alert-message"><?= htmlspecialchars($msg) ?></div>
-        <?php endif; ?>
         
         <form method="POST" class="input-group-append">
             <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" required>
@@ -532,10 +534,11 @@ if ($res_topicos) {
             </div>
         <?php endif; ?>
 
-        <a href="../index.php" class="btn-back-home">
-            <i class="fa-solid fa-arrow-left"></i> Voltar para a Home
-        </a>
     </section>
+
+    <a href="../index.php" class="btn-back-home">
+        <i class="fa-solid fa-arrow-left"></i> Voltar para a Home
+    </a>
 </main>
 
 <script src="../assets/js/lib/admin_materias.js" defer></script>

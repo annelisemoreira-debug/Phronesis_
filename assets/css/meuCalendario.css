@@ -228,3 +228,11 @@ html.dark-theme .footer-link a {
 html.dark-theme .footer-link a:hover {
     color: #ffffff !important;
 }
+
+@media (max-width: 600px), (max-height: 700px) {
+    body { height: auto; min-height: 100vh; overflow-y: auto; padding: 20px 16px; }
+    .login-card { padding: 32px 22px; max-width: 100%; }
+    .login-card h2 { font-size: 24px; }
+    .login-card p { font-size: 15px; }
+    .btn-google { display: block; padding: 14px 20px; font-size: 16px; }
+}

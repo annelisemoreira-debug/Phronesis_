@@ -103,37 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // === 3. BUSCA QUE EXPANDE (material.php) ===
-    const buscaForm = document.getElementById('buscaForm');
-    if (buscaForm) {
-        const toggle = document.getElementById('buscaToggle');
-        const input = document.getElementById('searchInput');
-
-        const abrir = () => {
-            buscaForm.classList.add('aberta');
-            toggle.setAttribute('aria-expanded', 'true');
-            input.focus();
-        };
-        const fechar = () => {
-            buscaForm.classList.remove('aberta');
-            toggle.setAttribute('aria-expanded', 'false');
-        };
-
-        toggle.addEventListener('click', () => {
-            if (!buscaForm.classList.contains('aberta')) { abrir(); return; }
-            if (input.value.trim()) buscaForm.submit(); else fechar();
-        });
-
-        // Fecha ao clicar fora (se estiver vazio)
-        document.addEventListener('click', (e) => {
-            if (!buscaForm.contains(e.target) && !input.value.trim()) fechar();
-        });
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !input.value.trim()) { fechar(); toggle.focus(); }
-        });
-    }
-
-    // === 4. CONTAGEM REGRESSIVA ===
+    // === 3. CONTAGEM REGRESSIVA ===
     const relogios = document.querySelectorAll('[data-alvo]');
     const dois = n => String(n).padStart(2, '0');
 
@@ -152,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
     tick();
     setInterval(tick, 1000);
 
-    // === 5. MENU LATERAL (DRAWER) NO CELULAR E TABLET ===
+    // === 4. MENU LATERAL (DRAWER) NO CELULAR E TABLET ===
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     const btnFechar = document.getElementById('btnFecharSidebar');
@@ -184,4 +154,73 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key === 'Escape' && sidebar.classList.contains('active')) fecharMenu();
     });
     window.addEventListener('resize', () => { if (!ehTelaMenor()) fecharMenu(); });
+
+        // === 5. ROLAGEM + "MOSTRAR MAIS" (material.php) ===
+    const area = document.getElementById('videoScroll');
+    const grade = document.getElementById('videoGrid');
+
+    if (area && grade) {
+        const LINHAS = 2;
+        const cartoes = [...grade.querySelectorAll('.video-card')];
+        const maisWrap = document.getElementById('maisWrap');
+        const btnMais = document.getElementById('btnMais');
+        const ehPC = () => window.matchMedia('(min-width: 1025px)').matches;
+
+        // Vídeos por lote = colunas atuais x 2 linhas (3x2 PC, 2x2 tablet, 1x2 celular)
+        const porLote = () =>
+            getComputedStyle(grade).gridTemplateColumns.split(' ').length * LINHAS;
+
+        let visiveis = 0;
+
+        function render() {
+            cartoes.forEach((c, i) => { c.hidden = i >= visiveis; });
+            grade.classList.add('pronto');
+            maisWrap.hidden = visiveis >= cartoes.length;
+        }
+
+        // No PC, limita a altura da área a exatamente 2 linhas de vídeos
+        function ajustarAltura() {
+            area.style.maxHeight = '';
+            if (!ehPC()) return;
+            const lote = porLote();
+            if (cartoes.length <= lote) return;          // cabe tudo: sem rolagem
+            const mostrados = cartoes.filter(c => !c.hidden);
+            const ref = mostrados[Math.min(lote, mostrados.length) - 1];
+            const altura = ref.getBoundingClientRect().bottom
+                         - area.getBoundingClientRect().top + 8;
+            area.style.maxHeight = altura + 'px';
+        }
+
+        function iniciar() {
+            visiveis = Math.min(porLote(), cartoes.length);
+            render();
+            ajustarAltura();
+        }
+
+        btnMais.addEventListener('click', () => {
+            const primeiroNovo = cartoes[visiveis];
+            visiveis = Math.min(visiveis + porLote(), cartoes.length);
+            render();
+            if (ehPC() && primeiroNovo) {
+                const topo = primeiroNovo.getBoundingClientRect().top
+                           - area.getBoundingClientRect().top + area.scrollTop - 4;
+                area.scrollTo({ top: topo, behavior: 'smooth' });
+            }
+        });
+
+        let tRedim;
+        window.addEventListener('resize', () => {
+            clearTimeout(tRedim);
+            tRedim = setTimeout(() => {
+                // mantém o que já foi revelado, mas garante pelo menos 1 lote
+                visiveis = Math.max(visiveis, Math.min(porLote(), cartoes.length));
+                render();
+                ajustarAltura();
+            }, 150);
+        });
+
+        window.addEventListener('load', ajustarAltura);
+        iniciar();
+    }
 });
+
