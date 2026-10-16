@@ -34,7 +34,7 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
             <!-- BANNER / HERO -->
             <section class="banner">
                 <img src="assets/img/banners/bannerInicio.png" alt="" class="banner-img banner-light">
-                <img src="assets/img/banners/escurophronesis.webp" alt="" class="banner-img banner-dark">
+                <img src="assets/img/banners/escurophronesis.png" alt="" class="banner-img banner-dark">
 
                 <div class="banner-content">
                     <div class="banner-text">
