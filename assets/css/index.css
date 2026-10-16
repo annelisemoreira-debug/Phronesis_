@@ -5,407 +5,333 @@
 }
 
 body {
-    background-color: #bfa2ff;
+    background-color: #c19eff;
     overflow-x: hidden;
+    font-family: 'Open Sans', 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Estrutura de Alinhamento Global do Site */
 .wrapper {
     display: flex;
     min-height: 100vh;
-    padding: 20px 30px; 
-    gap: 30px;
-    max-width: 1650px;  
-    margin: 0 auto;
+    width: 100%;
 }
 
 .principalContent {
-    flex: 1; 
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 25px;         
-    padding: 0;        
 }
 
-/* --- BANNER COMPORTAMENTO --- */
+/* =======================================================
+   BANNER / HERO
+   ======================================================= */
 .banner {
-    width: 100%; 
-    max-width: 1650px; 
-    height: 160px;       
-    margin: 0 auto 0 auto; 
-    display: block;
+    position: relative;
+    width: 100%;
+    height: 340px;
     overflow: hidden;
+    background-color: #c19eff; /* mesma cor do fundo da imagem */
 }
 
 .banner-img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: right center;
     display: block;
-    border-radius: 15px;
 }
 
-/* Visibilidade Inicial (Modo Claro) */
 .banner-light { display: block; }
-.banner-dark { display: none; }
+.banner-dark  { display: none; }
 
-/* --- SEÇÃO DO CARROSSEL (SEM QUADRADO BRANCO) --- */
-.carrossel-section {
+.banner-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    max-width: 1650px;
+    margin: 0 auto;
+    padding: 0 3%;
+    display: flex;
+    align-items: center;
+}
+
+/* Coluna de texto na metade esquerda (igual para visitante e logado) */
+.banner-text {
+    width: 45%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.banner-text h1 {
+    color: #ffffff;
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.banner-text p {
+    color: #3b0a73;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.btn-hero {
+    display: inline-block;
+    background-color: #e6dbff;
+    color: #2d005d;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-hero:hover {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* --- Variante: usuário logado --- */
+.banner-tag {
+    color: #3b0a73;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.banner-text .banner-desc {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.banner-desc strong { font-weight: 800; }
+
+.banner-text:has(.banner-tag) h1 {
+    font-size: 2.6rem;
+    margin-bottom: 12px;
+}
+
+/* =======================================================
+   SEÇÃO "O QUE OFERECEMOS?"
+   ======================================================= */
+.oferecemos-section {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    margin-top: 20px;
+    background-color: #9b43ff;
+    border-radius: 40px 40px 0 0;
+    padding: 50px 30px 90px;
+    transition: background-color 0.3s ease;
 }
 
 .titulo-principal {
     text-align: center;
-    color: #ffffff;  
-    font-size: 2.4rem;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    color: #ffe57e;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 4px;
 }
 
 .subtitulo-principal {
     text-align: center;
-    color: #2d005d;  
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 30px;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-}
-
-/* --- QUADRADO BRANCO EXCLUSIVO DO "SOBRE NÓS" --- */
-.sobre-nos-container {
-    border-radius: 20px;   
-    padding: 50px;    
-    width: 100%; 
-    max-width: 1650px;     
-    background-color: white;
-    margin: 15px auto 20px auto;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); 
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* --- CARROSSEL --- */
-.carousel-container {
-    position: relative;
-    width: 100%;
-    max-width: 1100px;
-    margin: 40px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.carousel-track {
-    display: flex;
-    gap: 15px; 
-    align-items: center;
-    justify-content: center;
-    padding: 30px 0;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.card {
-    width: 280px; 
-    min-width: 280px; 
-    height: 430px;
-    background: white;
-    border-radius: 25px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 60px 20px;
-    opacity: 0.5;
-    transform: scale(0.85) rotateY(12deg); 
-    filter: blur(1px);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    overflow: hidden;
-}
-
-.card:nth-child(2) {
-    width: 380px; 
-    min-width: 380px; 
-    opacity: 1;
-    transform: scale(1.02); 
-    filter: blur(0);
-    z-index: 10;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-}
-
-.card h2 {
-    font-family: sans-serif;
-    color: #002b4e;
-    margin-bottom: 20px;
-    font-size: 1.7rem;
-}
-
-.card p {
-    color: #333;
-    line-height: 1.6;
-    text-align: left;
-    font-size: 0.95rem;
-}
-
-/* Abas estilo Fichário */
-.top-tabs-container {
-    position: absolute;
-    top: -18px;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.tab {
-    width: 80px;
-    height: 35px;
-    border-radius: 15px 15px 0 0;
-    margin: 0 -10px;
-}
-
-.tab.blue { background-color: #90DFFF; z-index: 3; }
-.tab.yellow { background-color: #FCE686; z-index: 2; }
-.tab.purple { background-color: #8B4DFF; z-index: 1; }
-
-.bottom-tab {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 20px;
-    border-radius: 0 0 25px 25px;
-}
-
-.card.blue-theme .bottom-tab { background-color: #90DFFF; }
-.card.purple-theme .bottom-tab { background-color: #8B4DFF; }
-.card.yellow-theme .bottom-tab { background-color: #FCE686; }
-
-/* Controles do Carrossel */
-.btn {
-    background: none;
-    border: none;
-    color: #ffffff; 
-    font-size: 4rem;
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 20;
-    transition: 0.2s;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-.btn:hover { color: #ffe57e; transform: translateY(-50%) scale(1.15); }
-.prev { left: -50px; }
-.next { right: -50px; }
-
-/* --- BENTO GRID & SIDEBAR --- */
-.page-wrapper {
-    display: flex;
-    width: 100%;
-    gap: 50px;
-    align-items: center;
-}
-
-.bento-grid {
-    display: flex;
-    flex: 1.8; 
-    height: 480px;
-    gap: 20px;
-}
-
-.grid-col-left {
-    flex: 0 0 32%; 
-    display: flex;
-    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.grid-col-right {
-    flex: 0 0 68%; 
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.grid-row-bottom {
-    flex: 1;
-    display: flex;
-    gap: 20px;
-    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.item-2 { flex: 1.1; } 
-.item-3 { flex: 2; } 
-.item-4 { flex: 1; }
-
-.box {
-    background: #fcfcfc;
-    border-radius: 24px;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-/* Hover no Bento */
-.bento-grid:hover .grid-col-left,
-.bento-grid:hover .grid-col-right,
-.bento-grid:hover .box,
-.bento-grid:hover .grid-row-bottom {
-    flex: 1; 
-    opacity: 0.6;
-}
-
-.grid-col-left:hover { flex: 2.5 !important; opacity: 1 !important; }
-.grid-col-right:hover { flex: 2.5 !important; opacity: 1 !important; }
-.item-2:hover { flex: 3.5 !important; opacity: 1 !important; }
-.grid-row-bottom:hover { flex: 3.5 !important; }
-.item-3:hover { flex: 4.5 !important; opacity: 1 !important; }
-.item-4:hover { flex: 4.5 !important; opacity: 1 !important; }
-
-/* Sidebar */
-.sidebar {
-    flex: 1;
     color: #2d005d;
-    padding-left: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-    transition: color 0.3s ease;
-}
-
-.sidebar .tag {
-    font-size: 10px; 
     font-weight: 700;
-    letter-spacing: 1.5px;
-    color: #8654f3;
-    text-transform: uppercase;
-    margin-bottom: 6px;
+    font-size: 1.15rem;
+    margin-bottom: 40px;
 }
 
-.sidebar h1 {
-    font-size: 2.1rem; 
-    text-align: left;
-    margin: 0 0 12px 0;
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+.servico-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
+}
+
+.servico-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.servico-icone {
+    width: 46px;
+    height: 46px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.servico-icone svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icone-roxo    { background-color: #a64dff; }
+.icone-amarelo { background-color: #e8b94a; }
+.icone-azul    { background-color: #3aa9e8; }
+
+.servico-card h2 {
     color: #2d005d;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.2;
-    transition: color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 10px;
 }
 
-.sidebar .description {
-    font-size: 0.95rem; 
+.servico-card p {
+    color: #6b3fa0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    flex: 1;
+}
+
+.servico-link {
+    color: #9b43ff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+}
+
+.servico-link:hover { text-decoration: underline; }
+
+/* =======================================================
+   SEÇÃO "SOBRE NÓS"
+   ======================================================= */
+.sobre-nos-section {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    background-color: #c19eff;
+    border-radius: 40px 40px 0 0;
+    margin-top: -40px;
+    padding: 3px 30px 60px;
+    transition: background-color 0.3s ease;
+}
+
+.sobre-nos-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    color: #2d005d;
+}
+
+.sobre-nos-content h2 {
+     display: block;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    color: #6a3cc9;
+    margin-bottom: 6px;
+    margin-top: 50px;
+}
+
+.sobre-nos-content .description {
+    font-size: 0.75rem;
     line-height: 1.5;
     color: #4b2a6d;
     margin-bottom: 18px;
-    text-align: left;
-    transition: color 0.3s ease;
 }
 
 .mission-box {
-    border-left: 3px solid #8654f3;
+    border-left: 3px solid #6a3cc9;
     padding-left: 12px;
-    margin-top: 3px;
 }
 
 .mission-box p {
-    font-size: 0.88rem; 
+    font-size: 0.88rem;
     font-style: italic;
-    color: #5a3b7d;
+    color: #4b2a6d;
     line-height: 1.5;
-    text-align: left;
-    transition: color 0.3s ease;
 }
 
 /* =======================================================
-   REGRAS COMPATÍVEIS PARA O MODO ESCURO (dark-theme)
+   MODO ESCURO
    ======================================================= */
+html.dark-theme body { background-color: #1a1824; }
 
-html.dark-theme body {
-    background-color: #1a1824; /* Fundo geral lilás escuro */
-}
-
-/* SUBSTITUIÇÃO DOS BANNERS */
+html.dark-theme .banner { background-color: #1a1824; }
 html.dark-theme .banner-light { display: none !important; }
-html.dark-theme .banner-dark { display: block !important; }
+html.dark-theme .banner-dark  { display: block !important; }
 
-/* CONTAINER DO SOBRE NÓS NO MODO ESCURO */
-html.dark-theme .sobre-nos-container {
-    background-color: #221f30; /* Fundo interno do bloco */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+html.dark-theme .banner-text p,
+html.dark-theme .banner-tag { color: #f1c40f; }
+
+html.dark-theme .banner-text .banner-desc { color: #e1def0; }
+
+html.dark-theme .btn-hero {
+    background-color: #bfa2ff;
+    color: #1a1824;
 }
 
-/* ADAPTAÇÃO TEXTUAL DA SIDEBAR */
-html.dark-theme .sidebar h1 {
-    color: #ffffff;
-}
+html.dark-theme .oferecemos-section { background-color: #2b2150; }
+html.dark-theme .titulo-principal { color: #f1c40f; }
+html.dark-theme .subtitulo-principal { color: #e1def0; }
 
-html.dark-theme .sidebar .tag {
-    color: #bfa2ff; /* Tom claro para contraste */
-}
+html.dark-theme .servico-card { background-color: #221f30; }
+html.dark-theme .servico-card h2 { color: #ffffff; }
+html.dark-theme .servico-card p { color: #b0aec2; }
+html.dark-theme .servico-link { color: #bfa2ff; }
 
-html.dark-theme .sidebar .description {
-    color: #e1def0;
-}
-
-html.dark-theme .mission-box {
-    border-left-color: #f1c40f; /* Detalhe amarelo/dourado conforme o mockup */
-}
-
-html.dark-theme .mission-box p {
-    color: #b0aec2;
-}
-
-html.dark-theme .subtitulo-principal {
-    color: #f1c40f; /* Subtítulo amarelo destacado sob fundo escuro */
-}
+html.dark-theme .sobre-nos-section { background-color: #221a38; }
+html.dark-theme .sobre-nos-content { color: #ffffff; }
+html.dark-theme .sobre-nos-content .tag { color: #bfa2ff; }
+html.dark-theme .sobre-nos-content .description { color: #e1def0; }
+html.dark-theme .mission-box { border-left-color: #f1c40f; }
+html.dark-theme .mission-box p { color: #b0aec2; }
 
 /* =======================================================
-   REGRAS GLOBAIS DE ESCALA DE FONTES (AFETA TODO O SITE)
+   ESCALA DE FONTE GLOBAL
    ======================================================= */
-html, html.font-normal {
-    font-size: 100%; /* Tamanho padrão do navegador (geralmente 16px) */
-}
+html, html.font-normal { font-size: 100%; }
+html.font-media  { font-size: 115%; }
+html.font-grande { font-size: 130%; }
 
-html.font-media {
-    font-size: 115%; /* Aumenta o texto e elementos em REM de todo o site em 15% */
-}
-
-html.font-grande {
-    font-size: 130%; /* Aumenta o texto e elementos em REM de todo o site em 30% */
-}
-
-/* NOTA PARA A LOGO DO HEADER:
-   Para alterar a logo de forma organizada, inclua no seu 'header.css' 
-   ou arquivo correspondente as regras equivalentes de visualização:
-   
-   html.dark-theme .logoescuro { display: block !important; }
-   html.dark-theme .logoclaro { display: none !important; }
-*/
-
-/* --- RESPONSIVIDADE --- */
+/* =======================================================
+   RESPONSIVIDADE
+   ======================================================= */
 @media (max-width: 1024px) {
-    .sobre-nos-container { padding: 30px; }
-    .page-wrapper { flex-direction: column; gap: 40px; }
-    .bento-grid { width: 100%; height: 400px; }
-    .sidebar { text-align: center; padding: 0; }
-    .sidebar h1, .sidebar .description { text-align: center; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-    .wrapper { padding: 10px; gap: 15px; }
-    .btn { display: none; } 
-    .card { width: 240px; min-width: 240px; }
-    .card:nth-child(2) { width: 290px; min-width: 290px; }
+    .banner { height: 380px; }
+    .banner-img { opacity: 0.35; }
+    .banner-content { padding: 0 20px; justify-content: center; }
+    .banner-text { width: 100%; }
+    .banner-text h1 { font-size: 2.2rem; }
+    .banner-text:has(.banner-tag) h1 { font-size: 2rem; }
+    .titulo-principal { font-size: 2.2rem; }
+    .oferecemos-section { padding: 40px 15px 80px; border-radius: 30px 30px 0 0; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .sobre-nos-section { padding: 40px 20px 40px; border-radius: 30px 30px 0 0; }
 }
