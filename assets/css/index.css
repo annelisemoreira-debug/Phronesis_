@@ -80,11 +80,14 @@ body {
     flex-direction: column;
 }
 
+:root {
+    --side-margin: clamp(16px, 3.1vw, 52px); /* margem do bloco roxo */
+}
+
+/* Texto do hero: começa em ~11% da largura, como na referência */
 .container {
     width: 100%;
-    max-width: 1340px;
-    margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 9vw 0 11vw;
 }
 
 /* =======================================================
@@ -103,11 +106,14 @@ body {
 .hero::before {
     content: "";
     position: absolute;
-    inset: 0;
+    top: 12px;
+    right: 10%;                     /* deixa respiro na borda direita */
+    bottom: 12px;
+    width: 50%;
     background-image: url('../img/index/fundo_index_livro_claro.webp');
     background-repeat: no-repeat;
-    background-size: auto 700px;
-    background-position: right top -60px;
+    background-size: contain;      /* a imagem inteira sempre cabe, sem cortar */
+    background-position: right center;
     z-index: 0;
 }
 
@@ -121,7 +127,7 @@ html.dark-theme .hero::before {
 }
 
 .hero-text {
-    max-width: 560px;
+    max-width: 580px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -222,7 +228,7 @@ html.dark-theme .hero::before {
     position: relative;
     z-index: 1;
     overflow: hidden;
-    margin: 0 clamp(16px, 3.1vw, 52px);
+    margin: 0 var(--side-margin);
     padding: 30px 0 52px;
     background-color: var(--offer-bg);
     border-radius: 28px;
@@ -255,6 +261,8 @@ html.dark-theme .hero::before {
 .oferecemos-section .container {
     position: relative;
     z-index: 1;
+    /* compensa a margem do bloco para alinhar com o texto do hero */
+    padding: 0 calc(9vw - var(--side-margin)) 0 calc(11vw - var(--side-margin));
 }
 
 .titulo-principal {
@@ -399,18 +407,19 @@ html.font-grande { font-size: 130%; }
    RESPONSIVIDADE
    ======================================================= */
 @media (max-width: 1200px) {
-    .hero::before { background-size: auto 560px; background-position: right top -30px; }
     .hero-text h1 { font-size: 3rem; }
 }
 
 @media (max-width: 1024px) {
+    .container,
+    .oferecemos-section .container { padding: 0 24px; }
     .cards-grid { grid-template-columns: repeat(2, 1fr); }
-    .hero::before { opacity: 0.55; }
+    .hero::before { right: 0; width: 100%; opacity: 0.5; }
 }
 
 @media (max-width: 768px) {
     .hero { min-height: 0; padding: 32px 0 50px; }
-    .hero::before { opacity: 0.25; background-size: auto 440px; }
+    .hero::before { opacity: 0.25; }
     .hero-text h1 { font-size: 2.3rem; }
     .hero-text.is-logado h1 { font-size: 2.1rem; }
     .titulo-principal { font-size: 2.1rem; }
