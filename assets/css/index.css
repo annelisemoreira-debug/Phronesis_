@@ -1,36 +1,37 @@
 /* =======================================================
    VARIÁVEIS (tema claro por padrão)
+   Cores alinhadas com livros.css e material.css
    ======================================================= */
 :root {
-    --bg-page:        #eee9fc;
-    --hero-title:     #2d0a6b;
-    --hero-accent:    #8b5cf6;
-    --hero-sub:       #7a5fc9;
-    --tag-bg:         #e2d9fb;
-    --tag-text:       #7c4ff0;
-    --btn-bg:         #7c4ff0;
-    --btn-bg-hover:   #6a3de0;
+    --bg-page:        #d6c6f7;
+    --hero-title:     #3b0f7a;   /* = --ink */
+    --hero-accent:    #8654f3;   /* = --purple */
+    --hero-sub:       #5a30b5;   /* mais escuro que --ink-soft para ler bem no fundo lilás */
+    --tag-bg:         #ffffff;
+    --tag-text:       #8654f3;
+    --btn-bg:         #8654f3;
+    --btn-bg-hover:   #6d3fe0;
     --btn-text:       #ffffff;
 
-    --offer-bg:       #7c4ff0;
+    --offer-bg:       #8654f3;
     --offer-title:    #ffffff;
     --offer-accent:   #ffe57e;
-    --offer-sub:      #d9ccff;
+    --offer-sub:      #ebe3ff;
 
     --card-bg:        #ffffff;
-    --card-title:     #2d0a6b;
-    --card-text:      #7a5fc9;
-    --card-link:      #7c4ff0;
+    --card-title:     #3b0f7a;
+    --card-text:      #7a4fd6;   /* = --ink-soft */
+    --card-link:      #8654f3;
 
-    --footer-text:    #7a5fc9;
-    --footer-line:    #c9b9f5;
+    --footer-text:    #5a30b5;
+    --footer-line:    #b89cf5;
 }
 
 html.dark-theme {
     --bg-page:        #1a1824;
-    --hero-title:     #ffffff;
+    --hero-title:     #f1ecff;
     --hero-accent:    #bfa2ff;
-    --hero-sub:       #b0aec2;
+    --hero-sub:       #c3a9ff;
     --tag-bg:         #2b2150;
     --tag-text:       #bfa2ff;
     --btn-bg:         #bfa2ff;
@@ -40,15 +41,15 @@ html.dark-theme {
     --offer-bg:       #2b2150;
     --offer-title:    #ffffff;
     --offer-accent:   #f1c40f;
-    --offer-sub:      #b0aec2;
+    --offer-sub:      #c3a9ff;
 
-    --card-bg:        #221f30;
-    --card-title:     #ffffff;
-    --card-text:      #b0aec2;
+    --card-bg:        #1d1b26;
+    --card-title:     #f1ecff;
+    --card-text:      #c3a9ff;
     --card-link:      #bfa2ff;
 
-    --footer-text:    #b0aec2;
-    --footer-line:    #3a3355;
+    --footer-text:    #c3a9ff;
+    --footer-line:    #38334a;
 }
 
 /* =======================================================
@@ -95,24 +96,25 @@ body {
    ======================================================= */
 .hero {
     position: relative;
-    min-height: 390px;
-    padding: 36px 0 70px;
+    min-height: 530px;            /* altura fixa mínima: visitante e logado ficam iguais */
+    padding: 60px 0 64px;
     display: flex;
     align-items: center;
     overflow: hidden;
 }
 
-/* Ilustração de fundo (troca automática no tema escuro) */
+/* Ilustração de fundo: altura própria, não depende do texto */
 .hero::before {
     content: "";
     position: absolute;
-    top: 12px;
-    right: 10%;                     /* deixa respiro na borda direita */
-    bottom: 12px;
+    top: 50%;
+    right: 8%;
     width: 50%;
+    height: 430px;
+    transform: translateY(-50%);
     background-image: url('../img/index/fundo_index_livro_claro.webp');
     background-repeat: no-repeat;
-    background-size: contain;      /* a imagem inteira sempre cabe, sem cortar */
+    background-size: contain;
     background-position: right center;
     z-index: 0;
 }
@@ -127,7 +129,7 @@ html.dark-theme .hero::before {
 }
 
 .hero-text {
-    max-width: 580px;
+    max-width: 560px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -185,7 +187,7 @@ html.dark-theme .hero::before {
     text-decoration: none;
     padding: 14px 32px;
     border-radius: 999px;
-    box-shadow: 0 8px 18px rgba(124, 79, 240, 0.25);
+    box-shadow: 0 8px 18px rgba(134, 84, 243, 0.3);
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
@@ -204,21 +206,33 @@ html.dark-theme .hero::before {
     stroke-linejoin: round;
 }
 
-/* Variante: usuário logado */
+/* Variante: usuário logado (letras maiores) */
+.hero-text.is-logado {
+    max-width: 680px;
+}
+
+.hero-text.is-logado .hero-tag {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    margin-bottom: 20px;
+}
+
+.hero-text.is-logado h1 {
+    font-size: 3.6rem;
+    margin-bottom: 22px;
+}
+
 .hero-text .hero-desc {
     color: var(--hero-sub);
-    font-size: 1.05rem;
-    line-height: 1.5;
-    max-width: 440px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.55;
+    max-width: 560px;
 }
 
 .hero-desc strong {
     color: var(--hero-title);
     font-weight: 800;
-}
-
-.hero-text.is-logado h1 {
-    font-size: 2.8rem;
 }
 
 /* =======================================================
@@ -338,7 +352,7 @@ html.dark-theme .hero::before {
     stroke-linejoin: round;
 }
 
-.icone-roxo    { background-color: #8b5cf6; }
+.icone-roxo    { background-color: #8654f3; }
 .icone-amarelo { background-color: #f5c84c; }
 .icone-azul    { background-color: #3aa9e8; }
 
@@ -408,6 +422,7 @@ html.font-grande { font-size: 130%; }
    ======================================================= */
 @media (max-width: 1200px) {
     .hero-text h1 { font-size: 3rem; }
+    .hero-text.is-logado h1 { font-size: 3.1rem; }
 }
 
 @media (max-width: 1024px) {
@@ -421,7 +436,8 @@ html.font-grande { font-size: 130%; }
     .hero { min-height: 0; padding: 32px 0 50px; }
     .hero::before { opacity: 0.25; }
     .hero-text h1 { font-size: 2.3rem; }
-    .hero-text.is-logado h1 { font-size: 2.1rem; }
+    .hero-text.is-logado h1 { font-size: 2.4rem; }
+    .hero-text .hero-desc { font-size: 1.1rem; }
     .titulo-principal { font-size: 2.1rem; }
     .cards-grid { grid-template-columns: 1fr; }
     .site-footer { justify-content: center; text-align: center; }
