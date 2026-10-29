@@ -249,6 +249,8 @@ $stmt->close();
     </nav>
 
 <?php include '../perfil/vlibras.php'; ?>
+<?php include '../interface/footer.php';?>
+
 
 </body>
 </html>

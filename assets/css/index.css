@@ -23,8 +23,7 @@
     --card-text:      #7a4fd6;   /* = --ink-soft */
     --card-link:      #8654f3;
 
-    --footer-text:    #5a30b5;
-    --footer-line:    #b89cf5;
+    
 }
 
 html.dark-theme {
@@ -48,8 +47,7 @@ html.dark-theme {
     --card-text:      #c3a9ff;
     --card-link:      #bfa2ff;
 
-    --footer-text:    #c3a9ff;
-    --footer-line:    #38334a;
+   
 }
 
 /* =======================================================
@@ -380,35 +378,7 @@ html.dark-theme .hero::before {
 
 .servico-link:hover { text-decoration: underline; }
 
-/* =======================================================
-   RODAPÉ
-   ======================================================= */
-.site-footer {
-    margin-top: auto;
-    padding: 28px clamp(16px, 5vw, 88px);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    color: var(--footer-text);
-    font-size: 0.85rem;
-}
 
-.footer-slogan {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-style: italic;
-}
-
-.footer-slogan::before,
-.footer-slogan::after {
-    content: "";
-    width: 28px;
-    height: 1px;
-    background-color: var(--footer-line);
-}
 
 /* =======================================================
    ESCALA DE FONTE GLOBAL
@@ -440,5 +410,4 @@ html.font-grande { font-size: 130%; }
     .hero-text .hero-desc { font-size: 1.1rem; }
     .titulo-principal { font-size: 2.1rem; }
     .cards-grid { grid-template-columns: 1fr; }
-    .site-footer { justify-content: center; text-align: center; }
 }

@@ -106,11 +106,8 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
                 </div>
             </main>
 
-            <!-- RODAPÉ -->
-            <footer class="site-footer">
-                <span>© 2026 Phronesis_ • Todos os direitos reservados</span>
-                <span class="footer-slogan">Disciplina hoje, liberdade amanhã.</span>
-            </footer>
+        <?php include 'interface/footer.php';?>
+            
 
         </div>
     </div>
