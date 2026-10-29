@@ -37,7 +37,6 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
                     <?php if ($logado): ?>
                         <!-- VISÃO: USUÁRIO LOGADO -->
                         <div class="hero-text is-logado">
-                            <span class="hero-tag">✦ Painel do estudante</span>
                             <h1>Bem-vindo(a), <?= htmlspecialchars($_SESSION['nome']) ?>!</h1>
                             <p class="hero-desc">
                                 <strong>Que bom ter você de volta!</strong> Aproveite nossos recursos para
