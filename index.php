@@ -97,9 +97,9 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
                             <div class="servico-icone icone-azul">
                                 <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>
                             </div>
-                            <h2>Meu desempenho</h2>
-                            <p>Acompanhe sua evolução e descubra o que precisa ser revisado.</p>
-                            <a href="pages/desempenho.php" class="servico-link">Ver desempenho →</a>
+                            <h2>Acessibilidade</h2>
+                            <p>Deixe o nosso site o mais confortavel para você!</p>
+                            <a href="perfil/configperfil.php" class="servico-link">Ver acessibilidade →</a>
                         </article>
 
                     </div>
