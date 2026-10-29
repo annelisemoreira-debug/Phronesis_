@@ -1,3 +1,59 @@
+/* =======================================================
+   VARIÁVEIS (tema claro por padrão)
+   ======================================================= */
+:root {
+    --bg-page:        #eee9fc;
+    --hero-title:     #2d0a6b;
+    --hero-accent:    #8b5cf6;
+    --hero-sub:       #7a5fc9;
+    --tag-bg:         #e2d9fb;
+    --tag-text:       #7c4ff0;
+    --btn-bg:         #7c4ff0;
+    --btn-bg-hover:   #6a3de0;
+    --btn-text:       #ffffff;
+
+    --offer-bg:       #7c4ff0;
+    --offer-title:    #ffffff;
+    --offer-accent:   #ffe57e;
+    --offer-sub:      #d9ccff;
+
+    --card-bg:        #ffffff;
+    --card-title:     #2d0a6b;
+    --card-text:      #7a5fc9;
+    --card-link:      #7c4ff0;
+
+    --footer-text:    #7a5fc9;
+    --footer-line:    #c9b9f5;
+}
+
+html.dark-theme {
+    --bg-page:        #1a1824;
+    --hero-title:     #ffffff;
+    --hero-accent:    #bfa2ff;
+    --hero-sub:       #b0aec2;
+    --tag-bg:         #2b2150;
+    --tag-text:       #bfa2ff;
+    --btn-bg:         #bfa2ff;
+    --btn-bg-hover:   #d1bbff;
+    --btn-text:       #1a1824;
+
+    --offer-bg:       #2b2150;
+    --offer-title:    #ffffff;
+    --offer-accent:   #f1c40f;
+    --offer-sub:      #b0aec2;
+
+    --card-bg:        #221f30;
+    --card-title:     #ffffff;
+    --card-text:      #b0aec2;
+    --card-link:      #bfa2ff;
+
+    --footer-text:    #b0aec2;
+    --footer-line:    #3a3355;
+}
+
+/* =======================================================
+   BASE
+   ======================================================= */
 * {
     margin: 0;
     padding: 0;
@@ -5,9 +61,10 @@
 }
 
 body {
-    background-color: #c19eff;
+    background-color: var(--bg-page);
     overflow-x: hidden;
     font-family: 'Open Sans', 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.3s ease;
 }
 
 .wrapper {
@@ -23,163 +80,240 @@ body {
     flex-direction: column;
 }
 
-/* =======================================================
-   BANNER / HERO
-   ======================================================= */
-.banner {
-    position: relative;
+.container {
     width: 100%;
-    height: 340px;
-    overflow: hidden;
-    background-color: #c19eff; /* mesma cor do fundo da imagem */
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
 
-.banner-img {
+/* =======================================================
+   HERO
+   ======================================================= */
+.hero {
+    position: relative;
+    min-height: 390px;
+    padding: 36px 0 70px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Ilustração de fundo (troca automática no tema escuro) */
+.hero::before {
+    content: "";
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: right center;
-    display: block;
+    background-image: url('../img/index/fundo_index_livro_claro.webp');
+    background-repeat: no-repeat;
+    background-size: auto 700px;
+    background-position: right top -60px;
+    z-index: 0;
 }
 
-.banner-light { display: block; }
-.banner-dark  { display: none; }
+html.dark-theme .hero::before {
+    background-image: url('../img/index/fundo_index_livro_escuro.webp');
+}
 
-.banner-content {
+.hero .container {
     position: relative;
-    z-index: 2;
-    height: 100%;
-    max-width: 1650px;
-    margin: 0 auto;
-    padding: 0 3%;
-    display: flex;
-    align-items: center;
+    z-index: 1;
 }
 
-/* Coluna de texto na metade esquerda (igual para visitante e logado) */
-.banner-text {
-    width: 45%;
-    max-width: 480px;
+.hero-text {
+    max-width: 560px;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+}
+
+.hero-tag {
+    display: inline-flex;
     align-items: center;
-    text-align: center;
-}
-
-.banner-text h1 {
-    color: #ffffff;
-    font-size: 3.2rem;
+    gap: 6px;
+    background-color: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.75rem;
     font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 14px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
-}
-
-.banner-text p {
-    color: #3b0a73;
-    font-size: 1.1rem;
-    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 6px 12px;
+    border-radius: 8px;
     margin-bottom: 16px;
 }
 
-.btn-hero {
+.hero-text h1 {
+    color: var(--hero-title);
+    font-size: 3.4rem;
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+}
+
+.hero-text h1 .destaque {
     display: inline-block;
-    background-color: #e6dbff;
-    color: #2d005d;
+    color: var(--hero-accent);
+    text-decoration: underline wavy;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+    text-decoration-skip-ink: none;
+}
+
+.hero-text .hero-sub {
+    color: var(--hero-sub);
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.5;
+    max-width: 420px;
+    margin-bottom: 22px;
+}
+
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-decoration: none;
-    padding: 12px 28px;
-    border-radius: 12px;
+    padding: 14px 32px;
+    border-radius: 999px;
+    box-shadow: 0 8px 18px rgba(124, 79, 240, 0.25);
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .btn-hero:hover {
-    background-color: #ffffff;
+    background-color: var(--btn-bg-hover);
     transform: translateY(-2px);
 }
 
-/* --- Variante: usuário logado --- */
-.banner-tag {
-    color: #3b0a73;
-    font-size: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
+.btn-hero svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.banner-text .banner-desc {
-    font-size: 1rem;
-    font-weight: 400;
+/* Variante: usuário logado */
+.hero-text .hero-desc {
+    color: var(--hero-sub);
+    font-size: 1.05rem;
     line-height: 1.5;
-    margin-bottom: 0;
+    max-width: 440px;
 }
 
-.banner-desc strong { font-weight: 800; }
+.hero-desc strong {
+    color: var(--hero-title);
+    font-weight: 800;
+}
 
-.banner-text:has(.banner-tag) h1 {
-    font-size: 2.6rem;
-    margin-bottom: 12px;
+.hero-text.is-logado h1 {
+    font-size: 2.8rem;
 }
 
 /* =======================================================
-   SEÇÃO "O QUE OFERECEMOS?"
+   O QUE OFERECEMOS
    ======================================================= */
 .oferecemos-section {
     position: relative;
     z-index: 1;
-    width: 100%;
-    background-color: #9b43ff;
-    border-radius: 40px 40px 0 0;
-    padding: 50px 30px 90px;
-    transition: background-color 0.3s ease;
+    overflow: hidden;
+    margin: 0 clamp(16px, 3.1vw, 52px);
+    padding: 30px 0 52px;
+    background-color: var(--offer-bg);
+    border-radius: 28px;
+}
+
+/* Formas decorativas discretas */
+.oferecemos-section::before,
+.oferecemos-section::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.oferecemos-section::before {
+    width: 160px;
+    height: 160px;
+    left: -60px;
+    bottom: 60px;
+}
+
+.oferecemos-section::after {
+    width: 220px;
+    height: 220px;
+    right: -50px;
+    top: -90px;
+}
+
+.oferecemos-section .container {
+    position: relative;
+    z-index: 1;
 }
 
 .titulo-principal {
-    text-align: center;
-    color: #ffe57e;
+    position: relative;
+    padding-top: 18px;
+    color: var(--offer-title);
     font-size: 3rem;
     font-weight: 800;
-    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+
+.titulo-principal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 52px;
+    height: 5px;
+    border-radius: 3px;
+    background-color: var(--offer-accent);
+}
+
+.titulo-principal .destaque {
+    color: var(--offer-accent);
 }
 
 .subtitulo-principal {
-    text-align: center;
-    color: #2d005d;
-    font-weight: 700;
-    font-size: 1.15rem;
-    margin-bottom: 40px;
+    color: var(--offer-sub);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 4px 0 28px;
 }
 
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 28px;
-    max-width: 1150px;
-    margin: 0 auto;
+    gap: 20px;
 }
 
 .servico-card {
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 20px 18px 18px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 18px 26px 22px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 20px rgba(30, 10, 80, 0.15);
     transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
 }
 
 .servico-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 14px 28px rgba(30, 10, 80, 0.25);
 }
 
 .servico-icone {
-    width: 46px;
-    height: 46px;
-    border-radius: 6px;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -187,8 +321,8 @@ body {
 }
 
 .servico-icone svg {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     fill: none;
     stroke: #ffffff;
     stroke-width: 2;
@@ -196,118 +330,63 @@ body {
     stroke-linejoin: round;
 }
 
-.icone-roxo    { background-color: #a64dff; }
-.icone-amarelo { background-color: #e8b94a; }
+.icone-roxo    { background-color: #8b5cf6; }
+.icone-amarelo { background-color: #f5c84c; }
 .icone-azul    { background-color: #3aa9e8; }
 
 .servico-card h2 {
-    color: #2d005d;
-    font-size: 1rem;
+    color: var(--card-title);
+    font-size: 1.1rem;
     font-weight: 800;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .servico-card p {
-    color: #6b3fa0;
-    font-size: 0.85rem;
+    color: var(--card-text);
+    font-size: 0.9rem;
     line-height: 1.5;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     flex: 1;
 }
 
 .servico-link {
-    color: #9b43ff;
-    font-size: 0.78rem;
+    color: var(--card-link);
+    font-size: 0.9rem;
     font-weight: 800;
     text-decoration: none;
-    letter-spacing: 0.3px;
 }
 
 .servico-link:hover { text-decoration: underline; }
 
 /* =======================================================
-   SEÇÃO "SOBRE NÓS"
+   RODAPÉ
    ======================================================= */
-.sobre-nos-section {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    background-color: #c19eff;
-    border-radius: 40px 40px 0 0;
-    margin-top: -40px;
-    padding: 3px 30px 60px;
-    transition: background-color 0.3s ease;
+.site-footer {
+    margin-top: auto;
+    padding: 28px clamp(16px, 5vw, 88px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    color: var(--footer-text);
+    font-size: 0.85rem;
 }
 
-.sobre-nos-content {
-    max-width: 1000px;
-    margin: 0 auto;
-    color: #2d005d;
-}
-
-.sobre-nos-content h2 {
-     display: block;
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-    color: #6a3cc9;
-    margin-bottom: 6px;
-    margin-top: 50px;
-}
-
-.sobre-nos-content .description {
-    font-size: 0.75rem;
-    line-height: 1.5;
-    color: #4b2a6d;
-    margin-bottom: 18px;
-}
-
-.mission-box {
-    border-left: 3px solid #6a3cc9;
-    padding-left: 12px;
-}
-
-.mission-box p {
-    font-size: 0.88rem;
+.footer-slogan {
+    display: flex;
+    align-items: center;
+    gap: 14px;
     font-style: italic;
-    color: #4b2a6d;
-    line-height: 1.5;
 }
 
-/* =======================================================
-   MODO ESCURO
-   ======================================================= */
-html.dark-theme body { background-color: #1a1824; }
-
-html.dark-theme .banner { background-color: #1a1824; }
-html.dark-theme .banner-light { display: none !important; }
-html.dark-theme .banner-dark  { display: block !important; }
-
-html.dark-theme .banner-text p,
-html.dark-theme .banner-tag { color: #f1c40f; }
-
-html.dark-theme .banner-text .banner-desc { color: #e1def0; }
-
-html.dark-theme .btn-hero {
-    background-color: #bfa2ff;
-    color: #1a1824;
+.footer-slogan::before,
+.footer-slogan::after {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background-color: var(--footer-line);
 }
-
-html.dark-theme .oferecemos-section { background-color: #2b2150; }
-html.dark-theme .titulo-principal { color: #f1c40f; }
-html.dark-theme .subtitulo-principal { color: #e1def0; }
-
-html.dark-theme .servico-card { background-color: #221f30; }
-html.dark-theme .servico-card h2 { color: #ffffff; }
-html.dark-theme .servico-card p { color: #b0aec2; }
-html.dark-theme .servico-link { color: #bfa2ff; }
-
-html.dark-theme .sobre-nos-section { background-color: #221a38; }
-html.dark-theme .sobre-nos-content { color: #ffffff; }
-html.dark-theme .sobre-nos-content .tag { color: #bfa2ff; }
-html.dark-theme .sobre-nos-content .description { color: #e1def0; }
-html.dark-theme .mission-box { border-left-color: #f1c40f; }
-html.dark-theme .mission-box p { color: #b0aec2; }
 
 /* =======================================================
    ESCALA DE FONTE GLOBAL
@@ -319,19 +398,22 @@ html.font-grande { font-size: 130%; }
 /* =======================================================
    RESPONSIVIDADE
    ======================================================= */
+@media (max-width: 1200px) {
+    .hero::before { background-size: auto 560px; background-position: right top -30px; }
+    .hero-text h1 { font-size: 3rem; }
+}
+
 @media (max-width: 1024px) {
     .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero::before { opacity: 0.55; }
 }
 
 @media (max-width: 768px) {
-    .banner { height: 380px; }
-    .banner-img { opacity: 0.35; }
-    .banner-content { padding: 0 20px; justify-content: center; }
-    .banner-text { width: 100%; }
-    .banner-text h1 { font-size: 2.2rem; }
-    .banner-text:has(.banner-tag) h1 { font-size: 2rem; }
-    .titulo-principal { font-size: 2.2rem; }
-    .oferecemos-section { padding: 40px 15px 80px; border-radius: 30px 30px 0 0; }
+    .hero { min-height: 0; padding: 32px 0 50px; }
+    .hero::before { opacity: 0.25; background-size: auto 440px; }
+    .hero-text h1 { font-size: 2.3rem; }
+    .hero-text.is-logado h1 { font-size: 2.1rem; }
+    .titulo-principal { font-size: 2.1rem; }
     .cards-grid { grid-template-columns: 1fr; }
-    .sobre-nos-section { padding: 40px 20px 40px; border-radius: 30px 30px 0 0; }
+    .site-footer { justify-content: center; text-align: center; }
 }
