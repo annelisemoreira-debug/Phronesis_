@@ -47,9 +47,8 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
                     <?php else: ?>
                         <!-- VISÃO: VISITANTE -->
                         <div class="hero-text">
-                            <span class="hero-tag">✦ Estudos • Disciplina • Seu futuro</span>
                             <h1>Sua jornada estudantil começa <span class="destaque">aqui!</span></h1>
-                            <p class="hero-sub">Melhore sua relação com os estudos e organize sua rotina com o Phronesis_.</p>
+                            <p class="hero-sub">Melhore sua relação com os estudos e organize sua rotina com o Phronesis.</p>
                             <a href="cadastro.php" class="btn-hero">
                                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
                                 Criar conta
