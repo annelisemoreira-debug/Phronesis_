@@ -50,7 +50,8 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
 
     <script src="assets/js/lib/senhaPerdida.js" defer></script>
 
-    <?php include '../perfil/vlibras.php'; ?>
+    <?php include 'perfil/vlibras.php'; ?>
+    <?php include 'interface/footer.php';?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

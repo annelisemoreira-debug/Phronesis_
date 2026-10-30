@@ -9,6 +9,9 @@ if (strpos($script_name, '/pages/') !== false || strpos($script_name, '/perfil/'
     $path = "";
 }
 
+// No index o menu hambúrguer não tem função (a navegação fica na barra inferior)
+$semHamburger = (basename($script_name) === 'index.php');
+
 $fotoPerfil = $path . "assets/img/default-user.webp";
 $usuarioTipo = 'user';
 
@@ -51,10 +54,6 @@ if (isset($_SESSION['id'])) {
             <li class="materiais"><a href="<?= $path ?>pages/material.php">Materiais</a></li>
             <li class="livros"><a href="<?= $path ?>pages/livros.php">Obras Obrigatórias</a></li>
             <li class="cronogramas"><a href="<?= $path ?>pages/cronograma.php">Cronogramas</a></li>
-            
-            <?php if (isset($_SESSION['id']) && $usuarioTipo === 'admin'): ?>
-           
-            <?php endif; ?>
         </ul>
     </nav>
 
@@ -67,12 +66,14 @@ if (isset($_SESSION['id'])) {
                 <span class="texto-painel">PAINEL DO ESTUDANTE</span>
             <?php endif; ?>
 
+            <?php if (!$semHamburger): ?>
             <!-- Botão Hambúrguer (Mobile) -->
             <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
+            <?php endif; ?>
 
             <!-- CONTAINER DO PERFIL -->
             <div class="perfil-container" id="perfilBtn">
@@ -81,7 +82,7 @@ if (isset($_SESSION['id'])) {
                     alt="Perfil"
                     referrerpolicy="no-referrer"
                     onerror="this.onerror=null; this.src='<?= $path ?>assets/img/default-user.webp';">
-                
+
                 <div class="menu-dropdown" id="menuDropdown">
                     <a href="<?= $path ?>perfil/configperfil.php">Meu Perfil</a>
                     <?php if ($usuarioTipo === 'admin'): ?>
@@ -92,11 +93,13 @@ if (isset($_SESSION['id'])) {
             </div>
         <?php else: ?>
             <!-- SE O USUÁRIO NÃO ESTIVER LOGADO -->
+            <?php if (!$semHamburger): ?>
             <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
+            <?php endif; ?>
             <div class="menu">
                 <div class="entrar"><a href="<?= $path ?>login.php">Entrar</a></div>
             </div>

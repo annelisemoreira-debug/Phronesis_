@@ -1,27 +1,60 @@
+/* assets/css/footer.css */
 :root {
-    --footer-bg:   #d6c6f7;
-    --footer-text: #5a30b5;
-    --footer-line: #b89cf5;
+    --footer-text:  #5a30b5;
+    --footer-name:  #3b0f7a;
+    --footer-line:  #b89cf5;
 }
 
 html.dark-theme {
-    --footer-bg:   #1a1824;
-    --footer-text: #c3a9ff;
-    --footer-line: #38334a;
+    --footer-text:  #c3a9ff;
+    --footer-name:  #f1ecff;
+    --footer-line:  #38334a;
 }
 
 .site-footer {
-    margin-top: auto;               /* empurra o rodapé para o fim da página */
-    padding: 28px clamp(16px, 5vw, 88px);
+    margin-top: auto;                 /* empurra o rodapé para o fim da página */
+    width: 100%;
+    padding: 24px clamp(16px, 5vw, 88px) 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    background: transparent;          /* usa o fundo da própria página */
+    color: var(--footer-text);
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+
+/* Integrantes: centralizados */
+.footer-team {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px 0;
+    text-align: center;
+    color: var(--footer-name);
+    font-weight: 700;
+}
+
+.footer-team li + li::before {
+    content: "•";
+    margin: 0 12px;
+    color: var(--footer-line);
+    font-weight: 400;
+}
+
+/* Linha de baixo: copyright + slogan */
+.footer-bottom {
+    width: 100%;
+    padding-top: 14px;
+    border-top: 1px solid var(--footer-line);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
     flex-wrap: wrap;
-    background-color: var(--footer-bg);
-    color: var(--footer-text);
-    font-size: 0.85rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    gap: 10px 16px;
 }
 
 .footer-slogan {
@@ -40,5 +73,5 @@ html.dark-theme {
 }
 
 @media (max-width: 768px) {
-    .site-footer { justify-content: center; text-align: center; }
+    .footer-bottom { flex-direction: column; justify-content: center; text-align: center; }
 }

@@ -11,6 +11,7 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phronesis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link class="js-theme-style" rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/header.css">
     <link rel="icon" type="image/png" href="assets/img/logos/favicon.png">
@@ -93,24 +94,33 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
                             <a href="pages/cronograma.php" class="servico-link">Criar cronograma →</a>
                         </article>
 
-                        <article class="servico-card">
-                            <div class="servico-icone icone-azul">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>
-                            </div>
-                            <h2>Acessibilidade</h2>
-                            <p>Deixe o nosso site o mais confortavel para você!</p>
-                            <a href="perfil/configperfil.php" class="servico-link">Ver acessibilidade →</a>
-                        </article>
-
                     </div>
                 </div>
             </main>
 
-        <?php include 'interface/footer.php';?>
-            
+            <?php include 'interface/footer.php'; ?>
 
         </div>
     </div>
+
+    <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <nav class="bottom-nav" aria-label="Navegação principal">
+        <a href="index.php" class="bn-item ativo" aria-current="page">
+            <i class="fa-solid fa-house"></i><span>Início</span>
+        </a>
+        <a href="pages/livros.php" class="bn-item">
+            <i class="fa-solid fa-book"></i><span>Biblioteca</span>
+        </a>
+        <a href="pages/material.php" class="bn-item">
+            <i class="fa-solid fa-tv"></i><span>Material</span>
+        </a>
+        <a href="pages/cronograma.php" class="bn-item">
+            <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
+        </a>
+        <a href="perfil/configperfil.php" class="bn-item">
+            <i class="fa-regular fa-user"></i><span>Perfil</span>
+        </a>
+    </nav>
 
     <script src="assets/js/lib/index.js"></script>
     <?php include 'perfil/vlibras.php'; ?>

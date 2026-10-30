@@ -477,14 +477,14 @@ html.font-grande { font-size: 130%; }
     }
     html.dark-theme .bn-item { color: #b0aec2; }
     html.dark-theme .bn-item.ativo { color: #bfa2ff; }
+}   /* <- fecha o @media (max-width: 768px) */
 
 /* Celulares bem pequenos */
 @media (max-width: 380px) {
-    .aba { font-size: 0.66rem; padding: 6px 4px; }  
+    .aba { font-size: 0.66rem; padding: 6px 4px; }
     .livro-capa { flex-basis: 58px; height: 84px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
-}
 }

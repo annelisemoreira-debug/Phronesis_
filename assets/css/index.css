@@ -1,76 +1,71 @@
 /* =======================================================
    VARIÁVEIS (tema claro por padrão)
-   Cores alinhadas com livros.css e material.css
    ======================================================= */
 :root {
-    --bg-page:        #d6c6f7;
-    --hero-title:     #3b0f7a;   /* = --ink */
-    --hero-accent:    #8654f3;   /* = --purple */
-    --hero-sub:       #5a30b5;   /* mais escuro que --ink-soft para ler bem no fundo lilás */
-    --tag-bg:         #ffffff;
-    --tag-text:       #8654f3;
-    --btn-bg:         #8654f3;
-    --btn-bg-hover:   #6d3fe0;
-    --btn-text:       #ffffff;
+    --bg:            #d6c6f7;
+    --panel:         #ffffff;
+    --ink:           #3b0f7a;
+    --ink-soft:      #7a4fd6;
+    --purple:        #8654f3;
+    --purple-hover:  #6d3fe0;
+    --btn-text:      #ffffff;
 
-    --offer-bg:       #8654f3;
-    --offer-title:    #ffffff;
-    --offer-accent:   #ffe57e;
-    --offer-sub:      #ebe3ff;
+    --hero-sub:      #5a30b5;   /* mais escuro que --ink-soft para ler bem no fundo lilás */
 
-    --card-bg:        #ffffff;
-    --card-title:     #3b0f7a;
-    --card-text:      #7a4fd6;   /* = --ink-soft */
-    --card-link:      #8654f3;
+    --offer-bg:      #8654f3;
+    --offer-title:   #ffffff;
+    --offer-accent:  #ffe57e;
+    --offer-sub:     #ebe3ff;
 
-    
+    --icon-purple:   #8654f3;
+    --icon-yellow:   #f5c84c;
+    --icon-blue:     #3aa9e8;
+
+    /* barra inferior (celular) */
+    --nav-bg:        #ffffff;
+    --nav-border:    #d3bff5;
+    --nav-item:      #7a4fd6;
+    --nav-item-on:   #8654f3;
+    --nav-shadow:    rgba(0, 0, 0, .12);
+
+    --side-margin: clamp(16px, 3.1vw, 52px);
 }
 
 html.dark-theme {
-    --bg-page:        #1a1824;
-    --hero-title:     #f1ecff;
-    --hero-accent:    #bfa2ff;
-    --hero-sub:       #c3a9ff;
-    --tag-bg:         #2b2150;
-    --tag-text:       #bfa2ff;
-    --btn-bg:         #bfa2ff;
-    --btn-bg-hover:   #d1bbff;
-    --btn-text:       #1a1824;
+    --bg:            #1a1824;
+    --panel:         #1d1b26;
+    --ink:           #f1ecff;
+    --ink-soft:      #c3a9ff;
+    --purple:        #bfa2ff;
+    --purple-hover:  #d1bbff;
+    --btn-text:      #1a1824;
 
-    --offer-bg:       #2b2150;
-    --offer-title:    #ffffff;
-    --offer-accent:   #f1c40f;
-    --offer-sub:      #c3a9ff;
+    --hero-sub:      #c3a9ff;
 
-    --card-bg:        #1d1b26;
-    --card-title:     #f1ecff;
-    --card-text:      #c3a9ff;
-    --card-link:      #bfa2ff;
+    --offer-bg:      #2b2150;
+    --offer-accent:  #f1c40f;
+    --offer-sub:     #c3a9ff;
 
-   
+    --nav-bg:        #272530;
+    --nav-border:    rgba(255, 255, 255, 0.08);
+    --nav-item:      #b0aec2;
+    --nav-item-on:   #bfa2ff;
+    --nav-shadow:    rgba(0, 0, 0, .4);
 }
 
 /* =======================================================
    BASE
    ======================================================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    background-color: var(--bg-page);
+    background-color: var(--bg);
     overflow-x: hidden;
     font-family: 'Open Sans', 'Segoe UI', Roboto, sans-serif;
     transition: background-color 0.3s ease;
 }
 
-.wrapper {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-}
+.wrapper { display: flex; min-height: 100vh; width: 100%; }
 
 .principalContent {
     flex: 1;
@@ -79,29 +74,21 @@ body {
     flex-direction: column;
 }
 
-:root {
-    --side-margin: clamp(16px, 3.1vw, 52px); /* margem do bloco roxo */
-}
-
-/* Texto do hero: começa em ~11% da largura, como na referência */
-.container {
-    width: 100%;
-    padding: 0 9vw 0 11vw;
-}
+.container { width: 100%; padding: 0 9vw 0 11vw; }
 
 /* =======================================================
    HERO
    ======================================================= */
 .hero {
     position: relative;
-    min-height: 530px;            /* altura fixa mínima: visitante e logado ficam iguais */
+    min-height: 530px;
     padding: 60px 0 64px;
     display: flex;
     align-items: center;
     overflow: hidden;
 }
 
-/* Ilustração de fundo: altura própria, não depende do texto */
+/* Ilustração de fundo (PC) */
 .hero::before {
     content: "";
     position: absolute;
@@ -121,10 +108,7 @@ html.dark-theme .hero::before {
     background-image: url('../img/index/fundo_index_livro_escuro.webp');
 }
 
-.hero .container {
-    position: relative;
-    z-index: 1;
-}
+.hero .container { position: relative; z-index: 1; }
 
 .hero-text {
     max-width: 560px;
@@ -133,22 +117,8 @@ html.dark-theme .hero::before {
     align-items: flex-start;
 }
 
-.hero-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: var(--tag-bg);
-    color: var(--tag-text);
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.3px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-}
-
 .hero-text h1 {
-    color: var(--hero-title);
+    color: var(--ink);
     font-size: 3.4rem;
     font-weight: 800;
     line-height: 1.02;
@@ -158,7 +128,7 @@ html.dark-theme .hero::before {
 
 .hero-text h1 .destaque {
     display: inline-block;
-    color: var(--hero-accent);
+    color: var(--purple);
     text-decoration: underline wavy;
     text-decoration-thickness: 3px;
     text-underline-offset: 6px;
@@ -178,7 +148,7 @@ html.dark-theme .hero::before {
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    background-color: var(--btn-bg);
+    background-color: var(--purple);
     color: var(--btn-text);
     font-weight: 700;
     font-size: 1rem;
@@ -189,10 +159,7 @@ html.dark-theme .hero::before {
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.btn-hero:hover {
-    background-color: var(--btn-bg-hover);
-    transform: translateY(-2px);
-}
+.btn-hero:hover { background-color: var(--purple-hover); transform: translateY(-2px); }
 
 .btn-hero svg {
     width: 20px;
@@ -204,21 +171,9 @@ html.dark-theme .hero::before {
     stroke-linejoin: round;
 }
 
-/* Variante: usuário logado (letras maiores) */
-.hero-text.is-logado {
-    max-width: 680px;
-}
-
-.hero-text.is-logado .hero-tag {
-    font-size: 0.9rem;
-    padding: 8px 16px;
-    margin-bottom: 20px;
-}
-
-.hero-text.is-logado h1 {
-    font-size: 3.6rem;
-    margin-bottom: 22px;
-}
+/* Variante: usuário logado */
+.hero-text.is-logado { max-width: 680px; }
+.hero-text.is-logado h1 { font-size: 3.6rem; margin-bottom: 22px; }
 
 .hero-text .hero-desc {
     color: var(--hero-sub);
@@ -228,10 +183,7 @@ html.dark-theme .hero::before {
     max-width: 560px;
 }
 
-.hero-desc strong {
-    color: var(--hero-title);
-    font-weight: 800;
-}
+.hero-desc strong { color: var(--ink); font-weight: 800; }
 
 /* =======================================================
    O QUE OFERECEMOS
@@ -246,7 +198,6 @@ html.dark-theme .hero::before {
     border-radius: 28px;
 }
 
-/* Formas decorativas discretas */
 .oferecemos-section::before,
 .oferecemos-section::after {
     content: "";
@@ -255,25 +206,12 @@ html.dark-theme .hero::before {
     border-radius: 50%;
     pointer-events: none;
 }
-
-.oferecemos-section::before {
-    width: 160px;
-    height: 160px;
-    left: -60px;
-    bottom: 60px;
-}
-
-.oferecemos-section::after {
-    width: 220px;
-    height: 220px;
-    right: -50px;
-    top: -90px;
-}
+.oferecemos-section::before { width: 160px; height: 160px; left: -60px; bottom: 60px; }
+.oferecemos-section::after  { width: 220px; height: 220px; right: -50px; top: -90px; }
 
 .oferecemos-section .container {
     position: relative;
     z-index: 1;
-    /* compensa a margem do bloco para alinhar com o texto do hero */
     padding: 0 calc(9vw - var(--side-margin)) 0 calc(11vw - var(--side-margin));
 }
 
@@ -298,9 +236,7 @@ html.dark-theme .hero::before {
     background-color: var(--offer-accent);
 }
 
-.titulo-principal .destaque {
-    color: var(--offer-accent);
-}
+.titulo-principal .destaque { color: var(--offer-accent); }
 
 .subtitulo-principal {
     color: var(--offer-sub);
@@ -309,14 +245,10 @@ html.dark-theme .hero::before {
     margin: 4px 0 28px;
 }
 
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
+.cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
 .servico-card {
-    background: var(--card-bg);
+    background: var(--panel);
     border-radius: 10px;
     padding: 18px 26px 22px;
     display: flex;
@@ -325,10 +257,7 @@ html.dark-theme .hero::before {
     transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
 }
 
-.servico-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 14px 28px rgba(30, 10, 80, 0.25);
-}
+.servico-card:hover { transform: translateY(-5px); box-shadow: 0 14px 28px rgba(30, 10, 80, 0.25); }
 
 .servico-icone {
     width: 54px;
@@ -350,35 +279,22 @@ html.dark-theme .hero::before {
     stroke-linejoin: round;
 }
 
-.icone-roxo    { background-color: #8654f3; }
-.icone-amarelo { background-color: #f5c84c; }
-.icone-azul    { background-color: #3aa9e8; }
+.icone-roxo    { background-color: var(--icon-purple); }
+.icone-amarelo { background-color: var(--icon-yellow); }
+.icone-azul    { background-color: var(--icon-blue); }
 
-.servico-card h2 {
-    color: var(--card-title);
-    font-size: 1.1rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
+.servico-card h2 { color: var(--ink); font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
 
 .servico-card p {
-    color: var(--card-text);
+    color: var(--ink-soft);
     font-size: 0.9rem;
     line-height: 1.5;
     margin-bottom: 16px;
     flex: 1;
 }
 
-.servico-link {
-    color: var(--card-link);
-    font-size: 0.9rem;
-    font-weight: 800;
-    text-decoration: none;
-}
-
+.servico-link { color: var(--purple); font-size: 0.9rem; font-weight: 800; text-decoration: none; }
 .servico-link:hover { text-decoration: underline; }
-
-
 
 /* =======================================================
    ESCALA DE FONTE GLOBAL
@@ -386,6 +302,9 @@ html.dark-theme .hero::before {
 html, html.font-normal { font-size: 100%; }
 html.font-media  { font-size: 115%; }
 html.font-grande { font-size: 130%; }
+
+/* Barra inferior: escondida no PC */
+.bottom-nav { display: none; }
 
 /* =======================================================
    RESPONSIVIDADE
@@ -395,19 +314,133 @@ html.font-grande { font-size: 130%; }
     .hero-text.is-logado h1 { font-size: 3.1rem; }
 }
 
+/* ---------- TABLET (até 1024px): texto centralizado, ilustração embaixo ---------- */
 @media (max-width: 1024px) {
     .container,
     .oferecemos-section .container { padding: 0 24px; }
     .cards-grid { grid-template-columns: repeat(2, 1fr); }
-    .hero::before { right: 0; width: 100%; opacity: 0.5; }
+
+    .hero {
+        min-height: 0;
+        padding: 40px 0 36px;          /* respiro antes do bloco "O que oferecemos" */
+        flex-direction: column;
+        align-items: stretch;
+        gap: 22px;
+    }
+
+    .hero-text,
+    .hero-text.is-logado {
+        max-width: 640px;
+        margin: 0 auto;
+        align-items: center;
+        text-align: center;
+    }
+
+    .hero-text h1,
+    .hero-text.is-logado h1 { font-size: 2.7rem; margin-bottom: 14px; }
+
+    .hero-text .hero-sub,
+    .hero-text .hero-desc { margin-left: auto; margin-right: auto; }
+
+    /* A ilustração vira um bloco abaixo do texto */
+    .hero::before {
+        position: relative;
+        order: 2;
+        flex: none;
+        top: auto;
+        right: auto;
+        transform: none;
+        width: 100%;
+        max-width: 620px;
+        height: 300px;
+        margin: 0 auto;
+        background-position: center;
+    }
 }
 
+/* ---------- CELULAR (até 768px) ---------- */
 @media (max-width: 768px) {
-    .hero { min-height: 0; padding: 32px 0 50px; }
-    .hero::before { opacity: 0.25; }
-    .hero-text h1 { font-size: 2.3rem; }
-    .hero-text.is-logado h1 { font-size: 2.4rem; }
-    .hero-text .hero-desc { font-size: 1.1rem; }
-    .titulo-principal { font-size: 2.1rem; }
-    .cards-grid { grid-template-columns: 1fr; }
+    html, body { overflow-x: clip; }
+    body { padding-bottom: 84px; }
+
+    .hero { padding: 28px 0 30px; gap: 16px; }
+
+    .hero-text h1,
+    .hero-text.is-logado h1 { font-size: 2.2rem; line-height: 1.08; letter-spacing: -0.5px; }
+
+    .hero-text .hero-desc { font-size: 1rem; line-height: 1.5; max-width: 100%; }
+    .hero-text .hero-sub  { max-width: 100%; }
+
+    .hero::before { height: 250px; }
+
+    .oferecemos-section { margin: 0 12px 20px; padding: 22px 0 24px; border-radius: 26px; }
+    .oferecemos-section .container { padding: 0 14px; }
+
+    .titulo-principal { font-size: 2rem; padding-top: 16px; }
+    .subtitulo-principal { font-size: 1rem; margin-bottom: 20px; }
+
+    .cards-grid { grid-template-columns: 1fr; gap: 12px; }
+
+    /* Card horizontal: ícone à esquerda, texto à direita */
+    .servico-card {
+        display: grid;
+        grid-template-columns: 54px minmax(0, 1fr);
+        column-gap: 16px;
+        align-items: start;
+        padding: 16px 16px 16px 18px;
+        border-radius: 14px;
+    }
+    .servico-card:hover { transform: none; }
+    .servico-icone { grid-row: 1 / span 3; margin-bottom: 0; }
+
+    .servico-card h2 { font-size: 1rem; margin-bottom: 4px; }
+    .servico-card p  { font-size: 0.85rem; margin-bottom: 10px; flex: none; }
+    .servico-link    { font-size: 0.85rem; }
+
+    /* BARRA INFERIOR */
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 900;
+        background: var(--nav-bg);
+        border-top: 1px solid var(--nav-border);
+        box-shadow: 0 -4px 16px var(--nav-shadow);
+        padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+        justify-content: space-around;
+    }
+    .bn-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        text-decoration: none;
+        color: var(--nav-item);
+        font-size: 0.66rem;
+        font-weight: 700;
+        padding: 4px 0;
+    }
+    .bn-item i { font-size: 1.15rem; }
+    .bn-item.ativo { color: var(--nav-item-on); }
+}
+
+/* ---------- CELULAR PEQUENO (até 480px): texto volta para a esquerda ---------- */
+@media (max-width: 480px) {
+    .hero-text,
+    .hero-text.is-logado { margin: 0; align-items: flex-start; text-align: left; }
+    .hero-text .hero-sub,
+    .hero-text .hero-desc { margin-left: 0; margin-right: 0; }
+}
+
+@media (max-width: 380px) {
+    .hero-text h1,
+    .hero-text.is-logado h1 { font-size: 1.9rem; }
+    .hero::before { height: 210px; }
+    .servico-card { grid-template-columns: 46px minmax(0, 1fr); column-gap: 12px; }
+    .servico-icone { width: 46px; height: 46px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
 }

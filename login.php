@@ -114,6 +114,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
     <script src="assets/js/lib/login.js" defer></script>
 
     <?php include 'perfil/vlibras.php'; ?>
+    <?php include 'interface/footer.php';?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -166,5 +167,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
             }
         });
     </script>
+    
+    
 </body>
 </html>

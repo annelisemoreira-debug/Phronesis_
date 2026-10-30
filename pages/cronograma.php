@@ -662,6 +662,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
+                    </div>
         </aside>
     </main>
 
@@ -688,5 +689,6 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 </nav>
 
     <?php include '../perfil/vlibras.php'; ?>
+    <?php include '../interface/footer.php';?>
 </body>
 </html>

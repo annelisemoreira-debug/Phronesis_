@@ -95,5 +95,6 @@ $paginaAtual = 'favoritos';
 
     <script src="../assets/js/lib/material.js" defer></script>
     <?php include '../perfil/vlibras.php'; ?>
+    <?php include '../interface/footer.php';?>
 </body>
 </html>

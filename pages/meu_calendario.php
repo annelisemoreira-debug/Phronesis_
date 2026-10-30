@@ -129,6 +129,7 @@ $googleLogado = 'false';
 <script src="../assets/js/lib/meu_calendario.js" defer></script>
 
     <?php include '../perfil/vlibras.php'; ?>
+    <?php include '../interface/footer.php';?>
         
 </body>
 </html>

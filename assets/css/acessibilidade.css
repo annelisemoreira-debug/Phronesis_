@@ -9,7 +9,7 @@
 }
 
 body {
-    background-color: #bfa2ff; /* Fundo lilás da página */
+    background-color: #d6c6f7; /* Fundo lilás da página */
     min-height: 100vh; /* Permite que o corpo se adapte à tela verticalmente */
     display: flex;
     align-items: center;

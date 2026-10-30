@@ -544,6 +544,7 @@ if ($res_topicos) {
 <script src="../assets/js/lib/admin_materias.js" defer></script>
 
 <?php include '../perfil/vlibras.php'; ?>
+<?php include '../interface/footer.php';?>
 
 </body>
 </html>

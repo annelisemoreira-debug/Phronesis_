@@ -166,5 +166,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <?php unset($_SESSION['status_cadastro']); ?>
 <?php endif; ?>
     </script>
+
+    <?php include 'interface/footer.php';?>
 </body>
 </html>
