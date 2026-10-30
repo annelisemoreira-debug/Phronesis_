@@ -191,7 +191,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
 <link rel="stylesheet" href="../assets/css/configperfil.css?v=<?php echo $verCss; ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
     <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
     

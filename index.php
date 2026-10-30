@@ -14,7 +14,7 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link class="js-theme-style" rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/header.css">
-    <link rel="icon" type="image/png" href="assets/img/logos/favicon.png">
+    <link rel="icon" type="image/png" href="assets/img/logos/favicon.webp">
 
     <script>
         // Anti-flicker: aplica tema e tamanho de fonte antes de pintar a página

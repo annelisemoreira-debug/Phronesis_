@@ -13,7 +13,7 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha</title>
     <link rel="stylesheet" href="assets/css/senha.css">
-    <link rel="icon" type="image/png" href="assets/img/logos/favicon.png">
+    <link rel="icon" type="image/png" href="assets/img/logos/favicon.webp">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>

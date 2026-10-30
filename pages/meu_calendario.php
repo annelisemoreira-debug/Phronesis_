@@ -153,9 +153,10 @@ $googleLogado = 'false';
     <meta charset="UTF-8">
     <title>Sincronizar Agenda - Phronesis</title>
     <link rel="stylesheet" href="../assets/css/meuCalendario.css">
-    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
 
     <script>
         (function () {

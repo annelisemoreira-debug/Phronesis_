@@ -89,7 +89,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     ?>
     <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=<?php echo $verCss; ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
     
     <script src="../assets/js/lib/acessibilidade.js?v=<?php echo $verJs; ?>"></script>
 </head>
