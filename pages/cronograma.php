@@ -11,7 +11,7 @@ include '../conexao.php';
 
 // 2. Verifica se o ID da sessão ainda é válido no banco de dados
 $id = intval($_SESSION['id']);
-$res = $conn->query("SELECT foto FROM usuario WHERE id_usuario = $id");
+$res = $conn->query("SELECT foto, google_email FROM usuario WHERE id_usuario = $id");
 $dadosUser = $res->fetch_assoc();
 
 if (!$dadosUser) {
@@ -19,6 +19,9 @@ if (!$dadosUser) {
     header("Location: ../login.php");
     exit();
 }
+
+// E-mail da conta Google vinculada: é ELE que define quais cronogramas aparecem
+$emailGoogle = $dadosUser['google_email'] ?? null;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -33,6 +36,32 @@ try {
     die("Erro banco: " . $e->getMessage());
 }
 
+// ---- LOGOUT (desvincula o Google desta conta do Phronesis) ----
+if (isset($_GET['logout'])) {
+    $conn->query("UPDATE usuario SET google_token = NULL, google_email = NULL WHERE id_usuario = $id");
+    unset($_SESSION['upload_token'], $_SESSION['google_email'], $_SESSION['temp_cronograma'], $_SESSION['temp_params'], $_SESSION['editando_id']);
+    header('Location: meu_calendario.php');
+    exit;
+}
+
+// Sem token ou sem e-mail vinculado: volta para a tela de conexão
+if (!isset($_SESSION['upload_token']) || empty($emailGoogle)) {
+    header('Location: meu_calendario.php');
+    exit;
+}
+
+// Configuração Google
+$client = new Google\Client();
+$client->setAuthConfig('../credentials.json');
+$client->setAccessToken($_SESSION['upload_token']);
+
+// Token vencido: a tela de conexão renova e devolve para cá
+if ($client->isAccessTokenExpired()) {
+    header('Location: meu_calendario.php');
+    exit;
+}
+$service = new Google\Service\Calendar($client);
+
 // Busca matérias para o formulário
 $sql = "SELECT id_materia, nome_materia, cor_hex FROM materia ORDER BY nome_materia ASC";
 $consulta = $pdo->query($sql);
@@ -46,7 +75,7 @@ try {
                       ORDER BY m.nome_materia ASC, t.nome_topico ASC";
     $stmt_cont = $pdo->query($sql_conteudos);
     $lista_completa = $stmt_cont->fetchAll(PDO::FETCH_ASSOC);
-    
+
     if (empty($lista_completa) || (count($lista_completa) === 1 && empty($lista_completa[0]['nome_conteudo']))) {
         $sql_conteudos = "SELECT m.nome_materia, c.nome_conteudo 
                           FROM materia m
@@ -72,41 +101,26 @@ try {
     }
 }
 
-// ---- BUSCA CRONOGRAMAS DIRETAMENTE DO BANCO DE DADOS (Persistência) ----
-$stmtCronos = $pdo->prepare("SELECT id_cronograma, titulo_cronograma AS titulo, google_calendar_id AS calendar_id, DATE_FORMAT(data_criacao, '%d/%m/%Y %H:%i') AS data FROM cronograma WHERE id_usuario = ? ORDER BY id_cronograma DESC");
-$stmtCronos->execute([$id]);
+// ---- BUSCA CRONOGRAMAS DA CONTA GOOGLE (compartilhados entre contas com o mesmo e-mail) ----
+$stmtCronos = $pdo->prepare("SELECT id_cronograma, titulo_cronograma AS titulo, google_calendar_id AS calendar_id, DATE_FORMAT(data_criacao, '%d/%m/%Y %H:%i') AS data FROM cronograma WHERE google_email = ? ORDER BY id_cronograma DESC");
+$stmtCronos->execute([$emailGoogle]);
 $meus_cronogramas_db = $stmtCronos->fetchAll(PDO::FETCH_ASSOC);
-
-if (isset($_GET['logout'])) {
-    $conn->query("UPDATE usuario SET google_token = NULL WHERE id_usuario = $id");
-    unset($_SESSION['upload_token'], $_SESSION['temp_cronograma'], $_SESSION['editando_id']);
-    header('Location: meu_calendario.php');
-    exit;
-}
-
-if (!isset($_SESSION['upload_token'])) {
-    header('Location: meu_calendario.php');
-    exit;
-}
-
-// Configuração Google
-$client = new Google\Client();
-$client->setAuthConfig('../credentials.json');
-$client->setAccessToken($_SESSION['upload_token']);
-$service = new Google\Service\Calendar($client);
 
 $msg_feedback = "";
 $id_visualizacao = $_GET['ver'] ?? null;
 $mostrar_modal = false;
 
 $calendar_id_exibir = null;
+$titulo_exibir = '';
 $materias_checklist = [];
 
 if ($id_visualizacao !== null) {
-    $stmtVis = $pdo->prepare("SELECT google_calendar_id, titulo_cronograma FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
-    $stmtVis->execute([$id_visualizacao, $id]);
+    $stmtVis = $pdo->prepare("SELECT google_calendar_id, titulo_cronograma FROM cronograma WHERE id_cronograma = ? AND google_email = ?");
+    $stmtVis->execute([intval($id_visualizacao), $emailGoogle]);
     $crono_ver = $stmtVis->fetch(PDO::FETCH_ASSOC);
+
     if ($crono_ver) {
+        $id_visualizacao = intval($id_visualizacao);
         $calendar_id_exibir = $crono_ver['google_calendar_id'];
         $titulo_exibir = $crono_ver['titulo_cronograma'];
 
@@ -119,11 +133,19 @@ if ($id_visualizacao !== null) {
         $stmt_mat_crono->execute([$id_visualizacao]);
         $lista_mat_crono = $stmt_mat_crono->fetchAll(PDO::FETCH_ASSOC);
 
+        // Todos os status deste cronograma de uma vez (evita uma consulta por tópico)
+        $stmt_status = $pdo->prepare("SELECT id_topico, status FROM cronograma_topico_status WHERE id_cronograma = ?");
+        $stmt_status->execute([$id_visualizacao]);
+        $mapa_status = [];
+        foreach ($stmt_status->fetchAll(PDO::FETCH_ASSOC) as $s) {
+            $mapa_status[(int)$s['id_topico']] = (int)$s['status'];
+        }
+
+        $stmt_topico = $pdo->prepare("SELECT id_topico, nome_topico FROM materia_topico WHERE id_materia = ? ORDER BY nome_topico ASC");
+
         foreach ($lista_mat_crono as $mat) {
             $id_materia = $mat['id_materia'];
-            
-            // Busca tópicos da matéria
-            $stmt_topico = $pdo->prepare("SELECT id_topico, nome_topico FROM materia_topico WHERE id_materia = ? ORDER BY nome_topico ASC");
+
             $stmt_topico->execute([$id_materia]);
             $todos_topicos = $stmt_topico->fetchAll(PDO::FETCH_ASSOC);
 
@@ -132,15 +154,8 @@ if ($id_visualizacao !== null) {
             $total = count($todos_topicos);
 
             foreach ($todos_topicos as $top) {
-                $id_topico = $top['id_topico'];
-                
-                // CORREÇÃO AQUI: Agora busca o status correto da tabela 'cronograma_topico_status'
-                $stmt_status = $pdo->prepare("SELECT status FROM cronograma_topico_status WHERE id_cronograma = ? AND id_topico = ?");
-                $stmt_status->execute([$id_visualizacao, $id_topico]);
-                $status_salvo = $stmt_status->fetchColumn();
-
-                // Como gravamos como inteiro 1 na tabela, comparamos se é igual a 1
-                $checado = ((int)$status_salvo === 1);
+                $id_topico = (int)$top['id_topico'];
+                $checado = (($mapa_status[$id_topico] ?? 0) === 1);
                 if ($checado) $concluidos++;
 
                 $topicos_formatados[] = [
@@ -160,15 +175,18 @@ if ($id_visualizacao !== null) {
                 'topicos' => $topicos_formatados
             ];
         }
+    } else {
+        // Cronograma inexistente ou de outra conta Google
+        $id_visualizacao = null;
     }
 }
 
 // --- EXCLUSÃO ---
 if (isset($_GET['deletar_salvo'])) {
     $id_del = intval($_GET['deletar_salvo']);
-    
-    $stmtCheck = $pdo->prepare("SELECT google_calendar_id FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
-    $stmtCheck->execute([$id_del, $id]);
+
+    $stmtCheck = $pdo->prepare("SELECT google_calendar_id FROM cronograma WHERE id_cronograma = ? AND google_email = ?");
+    $stmtCheck->execute([$id_del, $emailGoogle]);
     $crono_del = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
     if ($crono_del) {
@@ -177,8 +195,12 @@ if (isset($_GET['deletar_salvo'])) {
             if ($calendarId && $calendarId !== 'primary') {
                 $service->calendars->delete($calendarId);
             }
-            $stmtDel = $pdo->prepare("DELETE FROM `cronograma` WHERE `id_cronograma` = ? AND `id_usuario` = ?");
-            $stmtDel->execute([$id_del, $id]);
+            $stmtDel = $pdo->prepare("DELETE FROM `cronograma` WHERE `id_cronograma` = ? AND `google_email` = ?");
+            $stmtDel->execute([$id_del, $emailGoogle]);
+
+            // Limpa o progresso dos tópicos (a tabela não tem chave estrangeira)
+            $pdo->prepare("DELETE FROM `cronograma_topico_status` WHERE `id_cronograma` = ?")->execute([$id_del]);
+
             $msg_feedback = "🗑️ Cronograma removido com sucesso!";
         } catch (Exception $e) {
             $msg_feedback = "⚠️ Erro ao remover: " . $e->getMessage();
@@ -192,12 +214,13 @@ if (isset($_GET['deletar_salvo'])) {
 $dados_edicao = null;
 if (isset($_GET['editar'])) {
     $id_ed = intval($_GET['editar']);
-    $stmtEd = $pdo->prepare("SELECT google_calendar_id, titulo_cronograma FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
-    $stmtEd->execute([$id_ed, $id]);
+    $stmtEd = $pdo->prepare("SELECT google_calendar_id, titulo_cronograma FROM cronograma WHERE id_cronograma = ? AND google_email = ?");
+    $stmtEd->execute([$id_ed, $emailGoogle]);
     $crono_ed = $stmtEd->fetch(PDO::FETCH_ASSOC);
     if ($crono_ed) {
         $_SESSION['editando_id'] = $id_ed;
         $id_visualizacao = null;
+        $calendar_id_exibir = null;
     }
 }
 
@@ -207,10 +230,9 @@ if (isset($_GET['msg'])) $msg_feedback = $_GET['msg'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     $data_inicio = new DateTime($_POST['data_inicio']);
     $data_fim = new DateTime($_POST['data_fim']);
+    $data_hoje_obj = new DateTime($hoje);
     $materias_selecionadas = $_POST['materias_id'] ?? [];
     $dias_permitidos = $_POST['dias_semana'] ?? [];
-    
-    $intervalo_seguranca = $data_inicio->diff($data_fim);
 
     $intervalo_seguranca = $data_inicio->diff($data_fim);
 
@@ -223,6 +245,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
 
     if (empty($materias_selecionadas)) {
         $msg_feedback = "❌ Erro: Selecione ao menos uma matéria.";
+    } elseif ($data_inicio < $data_hoje_obj) {
+        $msg_feedback = "❌ Erro: A data de início não pode ser anterior a hoje.";
+    } elseif ($data_fim < $data_inicio) {
+        $msg_feedback = "❌ Erro: Data final não pode ser menor que a inicial.";
+    } elseif ($intervalo_seguranca->days > 366) {
+        $msg_feedback = "❌ Erro: O período máximo permitido para um cronograma é de 1 ano.";
     } elseif ($horas_estudo_val <= 0) {
         $msg_feedback = "❌ Erro: A duração deve ser maior que zero.";
     } elseif ($horas_estudo_val >= 24) {
@@ -232,10 +260,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
             . count($materias_selecionadas) . " matéria(s) de " . $horas_estudo_val
             . "h começando às " . sprintf('%02d:%02d', $partes_hora[0], $partes_hora[1] ?? 0)
             . ", o cronograma passaria da meia-noite. Reduza a duração, o nº de matérias ou adiante o horário de início.";
-    } elseif ($data_fim < $data_inicio) {
-        $msg_feedback = "❌ Erro: Data final não pode ser menor que a inicial.";
-    } elseif ($intervalo_seguranca->days > 366) { 
-        $msg_feedback = "❌ Erro: O período máximo permitido para um cronograma é de 1 ano.";
     } else {
         $_SESSION['ultimo_nome'] = !empty($_POST['nome_cronograma']) ? $_POST['nome_cronograma'] : "Plano de Estudos";
         $nomes_map = [];
@@ -287,14 +311,14 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
         if (isset($_SESSION['editando_id'])) {
             $id_cronograma_existente = intval($_SESSION['editando_id']);
-            $stmt = $pdo->prepare("SELECT google_calendar_id FROM cronograma WHERE id_cronograma = ? AND id_usuario = ?");
-            $stmt->execute([$id_cronograma_existente, $id]);
+            $stmt = $pdo->prepare("SELECT google_calendar_id FROM cronograma WHERE id_cronograma = ? AND google_email = ?");
+            $stmt->execute([$id_cronograma_existente, $emailGoogle]);
             $calendarIdParaUso = $stmt->fetchColumn();
         }
 
         if ($id_cronograma_existente && $calendarIdParaUso) {
-            $stmtUpd = $pdo->prepare("UPDATE `cronograma` SET `titulo_cronograma` = ? WHERE `id_cronograma` = ? AND `id_usuario` = ?");
-            $stmtUpd->execute([$_SESSION['ultimo_nome'], $id_cronograma_existente, $id]);
+            $stmtUpd = $pdo->prepare("UPDATE `cronograma` SET `titulo_cronograma` = ? WHERE `id_cronograma` = ? AND `google_email` = ?");
+            $stmtUpd->execute([$_SESSION['ultimo_nome'], $id_cronograma_existente, $emailGoogle]);
 
             $pdo->prepare("DELETE FROM `cronograma_item` WHERE `id_cronograma` = ?")->execute([$id_cronograma_existente]);
             $id_cronograma_db = $id_cronograma_existente;
@@ -312,8 +336,8 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
             $createdCalendar = $service->calendars->insert($newCalendar);
             $calendarIdParaUso = $createdCalendar->getId();
 
-            $stmtCrono = $pdo->prepare("INSERT INTO `cronograma` (`id_usuario`, `titulo_cronograma`, `google_calendar_id`, `data_criacao`) VALUES (?, ?, ?, NOW())");
-            $stmtCrono->execute([$id_usuario_logado, $_SESSION['ultimo_nome'], $calendarIdParaUso]);
+            $stmtCrono = $pdo->prepare("INSERT INTO `cronograma` (`id_usuario`, `google_email`, `titulo_cronograma`, `google_calendar_id`, `data_criacao`) VALUES (?, ?, ?, ?, NOW())");
+            $stmtCrono->execute([$id_usuario_logado, $emailGoogle, $_SESSION['ultimo_nome'], $calendarIdParaUso]);
             $id_cronograma_db = $pdo->lastInsertId();
         }
 
@@ -339,7 +363,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
         $idx_final = $id_cronograma_db;
         unset($_SESSION['editando_id'], $_SESSION['temp_cronograma'], $_SESSION['temp_params']);
-        
+
         header('Location: cronograma.php?ver=' . $idx_final . '&msg=' . urlencode("✅ Cronograma salvo com sucesso!"));
         exit();
     } catch (Exception $e) {
@@ -347,6 +371,14 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
         $msg_feedback = "❌ Erro: " . $e->getMessage();
     }
 }
+
+// Valores dos campos de data (já escapados) para o formulário
+$valor_data_inicio = htmlspecialchars($_POST['data_inicio'] ?? $hoje);
+$valor_data_fim    = htmlspecialchars($_POST['data_fim'] ?? '');
+// O mínimo do campo "fim" acompanha o início escolhido (nunca antes de hoje)
+$min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje)
+    ? htmlspecialchars($_POST['data_inicio'])
+    : $hoje;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -363,50 +395,14 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-
+        // Aplica o tema salvo antes de renderizar (evita "flash" branco)
         (function () {
             const savedTheme = localStorage.getItem('site-theme') || 'light';
             if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark-theme');
             }
         })();
-        // Função auxiliar interna para lidar com as chamadas AJAX do checkbox e atualizar as barras de progresso dinamicamente
-        function salvarProgressoTopico(checkbox) {
-            const idCronograma = checkbox.getAttribute('data-cronograma');
-            const idMateria = checkbox.getAttribute('data-materia');
-            const idTopico = checkbox.getAttribute('data-topico');
-            const status = checkbox.checked ? 1 : 0;
-
-            const formData = new FormData();
-            formData.append('id_cronograma', idCronograma);
-            formData.append('id_materia', idMateria);
-            formData.append('id_topico', idTopico);
-            formData.append('status', status);
-
-            fetch('atualizar_progresso.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.sucesso) {
-                    // Atualiza a barra de progresso da matéria específica
-                    const fillBar = document.getElementById(`chk-fill-${idMateria}`);
-                    const textPercent = document.getElementById(`chk-text-${idMateria}`);
-                    if (fillBar && textPercent) {
-                        fillBar.style.width = `${data.porcentagemMateria}%`;
-                        textPercent.innerText = `${data.porcentagemMateria}%`;
-                    }
-                } else {
-                    Swal.fire('Erro!', data.erro || 'Não foi possível atualizar o progresso.', 'error');
-                    checkbox.checked = !checkbox.checked; // Reverte se der erro
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                checkbox.checked = !checkbox.checked;
-            });
-        }
+        // OBS: a função salvarProgressoTopico() fica apenas em assets/js/lib/cronograma.js
     </script>
 </head>
 
@@ -440,7 +436,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 
         <section class="container-principal">
             <?php if ($msg_feedback): ?>
-                <div class="alert-message"><?= $msg_feedback ?></div>
+                <div class="alert-message"><?= htmlspecialchars($msg_feedback) ?></div>
             <?php endif; ?>
 
             <?php if ($calendar_id_exibir && !isset($_GET['editar'])): ?>
@@ -455,11 +451,11 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                         <button type="button" data-mode="AGENDA">Agenda</button>
                     </div>
                 <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo&wkst=1&bgcolor=%23fbf9ff&color=%237c3aed&showCalendars=0&showTabs=1" class="calendar-embed" style="border: none;" allowfullscreen></iframe>
-                
+
                 <div class="checklist-estudos-box">
                     <br><h3><i class="fa-solid fa-list-check"></i> Gerenciar Conteúdos Concluídos</h3>
                     <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 15px;">Monitore seu avanço marcando as matérias estudadas neste cronograma:</p>
-                    
+
                     <div class="checklist-wrapper"> <hr><br>
                         <?php if (empty($materias_checklist)): ?>
                             <p style="color: #cbd5e1; font-style: italic; font-size: 0.9rem; text-align: center; padding: 20px 0;">
@@ -468,7 +464,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                         <?php else: ?>
                             <?php foreach ($materias_checklist as $mc): ?>
                                 <div class="checklist-item-container" id="checklist-materia-<?= $mc['id_materia'] ?>" style="display: block; width: 100%; margin-bottom: 10px;">
-                                    
+
                                     <div class="checklist-folder-header" onclick="toggleChecklistFolder(<?= $mc['id_materia'] ?>)">
                                         <div style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
                                             <i class="fa-solid fa-folder" style="color: <?= htmlspecialchars($mc['cor_hex']) ?>;"></i>
@@ -496,7 +492,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                                                     <span><?= htmlspecialchars($tp['nome_topico']) ?></span>
                                                     <input type="checkbox" 
                                                            class="custom-checkbox chk-async-box check-topico" 
-                                                           data-cronograma="<?= $id_visualizacao ?>"
+                                                           data-cronograma="<?= htmlspecialchars($id_visualizacao) ?>"
                                                            data-materia="<?= $mc['id_materia'] ?>"
                                                            data-topico="<?= $tp['id_topico'] ?>"
                                                            <?= $tp['checado'] ? 'checked' : '' ?>
@@ -522,6 +518,9 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                         <div>
                             <h2>Phronesis</h2>
                             <p>Crie e organize seu cronograma de estudos</p>
+                            <span class="google-conta" title="Conta Google vinculada">
+                                <i class="fa-brands fa-google"></i> <?= htmlspecialchars($emailGoogle) ?>
+                            </span>
                         </div>
                     </div>
                     <a href="?logout=1" class="btn-desconectar">
@@ -539,7 +538,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="field-group input-icon-wrapper">
                         <label>Data Início:</label>
                         <div class="input-with-icon">
-                            <input type="date" name="data_inicio" id="data_inicio" min="<?= $hoje ?>" value="<?= $_POST['data_inicio'] ?? $hoje ?>" required>
+                            <input type="date" name="data_inicio" id="data_inicio" min="<?= $hoje ?>" value="<?= $valor_data_inicio ?>" required>
                             <i class="fa-regular fa-calendar input-icon-right"></i>
                         </div>
                     </div>
@@ -547,7 +546,7 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="field-group input-icon-wrapper">
                         <label>Data Fim:</label>
                         <div class="input-with-icon">
-                            <input type="date" name="data_fim" id="data_fim" min="<?= $hoje ?>" value="<?= $_POST['data_fim'] ?? '' ?>" required>
+                            <input type="date" name="data_fim" id="data_fim" min="<?= $min_data_fim ?>" value="<?= $valor_data_fim ?>" required>
                             <i class="fa-regular fa-calendar input-icon-right"></i>
                         </div>
                     </div>
@@ -560,14 +559,14 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
                     <div class="field-group input-icon-wrapper">
                         <label>Hora Início:</label>
                         <div class="input-with-icon">
-                            <input type="time" name="hora_inicio" value="<?= $_POST['hora_inicio'] ?? '08:00' ?>" required>
+                            <input type="time" name="hora_inicio" value="<?= htmlspecialchars($_POST['hora_inicio'] ?? '08:00') ?>" required>
                             <i class="fa-regular fa-clock input-icon-right"></i>
                         </div>
                     </div>
 
                     <div class="field-group">
                         <label>Duração por matéria (horas):</label>
-                        <input type="number" name="horas_estudo" value="<?= $_POST['horas_estudo'] ?? '2' ?>" required>
+                        <input type="number" name="horas_estudo" value="<?= htmlspecialchars($_POST['horas_estudo'] ?? '2') ?>" required>
                     </div>
 
                     <div class="full-width field-group">

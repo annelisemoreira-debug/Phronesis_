@@ -1,94 +1,110 @@
 <?php
-header('Content-Type: application/json');
-require_once '../conexao.php'; 
+// pages/atualizar_progresso.php
+// Recebe (POST): id_cronograma, id_materia, id_topico, status (0|1)
+// Responde (JSON): { sucesso, porcentagemMateria, porcentagemGeral } ou { sucesso:false, erro }
+session_start();
+header('Content-Type: application/json; charset=utf-8');
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// CONEXÃO COM O BANCO VIA PDO
-try {
-    $pdo = new PDO("mysql:host=localhost;dbname=phronesis;charset=utf8", "root", "Home@spSENAI2025!");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo json_encode(['sucesso' => false, 'erro' => 'Erro de conexão: ' . $e->getMessage()]);
+function responder(array $dados, int $http = 200): void
+{
+    http_response_code($http);
+    echo json_encode($dados);
     exit;
 }
 
-$id_cronograma = filter_input(INPUT_POST, 'id_cronograma', FILTER_VALIDATE_INT);
-$id_materia    = filter_input(INPUT_POST, 'id_materia', FILTER_VALIDATE_INT);
-$id_topico     = filter_input(INPUT_POST, 'id_topico', FILTER_VALIDATE_INT);
-$status        = filter_input(INPUT_POST, 'status', FILTER_VALIDATE_INT);
+if (!isset($_SESSION['id'])) {
+    responder(['sucesso' => false, 'erro' => 'Não autenticado'], 401);
+}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    responder(['sucesso' => false, 'erro' => 'Método inválido'], 405);
+}
 
-$id_usuario = isset($_SESSION['id']) ? intval($_SESSION['id']) : null; 
+include '../conexao.php'; // fornece $conn (mysqli)
 
-if (!$id_cronograma || !$id_materia || !$id_topico || $status === null || !$id_usuario) {
-    echo json_encode(['sucesso' => false, 'erro' => 'Parâmetros inválidos ou usuário não autenticado.']);
-    exit;
+$idUsuario    = intval($_SESSION['id']);
+$idCronograma = intval($_POST['id_cronograma'] ?? 0);
+$idMateria    = intval($_POST['id_materia'] ?? 0);
+$idTopico     = intval($_POST['id_topico'] ?? 0);
+$status       = (intval($_POST['status'] ?? 0) === 1) ? 1 : 0;
+
+if (!$idCronograma || !$idMateria || !$idTopico) {
+    responder(['sucesso' => false, 'erro' => 'Parâmetros inválidos'], 400);
 }
 
 try {
-    $pdo->beginTransaction();
+    // 1. PERMISSÃO: o cronograma precisa pertencer à conta Google vinculada ao usuário logado
+    $st = $conn->prepare(
+        "SELECT 1
+           FROM cronograma c
+           JOIN usuario u ON u.google_email = c.google_email
+          WHERE c.id_cronograma = ? AND u.id_usuario = ?
+          LIMIT 1"
+    );
+    $st->bind_param('ii', $idCronograma, $idUsuario);
+    $st->execute();
+    $permitido = $st->get_result()->fetch_row();
+    $st->close();
 
-    // ATUALIZADO: Agora usa a tabela correta 'cronograma_topico_status'
-    if ($status === 1) {
-        $stmt = $pdo->prepare("INSERT INTO cronograma_topico_status (id_cronograma, id_materia, id_topico, status) 
-                               VALUES (:id_cronograma, :id_materia, :id_topico, 1)
-                               ON DUPLICATE KEY UPDATE status = 1");
-    } else {
-        $stmt = $pdo->prepare("DELETE FROM cronograma_topico_status 
-                               WHERE id_cronograma = :id_cronograma AND id_materia = :id_materia AND id_topico = :id_topico");
+    if (!$permitido) {
+        responder(['sucesso' => false, 'erro' => 'Sem permissão para este cronograma'], 403);
     }
 
-    $params = [
-        ':id_cronograma' => $id_cronograma,
-        ':id_materia'    => $id_materia,
-        ':id_topico'     => $id_topico
-    ];
+    // 2. O tópico precisa pertencer à matéria informada
+    $st = $conn->prepare("SELECT 1 FROM materia_topico WHERE id_topico = ? AND id_materia = ?");
+    $st->bind_param('ii', $idTopico, $idMateria);
+    $st->execute();
+    $topicoOk = $st->get_result()->fetch_row();
+    $st->close();
 
-    $stmt->execute($params);
-
-    // 1. Total de tópicos existentes para esta matéria específica (Ajuste o nome da tabela se não for 'cod_topicos')
-    $stmtTotalMateria = $pdo->prepare("SELECT COUNT(*) FROM materia_topico WHERE id_materia = :id_materia");
-    $stmtTotalMateria->execute([':id_materia' => $id_materia]);
-    $totalTopicosMateria = (int)$stmtTotalMateria->fetchColumn();
-
-    // 2. Quantos estão marcados como concluídos (status = 1) nesta matéria
-    $stmtConcluidosMateria = $pdo->prepare("SELECT COUNT(*) FROM cronograma_topico_status 
-                                            WHERE id_cronograma = :id_cronograma AND id_materia = :id_materia AND status = 1");
-    $stmtConcluidosMateria->execute([':id_cronograma' => $id_cronograma, ':id_materia' => $id_materia]);
-    $concluidosMateria = (int)$stmtConcluidosMateria->fetchColumn();
-
-    $porcentagemMateria = $totalTopicosMateria > 0 ? ($concluidosMateria / $totalTopicosMateria) * 100 : 0;
-
-    // 3. Porcentagem Geral do Cronograma (Total de tópicos de todas as matérias envolvidas neste cronograma)
-    $stmtTotalGeral = $pdo->prepare("SELECT COUNT(*) FROM materia_topico WHERE id_materia IN (SELECT DISTINCT id_materia FROM cronograma_topico_status WHERE id_cronograma = :id_cronograma)");
-    $stmtTotalGeral->execute([':id_cronograma' => $id_cronograma]);
-    $totalTopicosGeral = (int)$stmtTotalGeral->fetchColumn();
-
-    if ($totalTopicosGeral === 0) {
-        $totalTopicosGeral = $totalTopicosMateria > 0 ? $totalTopicosMateria : 1; 
+    if (!$topicoOk) {
+        responder(['sucesso' => false, 'erro' => 'Tópico inválido'], 400);
     }
 
-    // 4. Quantos estão concluídos no cronograma inteiro
-    $stmtConcluidosGeral = $pdo->prepare("SELECT COUNT(*) FROM cronograma_topico_status 
-                                          WHERE id_cronograma = :id_cronograma AND status = 1");
-    $stmtConcluidosGeral->execute([':id_cronograma' => $id_cronograma]);
-    $concluidosGeral = (int)$stmtConcluidosGeral->fetchColumn();
+    // 3. Grava o status (chave única: cronograma + matéria + tópico)
+    $st = $conn->prepare(
+        "INSERT INTO cronograma_topico_status (id_cronograma, id_materia, id_topico, status)
+         VALUES (?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE status = VALUES(status)"
+    );
+    $st->bind_param('iiii', $idCronograma, $idMateria, $idTopico, $status);
+    $st->execute();
+    $st->close();
 
-    $porcentagemGeral = $totalTopicosGeral > 0 ? ($concluidosGeral / $totalTopicosGeral) * 100 : 0;
+    // 4. Porcentagem da matéria
+    $st = $conn->prepare(
+        "SELECT COUNT(*) AS total,
+                SUM(CASE WHEN s.status = 1 THEN 1 ELSE 0 END) AS feitos
+           FROM materia_topico t
+      LEFT JOIN cronograma_topico_status s
+             ON s.id_topico = t.id_topico AND s.id_cronograma = ?
+          WHERE t.id_materia = ?"
+    );
+    $st->bind_param('ii', $idCronograma, $idMateria);
+    $st->execute();
+    $m = $st->get_result()->fetch_assoc();
+    $st->close();
+    $porcentagemMateria = ($m['total'] > 0) ? round(($m['feitos'] / $m['total']) * 100) : 0;
 
-    $pdo->commit();
+    // 5. Porcentagem geral (todas as matérias presentes no cronograma)
+    $st = $conn->prepare(
+        "SELECT COUNT(*) AS total,
+                SUM(CASE WHEN s.status = 1 THEN 1 ELSE 0 END) AS feitos
+           FROM materia_topico t
+      LEFT JOIN cronograma_topico_status s
+             ON s.id_topico = t.id_topico AND s.id_cronograma = ?
+          WHERE t.id_materia IN (SELECT DISTINCT id_materia FROM cronograma_item WHERE id_cronograma = ?)"
+    );
+    $st->bind_param('ii', $idCronograma, $idCronograma);
+    $st->execute();
+    $g = $st->get_result()->fetch_assoc();
+    $st->close();
+    $porcentagemGeral = ($g['total'] > 0) ? round(($g['feitos'] / $g['total']) * 100) : 0;
 
-    echo json_encode([
+    responder([
         'sucesso'            => true,
-        'porcentagemMateria' => round($porcentagemMateria, 2),
-        'porcentagemGeral'   => round($porcentagemGeral, 2)
+        'porcentagemMateria' => $porcentagemMateria,
+        'porcentagemGeral'   => $porcentagemGeral
     ]);
-
-} catch (Exception $e) {
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
-    echo json_encode(['sucesso' => false, 'erro' => 'Erro interno no servidor: ' . $e->getMessage()]);
+} catch (Throwable $e) {
+    responder(['sucesso' => false, 'erro' => 'Erro interno: ' . $e->getMessage()], 500);
 }

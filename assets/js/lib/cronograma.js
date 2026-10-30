@@ -1,4 +1,4 @@
-// js/scripts.js
+// assets/js/lib/cronograma.js
 
 const DIAS_MAP = [
     { nome: 'Segunda-Feira', valor: 1 },
@@ -11,13 +11,11 @@ const DIAS_MAP = [
 ];
 
 // Executa imediatamente para definir o tema (evita o "flash" branco no tema escuro)
-(function() {
+(function () {
     const savedTheme = localStorage.getItem('site-theme') || 'light';
     if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark-theme');
     }
-
-    
 })();
 
 // ===== MENU LATERAL (DRAWER) NO CELULAR =====
@@ -56,6 +54,7 @@ const DIAS_MAP = [
     window.addEventListener('resize', () => { if (!ehCelular()) fecharMenu(); });
 })();
 
+// ===== DIAS DA SEMANA =====
 function obterDiasSelecionados() {
     const container = document.getElementById('containerDiasSemana');
     if (container && container.dataset.selecionados) {
@@ -72,7 +71,7 @@ function atualizarDiasSemana() {
     const inputInicio = document.getElementById('data_inicio')?.value;
     const inputFim = document.getElementById('data_fim')?.value;
     const container = document.getElementById('containerDiasSemana');
-    
+
     if (!container) return;
 
     const diasSelecionadosAnteriormente = obterDiasSelecionados();
@@ -100,7 +99,7 @@ function atualizarDiasSemana() {
         let dataVar = new Date(d1.getTime());
 
         for (let i = 0; i <= diffDias; i++) {
-            let numDia = dataVar.getDay(); 
+            let numDia = dataVar.getDay();
             let diaIso = numDia === 0 ? 7 : numDia; // Converte Domingo de 0 para 7
             if (!diasValidos.includes(diaIso)) {
                 diasValidos.push(diaIso);
@@ -137,12 +136,12 @@ function renderizarDias(selecionados, filtrados) {
         checkbox.name = 'dias_semana[]';
         checkbox.value = dia.valor;
         checkbox.className = 'custom-checkbox';
-        
+
         // Mantém marcado se estivesse selecionado anteriormente E estiver disponível
         if (estaDisponivel && selecionados.map(Number).includes(dia.valor)) {
             checkbox.checked = true;
         }
-        
+
         // Bloqueia o input se ele não fizer parte do intervalo de datas
         if (!estaDisponivel) {
             checkbox.disabled = true;
@@ -155,7 +154,7 @@ function renderizarDias(selecionados, filtrados) {
     });
 }
 
-// Exibe tela de loading customizada para a Edição
+// ===== LOADING (EDIÇÃO / EXCLUSÃO) =====
 function dispararLoadingEdicao(event, url) {
     event.preventDefault();
     document.getElementById('loadingText').innerText = "🛠️ Carregando dados para edição...";
@@ -164,7 +163,6 @@ function dispararLoadingEdicao(event, url) {
     window.location.href = url;
 }
 
-// Exibe tela de loading customizada para a Exclusão
 function dispararLoadingExclusao(url) {
     document.getElementById('loadingText').innerText = "🗑️ Removendo cronograma...";
     document.getElementById('loadingSubtext').innerText = "Limpando os eventos vinculados ao seu Google Agenda.";
@@ -196,11 +194,11 @@ function confirmDelete(event, id) {
 function toggleChecklistFolder(idMateria) {
     const content = document.getElementById(`chk-content-${idMateria}`);
     const chevron = document.getElementById(`chk-chevron-${idMateria}`);
-    
+
     if (content) {
         const isVisible = content.style.display === 'block';
         content.style.display = isVisible ? 'none' : 'block';
-        
+
         if (chevron) {
             chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
         }
@@ -243,14 +241,14 @@ function salvarProgressoTopico(element) {
             // 2. Atualização via IDs diretos (Layout Padrão / Checklist)
             const barraMateria = document.getElementById(`chk-fill-${idMateria}`) || document.getElementById(`barra-materia-${idMateria}`);
             const textoMateria = document.getElementById(`chk-text-${idMateria}`) || document.getElementById(`texto-materia-${idMateria}`);
-            
+
             if (barraMateria) barraMateria.style.width = data.porcentagemMateria + '%';
             if (textoMateria) textoMateria.textContent = Math.round(data.porcentagemMateria) + '%';
 
             // 3. Atualização da porcentagem Geral do Cronograma
             const barraGeral = document.getElementById(`barra-geral-${idCronograma}`);
             const textoGeral = document.getElementById("porcentagem-geral-cronograma") || document.getElementById(`texto-geral-${idCronograma}`);
-            
+
             if (barraGeral) barraGeral.style.width = data.porcentagemGeral + '%';
             if (textoGeral) textoGeral.textContent = Math.round(data.porcentagemGeral) + '%';
         } else {
@@ -270,65 +268,156 @@ function salvarProgressoTopico(element) {
 }
 
 // Inicialização dos Event Listeners após o carregamento do DOM
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
     // ----- Dropdown de matérias (mobile) -----
-const btnDrop = document.getElementById('btnDropMaterias');
-const listaMat = document.getElementById('listaMaterias');
-const labelMat = document.getElementById('labelMaterias');
+    const btnDrop = document.getElementById('btnDropMaterias');
+    const listaMat = document.getElementById('listaMaterias');
+    const labelMat = document.getElementById('labelMaterias');
 
-function atualizarLabelMaterias() {
-    if (!labelMat || !listaMat) return;
-    const n = listaMat.querySelectorAll('input:checked').length;
-    labelMat.textContent = n === 0
-        ? 'Selecione as matérias que deseja estudar…'
-        : `${n} matéria${n > 1 ? 's' : ''} selecionada${n > 1 ? 's' : ''}`;
-}
-if (btnDrop && listaMat) {
-    btnDrop.addEventListener('click', () => {
-        btnDrop.classList.toggle('aberto');
-        listaMat.classList.toggle('aberto');
+    function atualizarLabelMaterias() {
+        if (!labelMat || !listaMat) return;
+        const n = listaMat.querySelectorAll('input:checked').length;
+        labelMat.textContent = n === 0
+            ? 'Selecione as matérias que deseja estudar…'
+            : `${n} matéria${n > 1 ? 's' : ''} selecionada${n > 1 ? 's' : ''}`;
+    }
+    if (btnDrop && listaMat) {
+        btnDrop.addEventListener('click', () => {
+            btnDrop.classList.toggle('aberto');
+            listaMat.classList.toggle('aberto');
+        });
+        listaMat.addEventListener('change', atualizarLabelMaterias);
+        atualizarLabelMaterias();
+    }
+
+    // ----- Filtro de matérias pelo menu hambúrguer -----
+    const checksMenu = document.querySelectorAll('.mm-check');
+    function aplicarFiltroMaterias() {
+        checksMenu.forEach(chk => {
+            const row = document.querySelector(`#listaMaterias [data-materia-id="${chk.value}"]`);
+            if (!row) return;
+            row.style.display = chk.checked ? '' : 'none';
+            if (!chk.checked) row.querySelector('input').checked = false;
+        });
+        atualizarLabelMaterias();
+    }
+    checksMenu.forEach(chk => chk.addEventListener('change', aplicarFiltroMaterias));
+    document.getElementById('btnVerTodas')?.addEventListener('click', () => {
+        checksMenu.forEach(c => c.checked = true);
+        aplicarFiltroMaterias();
     });
-    listaMat.addEventListener('change', atualizarLabelMaterias);
-    atualizarLabelMaterias();
-}
 
-// ----- Filtro de matérias pelo menu hambúrguer -----
-const checksMenu = document.querySelectorAll('.mm-check');
-function aplicarFiltroMaterias() {
-    checksMenu.forEach(chk => {
-        const row = document.querySelector(`#listaMaterias [data-materia-id="${chk.value}"]`);
-        if (!row) return;
-        row.style.display = chk.checked ? '' : 'none';
-        if (!chk.checked) row.querySelector('input').checked = false;
-    });
-    atualizarLabelMaterias();
-}
-checksMenu.forEach(chk => chk.addEventListener('change', aplicarFiltroMaterias));
-document.getElementById('btnVerTodas')?.addEventListener('click', () => {
-    checksMenu.forEach(c => c.checked = true);
-    aplicarFiltroMaterias();
-});
+    // ----- Visualização do Google Agenda (celular/tablet) -----
+    const iframeAgenda = document.querySelector('.calendar-embed');
+    const botoesModo = document.querySelectorAll('.view-toggle button');
+    if (iframeAgenda && botoesModo.length) {
+        const base = iframeAgenda.src.replace(/&mode=\w+/, '');
+        const definirModo = (modo) => {
+            iframeAgenda.src = base + '&mode=' + modo;
+            botoesModo.forEach(b => b.classList.toggle('ativo', b.dataset.mode === modo));
+        };
+        botoesModo.forEach(b => b.addEventListener('click', () => definirModo(b.dataset.mode)));
+        // No celular o modo "Agenda" (lista) é bem mais legível que o mês
+        definirModo(window.innerWidth < 700 ? 'AGENDA' : 'MONTH');
+    }
 
-// ----- Visualização do Google Agenda (celular/tablet) -----
-const iframeAgenda = document.querySelector('.calendar-embed');
-const botoesModo = document.querySelectorAll('.view-toggle button');
-if (iframeAgenda && botoesModo.length) {
-    const base = iframeAgenda.src.replace(/&mode=\w+/, '');
-    const definirModo = (modo) => {
-        iframeAgenda.src = base + '&mode=' + modo;
-        botoesModo.forEach(b => b.classList.toggle('ativo', b.dataset.mode === modo));
-    };
-    botoesModo.forEach(b => b.addEventListener('click', () => definirModo(b.dataset.mode)));
-    // No celular o modo "Agenda" (lista) é bem mais legível que o mês
-    definirModo(window.innerWidth < 700 ? 'AGENDA' : 'MONTH');
-}
+    // ==========================================================================
+    // LIMITAÇÃO DE DATAS (início / fim)
+    // ==========================================================================
+    const inputInicio = document.getElementById('data_inicio');
+    const inputFim = document.getElementById('data_fim');
 
-        // --- VALIDAÇÃO DO LIMITE DE 24H ANTES DE ENVIAR ---
+    const formatarData = (d) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    function avisoData(texto) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Data inválida',
+            text: texto,
+            confirmButtonColor: '#7c3aed'
+        });
+    }
+
+    function aplicarLimitesDatas(avisar) {
+        if (!inputInicio || !inputFim) return;
+
+        const hoje = inputInicio.min; // yyyy-mm-dd vindo do PHP
+        inputInicio.classList.remove('input-erro');
+        inputFim.classList.remove('input-erro');
+
+        // Início não pode ser antes de hoje
+        if (inputInicio.value && hoje && inputInicio.value < hoje) {
+            inputInicio.value = hoje;
+            inputInicio.classList.add('input-erro');
+            if (avisar) avisoData('A data de início não pode ser anterior a hoje.');
+        }
+
+        if (inputInicio.value) {
+            // Fim só pode ser a partir do início, e no máximo 1 ano depois
+            inputFim.min = inputInicio.value;
+            const limite = new Date(inputInicio.value + 'T00:00:00');
+            limite.setDate(limite.getDate() + 366);
+            inputFim.max = formatarData(limite);
+        } else {
+            inputFim.min = hoje;
+            inputFim.removeAttribute('max');
+        }
+
+        // Fim menor que o início (ou acima do limite): bloqueia e limpa o campo
+        if (inputFim.value && inputInicio.value) {
+            const menorQueInicio = inputFim.value < inputInicio.value;
+            const acimaDoLimite = inputFim.max && inputFim.value > inputFim.max;
+
+            if (menorQueInicio || acimaDoLimite) {
+                inputFim.value = '';
+                inputFim.classList.add('input-erro');
+                if (avisar) {
+                    avisoData(menorQueInicio
+                        ? 'A data final não pode ser menor que a data de início.'
+                        : 'O período máximo de um cronograma é de 1 ano.');
+                }
+            }
+        }
+    }
+
+    if (inputInicio) {
+        inputInicio.addEventListener('change', () => {
+            aplicarLimitesDatas(true);
+            atualizarDiasSemana();
+        });
+    }
+    if (inputFim) {
+        inputFim.addEventListener('change', () => {
+            aplicarLimitesDatas(true);
+            atualizarDiasSemana();
+        });
+    }
+
+    aplicarLimitesDatas(false); // aplica ao carregar a página
+    atualizarDiasSemana();      // aplica bloqueios dos dias se já houver datas vindas do PHP
+
+    // ==========================================================================
+    // VALIDAÇÃO ANTES DE ENVIAR (datas + limite de 24h)
+    // ==========================================================================
     const formCronograma = document.getElementById('formCronograma');
 
     if (formCronograma) {
         formCronograma.addEventListener('submit', function (e) {
+
+            // --- Datas ---
+            const di = formCronograma.querySelector('[name="data_inicio"]').value;
+            const df = formCronograma.querySelector('[name="data_fim"]').value;
+
+            if (!df || df < di) {
+                e.preventDefault();
+                if (inputFim) inputFim.classList.add('input-erro');
+                avisoData('A data final não pode ser menor que a data de início.');
+                return;
+            }
+
+            // --- Limite de 24h ---
             const horaInicio = formCronograma.querySelector('[name="hora_inicio"]').value;
             const horas = parseFloat(formCronograma.querySelector('[name="horas_estudo"]').value);
             const qtdMaterias = formCronograma.querySelectorAll('input[name="materias_id[]"]:checked').length;
@@ -363,18 +452,10 @@ if (iframeAgenda && botoesModo.length) {
             }
         });
     }
-    const inputInicio = document.getElementById('data_inicio');
-    const inputFim = document.getElementById('data_fim');
-    
-    if (inputInicio) inputInicio.addEventListener('change', atualizarDiasSemana);
-    if (inputFim) inputFim.addEventListener('change', atualizarDiasSemana);
-
-    // Roda uma vez no início para aplicar bloqueios se já houver datas vindas do PHP
-    atualizarDiasSemana();
 
     // Vincula elementos com classe .check-topico à função unificada de progresso
     document.querySelectorAll(".check-topico").forEach(checkbox => {
-        checkbox.addEventListener("change", function() {
+        checkbox.addEventListener("change", function () {
             salvarProgressoTopico(this);
         });
     });
@@ -384,7 +465,7 @@ if (iframeAgenda && botoesModo.length) {
     const loadingScreen = document.getElementById("loadingScreen");
 
     if (modalForm) {
-        modalForm.addEventListener("submit", function() {
+        modalForm.addEventListener("submit", function () {
             if (confirmModal) confirmModal.style.display = "none";
             document.getElementById('loadingText').innerText = "🗓️ Sincronizando com o Google Agenda...";
             document.getElementById('loadingSubtext').innerText = "Isso pode levar alguns segundos dependendo do tamanho do seu cronograma.";
@@ -396,12 +477,12 @@ if (iframeAgenda && botoesModo.length) {
     const conteinerMaterias = document.getElementById('conteinerMaterias');
 
     if (btnToggleMaterias && conteinerMaterias) {
-        btnToggleMaterias.addEventListener('click', function() {
+        btnToggleMaterias.addEventListener('click', function () {
             const isVisible = conteinerMaterias.style.display === 'flex';
             conteinerMaterias.style.display = isVisible ? 'none' : 'flex';
-            
+
             const icon = this.querySelector('.fa-chevron-down, .fa-chevron-up');
-            if(icon) {
+            if (icon) {
                 icon.classList.toggle('fa-chevron-down', isVisible);
                 icon.classList.toggle('fa-chevron-up', !isVisible);
             }
@@ -409,7 +490,7 @@ if (iframeAgenda && botoesModo.length) {
     }
 
     document.querySelectorAll('.materia-accordion-header').forEach(header => {
-        header.addEventListener('click', function() {
+        header.addEventListener('click', function () {
             const item = this.parentElement;
             item.classList.toggle('active');
             const content = item.querySelector('.materia-accordion-content');
@@ -419,9 +500,9 @@ if (iframeAgenda && botoesModo.length) {
                 } else {
                     content.style.maxHeight = "0px";
                 }
-                
+
                 setTimeout(() => {
-                    if(item.classList.contains('active')) {
+                    if (item.classList.contains('active')) {
                         header.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     }
                 }, 310);
@@ -430,6 +511,7 @@ if (iframeAgenda && botoesModo.length) {
     });
 });
 
+// Escala de fonte salva
 (function () {
     const savedSize = localStorage.getItem('site-font-size') || 'normal';
     document.documentElement.classList.add('font-' + savedSize);

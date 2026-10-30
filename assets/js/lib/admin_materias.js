@@ -145,3 +145,39 @@ window.addEventListener('load', ajustarRolagemLivros);
 window.addEventListener('resize', ajustarRolagemLivros);
 });
 
+// Função auxiliar para remover acentos e caracteres especiais
+function removerAcentos(texto) {
+    return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function filtrarMateriasETopicos() {
+    // Normaliza o termo pesquisado
+    const termo = removerAcentos(document.getElementById('campoBuscaMateria').value.toLowerCase().trim());
+    const linhasMaterias = document.querySelectorAll('tr[id^="linha-"]');
+
+    linhasMaterias.forEach(linha => {
+        const idMateria = linha.id.replace('linha-', '');
+        
+        // Normaliza o nome da matéria e os tópicos para comparação
+        const nomeMateria = removerAcentos(linha.querySelector('.texto-nome').textContent.toLowerCase());
+        const painelTopicos = document.getElementById('painel-topicos-' + idMateria);
+        const textoTopicos = painelTopicos ? removerAcentos(painelTopicos.textContent.toLowerCase()) : '';
+
+        const encontrouMateria = nomeMateria.includes(termo);
+        const encontrouTopico = textoTopicos.includes(termo);
+
+        if (termo === '' || encontrouMateria || encontrouTopico) {
+            linha.style.display = '';
+            
+            // Abre o painel se a busca bater com um tópico
+            if (encontrouTopico && termo !== '') {
+                if (painelTopicos) painelTopicos.style.display = 'table-row';
+            } else if (painelTopicos && !painelTopicos.classList.contains('ativo')) {
+                painelTopicos.style.display = 'none';
+            }
+        } else {
+            linha.style.display = 'none';
+            if (painelTopicos) painelTopicos.style.display = 'none';
+        }
+    });
+}

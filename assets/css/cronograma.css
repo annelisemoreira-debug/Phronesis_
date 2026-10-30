@@ -196,6 +196,19 @@ input:focus {
     box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
 }
 
+/* Campo de data com erro (aplicado pelo JS quando a data é inválida) */
+input.input-erro,
+input.input-erro:focus {
+    border-color: var(--del-color);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
+    animation: tremerCampo 0.35s ease;
+}
+@keyframes tremerCampo {
+    0%, 100% { transform: translateX(0); }
+    25%      { transform: translateX(-4px); }
+    75%      { transform: translateX(4px); }
+}
+
 /* Campos com ícone próprio (Font Awesome) */
 .input-with-icon { position: relative; display: flex; align-items: center; }
 .input-with-icon input { padding-right: 40px; }

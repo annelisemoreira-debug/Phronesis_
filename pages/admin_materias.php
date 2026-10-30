@@ -55,6 +55,26 @@ if (isset($_POST['edit_materia'])) {
     }
 }
 
+$busca = trim($_GET['busca_materia'] ?? '');
+$materias = [];
+
+if (!empty($busca)) {
+    $stmt = $conn->prepare("
+        SELECT DISTINCT m.* 
+        FROM materia m 
+        LEFT JOIN materia_topico t ON m.id_materia = t.id_materia 
+        WHERE m.nome_materia COLLATE utf8mb4_general_ci LIKE ? 
+           OR t.nome_topico COLLATE utf8mb4_general_ci LIKE ? 
+        ORDER BY m.nome_materia ASC
+    ");
+    $param = "%{$busca}%";
+    $stmt->bind_param("ss", $param, $param);
+    $stmt->execute();
+    $res_materias = $stmt->get_result();
+} else {
+    $res_materias = $conn->query("SELECT * FROM materia ORDER BY nome_materia ASC");
+}
+
 // Lógica de Exclusão de Matéria
 if (isset($_GET['del'])) {
     $id_del = $_GET['del'];
@@ -438,23 +458,29 @@ if ($res_topicos) {
     </section>
 
     <!-- ================= CARD 2: MATÉRIAS E TÓPICOS ================= -->
-    <section class="card-principal card-materias" id="materias-adm">
-        <div class="card-header">
-            <span class="icon-purple-box">
-                <i class="fa-solid fa-book"></i>
-            </span>
-            <div>
-                <h2>Gerenciar Matérias e Tópicos (ADM)</h2>
-                <p>Adicione as matérias e liste os subtópicos cobrados para direcionar os estudantes.</p>
-            </div>
+<!-- ================= CARD 2: MATÉRIAS E TÓPICOS ================= -->
+<section class="card-principal card-materias" id="materias-adm">
+    <div class="card-header">
+        <span class="icon-purple-box">
+            <i class="fa-solid fa-book"></i>
+        </span>
+        <div>
+            <h2>Gerenciar Matérias e Tópicos (ADM)</h2>
+            <p>Adicione as matérias e liste os subtópicos cobrados para direcionar os estudantes.</p>
         </div>
-        
-        <form method="POST" class="input-group-append">
-            <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" required>
-            <button type="submit" name="add_materia" class="btn-adicionar">
-                Adicionar <i class="fa-solid fa-plus"></i>
-            </button>
-        </form>
+    </div>
+    
+    <!-- CAMPO DE PESQUISA ADICIONADO AQUI -->
+    <div class="search-container" style="margin-bottom: 15px;">
+        <input type="text" id="campoBuscaMateria" class="input-materia" placeholder="🔍 Pesquisar matéria ou tópico (ex: Química, Estequiometria)..." onkeyup="filtrarMateriasETopicos()">
+    </div>
+
+    <form method="POST" class="input-group-append">
+        <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" required>
+        <button type="submit" name="add_materia" class="btn-adicionar">
+            Adicionar <i class="fa-solid fa-plus"></i>
+        </button>
+    </form>
 
         <?php if(empty($materias)): ?>
             <div class="empty-table-state">
