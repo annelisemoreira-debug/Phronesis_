@@ -9,7 +9,7 @@
    6. Formulário de livro (campos, chips, upload)
    7. Tabelas (base, ações, edição inline)
    8. Livros: miniatura, tags, rolagem
-   9. Matérias: painel de tópicos
+   9. Matérias: rolagem e painel de tópicos
    10. Estado vazio
    11. Janela de edição (dialog)
    12. Link "Voltar"
@@ -185,6 +185,7 @@ body {
 
 input[type="text"].input-materia {
     flex: 1;
+    width: 100%;
     padding: 14px 20px;
     border: 1px solid var(--input-border);
     background-color: var(--input-bg);
@@ -414,7 +415,7 @@ html.dark-theme .tag-adm-unicamp { background: #3d3510; color: #ffe066; }
 html.dark-theme .tag-adm-vunesp  { background: #123a29; color: #5fe0a6; }
 html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
 
-/* Rolagem da lista (após o 5º livro) */
+/* Rolagem da lista de livros (após o 5º) */
 .tabela-livros.rolagem {
     overflow-y: auto;
     max-height: 510px; /* fallback; o JS ajusta para a altura exata de 5 linhas */
@@ -433,7 +434,27 @@ html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
 .tabela-livros.rolagem::-webkit-scrollbar-thumb { background: var(--purple-main); border-radius: 999px; }
 .tabela-livros.rolagem::-webkit-scrollbar-thumb:hover { background: var(--purple-hover); }
 
-/* 9. MATÉRIAS: PAINEL DE TÓPICOS */
+/* 9. MATÉRIAS */
+
+/* Rolagem da lista de matérias (após a 15ª) — o JS define o max-height exato */
+.tabela-materias.rolagem {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--purple-main) transparent;
+}
+
+.tabela-materias.rolagem thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.tabela-materias.rolagem::-webkit-scrollbar { width: 8px; }
+.tabela-materias.rolagem::-webkit-scrollbar-track { background: transparent; }
+.tabela-materias.rolagem::-webkit-scrollbar-thumb { background: var(--purple-main); border-radius: 999px; }
+.tabela-materias.rolagem::-webkit-scrollbar-thumb:hover { background: var(--purple-hover); }
+
+/* Painel de tópicos */
 .sub-row-topicos {
     display: none;
     background-color: var(--input-bg);
