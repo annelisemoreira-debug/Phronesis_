@@ -54,31 +54,53 @@ const DIAS_MAP = [
     window.addEventListener('resize', () => { if (!ehCelular()) fecharMenu(); });
 })();
 
-// ===== DIAS DA SEMANA =====
-function obterDiasSelecionados() {
+// ===== DIAS DA SEMANA + MATÉRIAS POR DIA =====
+let MATERIAS = [];
+let materiasOcultas = new Set(); // ids ocultados pelo filtro do menu hambúrguer
+
+/** Lê o estado atual (do DOM, se já renderizado; senão, dos data-attributes do PHP) */
+function obterEstadoDias() {
     const container = document.getElementById('containerDiasSemana');
-    if (container && container.dataset.selecionados) {
-        try {
-            return JSON.parse(container.dataset.selecionados);
-        } catch (e) {
-            console.error("Erro ao processar dias selecionados do PHP:", e);
-        }
+    const estado = { dias: [], materias: {}, abertos: [] };
+    if (!container) return estado;
+
+    try { MATERIAS = JSON.parse(container.dataset.materias || '[]'); } catch (e) { MATERIAS = []; }
+
+    const checksDia = container.querySelectorAll('input[name="dias_semana[]"]');
+
+    // Já renderizado: preserva o que o usuário marcou
+    if (checksDia.length) {
+        checksDia.forEach(c => { if (c.checked) estado.dias.push(Number(c.value)); });
+        container.querySelectorAll('.materia-dia-check:checked').forEach(c => {
+            const d = c.dataset.dia;
+            (estado.materias[d] = estado.materias[d] || []).push(Number(c.value));
+        });
+        container.querySelectorAll('.dia-item.aberto').forEach(i => estado.abertos.push(Number(i.dataset.dia)));
+        return estado;
     }
-    return [1, 2, 3, 4, 5, 6, 7]; // Fallback padrão
+
+    // Primeira renderização: dados vindos do PHP
+    try {
+        estado.dias = JSON.parse(container.dataset.selecionados || '[]').map(Number);
+        estado.materias = JSON.parse(container.dataset.materiasDia || '{}') || {};
+    } catch (e) {
+        console.error('Erro ao processar dados do PHP:', e);
+        estado.dias = []; // por padrão, todos os dias começam desmarcados
+    }
+    return estado;
 }
 
 function atualizarDiasSemana() {
     const inputInicio = document.getElementById('data_inicio')?.value;
     const inputFim = document.getElementById('data_fim')?.value;
     const container = document.getElementById('containerDiasSemana');
-
     if (!container) return;
 
-    const diasSelecionadosAnteriormente = obterDiasSelecionados();
+    const estado = obterEstadoDias();
 
-    // Se as datas não estiverem preenchidas corretamente, renderiza sem restrição (null)
+    // Datas incompletas: sem restrição de dias
     if (!inputInicio || !inputFim || inputInicio.length !== 10 || inputFim.length !== 10) {
-        renderizarDias(diasSelecionadosAnteriormente, null);
+        renderizarDias(estado, null);
         return;
     }
 
@@ -86,72 +108,130 @@ function atualizarDiasSemana() {
     const d2 = new Date(inputFim + 'T00:00:00');
 
     if (d1.getFullYear() < 1000 || d2.getFullYear() < 1000 || d2 < d1) {
-        renderizarDias(diasSelecionadosAnteriormente, null);
+        renderizarDias(estado, null);
         return;
     }
 
-    const diffTempo = Math.abs(d2 - d1);
-    const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
+    const diffDias = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24));
 
-    // Regra: Se o intervalo for menor que 6 dias, filtra e bloqueia os dias fora do range
+    // Intervalo menor que 6 dias: bloqueia os dias fora do período
     if (diffDias < 6) {
-        let diasValidos = [];
-        let dataVar = new Date(d1.getTime());
-
+        const diasValidos = [];
+        const dataVar = new Date(d1.getTime());
         for (let i = 0; i <= diffDias; i++) {
-            let numDia = dataVar.getDay();
-            let diaIso = numDia === 0 ? 7 : numDia; // Converte Domingo de 0 para 7
-            if (!diasValidos.includes(diaIso)) {
-                diasValidos.push(diaIso);
-            }
+            const n = dataVar.getDay();
+            const diaIso = n === 0 ? 7 : n; // Domingo de 0 para 7
+            if (!diasValidos.includes(diaIso)) diasValidos.push(diaIso);
             dataVar.setDate(dataVar.getDate() + 1);
         }
-        renderizarDias(diasSelecionadosAnteriormente, diasValidos);
+        renderizarDias(estado, diasValidos);
     } else {
-        // Se for maior ou igual a 6 dias, todos os dias da semana ficam liberados
-        renderizarDias(diasSelecionadosAnteriormente, null);
+        renderizarDias(estado, null);
     }
 }
 
-function renderizarDias(selecionados, filtrados) {
+function renderizarDias(estado, filtrados) {
     const container = document.getElementById('containerDiasSemana');
     if (!container) return;
     container.innerHTML = '';
 
     DIAS_MAP.forEach(dia => {
-        const label = document.createElement('label');
-        label.className = 'row-item';
+        const disponivel = filtrados === null || filtrados.includes(dia.valor);
+        const marcado = disponivel && estado.dias.includes(dia.valor);
+        const idsDoDia = (estado.materias[dia.valor] || []).map(Number);
+        const aberto = disponivel && estado.abertos.includes(dia.valor);
 
-        // Se o dia não estiver na lista de filtrados, ele será desabilitado
-        const estaDisponivel = filtrados === null || filtrados.includes(dia.valor);
-        if (!estaDisponivel) {
-            label.classList.add('dia-desabilitado');
+        const item = document.createElement('div');
+        item.className = 'dia-item';
+        item.dataset.dia = dia.valor;
+        if (!disponivel) item.classList.add('dia-desabilitado');
+        if (aberto) item.classList.add('aberto');
+
+        // ----- Cabeçalho: nome | resumo | checkbox | seta -----
+        const header = document.createElement('div');
+        header.className = 'dia-header';
+
+        const nome = document.createElement('label');
+        nome.className = 'dia-nome';
+        nome.htmlFor = `dia-chk-${dia.valor}`;
+        nome.textContent = dia.nome;
+
+        const resumo = document.createElement('span');
+        resumo.className = 'dia-resumo';
+
+        const chkDia = document.createElement('input');
+        chkDia.type = 'checkbox';
+        chkDia.id = `dia-chk-${dia.valor}`;
+        chkDia.name = 'dias_semana[]';
+        chkDia.value = dia.valor;
+        chkDia.className = 'custom-checkbox';
+        chkDia.checked = marcado;
+        chkDia.disabled = !disponivel;
+
+        const btnSeta = document.createElement('button');
+        btnSeta.type = 'button';
+        btnSeta.className = 'dia-toggle';
+        btnSeta.setAttribute('aria-label', `Escolher matérias de ${dia.nome}`);
+        btnSeta.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+        btnSeta.disabled = !disponivel;
+        btnSeta.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+
+        header.append(nome, resumo, chkDia, btnSeta);
+
+        // ----- Lista de matérias do dia -----
+        const lista = document.createElement('div');
+        lista.className = 'dia-materias';
+
+        if (!MATERIAS.length) {
+            const vazio = document.createElement('div');
+            vazio.className = 'dia-materias-vazio';
+            vazio.textContent = 'Nenhuma matéria cadastrada pelo administrador.';
+            lista.appendChild(vazio);
+        } else {
+            MATERIAS.forEach(m => {
+                const oculta = materiasOcultas.has(String(m.id));
+
+                const row = document.createElement('label');
+                row.className = 'materia-dia-row';
+                row.dataset.materiaId = m.id;
+                if (oculta) row.style.display = 'none';
+
+                const span = document.createElement('span');
+                span.textContent = m.nome;
+
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.name = `materias_dia[${dia.valor}][]`;
+                chk.value = m.id;
+                chk.className = 'custom-checkbox materia-dia-check';
+                chk.dataset.dia = dia.valor;
+                chk.checked = !oculta && idsDoDia.includes(Number(m.id));
+                chk.disabled = !disponivel;
+
+                row.append(span, chk);
+                lista.appendChild(row);
+            });
         }
 
-        const span = document.createElement('span');
-        span.textContent = dia.nome;
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.name = 'dias_semana[]';
-        checkbox.value = dia.valor;
-        checkbox.className = 'custom-checkbox';
-
-        // Mantém marcado se estivesse selecionado anteriormente E estiver disponível
-        if (estaDisponivel && selecionados.map(Number).includes(dia.valor)) {
-            checkbox.checked = true;
-        }
-
-        // Bloqueia o input se ele não fizer parte do intervalo de datas
-        if (!estaDisponivel) {
-            checkbox.disabled = true;
-            checkbox.checked = false; // Garante que dias fora do range não fiquem marcados
-        }
-
-        label.appendChild(span);
-        label.appendChild(checkbox);
-        container.appendChild(label);
+        item.append(header, lista);
+        container.appendChild(item);
+        atualizarResumoDia(item);
     });
+}
+
+/** Atualiza o texto "N matérias" e o destaque de erro do dia */
+function atualizarResumoDia(item) {
+    const n = item.querySelectorAll('.materia-dia-check:checked').length;
+    const diaMarcado = item.querySelector('input[name="dias_semana[]"]').checked;
+    const resumo = item.querySelector('.dia-resumo');
+    resumo.textContent = n === 0 ? 'Nenhuma matéria' : `${n} matéria${n > 1 ? 's' : ''}`;
+    resumo.classList.toggle('vazio', diaMarcado && n === 0);
+}
+
+function alternarDia(item, forcarAberto) {
+    const abrir = forcarAberto ?? !item.classList.contains('aberto');
+    item.classList.toggle('aberto', abrir);
+    item.querySelector('.dia-toggle')?.setAttribute('aria-expanded', abrir ? 'true' : 'false');
 }
 
 // ===== LOADING (EDIÇÃO / EXCLUSÃO) =====
@@ -168,6 +248,36 @@ function dispararLoadingExclusao(url) {
     document.getElementById('loadingSubtext').innerText = "Limpando os eventos vinculados ao seu Google Agenda.";
     document.getElementById('loadingScreen').style.display = "flex";
     window.location.href = url;
+}
+
+/**
+ * Limita a lista de cronogramas salvos: mostra 5 no PC e 3 no tablet/celular.
+ * Do 6º (PC) ou do 4º (tablet/celular) em diante, a lista passa a rolar.
+ */
+const LIMITE_HISTORICO_PC = 5;
+const LIMITE_HISTORICO_MOBILE = 3;
+
+function ajustarAlturaHistorico() {
+    const lista = document.querySelector('.history-list');
+    if (!lista) return;
+
+    const itens = lista.querySelectorAll('.cronograma-item');
+    const ehMobile = window.matchMedia('(max-width: 1024px)').matches;
+    const limite = ehMobile ? LIMITE_HISTORICO_MOBILE : LIMITE_HISTORICO_PC;
+
+    lista.style.maxHeight = '';
+    lista.scrollTop = 0;
+    if (itens.length <= limite) return;
+
+    const fimUltimoVisivel = itens[limite - 1].getBoundingClientRect().bottom;
+    const topoLista = lista.getBoundingClientRect().top;
+    lista.style.maxHeight = Math.ceil(fimUltimoVisivel - topoLista) + 'px';
+}
+
+/** Fecha o modal de confirmação mantendo tudo o que foi preenchido no formulário */
+function fecharModalConfirmacao() {
+    const modal = document.getElementById('confirmModal');
+    if (modal) modal.style.display = 'none';
 }
 
 function confirmDelete(event, id) {
@@ -270,37 +380,18 @@ function salvarProgressoTopico(element) {
 // Inicialização dos Event Listeners após o carregamento do DOM
 document.addEventListener("DOMContentLoaded", function () {
 
-    // ----- Dropdown de matérias (mobile) -----
-    const btnDrop = document.getElementById('btnDropMaterias');
-    const listaMat = document.getElementById('listaMaterias');
-    const labelMat = document.getElementById('labelMaterias');
-
-    function atualizarLabelMaterias() {
-        if (!labelMat || !listaMat) return;
-        const n = listaMat.querySelectorAll('input:checked').length;
-        labelMat.textContent = n === 0
-            ? 'Selecione as matérias que deseja estudar…'
-            : `${n} matéria${n > 1 ? 's' : ''} selecionada${n > 1 ? 's' : ''}`;
-    }
-    if (btnDrop && listaMat) {
-        btnDrop.addEventListener('click', () => {
-            btnDrop.classList.toggle('aberto');
-            listaMat.classList.toggle('aberto');
-        });
-        listaMat.addEventListener('change', atualizarLabelMaterias);
-        atualizarLabelMaterias();
-    }
-
-    // ----- Filtro de matérias pelo menu hambúrguer -----
+    // ----- Filtro de matérias pelo menu hambúrguer (esconde a matéria em todos os dias) -----
     const checksMenu = document.querySelectorAll('.mm-check');
     function aplicarFiltroMaterias() {
-        checksMenu.forEach(chk => {
-            const row = document.querySelector(`#listaMaterias [data-materia-id="${chk.value}"]`);
-            if (!row) return;
-            row.style.display = chk.checked ? '' : 'none';
-            if (!chk.checked) row.querySelector('input').checked = false;
+        materiasOcultas = new Set();
+        checksMenu.forEach(chk => { if (!chk.checked) materiasOcultas.add(String(chk.value)); });
+
+        document.querySelectorAll('#containerDiasSemana .materia-dia-row').forEach(row => {
+            const oculta = materiasOcultas.has(String(row.dataset.materiaId));
+            row.style.display = oculta ? 'none' : '';
+            if (oculta) row.querySelector('input').checked = false;
         });
-        atualizarLabelMaterias();
+        document.querySelectorAll('#containerDiasSemana .dia-item').forEach(atualizarResumoDia);
     }
     checksMenu.forEach(chk => chk.addEventListener('change', aplicarFiltroMaterias));
     document.getElementById('btnVerTodas')?.addEventListener('click', () => {
@@ -395,11 +486,36 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ----- Dias da semana: expandir matérias / atualizar resumo (delegação de eventos) -----
+    const containerDias = document.getElementById('containerDiasSemana');
+    if (containerDias) {
+        containerDias.addEventListener('click', (e) => {
+            const btn = e.target.closest('.dia-toggle');
+            if (btn) alternarDia(btn.closest('.dia-item'));
+        });
+
+        containerDias.addEventListener('change', (e) => {
+            const item = e.target.closest('.dia-item');
+            if (!item) return;
+
+            // Escolheu matéria => o dia passa a ser estudado
+            if (e.target.classList.contains('materia-dia-check') && e.target.checked) {
+                item.querySelector('input[name="dias_semana[]"]').checked = true;
+            }
+            // Marcou o dia sem matérias: já abre a lista para escolher
+            if (e.target.name === 'dias_semana[]' && e.target.checked &&
+                !item.querySelector('.materia-dia-check:checked')) {
+                alternarDia(item, true);
+            }
+            atualizarResumoDia(item);
+        });
+    }
+
     aplicarLimitesDatas(false); // aplica ao carregar a página
-    atualizarDiasSemana();      // aplica bloqueios dos dias se já houver datas vindas do PHP
+    atualizarDiasSemana();      // desenha os dias + matérias (usa os dados vindos do PHP)
 
     // ==========================================================================
-    // VALIDAÇÃO ANTES DE ENVIAR (datas + limite de 24h)
+    // VALIDAÇÃO ANTES DE ENVIAR (datas + dias/matérias + limite de 24h)
     // ==========================================================================
     const formCronograma = document.getElementById('formCronograma');
 
@@ -417,10 +533,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // --- Limite de 24h ---
+            // --- Dias e matérias por dia ---
+            const diasMarcados = [...formCronograma.querySelectorAll('input[name="dias_semana[]"]:checked')];
+            if (!diasMarcados.length) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Selecione um dia',
+                    text: 'Marque ao menos um dia da semana.',
+                    confirmButtonColor: '#7c3aed'
+                });
+                return;
+            }
+
+            let maxMateriasDia = 0;
+            for (const chk of diasMarcados) {
+                const item = chk.closest('.dia-item');
+                const qtd = item.querySelectorAll('.materia-dia-check:checked').length;
+                if (qtd === 0) {
+                    e.preventDefault();
+                    alternarDia(item, true);
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Faltam matérias',
+                        text: `Escolha ao menos uma matéria para ${item.querySelector('.dia-nome').textContent}.`,
+                        confirmButtonColor: '#7c3aed'
+                    });
+                    return;
+                }
+                maxMateriasDia = Math.max(maxMateriasDia, qtd);
+            }
+
+            // --- Limite de 24h (usa o dia com mais matérias) ---
             const horaInicio = formCronograma.querySelector('[name="hora_inicio"]').value;
             const horas = parseFloat(formCronograma.querySelector('[name="horas_estudo"]').value);
-            const qtdMaterias = formCronograma.querySelectorAll('input[name="materias_id[]"]:checked').length;
+            const qtdMaterias = maxMateriasDia;
 
             if (!horaInicio || isNaN(horas)) return;
 
@@ -438,7 +586,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (fimMin > 1440) {
                 const fimReal = fimMin % 1440;
                 const fimTxt = String(Math.floor(fimReal / 60)).padStart(2, '0') + ':' + String(fimReal % 60).padStart(2, '0');
-                erro = `O limite de horas permitidas é abaixo de 24h. Com ${Math.max(qtdMaterias, 1)} matéria(s) de ${horas}h começando às ${horaInicio}, o estudo terminaria às ${fimTxt} do dia seguinte. Reduza a duração, o número de matérias ou adiante o horário de início.`;
+                erro = `O limite de horas permitidas é abaixo de 24h. Com ${Math.max(qtdMaterias, 1)} matéria(s) de ${horas}h começando às ${horaInicio}, o estudo terminaria às ${fimTxt} do dia seguinte. Reduza a duração, o número de matérias do dia ou adiante o horário de início.`;
             }
 
             if (erro) {
@@ -458,6 +606,19 @@ document.addEventListener("DOMContentLoaded", function () {
         checkbox.addEventListener("change", function () {
             salvarProgressoTopico(this);
         });
+    });
+
+    // Altura da lista de cronogramas salvos (recalcula ao carregar e ao redimensionar)
+    ajustarAlturaHistorico();
+    window.addEventListener('load', ajustarAlturaHistorico);
+    window.addEventListener('resize', ajustarAlturaHistorico);
+
+    // Fecha o modal de confirmação com Esc ou clicando fora da caixa
+    document.getElementById('confirmModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'confirmModal') fecharModalConfirmacao();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharModalConfirmacao();
     });
 
     const modalForm = document.querySelector("#confirmModal form");

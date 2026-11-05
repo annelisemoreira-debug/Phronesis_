@@ -221,30 +221,105 @@ if (isset($_GET['editar'])) {
         $_SESSION['editando_id'] = $id_ed;
         $id_visualizacao = null;
         $calendar_id_exibir = null;
+
+        // Recupera do banco as escolhas feitas quando o cronograma foi criado
+        $stmtIt = $pdo->prepare("SELECT id_materia, data_estudo, data_fim FROM cronograma_item WHERE id_cronograma = ? ORDER BY data_estudo ASC");
+        $stmtIt->execute([$id_ed]);
+        $itens_ed = $stmtIt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!empty($itens_ed)) {
+            $dias_ed = [];
+            $mat_dia_ed = [];
+            $hora_ed = null;
+            $horas_ed = null;
+
+            foreach ($itens_ed as $it) {
+                $ini = new DateTime($it['data_estudo']);
+                $fim = new DateTime($it['data_fim']);
+                $dn = (int)$ini->format('N');
+                $dias_ed[$dn] = $dn;
+
+                $idm = (int)$it['id_materia'];
+                if (!in_array($idm, $mat_dia_ed[$dn] ?? [], true)) {
+                    $mat_dia_ed[$dn][] = $idm;
+                }
+
+                // Hora de início = menor horário do dia; duração = tamanho de uma sessão
+                $h = $ini->format('H:i');
+                if ($hora_ed === null || $h < $hora_ed) $hora_ed = $h;
+                if ($horas_ed === null) {
+                    $horas_ed = round(($fim->getTimestamp() - $ini->getTimestamp()) / 3600, 2);
+                }
+            }
+            ksort($dias_ed);
+
+            $primeiro_dia = substr($itens_ed[0]['data_estudo'], 0, 10);
+            $ultimo_dia   = substr($itens_ed[count($itens_ed) - 1]['data_estudo'], 0, 10);
+            // A data de início não pode ficar no passado ao regerar
+            $inicio_ed = max($primeiro_dia, $hoje);
+            $fim_ed    = ($ultimo_dia >= $inicio_ed) ? $ultimo_dia : '';
+
+            $edit_dados = [
+                'gerar'           => 1,
+                'nome_cronograma' => $crono_ed['titulo_cronograma'],
+                'data_inicio'     => $inicio_ed,
+                'data_fim'        => $fim_ed,
+                'dias_semana'     => array_values($dias_ed),
+                'materias_dia'    => $mat_dia_ed,
+                'hora_inicio'     => $hora_ed,
+                'horas_estudo'    => (string)$horas_ed
+            ];
+        }
     }
 }
 
 if (isset($_GET['msg'])) $msg_feedback = $_GET['msg'];
 
-// --- GERAÇÃO TEMPORÁRIA ---
+// --- GERAÇÃO TEMPORÁRIA (cada dia da semana tem as suas próprias matérias) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
     $data_inicio = new DateTime($_POST['data_inicio']);
     $data_fim = new DateTime($_POST['data_fim']);
     $data_hoje_obj = new DateTime($hoje);
-    $materias_selecionadas = $_POST['materias_id'] ?? [];
-    $dias_permitidos = $_POST['dias_semana'] ?? [];
-
+    $dias_permitidos = array_map('intval', $_POST['dias_semana'] ?? []);
     $intervalo_seguranca = $data_inicio->diff($data_fim);
 
-    // --- VALIDAÇÃO DO LIMITE DE 24H ---
+    $nomes_dias = [
+        1 => 'Segunda-Feira', 2 => 'Terça-Feira', 3 => 'Quarta-Feira', 4 => 'Quinta-Feira',
+        5 => 'Sexta-Feira', 6 => 'Sábado', 7 => 'Domingo'
+    ];
+    $nomes_map = array_column($lista_materias_db, 'nome_materia', 'id_materia');
+
+    // Monta o mapa  dia da semana => [ids das matérias daquele dia]
+    $materias_por_dia = [];
+    $dia_sem_materia = null;
+    $max_materias_dia = 0;
+
+    foreach ($dias_permitidos as $d) {
+        $ids = [];
+        foreach ((array)($_POST['materias_dia'][$d] ?? []) as $idm) {
+            $idm = (int)$idm;
+            if (isset($nomes_map[$idm]) && !in_array($idm, $ids, true)) {
+                $ids[] = $idm;
+            }
+        }
+        if (empty($ids) && $dia_sem_materia === null) {
+            $dia_sem_materia = $d;
+        }
+        $materias_por_dia[$d] = $ids;
+        $max_materias_dia = max($max_materias_dia, count($ids));
+    }
+
+    // --- VALIDAÇÃO DO LIMITE DE 24H (usa o dia com mais matérias) ---
     $horas_estudo_val = (float) ($_POST['horas_estudo'] ?? 0);
     $partes_hora = explode(':', $_POST['hora_inicio'] ?? '00:00');
     $inicio_em_minutos = ((int)$partes_hora[0] * 60) + (int)($partes_hora[1] ?? 0);
-    $total_em_minutos = (int) round($horas_estudo_val * 60 * count($materias_selecionadas));
+    $total_em_minutos = (int) round($horas_estudo_val * 60 * $max_materias_dia);
     $fim_em_minutos = $inicio_em_minutos + $total_em_minutos;
 
-    if (empty($materias_selecionadas)) {
-        $msg_feedback = "❌ Erro: Selecione ao menos uma matéria.";
+    if (empty($dias_permitidos)) {
+        $msg_feedback = "❌ Erro: Selecione ao menos um dia da semana.";
+    } elseif ($dia_sem_materia !== null) {
+        $msg_feedback = "❌ Erro: Escolha ao menos uma matéria para " . ($nomes_dias[$dia_sem_materia] ?? 'o dia selecionado') . ".";
     } elseif ($data_inicio < $data_hoje_obj) {
         $msg_feedback = "❌ Erro: A data de início não pode ser anterior a hoje.";
     } elseif ($data_fim < $data_inicio) {
@@ -257,30 +332,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
         $msg_feedback = "❌ O limite de horas permitidas é abaixo de 24h.";
     } elseif ($fim_em_minutos > 1440) {
         $msg_feedback = "❌ O limite de horas permitidas é abaixo de 24h. Com "
-            . count($materias_selecionadas) . " matéria(s) de " . $horas_estudo_val
+            . $max_materias_dia . " matéria(s) de " . $horas_estudo_val
             . "h começando às " . sprintf('%02d:%02d', $partes_hora[0], $partes_hora[1] ?? 0)
-            . ", o cronograma passaria da meia-noite. Reduza a duração, o nº de matérias ou adiante o horário de início.";
+            . ", o cronograma passaria da meia-noite. Reduza a duração, o nº de matérias do dia ou adiante o horário de início.";
     } else {
         $_SESSION['ultimo_nome'] = !empty($_POST['nome_cronograma']) ? $_POST['nome_cronograma'] : "Plano de Estudos";
-        $nomes_map = [];
-        foreach ($lista_materias_db as $mat) {
-            if (in_array($mat['id_materia'], $materias_selecionadas)) {
-                $nomes_map[$mat['id_materia']] = $mat['nome_materia'];
-            }
-        }
 
         $cronograma_gerado = [];
         $data_atual = clone $data_inicio;
         $intervalo = $data_inicio->diff($data_fim);
 
         for ($i = 0; $i <= $intervalo->days; $i++) {
-            if (in_array($data_atual->format('N'), $dias_permitidos)) {
+            $dia_n = (int)$data_atual->format('N');
+
+            // Só gera para dias marcados, usando as matérias DAQUELE dia
+            if (isset($materias_por_dia[$dia_n])) {
                 $horario_acumulado = new DateTime($data_atual->format('Y-m-d') . ' ' . $_POST['hora_inicio']);
 
-                foreach ($materias_selecionadas as $id_da_vez) {
+                foreach ($materias_por_dia[$dia_n] as $id_da_vez) {
                     $inicio_sessao = clone $horario_acumulado;
                     $fim_sessao = clone $inicio_sessao;
-                    $fim_sessao->modify('+' . $_POST['horas_estudo'] . ' hours');
+                    $fim_sessao->modify('+' . $horas_estudo_val . ' hours');
 
                     $cronograma_gerado[] = [
                         'id_materia' => $id_da_vez,
@@ -289,7 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
                         'fim_iso' => $fim_sessao->format('Y-m-d\TH:i:s')
                     ];
 
-                    $horario_acumulado->modify('+' . $_POST['horas_estudo'] . ' hours');
+                    $horario_acumulado->modify('+' . $horas_estudo_val . ' hours');
                 }
             }
             $data_atual->modify('+1 day');
@@ -373,12 +445,40 @@ if (isset($_POST['sincronizar']) && isset($_SESSION['temp_cronograma'])) {
 }
 
 // Valores dos campos de data (já escapados) para o formulário
-$valor_data_inicio = htmlspecialchars($_POST['data_inicio'] ?? $hoje);
-$valor_data_fim    = htmlspecialchars($_POST['data_fim'] ?? '');
+// DADOS DO FORMULÁRIO: ao abrir a página (GET) ele sempre começa vazio.
+// Só reaproveita o que acabou de ser enviado (ex.: erro de validação) ou, se o
+// salvamento falhar, os parâmetros do cronograma que estava sendo confirmado.
+if (isset($_POST['gerar'])) {
+    $form_dados = $_POST;
+} elseif (isset($_POST['sincronizar'])) {
+    $form_dados = $_SESSION['temp_params'] ?? [];
+} else {
+    // Editando: vem preenchido com o que já foi salvo. Abertura normal: vazio.
+    $form_dados = $edit_dados ?? [];
+    // Abertura da página: descarta qualquer geração anterior não salva
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        unset($_SESSION['temp_cronograma'], $_SESSION['temp_params']);
+    }
+}
+
+$valor_data_inicio = htmlspecialchars($form_dados['data_inicio'] ?? $hoje);
+$valor_data_fim    = htmlspecialchars($form_dados['data_fim'] ?? '');
 // O mínimo do campo "fim" acompanha o início escolhido (nunca antes de hoje)
-$min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje)
-    ? htmlspecialchars($_POST['data_inicio'])
+$min_data_fim = (!empty($form_dados['data_inicio']) && $form_dados['data_inicio'] >= $hoje)
+    ? htmlspecialchars($form_dados['data_inicio'])
     : $hoje;
+
+// Estado inicial dos dias/matérias: tudo DESMARCADO na primeira visita;
+// depois, o que o usuário enviou/escolheu
+$dias_marcados = isset($form_dados['gerar'])
+    ? array_map('intval', $form_dados['dias_semana'] ?? [])
+    : [];
+$materias_dia_post = $form_dados['materias_dia'] ?? [];
+$materias_json = array_map(fn($m) => [
+    'id'   => (int)$m['id_materia'],
+    'nome' => $m['nome_materia'],
+    'cor'  => $m['cor_hex'] ?? '#7c3aed'
+], $lista_materias_db);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -417,7 +517,7 @@ $min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje
             <p>Título: <b><?= htmlspecialchars($_SESSION['ultimo_nome'] ?? '') ?></b></p>
             <form method="POST">
                 <button type="submit" name="sincronizar" class="btn-sync">Confirmar e Salvar</button>
-                <button type="button" onclick="window.location.href='cronograma.php'" class="btn-cancel-modal">Cancelar</button>
+                <button type="button" onclick="fecharModalConfirmacao()" class="btn-cancel-modal">Cancelar</button>
             </form>
         </div>
     </div>
@@ -445,11 +545,11 @@ $min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje
                     <a href="cronograma.php" class="btn-novo-crono">+ Novo Cronograma</a>
                 </div>
 
-                    <div class="view-toggle">
-                        <button type="button" data-mode="MONTH">Mês</button>
-                        <button type="button" data-mode="WEEK">Semana</button>
-                        <button type="button" data-mode="AGENDA">Agenda</button>
-                    </div>
+                <div class="view-toggle">
+                    <button type="button" data-mode="MONTH">Mês</button>
+                    <button type="button" data-mode="WEEK">Semana</button>
+                    <button type="button" data-mode="AGENDA">Agenda</button>
+                </div>
                 <iframe src="https://calendar.google.com/calendar/embed?src=<?= urlencode($calendar_id_exibir) ?>&ctz=America%2FSao_Paulo&wkst=1&bgcolor=%23fbf9ff&color=%237c3aed&showCalendars=0&showTabs=1" class="calendar-embed" style="border: none;" allowfullscreen></iframe>
 
                 <div class="checklist-estudos-box">
@@ -532,7 +632,7 @@ $min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje
                     <div class="full-width field-group">
                         <label>Nome do seu Cronograma:</label>
                         <input type="text" name="nome_cronograma" placeholder="Ex: Maratona ENEM 2026"
-                            value="<?= htmlspecialchars($_POST['nome_cronograma'] ?? '') ?>" required>
+                            value="<?= htmlspecialchars($form_dados['nome_cronograma'] ?? '') ?>" required>
                     </div>
 
                     <div class="field-group input-icon-wrapper">
@@ -552,40 +652,51 @@ $min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje
                     </div>
 
                     <div class="full-width field-group">
-                        <label>Dias da Semana:</label>
-                        <div class="list-container scrolling-list" id="containerDiasSemana"></div>
+                        <label>Dias da Semana e Matérias:</label>
+                        <div class="list-container scrolling-list" id="containerDiasSemana"
+                             data-selecionados='<?= htmlspecialchars(json_encode($dias_marcados), ENT_QUOTES) ?>'
+                             data-materias='<?= htmlspecialchars(json_encode($materias_json), ENT_QUOTES) ?>'
+                             data-materias-dia='<?= htmlspecialchars(json_encode($materias_dia_post), ENT_QUOTES) ?>'></div>
+                        <small class="dica-dias">Marque o dia e clique na seta <i class="fa-solid fa-chevron-down"></i> para escolher as matérias daquele dia.</small>
                     </div>
 
                     <div class="field-group input-icon-wrapper">
                         <label>Hora Início:</label>
                         <div class="input-with-icon">
-                            <input type="time" name="hora_inicio" value="<?= htmlspecialchars($_POST['hora_inicio'] ?? '08:00') ?>" required>
+                            <input type="time" name="hora_inicio" value="<?= htmlspecialchars($form_dados['hora_inicio'] ?? '08:00') ?>" required>
                             <i class="fa-regular fa-clock input-icon-right"></i>
                         </div>
                     </div>
 
                     <div class="field-group">
                         <label>Duração por matéria (horas):</label>
-                        <input type="number" name="horas_estudo" value="<?= htmlspecialchars($_POST['horas_estudo'] ?? '2') ?>" required>
+                        <input type="number" name="horas_estudo" step="any" value="<?= htmlspecialchars($form_dados['horas_estudo'] ?? '2') ?>" required>
                     </div>
 
-                    <div class="full-width field-group">
-                        <label>Matérias Disponíveis:</label>
-                        <button type="button" class="dropdown-toggle-materias" id="btnDropMaterias">
-                            <span id="labelMaterias">Selecione as matérias que deseja estudar…</span>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </button>
-                        <div class="list-container scrolling-list" id="listaMaterias">
-                            <?php $mats_ativas = $_POST['materias_id'] ?? [];
-                            if (empty($lista_materias_db)): ?>
-                                <div class="row-item empty-state-select">Nenhuma matéria cadastrada pelo administrador.</div>
-                            <?php else: foreach ($lista_materias_db as $m): ?>
-                                <label class="row-item" data-materia-id="<?= $m['id_materia'] ?>">
-                                    <span><?= htmlspecialchars($m['nome_materia']) ?></span>
-                                    <input type="checkbox" name="materias_id[]" value="<?= $m['id_materia'] ?>"
-                                        <?= in_array($m['id_materia'], $mats_ativas) ? 'checked' : '' ?> class="custom-checkbox">
-                                </label>
-                            <?php endforeach; endif; ?>
+                    <div class="full-width dicas-box">
+                        <div class="dicas-titulo"><i class="fa-regular fa-lightbulb"></i> Dicas para organizar seus estudos</div>
+                        <div class="dicas-grid">
+                            <div class="dica-item">
+                                <i class="fa-solid fa-shuffle"></i>
+                                <div>
+                                    <strong>Intercale matérias</strong>
+                                    <span>Alterne áreas diferentes ao longo da semana.</span>
+                                </div>
+                            </div>
+                            <div class="dica-item">
+                                <i class="fa-solid fa-mug-hot"></i>
+                                <div>
+                                    <strong>Faça pausas</strong>
+                                    <span>Pequenos intervalos ajudam na concentração.</span>
+                                </div>
+                            </div>
+                            <div class="dica-item">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                                <div>
+                                    <strong>Reserve revisões</strong>
+                                    <span>Retome os conteúdos estudados.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -630,11 +741,7 @@ $min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje
             <?php endif; ?>
 
             <?php if (!($calendar_id_exibir && !isset($_GET['editar']))): ?>
-                <button class="btn-toggle-materias" id="btnToggleMaterias">
-                    <span>Navegar Conteúdos por Matéria</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-
+                <div class="bloco-navegar">
                 <div class="conteiner-materias-expansivel" id="conteinerMaterias">
                     <?php if (!empty($materias_com_conteudos)): ?>
                         <?php foreach ($materias_com_conteudos as $materia_nome => $conteudos): ?>
@@ -660,9 +767,15 @@ $min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje
                         <p style="color: #8e8ea8; font-size: 0.9rem; text-align: center; margin-top: 10px;">Nenhuma matéria carregada do banco.</p>
                     <?php endif; ?>
                 </div>
+
+                <button class="btn-toggle-materias" id="btnToggleMaterias">
+                    <span>Navegar Conteúdos por Matéria</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                </div>
             <?php endif; ?>
-                    </div>
-        </aside>
+        </div>
+    </aside>
     </main>
 
     <div id="deleteConfirmModal" class="modal" style="display: none;">
@@ -680,12 +793,12 @@ $min_data_fim = (!empty($_POST['data_inicio']) && $_POST['data_inicio'] >= $hoje
     <script src="../assets/js/lib/cronograma.js" defer></script>
 
     <nav class="bottom-nav" aria-label="Navegação principal">
-    <a href="../index.php" class="bn-item"><i class="fa-solid fa-house"></i><span>Início</span></a>
-    <a href="livros.php" class="bn-item"><i class="fa-solid fa-book"></i><span>Biblioteca</span></a>
-    <a href="material.php" class="bn-item"><i class="fa-solid fa-tv"></i><span>Material</span></a>
-    <a href="cronograma.php" class="bn-item ativo" aria-current="page"><i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span></a>
-    <a href="../perfil/configperfil.php" class="bn-item"><i class="fa-regular fa-user"></i><span>Perfil</span></a>
-</nav>
+        <a href="../index.php" class="bn-item"><i class="fa-solid fa-house"></i><span>Início</span></a>
+        <a href="livros.php" class="bn-item"><i class="fa-solid fa-book"></i><span>Biblioteca</span></a>
+        <a href="material.php" class="bn-item"><i class="fa-solid fa-tv"></i><span>Material</span></a>
+        <a href="cronograma.php" class="bn-item ativo" aria-current="page"><i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span></a>
+        <a href="../perfil/configperfil.php" class="bn-item"><i class="fa-regular fa-user"></i><span>Perfil</span></a>
+    </nav>
 
     <?php include '../perfil/vlibras.php'; ?>
     <?php include '../interface/footer.php';?>

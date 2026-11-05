@@ -3,7 +3,7 @@
    2. Layout principal      8. Accordion de matérias
    3. Cabeçalho do card     9. Agenda (iframe)
    4. Formulário           10. Checklist
-   5. Listas e checkbox    11. Modais
+   5. Dias e matérias      11. Modais
    6. Botões               12. Responsivo
 */
 
@@ -40,9 +40,6 @@
     --nav-item:     #7a4fd6;
     --nav-item-on:  #8654f3;
     --nav-shadow:   rgba(0, 0, 0, .12);
-
-    /* altura de 4 linhas nas listas com rolagem */
-    --linha-lista:  37px;
 }
 
 html.dark-theme {
@@ -88,7 +85,6 @@ body {
 }
 
 /* Elementos que só existem em tablet/celular */
-.dropdown-toggle-materias,
 .view-toggle,
 .bottom-nav,
 .sidebar-close,
@@ -232,8 +228,38 @@ input.input-erro:focus {
     cursor: pointer;
 }
 
+/* Caixa de dicas */
+.dicas-box {
+    background: var(--icon-bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 20px;
+}
+.dicas-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+.dicas-titulo i { color: var(--ink-soft); font-size: 1.1rem; }
+.dicas-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.dica-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 16px;
+    border-left: 1px solid var(--line);
+}
+.dica-item:first-child { padding-left: 0; border-left: none; }
+.dica-item > i { color: var(--ink-soft); font-size: 1.4rem; margin-top: 2px; }
+.dica-item strong { display: block; color: var(--ink); font-size: 0.85rem; font-weight: 700; }
+.dica-item span { display: block; color: var(--text); font-size: 0.78rem; line-height: 1.45; margin-top: 2px; }
+
 /* ==========================================================================
-   5. LISTAS E CHECKBOX
+   5. DIAS DA SEMANA E MATÉRIAS (listas e checkbox)
    ========================================================================== */
 .list-container {
     background-color: var(--field);
@@ -244,8 +270,8 @@ input.input-erro:focus {
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Lista de matérias: mostra 4 e rola para ver as outras */
-#listaMaterias { max-height: calc(4 * var(--linha-lista) + 2px); }
+/* Lista de dias: tem espaço para as matérias de um dia expandido */
+#containerDiasSemana { max-height: 380px; }
 
 /* Scrollbar padrão das listas com rolagem */
 .scrolling-list::-webkit-scrollbar,
@@ -255,26 +281,85 @@ input.input-erro:focus {
 .conteiner-materias-expansivel::-webkit-scrollbar-thumb,
 .checklist-wrapper::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 4px; }
 
-.row-item {
+.dia-item { border-bottom: 1px solid var(--row-line); transition: background-color .2s; }
+.dia-item:last-child { border-bottom: none; }
+.dia-item.aberto { background-color: var(--row-hover); }
+
+.dia-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 8px 20px;
-    border-bottom: 1px solid var(--row-line);
+    gap: 12px;
+    padding: 0 12px 0 20px;
+}
+.dia-nome {
+    flex: 1;
+    padding: 10px 0;
     color: var(--text) !important;
     font-size: 0.81rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
 }
-.row-item:last-child { border-bottom: none; }
-.row-item:hover { background-color: var(--row-hover); }
+.dia-resumo {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--icon-bg);
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+.dia-resumo.vazio { color: var(--del-color); background: var(--del-bg); }
 
-.empty-state-select { color: var(--muted); font-style: italic; padding: 15px 20px; }
+.dia-toggle {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    flex-shrink: 0;
+    transition: background-color .2s;
+}
+.dia-toggle:hover { background: var(--row-hover); }
+.dia-toggle i { transition: transform .25s ease; }
+.dia-item.aberto .dia-toggle i { transform: rotate(180deg); }
 
-/* Dias da semana desabilitados */
-.row-item.dia-desabilitado { opacity: 0.25; cursor: not-allowed !important; pointer-events: none; user-select: none; }
-.row-item.dia-desabilitado .custom-checkbox { cursor: not-allowed !important; opacity: 0.5; }
+/* Lista de matérias do dia */
+.dia-materias {
+    display: none;
+    margin: 0 12px 12px 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    animation: fadeInAccordion .25s ease;
+}
+.dia-item.aberto .dia-materias { display: block; }
+
+.materia-dia-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--row-line);
+    color: var(--text);
+    font-size: 0.81rem;
+    cursor: pointer;
+    transition: background .2s;
+}
+.materia-dia-row:last-child { border-bottom: none; }
+.materia-dia-row:hover { background: var(--row-hover); }
+.dia-materias-vazio { padding: 12px 16px; color: var(--muted); font-style: italic; font-size: 0.81rem; }
+
+/* Dia fora do período escolhido */
+.dia-item.dia-desabilitado { opacity: .25; pointer-events: none; user-select: none; }
+
+.dica-dias { color: var(--muted); font-size: 0.72rem; }
 
 /* Checkbox personalizado */
 .custom-checkbox {
@@ -295,7 +380,8 @@ input.input-erro:focus {
 .custom-checkbox:checked { background-color: var(--ink-soft); border-color: var(--ink-soft); }
 .custom-checkbox:checked::before { content: "✓"; color: #fff; font-size: 12px; font-weight: bold; }
 
-.row-item .custom-checkbox,
+.dia-header .custom-checkbox,
+.materia-dia-row .custom-checkbox { margin: 0; }
 .checklist-topico-row .custom-checkbox { margin: 0 0 0 16px; }
 
 /* ==========================================================================
@@ -347,7 +433,8 @@ input.input-erro:focus {
     align-items: center;
     justify-content: center;
     text-align: center;
-    margin: auto;
+    flex: 1;
+    margin: 0;
     padding: 40px 10px;
 }
 .empty-illustration { position: relative; margin-bottom: 20px; }
@@ -372,7 +459,18 @@ input.input-erro:focus {
 .empty-history-wrapper p { color: var(--muted); font-size: 11px; max-width: 180px; margin-top: 4px; line-height: 1.4; }
 html.dark-theme .empty-history-wrapper p { color: #b0aeb8; }
 
-.history-list { display: flex; flex-direction: column; gap: 12px; }
+/* A altura máxima é definida pelo JS: 5 cronogramas no PC, 3 no tablet/celular.
+   A partir do 6º (PC) ou do 4º (tablet/celular) a lista passa a rolar. */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.history-list::-webkit-scrollbar { width: 6px; }
+.history-list::-webkit-scrollbar-thumb { background-color: var(--line); border-radius: 4px; }
 
 .cronograma-item {
     background-color: var(--field);
@@ -420,9 +518,18 @@ html.dark-theme .empty-history-wrapper p { color: #b0aeb8; }
     font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 0;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(155, 81, 224, 0.2);
+}
+
+/* Botão + lista de matérias ficam no fim da sidebar; a lista abre para cima do botão */
+.bloco-navegar {
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 .btn-toggle-materias,
 .btn-toggle-materias span,
@@ -432,7 +539,7 @@ html.dark-theme .empty-history-wrapper p { color: #b0aeb8; }
 /* Mostra 4 matérias; a partir da 5ª, rola */
 .conteiner-materias-expansivel {
     display: none;
-    margin-top: 15px;
+    margin-bottom: 15px;
     flex-direction: column;
     gap: 10px;
     max-height: 216px;
@@ -699,20 +806,6 @@ html.dark-theme .materia-accordion-content li { color: var(--text) !important; }
     html, body { overflow-x: clip; }
     body { padding-bottom: 84px; }
 
-    :root { --linha-lista: 46px; }
-
-    .dropdown-toggle-materias {
-        display: flex; justify-content: space-between; align-items: center;
-        width: 100%; padding: 12px 16px;
-        border: 1px solid var(--line); background: var(--field); color: var(--text);
-        border-radius: 10px; font-family: inherit; font-size: .85rem; cursor: pointer; text-align: left;
-    }
-    .dropdown-toggle-materias i { transition: transform .2s; }
-    .dropdown-toggle-materias.aberto i { transform: rotate(180deg); }
-    #listaMaterias { display: none; margin-top: 6px; }
-    #listaMaterias.aberto { display: block; }
-    .row-item { padding: 12px 16px; min-height: 46px; }
-
     /* Histórico vira menu lateral (abre pelo hambúrguer do header) */
     .sidebar-historico {
         position: fixed; top: 0; right: 0;
@@ -758,6 +851,10 @@ html.dark-theme .materia-accordion-content li { color: var(--text) !important; }
     }
     .bn-item i { font-size: 1.15rem; }
     .bn-item.ativo { color: var(--nav-item-on); }
+
+    /* Dicas em coluna */
+    .dicas-grid { grid-template-columns: 1fr; gap: 14px; }
+    .dica-item { padding: 0; border-left: none; }
 }
 
 /* ---------- CELULAR PEQUENO (até 640px) ---------- */
@@ -775,13 +872,13 @@ html.dark-theme .materia-accordion-content li { color: var(--text) !important; }
     }
     .input-with-icon input { padding-right: 40px; }
 
-    /* Dias da semana em 2 colunas, checkbox à esquerda */
-    #containerDiasSemana {
-        display: grid; grid-template-columns: 1fr 1fr;
-        max-height: none; overflow: visible; background: transparent; border: none;
-    }
-    #containerDiasSemana .row-item { flex-direction: row-reverse; justify-content: flex-end; gap: 10px; border-bottom: none; padding: 10px 6px; }
-    #containerDiasSemana .custom-checkbox { margin: 0; }
+    /* Dias da semana: lista única com rolagem, alvos de toque maiores */
+    #containerDiasSemana { max-height: 420px; }
+    .dia-header { padding: 0 8px 0 14px; gap: 8px; }
+    .dia-nome { padding: 14px 0; font-size: .85rem; }
+    .dia-toggle { width: 40px; height: 40px; }
+    .dia-materias { margin: 0 8px 10px 14px; }
+    .materia-dia-row { padding: 12px 14px; min-height: 46px; }
 
     .btn-gen { width: 100%; padding: 15px; font-size: 1rem; }
 

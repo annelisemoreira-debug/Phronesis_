@@ -32,23 +32,43 @@ html.dark-theme {
     --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
+/* ==========================================================================
+   BODY EM COLUNA: o footer sempre fica por último (colado no fim da tela
+   quando o conteúdo é curto, e depois de tudo quando o conteúdo é longo)
+   ========================================================================== */
 body {
     background-color: var(--bg);
     color: var(--ink);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     transition: background-color 0.3s ease;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+body > * { flex-shrink: 0; }
+
+body > footer,
+body > .footer,
+body > #footer,
+body > .rodape {
+    margin-top: auto;
+    width: 100%;
 }
 
 button { font-family: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
 
 /* ==========================================================================
-   BANNER PRINCIPAL (PC)
+   BANNER PRINCIPAL (responsivo)
+   Imagem original: 1400 x 130 px. O texto fica no centro, então usamos
+   "cover" centralizado e uma altura que diminui suavemente com a tela.
    ========================================================================== */
 .banner {
     width: 100%;
     max-width: 1600px;
-    height: 160px;
+    height: clamp(76px, 11vw, 160px);
     margin: 20px auto 0 auto;
     display: block;
     overflow: hidden;
@@ -58,6 +78,7 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center center;
     display: block;
     border-radius: 15px;
 }
@@ -279,6 +300,7 @@ html.font-grande { font-size: 130%; }
 
 /* ==========================================================================
    TABLET (até 1024px): mantém a sidebar, mais compacta
+   (a altura do banner já é ajustada automaticamente pelo clamp())
    ========================================================================== */
 @media (max-width: 1024px) {
     .wrapper {
@@ -291,7 +313,7 @@ html.font-grande { font-size: 130%; }
     .areaContent { padding: 18px 20px; }
     .lista-obras { max-height: none; overflow: visible; padding-right: 0; }
     .toolbar { gap: 20px; }
-    .banner { padding: 0 20px; }
+    .banner { padding: 0 20px; margin-top: 14px; }
 }
 
 /* ==========================================================================
@@ -303,10 +325,8 @@ html.font-grande { font-size: 130%; }
     html, body { overflow-x: clip; }
     body { padding-bottom: 84px; }
 
-    
-
-    /* Banner */
-    .banner { height: 120px; margin-top: 10px; padding: 0 12px; }
+    /* Banner (altura vem do clamp: ~76px no celular) */
+    .banner { margin-top: 10px; padding: 0 12px; }
     .banner img { border-radius: 12px; }
 
     /* Coluna única, sem sidebar */
@@ -316,7 +336,8 @@ html.font-grande { font-size: 130%; }
         gap: 0;
     }
     .principalContent, .areaContent, .toolbar { min-width: 0; max-width: 100%; }
-        /* Sidebar vira menu lateral (abre pelo hambúrguer do header) */
+
+    /* Sidebar vira menu lateral (abre pelo hambúrguer do header) */
     .sidebar {
         position: fixed;
         top: 0;

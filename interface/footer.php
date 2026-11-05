@@ -9,9 +9,9 @@ $__base = str_replace($__root, '', str_replace('\\', '/', realpath(__DIR__ . '/.
     <ul class="footer-team" aria-label="Integrantes do projeto">
         <li>Annelise</li>
         <li>João Gustavo</li>
-        <li>Miguel Vinícius</li>
         <li>Manuella Vitória</li>
         <li>Pinesso</li>
+        <li>Miguel Vinícius</li>
     </ul>
 
     <div class="footer-bottom">

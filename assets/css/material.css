@@ -28,12 +28,29 @@ html.dark-theme {
     --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
+/* ==========================================================================
+   BODY EM COLUNA: o footer sempre fica por último (colado no fim da tela
+   quando o conteúdo é curto, e depois de tudo quando o conteúdo é longo)
+   ========================================================================== */
 body {
     background-color: var(--bg);
     color: var(--ink);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
     transition: background-color 0.3s ease;
+}
+
+body > * { flex-shrink: 0; }
+
+body > footer,
+body > .footer,
+body > #footer,
+body > .rodape {
+    margin-top: auto;
+    width: 100%;
 }
 
 button { font-family: inherit; color: inherit; cursor: pointer; }
@@ -45,17 +62,26 @@ html.font-media { font-size: 115%; }
 html.font-grande { font-size: 130%; }
 
 /* ==========================================================================
-   BANNER
+   BANNER (responsivo)
+   Imagem original: 1400 x 130 px. O texto fica no centro, então usamos
+   "cover" centralizado e uma altura que diminui suavemente com a tela.
    ========================================================================== */
 .banner {
     width: 100%;
     max-width: 1600px;
-    height: 160px;
+    height: clamp(76px, 11vw, 160px);
     margin: 20px auto 0 auto;
     display: block;
     overflow: hidden;
 }
-.banner img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 15px; }
+.banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    border-radius: 15px;
+}
 .banner .banner-dark { display: none; }
 .banner .banner-light { display: block; }
 html.dark-theme .banner .banner-light { display: none; }
@@ -72,7 +98,7 @@ html.dark-theme .banner .banner-dark { display: block; }
     max-width: 1670px;
     margin: 0 auto;
     padding: 20px 40px 40px;
-    align-items: stretch;               /* antes: start */
+    align-items: stretch;
 }
 
 .principalContent { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
@@ -83,7 +109,7 @@ html.dark-theme .banner .banner-dark { display: block; }
     border-radius: 16px;
     padding: 6px 0;
     box-shadow: var(--shadow);
-    height: 100%;                       /* acompanha a altura do card */
+    height: 100%;
     display: flex;
     flex-direction: column;
     position: sticky;
@@ -116,7 +142,7 @@ html.dark-theme .banner .banner-dark { display: block; }
 
 /* ---------- Área principal (card) ---------- */
 .areaContent {
-    flex: 1;                            /* preenche a altura da linha */
+    flex: 1;
     background: var(--panel);
     border-radius: 14px;
     padding: 22px 26px 18px;
@@ -179,7 +205,7 @@ html.dark-theme .banner .banner-dark { display: block; }
 
 .video-scroll {
     overflow-y: auto;
-    padding: 4px 14px 4px 0;            /* espaço p/ a barra e p/ o hover dos cards */
+    padding: 4px 14px 4px 0;
     scrollbar-width: thin;
     scrollbar-color: #ffca28 #fffae6;
 }
@@ -282,6 +308,7 @@ html.dark-theme .video-scroll::-webkit-scrollbar-thumb { background: #8654f3; bo
 
 /* ==========================================================================
    TABLET (até 1024px): drawer + barra inferior (igual ao celular)
+   (a altura do banner já é ajustada automaticamente pelo clamp())
    ========================================================================== */
 @media (max-width: 1024px) {
 
@@ -293,7 +320,7 @@ html.dark-theme .video-scroll::-webkit-scrollbar-thumb { background: #8654f3; bo
     .perfil-container { order: 2; }
     .menuNav { display: none !important; }
 
-    .banner { height: 140px; margin-top: 10px; padding: 0 16px; }
+    .banner { margin-top: 12px; padding: 0 16px; }
 
     .wrapper {
         grid-template-columns: minmax(0, 1fr);
@@ -375,7 +402,7 @@ html.dark-theme .video-scroll::-webkit-scrollbar-thumb { background: #8654f3; bo
    CELULAR (até 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-    .banner { height: 120px; padding: 0 12px; }
+    .banner { margin-top: 10px; padding: 0 12px; }
     .banner img { border-radius: 12px; }
     .wrapper { padding: 12px 12px 24px; }
 

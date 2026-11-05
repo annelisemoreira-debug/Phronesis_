@@ -293,6 +293,59 @@ html.dark-theme .botao-nav-adm:hover {
 .hamburger-btn.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
 /* ==========================================================================
+   TABLET / NOTEBOOK PEQUENO (769px a 1100px)
+   Com o grid simétrico (1fr auto 1fr) a logo ficava maior que a coluna da
+   esquerda e invadia o botão "Materiais". Aqui as colunas passam a se ajustar
+   ao conteúdo e a logo e os botões ficam um pouco mais compactos.
+   ========================================================================== */
+@media (min-width: 769px) and (max-width: 1100px) {
+    header {
+        grid-template-columns: auto 1fr auto;
+        column-gap: 16px;
+        padding: 10px 3%;
+    }
+
+    .logoMarca {
+        padding: 4px 14px !important;
+        height: 36px !important;
+    }
+    .logoMarca img { height: 28px !important; }
+
+    .menu { gap: 10px; }
+    .menu li a { padding: 7px 12px; font-size: 13px; }
+
+    .texto-painel { font-size: 11px; margin-right: 8px; }
+    .botao-nav-adm { font-size: 13px; margin-right: 10px; }
+
+    /* Modo escuro: a logo não tem fundo nem padding */
+    html.dark-theme .logoMarca { padding: 0 !important; }
+    html.dark-theme .menu li a { padding: 6px 12px; font-size: 12px; }
+}
+
+/* ==========================================================================
+   NOTEBOOK (1101px a 1280px)
+   Mantém o menu centralizado (3 colunas simétricas), mas com a logo e os
+   botões um pouco menores para a logo não ficar "colada" no menu.
+   ========================================================================== */
+@media (min-width: 1101px) and (max-width: 1280px) {
+    .logoMarca {
+        padding: 5px 16px !important;
+        height: 40px !important;
+    }
+    .logoMarca img { height: 34px !important; }
+
+    .menu { gap: 14px; }
+    .menu li a { padding: 8px 14px; }
+
+    html.dark-theme .menu li a { padding: 6px 13px; }
+}
+
+/* Abaixo de 900px o texto "PAINEL DO ESTUDANTE" é escondido para dar espaço */
+@media (min-width: 769px) and (max-width: 900px) {
+    .texto-painel { display: none; }
+}
+
+/* ==========================================================================
    CELULAR (até 768px)  -- tudo daqui até o final fica DENTRO do @media
    ========================================================================== */
 @media (max-width: 768px) {
