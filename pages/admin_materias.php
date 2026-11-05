@@ -32,8 +32,8 @@ if (isset($_POST['add_materia'])) {
         $stmt->bind_param("s", $nome);
         if ($stmt->execute()) {
             $msg = "✅ Matéria '$nome' adicionada!";
-        } else { 
-            $msg = "❌ Erro: Matéria já existe ou falha no banco."; 
+        } else {
+            $msg = "❌ Erro: Matéria já existe ou falha no banco.";
         }
         $stmt->close();
     }
@@ -55,26 +55,6 @@ if (isset($_POST['edit_materia'])) {
     }
 }
 
-$busca = trim($_GET['busca_materia'] ?? '');
-$materias = [];
-
-if (!empty($busca)) {
-    $stmt = $conn->prepare("
-        SELECT DISTINCT m.* 
-        FROM materia m 
-        LEFT JOIN materia_topico t ON m.id_materia = t.id_materia 
-        WHERE m.nome_materia COLLATE utf8mb4_general_ci LIKE ? 
-           OR t.nome_topico COLLATE utf8mb4_general_ci LIKE ? 
-        ORDER BY m.nome_materia ASC
-    ");
-    $param = "%{$busca}%";
-    $stmt->bind_param("ss", $param, $param);
-    $stmt->execute();
-    $res_materias = $stmt->get_result();
-} else {
-    $res_materias = $conn->query("SELECT * FROM materia ORDER BY nome_materia ASC");
-}
-
 // Lógica de Exclusão de Matéria
 if (isset($_GET['del'])) {
     $id_del = $_GET['del'];
@@ -88,7 +68,7 @@ if (isset($_GET['del'])) {
         }
         $stmt->close();
     } catch (Exception $e) {
-        $msg = "⚠️ Não é possível remover: matéria está em uso em um cronograma."; 
+        $msg = "⚠️ Não é possível remover: matéria está em uso em um cronograma.";
     }
 }
 
@@ -136,10 +116,10 @@ if (isset($_GET['del_topico'])) {
     }
     $stmt->close();
 }
- 
+
 // ===================== LIVROS =====================
 $VESTIBULARES = ['fuvest' => 'Fuvest', 'unicamp' => 'Unicamp', 'enem' => 'Enem'];
- 
+
 // Valida e salva a capa. Retorna: caminho (sucesso) | null (nenhum arquivo) | false (erro)
 function salvarCapa($file, &$erro) {
     if (empty($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return null;
@@ -162,20 +142,20 @@ function salvarCapa($file, &$erro) {
     }
     return 'assets/img/livros/' . $nome;
 }
- 
+
 function apagarArquivoCapa($caminho) {
     if ($caminho && strpos($caminho, 'assets/img/livros/') === 0) {
         $f = __DIR__ . '/../' . $caminho;
         if (is_file($f)) @unlink($f);
     }
 }
- 
+
 function salvarVestibulares($conn, $idLivro, $lista, $validos) {
     $stmt = $conn->prepare("DELETE FROM livro_vestibular WHERE id_livro = ?");
     $stmt->bind_param("i", $idLivro);
     $stmt->execute();
     $stmt->close();
- 
+
     $stmt = $conn->prepare("INSERT INTO livro_vestibular (id_livro, vestibular) VALUES (?, ?)");
     foreach ((array) $lista as $v) {
         if (isset($validos[$v])) {
@@ -185,13 +165,13 @@ function salvarVestibulares($conn, $idLivro, $lista, $validos) {
     }
     $stmt->close();
 }
- 
+
 // Adicionar livro
 if (isset($_POST['add_livro'])) {
     $titulo = trim($_POST['titulo'] ?? '');
     $autor  = trim($_POST['autor'] ?? '');
     $resumo = trim($_POST['resumo'] ?? '');
- 
+
     if ($titulo === '' || $autor === '' || $resumo === '') {
         $msg = "❌ Preencha título, autor e resumo.";
     } else {
@@ -212,14 +192,14 @@ if (isset($_POST['add_livro'])) {
         }
     }
 }
- 
+
 // Editar livro
 if (isset($_POST['edit_livro'])) {
     $idLivro = (int) ($_POST['id_livro'] ?? 0);
     $titulo  = trim($_POST['titulo'] ?? '');
     $autor   = trim($_POST['autor'] ?? '');
     $resumo  = trim($_POST['resumo'] ?? '');
- 
+
     if ($idLivro <= 0 || $titulo === '' || $autor === '' || $resumo === '') {
         $msg = "❌ Preencha título, autor e resumo.";
     } else {
@@ -248,7 +228,7 @@ if (isset($_POST['edit_livro'])) {
         }
     }
 }
- 
+
 // Excluir livro
 if (isset($_GET['del_livro'])) {
     $idLivro = (int) $_GET['del_livro'];
@@ -257,7 +237,7 @@ if (isset($_GET['del_livro'])) {
     $st->execute();
     $antiga = $st->get_result()->fetch_assoc()['capa'] ?? null;
     $st->close();
- 
+
     $stmt = $conn->prepare("DELETE FROM livro WHERE id_livro = ?");
     $stmt->bind_param("i", $idLivro);
     if ($stmt->execute()) {
@@ -268,7 +248,7 @@ if (isset($_GET['del_livro'])) {
     }
     $stmt->close();
 }
- 
+
 // Buscar livros cadastrados
 $livros = [];
 $res_livros = $conn->query(
@@ -281,7 +261,6 @@ $res_livros = $conn->query(
 if ($res_livros) {
     while ($row = $res_livros->fetch_assoc()) { $livros[] = $row; }
 }
- 
 
 // Buscar matérias existentes
 $materias = [];
@@ -342,14 +321,14 @@ if ($res_topicos) {
                 <p>Cadastre os livros, o resumo e em quais vestibulares eles são cobrados.</p>
             </div>
         </div>
-    
+
         <form method="POST" enctype="multipart/form-data" class="form-livro">
             <div class="grid-livro">
                 <input type="text" name="titulo" class="campo-livro" placeholder="Título da obra" maxlength="255" required>
                 <input type="text" name="autor" class="campo-livro" placeholder="Autor(a)" maxlength="255" required>
             </div>
             <textarea name="resumo" class="campo-livro" rows="4" placeholder="Breve resumo da obra" required></textarea>
-    
+
             <div class="vest-checks">
                 <?php foreach ($VESTIBULARES as $k => $nomeV): ?>
                     <label class="chip-check">
@@ -358,7 +337,7 @@ if ($res_topicos) {
                     </label>
                 <?php endforeach; ?>
             </div>
-    
+
             <div class="linha-envio">
                 <label class="upload-capa">
                     <i class="fa-solid fa-image"></i> Capa (JPG, PNG ou WEBP, até 3 MB)
@@ -369,7 +348,7 @@ if ($res_topicos) {
                 </button>
             </div>
         </form>
-    
+
         <?php if (empty($livros)): ?>
             <div class="empty-table-state">
                 <div class="book-purple-icon"><i class="fa-solid fa-book-open"></i></div>
@@ -377,10 +356,10 @@ if ($res_topicos) {
                 <p>Adicione a primeira obra para ela aparecer na página de leituras.</p>
             </div>
         <?php else: ?>
-                <div class="table-wrapper tabela-livros <?= count($livros) > 5 ? 'rolagem' : '' ?>">
-                    <table>
-                        <thead>
-                            <tr>
+            <div class="table-wrapper tabela-livros <?= count($livros) > 5 ? 'rolagem' : '' ?>">
+                <table>
+                    <thead>
+                        <tr>
                             <th style="width: 10%;">Capa</th>
                             <th style="width: 40%;">Obra</th>
                             <th style="width: 30%;">Vestibulares</th>
@@ -417,7 +396,7 @@ if ($res_topicos) {
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                     <a href="?del_livro=<?= (int)$l['id_livro'] ?>" class="btn-table-action btn-table-del"
-                                    onclick="return confirm('Excluir este livro? Favoritos e progresso dos usuários nele também serão apagados.')" title="Excluir">×</a>
+                                       onclick="return confirm('Excluir este livro? Favoritos e progresso dos usuários nele também serão apagados.')" title="Excluir">×</a>
                                 </div>
                             </td>
                         </tr>
@@ -426,7 +405,7 @@ if ($res_topicos) {
                 </table>
             </div>
         <?php endif; ?>
-    
+
         <!-- Janela de edição -->
         <dialog id="dlg-livro" class="dlg-livro">
             <form method="POST" enctype="multipart/form-data" class="form-livro">
@@ -458,31 +437,30 @@ if ($res_topicos) {
     </section>
 
     <!-- ================= CARD 2: MATÉRIAS E TÓPICOS ================= -->
-<!-- ================= CARD 2: MATÉRIAS E TÓPICOS ================= -->
-<section class="card-principal card-materias" id="materias-adm">
-    <div class="card-header">
-        <span class="icon-purple-box">
-            <i class="fa-solid fa-book"></i>
-        </span>
-        <div>
-            <h2>Gerenciar Matérias e Tópicos (ADM)</h2>
-            <p>Adicione as matérias e liste os subtópicos cobrados para direcionar os estudantes.</p>
+    <section class="card-principal card-materias" id="materias-adm">
+        <div class="card-header">
+            <span class="icon-purple-box">
+                <i class="fa-solid fa-book"></i>
+            </span>
+            <div>
+                <h2>Gerenciar Matérias e Tópicos (ADM)</h2>
+                <p>Adicione as matérias e liste os subtópicos cobrados para direcionar os estudantes.</p>
+            </div>
         </div>
-    </div>
-    
-    <!-- CAMPO DE PESQUISA ADICIONADO AQUI -->
-    <div class="search-container" style="margin-bottom: 15px;">
-        <input type="text" id="campoBuscaMateria" class="input-materia" placeholder="🔍 Pesquisar matéria ou tópico (ex: Química, Estequiometria)..." onkeyup="filtrarMateriasETopicos()">
-    </div>
 
-    <form method="POST" class="input-group-append">
-        <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" required>
-        <button type="submit" name="add_materia" class="btn-adicionar">
-            Adicionar <i class="fa-solid fa-plus"></i>
-        </button>
-    </form>
+        <!-- Campo de pesquisa -->
+        <div class="search-container" style="margin-bottom: 15px;">
+            <input type="text" id="campoBuscaMateria" class="input-materia" placeholder="🔍 Pesquisar matéria ou tópico (ex: Química, Estequiometria)..." onkeyup="filtrarMateriasETopicos()">
+        </div>
 
-        <?php if(empty($materias)): ?>
+        <form method="POST" class="input-group-append">
+            <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" required>
+            <button type="submit" name="add_materia" class="btn-adicionar">
+                Adicionar <i class="fa-solid fa-plus"></i>
+            </button>
+        </form>
+
+        <?php if (empty($materias)): ?>
             <div class="empty-table-state">
                 <div class="book-purple-icon">
                     <i class="fa-solid fa-book-open"></i>
@@ -493,7 +471,8 @@ if ($res_topicos) {
                 <p>Adicione sua primeira matéria para começar.</p>
             </div>
         <?php else: ?>
-            <div class="table-wrapper">
+            <!-- tabela-materias: rola a partir da 15ª matéria -->
+            <div class="table-wrapper tabela-materias">
                 <table>
                     <thead>
                         <tr>
@@ -503,7 +482,7 @@ if ($res_topicos) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($materias as $m): $id_m = $m['id_materia']; ?>
+                        <?php foreach ($materias as $m): $id_m = $m['id_materia']; ?>
                         <tr id="linha-<?= $id_m ?>">
                             <td><b>#<?= $id_m ?></b></td>
                             <td class="col-nome">
@@ -515,12 +494,12 @@ if ($res_topicos) {
                                         <i class="fa-solid fa-list-check"></i>
                                     </button>
 
-                                    <button type="button" class="btn-table-action btn-table-edit btn-ativar-edicao" 
-                                       data-id="<?= $id_m ?>" 
-                                       data-nome="<?= htmlspecialchars($m['nome_materia'], ENT_QUOTES, 'UTF-8') ?>" title="Editar Nome">
-                                       <i class="fa-solid fa-pen-to-square"></i>
+                                    <button type="button" class="btn-table-action btn-table-edit btn-ativar-edicao"
+                                        data-id="<?= $id_m ?>"
+                                        data-nome="<?= htmlspecialchars($m['nome_materia'], ENT_QUOTES, 'UTF-8') ?>" title="Editar Nome">
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    
+
                                     <a href="?del=<?= $id_m ?>" class="btn-table-action btn-table-del" onclick="return confirm('Tem certeza que deseja excluir esta matéria? Todos os tópicos dela sumirão.')" title="Excluir">×</a>
                                 </div>
                             </td>
@@ -529,13 +508,13 @@ if ($res_topicos) {
                             <td colspan="3">
                                 <div class="box-topicos-adm">
                                     <h4>Tópicos de Conteúdo para: <u><?= htmlspecialchars($m['nome_materia']) ?></u></h4>
-                                    
+
                                     <ul class="lista-topicos-atuais">
-                                        <?php if(isset($topicos[$id_m])): ?>
-                                            <?php foreach($topicos[$id_m] as $t): ?>
+                                        <?php if (isset($topicos[$id_m])): ?>
+                                            <?php foreach ($topicos[$id_m] as $t): ?>
                                                 <li class="tag-topico-adm" id="tag-topico-<?= $t['id_topico'] ?>">
                                                     <span class="nome-topico-texto"><?= htmlspecialchars($t['nome_topico']) ?></span>
-                                                    <i class="fa-solid fa-pen btn-topic-edit" onclick="ativarEdicaoTopico(<?= $t['id_topico'] ?>, '<?= htmlspecialchars($t['nome_topico'], ENT_QUOTES, 'UTF-8') ?>')" title="Editar Tópico"></i>
+                                                    <i class="fa-solid fa-pen btn-topic-edit" onclick='ativarEdicaoTopico(<?= (int)$t['id_topico'] ?>, <?= htmlspecialchars(json_encode($t['nome_topico']), ENT_QUOTES, 'UTF-8') ?>)' title="Editar Tópico"></i>
                                                     <a href="?del_topico=<?= $t['id_topico'] ?>" class="btn-topic-del" onclick="return confirm('Apagar este tópico?')" title="Remover Tópico">×</a>
                                                 </li>
                                             <?php endforeach; ?>
@@ -570,7 +549,7 @@ if ($res_topicos) {
 <script src="../assets/js/lib/admin_materias.js" defer></script>
 
 <?php include '../perfil/vlibras.php'; ?>
-<?php include '../interface/footer.php';?>
+<?php include '../interface/footer.php'; ?>
 
 </body>
 </html>

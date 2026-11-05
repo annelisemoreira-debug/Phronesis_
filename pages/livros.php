@@ -63,6 +63,9 @@ $stmt->bind_param("i", $id);
 $stmt->execute();
 $videosFav = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Versiona o CSS dos banners pela data de modificação (evita cache antigo)
+$verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -73,6 +76,7 @@ $stmt->close();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/livros.css">
     <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
 
     <script>
@@ -87,14 +91,21 @@ $stmt->close();
     <?php include '../interface/header.php'; ?>
 
 
-    <!-- ================= BANNER PRINCIPAL (MODO CLARO E ESCURO) ================= -->
-<!-- BANNER FORA DO WRAPPER (Posição exata do material.php) -->
+    <!-- ================= BANNER PRINCIPAL (MODO CLARO E ESCURO · PC / TABLET / CELULAR) ================= -->
     <section class="banner">
-        <img src="../assets/img/banners/claroLivros.webp" class="banner-img banner-light" alt="Banner Biblioteca">
-        <img src="../assets/img/banners/escuroLivros.webp" class="banner-img banner-dark" alt="Banner Biblioteca Escuro">
+        <picture class="banner-light">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/bibliotecaCelularClaro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/bibliotecaTabletClaro.webp">
+            <img src="../assets/img/banners/pc/claroLivros.webp" alt="Banner Biblioteca">
+        </picture>
+        <picture class="banner-dark">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/bibliotecaCelularEscuro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/bibliotecaTabletEscuro.webp">
+            <img src="../assets/img/banners/pc/escuroLivros.webp" alt="Banner Biblioteca Escuro">
+        </picture>
     </section>
-    
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="wrapper">
         <!-- ================= BARRA LATERAL ================= -->
         <aside class="sidebar" id="sidebar">
@@ -229,7 +240,7 @@ $stmt->close();
 
     <script src="../assets/js/lib/livros.js" defer></script>
 
-        <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
     <nav class="bottom-nav" aria-label="Navegação principal">
         <a href="../index.php" class="bn-item">
             <i class="fa-solid fa-house"></i><span>Início</span>

@@ -187,8 +187,12 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Phronesis</title>
-    <?php $verCss = @filemtime(__DIR__ . '/../assets/css/configperfil.css') ?: time(); ?>
-<link rel="stylesheet" href="../assets/css/configperfil.css?v=<?php echo $verCss; ?>">
+    <?php
+        $verCss    = @filemtime(__DIR__ . '/../assets/css/configperfil.css') ?: time();
+        $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
+    ?>
+    <link rel="stylesheet" href="../assets/css/configperfil.css?v=<?php echo $verCss; ?>">
+    <link rel="stylesheet" href="../assets/css/banner.css?v=<?php echo $verBanner; ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
@@ -335,9 +339,18 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
 
         <!-- Conteúdo Principal -->
         <main class="content">
+            <!-- BANNER (MODO CLARO E ESCURO · PC / TABLET / CELULAR) -->
             <header class="profile-banner">
-                <img src="../assets/img/banners/claroPerfil.webp" alt="Banner" class="banner-img banner-light">
-                <img src="../assets/img/banners/escuroperfil.webp" alt="Banner" class="banner-img banner-dark">
+                <picture class="banner-light">
+                    <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/perfilCelularClaro.webp">
+                    <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/perfilTabletClaro.webp">
+                    <img src="../assets/img/banners/pc/claroPerfil.webp" alt="Banner Perfil">
+                </picture>
+                <picture class="banner-dark">
+                    <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/perfilCelularEscuro.webp">
+                    <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/perfilTableEscuro.webp">
+                    <img src="../assets/img/banners/pc/escuroPerfil.webp" alt="Banner Perfil Escuro">
+                </picture>
             </header>
 
             <section class="container-dados">
@@ -471,7 +484,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     </script>
     <script src="../assets/js/lib/configperfil.js" defer></script>
 
-        <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
     <nav class="bottom-nav" aria-label="Navegação principal">
         <a href="../index.php" class="bn-item">
             <i class="fa-solid fa-house"></i><span>Início</span>

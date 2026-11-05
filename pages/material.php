@@ -75,6 +75,9 @@ try {
 }
 
 $paginaAtual = 'material';
+
+// Versiona o CSS dos banners pela data de modificação (evita cache antigo)
+$verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -85,6 +88,7 @@ $paginaAtual = 'material';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/material.css">
     <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
 
     <script>
@@ -98,11 +102,20 @@ $paginaAtual = 'material';
 </head>
 <body data-pagina="material">
     <?php include '../interface/header.php'; ?>
-    
 
+
+    <!-- ================= BANNER (MODO CLARO E ESCURO · PC / TABLET / CELULAR) ================= -->
     <section class="banner">
-        <img src="../assets/img/banners/claroMaterial.webp" class="banner-img banner-light" alt="Banner Materiais">
-        <img src="../assets/img/banners/escuroMaterial.webp" class="banner-img banner-dark" alt="Banner Materiais Escuro">
+        <picture class="banner-light">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/materiasCelularClaro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/materiaisTabletClaro.webp">
+            <img src="../assets/img/banners/pc/claroMaterial.webp" alt="Banner Materiais">
+        </picture>
+        <picture class="banner-dark">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/materiasCelularEscuro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/materiaisTabletEscuro.webp">
+            <img src="../assets/img/banners/pc/escuroMaterial.webp" alt="Banner Materiais Escuro">
+        </picture>
     </section>
 
     <!-- nada entre o banner e o wrapper -->
@@ -151,4 +164,3 @@ $paginaAtual = 'material';
     <?php include '../interface/footer.php';?>
 </body>
 </html>
-

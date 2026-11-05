@@ -84,10 +84,12 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
     <title>Acessibilidade - Phronesis</title>
     <?php
         // Versiona CSS/JS pela data de modificação, evitando que o navegador use arquivo antigo em cache
-        $verCss = @filemtime(__DIR__ . '/../assets/css/acessibilidade.css') ?: time();
-        $verJs  = @filemtime(__DIR__ . '/../assets/js/lib/acessibilidade.js') ?: time();
+        $verCss    = @filemtime(__DIR__ . '/../assets/css/acessibilidade.css') ?: time();
+        $verJs     = @filemtime(__DIR__ . '/../assets/js/lib/acessibilidade.js') ?: time();
+        $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     ?>
     <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=<?php echo $verCss; ?>">
+    <link rel="stylesheet" href="../assets/css/banner.css?v=<?php echo $verBanner; ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
     
@@ -188,9 +190,18 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 
         <!-- Conteúdo Principal -->
         <main class="content">
+            <!-- BANNER (MODO CLARO E ESCURO · PC / TABLET / CELULAR) -->
             <header class="profile-banner">
-                <img src="../assets/img/banners/acessibilidadeClaro.webp" alt="Banner" class="banner-img banner-light">
-                <img src="../assets/img/banners/acessibilidadeEscuro.webp" alt="Banner" class="banner-img banner-dark">
+                <picture class="banner-light">
+                    <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/acessibilidadeCelularClaro.webp">
+                    <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/acessibilidadeTabletClaro.webp">
+                    <img src="../assets/img/banners/pc/acessibilidadeClaro.webp" alt="Banner Acessibilidade">
+                </picture>
+                <picture class="banner-dark">
+                    <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/acessibilidadeCelularEscuro.webp">
+                    <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/acessibilidadeTabletEscuro.webp">
+                    <img src="../assets/img/banners/pc/acessibilidadeEscuro.webp" alt="Banner Acessibilidade Escuro">
+                </picture>
             </header>
 
             <div class="container-acessibilidade">
@@ -252,7 +263,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
         </main>
     </div>
 
-        <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
     <nav class="bottom-nav" aria-label="Navegação principal">
         <a href="../index.php" class="bn-item">
             <i class="fa-solid fa-house"></i><span>Início</span>

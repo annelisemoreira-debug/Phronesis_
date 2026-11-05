@@ -14,11 +14,12 @@ function toggleTopicosPanel(id) {
     const painel = document.getElementById(`painel-topicos-${id}`);
     if (painel) {
         painel.style.display = (painel.style.display === 'table-row') ? 'none' : 'table-row';
+        ajustarRolagemMaterias();
     }
 }
 
 // === 2. PREPARAR ENVIO DO FORMULÁRIO INLINE ===
-// Mantida no escopo global porque é chamada via string no atributo 'onsubmit' do HTML injetado
+// Mantida no escopo global porque é chamada via atributo 'onsubmit' do HTML injetado
 function prepararEnvio(id) {
     const valorInput = document.getElementById(`input-${id}`).value;
     document.getElementById(`hidden-nome-${id}`).value = valorInput;
@@ -56,8 +57,8 @@ function activarEdicao(id, nomeOriginal) {
     });
 }
 
-function ativarEdicaoMateria(id, nomeOriginal) { 
-    activarEdicao(id, nomeOriginal); 
+function ativarEdicaoMateria(id, nomeOriginal) {
+    activarEdicao(id, nomeOriginal);
 }
 
 // === 4. LÓGICA DE EDIÇÃO DE TÓPICOS ===
@@ -70,21 +71,23 @@ function ativarEdicaoTopico(idTopico, nomeOriginal) {
     tag.innerHTML = `
         <form method="POST" style="display: flex; align-items: center; gap: 5px;">
             <input type="hidden" name="id_topico" value="${idTopico}">
-            <input type="text" name="novo_nome_topico" value="${nomeOriginal}" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
+            <input type="text" name="novo_nome_topico" id="input-topico-${idTopico}" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
             <button type="submit" name="edit_topico" class="btn-salvar" style="padding: 4px 8px;">✔</button>
             <button type="button" class="btn-cancelar" id="cancel-topico-${idTopico}" style="padding: 4px 8px; background: #ef4444;">X</button>
         </form>
     `;
+
+    // Define o valor via JS para não quebrar com aspas no nome
+    document.getElementById(`input-topico-${idTopico}`).value = nomeOriginal;
 
     document.getElementById(`cancel-topico-${idTopico}`).addEventListener('click', () => {
         tag.innerHTML = htmlOriginal;
     });
 }
 
-// === 5. INICIALIZAÇÃO DOS ESCUTADORES DE EVENTOS ===
-document.addEventListener("DOMContentLoaded", function() {
-    // Monitoramento dinâmico (Event Delegation) de edição inline de MATÉRIAS
-    document.body.addEventListener('click', function(e) {
+// === 5. EVENTOS: EDIÇÃO INLINE DE MATÉRIAS ===
+document.addEventListener('DOMContentLoaded', function () {
+    document.body.addEventListener('click', function (e) {
         const btn = e.target.closest('.btn-ativar-edicao');
         if (btn) {
             const id = btn.getAttribute('data-id');
@@ -93,8 +96,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
-
-// ===== ADICIONE AO FINAL DE assets/js/lib/admin_materias.js =====
 
 // === 6. EDIÇÃO DE LIVROS (janela modal) ===
 document.addEventListener('DOMContentLoaded', function () {
@@ -125,8 +126,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const r = dlg.getBoundingClientRect();
         if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
     });
+});
 
-    // === 7. ROLAGEM DA LISTA DE LIVROS (após o 5º) ===
+// === 7. ROLAGEM DA LISTA DE LIVROS (após o 5º) ===
 function ajustarRolagemLivros() {
     const wrap = document.querySelector('.tabela-livros.rolagem');
     if (!wrap) return;
@@ -143,22 +145,53 @@ function ajustarRolagemLivros() {
 document.addEventListener('DOMContentLoaded', ajustarRolagemLivros);
 window.addEventListener('load', ajustarRolagemLivros);
 window.addEventListener('resize', ajustarRolagemLivros);
-});
 
-// Função auxiliar para remover acentos e caracteres especiais
+// === 8. ROLAGEM DA LISTA DE MATÉRIAS (após a 15ª) ===
+const LIMITE_MATERIAS_VISIVEIS = 15;
+
+function ajustarRolagemMaterias() {
+    const wrap = document.querySelector('.tabela-materias');
+    if (!wrap) return;
+
+    const linhas = wrap.querySelectorAll('tbody tr');
+    let altura = wrap.querySelector('thead').offsetHeight;
+    let contagem = 0;
+    let excedeu = false;
+
+    for (const tr of linhas) {
+        const ehMateria = tr.id.startsWith('linha-');
+        if (ehMateria && tr.offsetHeight > 0) {
+            contagem++;
+            if (contagem > LIMITE_MATERIAS_VISIVEIS) { excedeu = true; break; }
+        }
+        altura += tr.offsetHeight; // painéis abertos dentro das 15 primeiras entram na conta
+    }
+
+    if (excedeu) {
+        wrap.classList.add('rolagem');
+        wrap.style.maxHeight = altura + 'px';
+    } else {
+        wrap.classList.remove('rolagem');
+        wrap.style.maxHeight = '';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', ajustarRolagemMaterias);
+window.addEventListener('load', ajustarRolagemMaterias);
+window.addEventListener('resize', ajustarRolagemMaterias);
+
+// === 9. PESQUISA DE MATÉRIAS E TÓPICOS ===
 function removerAcentos(texto) {
     return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
 function filtrarMateriasETopicos() {
-    // Normaliza o termo pesquisado
     const termo = removerAcentos(document.getElementById('campoBuscaMateria').value.toLowerCase().trim());
     const linhasMaterias = document.querySelectorAll('tr[id^="linha-"]');
 
     linhasMaterias.forEach(linha => {
         const idMateria = linha.id.replace('linha-', '');
-        
-        // Normaliza o nome da matéria e os tópicos para comparação
+
         const nomeMateria = removerAcentos(linha.querySelector('.texto-nome').textContent.toLowerCase());
         const painelTopicos = document.getElementById('painel-topicos-' + idMateria);
         const textoTopicos = painelTopicos ? removerAcentos(painelTopicos.textContent.toLowerCase()) : '';
@@ -168,7 +201,7 @@ function filtrarMateriasETopicos() {
 
         if (termo === '' || encontrouMateria || encontrouTopico) {
             linha.style.display = '';
-            
+
             // Abre o painel se a busca bater com um tópico
             if (encontrouTopico && termo !== '') {
                 if (painelTopicos) painelTopicos.style.display = 'table-row';
@@ -180,4 +213,6 @@ function filtrarMateriasETopicos() {
             if (painelTopicos) painelTopicos.style.display = 'none';
         }
     });
+
+    ajustarRolagemMaterias();
 }

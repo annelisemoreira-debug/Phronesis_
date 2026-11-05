@@ -1,0 +1,68 @@
+/* assets/css/banner.css
+   Banners responsivos compartilhados por: livros.php, material.php,
+   configperfil.php e acessibilidade.php
+
+   Tamanhos das imagens (pastas em assets/img/banners/):
+     pc/         1600 x 160  (proporção 10 : 1)   -> telas acima de 1024px
+     tablet/     1024 x 170  (proporção ~6 : 1)   -> telas até 1024px
+     cellphone/   390 x 130  (proporção 3 : 1)    -> telas até 600px
+
+   A troca de imagem é feita no HTML (<picture>). Aqui só controlamos
+   o tema (claro/escuro) e o tamanho: a altura sempre vem da proporção
+   real da imagem, então nada é cortado nem esticado.
+*/
+
+/* ---------- Tema claro / escuro (as classes ficam no <picture>) ---------- */
+.banner-light { display: block; }
+.banner-dark  { display: none; }
+
+html.dark-theme .banner-light { display: none; }
+html.dark-theme .banner-dark  { display: block; }
+
+/* ---------- Imagem: largura total, altura automática ---------- */
+/* "auto 10 / 1" = usa a proporção real da imagem; os valores só reservam
+   o espaço enquanto ela carrega (evita a página "pular"). */
+.banner img,
+.profile-banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto 10 / 1;
+    border-radius: 15px;
+}
+
+/* PC (acima de 1024px): o banner usa a mesma largura e as mesmas margens
+   laterais do conteúdo (.wrapper: 1670px no máximo, 40px de cada lado),
+   assim ele alinha com a barra lateral e o card e não passa da tela. */
+@media (min-width: 1025px) {
+    .banner {
+        max-width: 1670px;
+        padding: 0 40px;
+    }
+}
+
+/* Tablet (até 1024px) */
+@media (max-width: 1024px) {
+    .banner img,
+    .profile-banner img {
+        aspect-ratio: auto 1024 / 170;
+    }
+}
+
+/* Cantos um pouco menores em telas pequenas (até 768px) */
+@media (max-width: 768px) {
+    .banner img,
+    .profile-banner img {
+        border-radius: 12px;
+    }
+}
+
+/* Celular de verdade (até 600px): usa a imagem 390 x 130 (3 : 1).
+   Entre 601px e 1024px entra a imagem de tablet, que é bem mais baixa,
+   então o banner não fica gigante em celulares grandes / tablets em pé. */
+@media (max-width: 600px) {
+    .banner img,
+    .profile-banner img {
+        aspect-ratio: auto 3 / 1;
+    }
+}
