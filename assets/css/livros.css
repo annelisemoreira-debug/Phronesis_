@@ -61,25 +61,21 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
 
 /* ==========================================================================
-   BANNER PRINCIPAL (responsivo)
-   Imagem original: 1400 x 130 px. O texto fica no centro, então usamos
-   "cover" centralizado e uma altura que diminui suavemente com a tela.
+   BANNER (sem cortes)
+   PC: 1600 x 160 px. A altura segue a proporção da própria imagem
+   (height: auto), então funciona com qualquer tamanho de banner.
    ========================================================================== */
 .banner {
     width: 100%;
     max-width: 1600px;
-    height: clamp(76px, 11vw, 160px);
     margin: 20px auto 0 auto;
     display: block;
-    overflow: hidden;
 }
 
 .banner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
     display: block;
+    width: 100%;
+    height: auto;              /* a altura vem da proporção real da imagem */
     border-radius: 15px;
 }
 
@@ -300,7 +296,6 @@ html.font-grande { font-size: 130%; }
 
 /* ==========================================================================
    TABLET (até 1024px): mantém a sidebar, mais compacta
-   (a altura do banner já é ajustada automaticamente pelo clamp())
    ========================================================================== */
 @media (max-width: 1024px) {
     .wrapper {
@@ -325,7 +320,7 @@ html.font-grande { font-size: 130%; }
     html, body { overflow-x: clip; }
     body { padding-bottom: 84px; }
 
-    /* Banner (altura vem do clamp: ~76px no celular) */
+    /* Banner */
     .banner { margin-top: 10px; padding: 0 12px; }
     .banner img { border-radius: 12px; }
 

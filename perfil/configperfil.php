@@ -336,7 +336,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         <!-- Conteúdo Principal -->
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/banners/meuperfilclaro.webp" alt="Banner" class="banner-img banner-light">
+                <img src="../assets/img/banners/claroPerfil.webp" alt="Banner" class="banner-img banner-light">
                 <img src="../assets/img/banners/escuroperfil.webp" alt="Banner" class="banner-img banner-dark">
             </header>
 

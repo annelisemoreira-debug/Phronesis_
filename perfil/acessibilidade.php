@@ -189,8 +189,8 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
         <!-- Conteúdo Principal -->
         <main class="content">
             <header class="profile-banner">
-                <img src="../assets/img/banners/acessibilidadeclaro.webp" alt="Banner" class="banner-img banner-light">
-                <img src="../assets/img/banners/escuroacessibilidade.webp" alt="Banner" class="banner-img banner-dark">
+                <img src="../assets/img/banners/acessibilidadeClaro.webp" alt="Banner" class="banner-img banner-light">
+                <img src="../assets/img/banners/acessibilidadeEscuro.webp" alt="Banner" class="banner-img banner-dark">
             </header>
 
             <div class="container-acessibilidade">

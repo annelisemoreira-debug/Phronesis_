@@ -101,8 +101,8 @@ $paginaAtual = 'material';
     
 
     <section class="banner">
-        <img src="../assets/img/banners/normalMateriais.webp" class="banner-img banner-light" alt="Banner Materiais">
-        <img src="../assets/img/banners/escuroMateriais.webp" class="banner-img banner-dark" alt="Banner Materiais Escuro">
+        <img src="../assets/img/banners/claroMaterial.webp" class="banner-img banner-light" alt="Banner Materiais">
+        <img src="../assets/img/banners/escuroMaterial.webp" class="banner-img banner-dark" alt="Banner Materiais Escuro">
     </section>
 
     <!-- nada entre o banner e o wrapper -->
