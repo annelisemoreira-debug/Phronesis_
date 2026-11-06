@@ -142,7 +142,7 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                     </li>
                 </ul>
 
-                            <nav class="sidebar-nav">
+                
                 <!-- Navegação entre páginas (só PC) -->
                 <div class="nav-desktop">
                     <p class="nav-title">Navegação</p>

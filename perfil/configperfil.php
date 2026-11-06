@@ -394,7 +394,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
             </section>
         </main>
     </div>
-
+    
     <!-- Modal de visualização ampliada da foto -->
     <div id="previewModal" class="modal-preview" aria-hidden="true">
         <span class="close-preview" id="btnClosePreview" title="Fechar" role="button" aria-label="Fechar visualização">&times;</span>
