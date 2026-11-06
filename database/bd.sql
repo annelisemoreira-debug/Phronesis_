@@ -1300,8 +1300,23 @@ drop database phronesis;
         'raoni@phronesis.com'
     );
 
-    select * from materia_topico;
-    select * from usuario;
-    select * from favoritos;
+    -- ============================================================
+    -- CONSULTAS PARA TODAS AS TABELAS E VIEWS DO BANCO PHRONESIS
+    -- ============================================================
+
+    SELECT * FROM usuario;
+    SELECT * FROM materia;
+    SELECT * FROM materia_topico;
+    SELECT * FROM cronograma;
+    SELECT * FROM cronograma_item;
+    SELECT * FROM favoritos;
+    SELECT * FROM vistos;
+    SELECT * FROM livro;
+    SELECT * FROM livro_vestibular;
+    SELECT * FROM livro_favorito;
+    SELECT * FROM livro_progresso;
+    SELECT * FROM usuario_topico_progresso;
+    SELECT * FROM cronograma_topico_status;
+    SELECT * FROM cod_topicos;
 
     drop database phronesis;
