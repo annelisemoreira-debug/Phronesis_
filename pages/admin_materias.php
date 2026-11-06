@@ -279,6 +279,9 @@ if ($res_topicos) {
         $topicos[$t['id_materia']][] = $t;
     }
 }
+
+// Versiona o CSS do banner pela data de modificação (evita cache antigo)
+$verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 ?>
 
 <!DOCTYPE html>
@@ -287,16 +290,15 @@ if ($res_topicos) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Matérias - ADM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/admin_materias.css">
     <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
 
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('site-theme');
-            if (savedTheme === 'dark') {
+            if ((localStorage.getItem('site-theme') || 'light') === 'dark') {
                 document.documentElement.classList.add('dark-theme');
             }
         })();
@@ -305,6 +307,20 @@ if ($res_topicos) {
 <body>
 
 <?php include '../interface/header.php'; ?>
+
+<!-- ================= BANNER PRINCIPAL (MODO CLARO E ESCURO · PC / TABLET / CELULAR) ================= -->
+<section class="banner">
+    <picture class="banner-light">
+        <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/administradorCelularClaro.webp">
+        <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/administradorTabletClaro.webp">
+        <img src="../assets/img/banners/pc/administradorClaro.webp" alt="Banner Administrador">
+    </picture>
+    <picture class="banner-dark">
+        <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/administradorCelularEscuro.webp">
+        <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/administradorTabletEscuro.webp">
+        <img src="../assets/img/banners/pc/administradorEscuro.webp" alt="Banner Administrador Escuro">
+    </picture>
+</section>
 
 <main class="main-container">
 
@@ -547,6 +563,25 @@ if ($res_topicos) {
 </main>
 
 <script src="../assets/js/lib/admin_materias.js" defer></script>
+
+<!-- ================= NAVEGAÇÃO INFERIOR (tablet e celular) ================= -->
+<nav class="bottom-nav" aria-label="Navegação principal">
+    <a href="../index.php" class="bn-item">
+        <i class="fa-solid fa-house"></i><span>Início</span>
+    </a>
+    <a href="livros.php" class="bn-item">
+        <i class="fa-solid fa-book"></i><span>Biblioteca</span>
+    </a>
+    <a href="material.php" class="bn-item">
+        <i class="fa-solid fa-tv"></i><span>Material</span>
+    </a>
+    <a href="cronograma.php" class="bn-item">
+        <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
+    </a>
+    <a href="../perfil/configperfil.php" class="bn-item">
+        <i class="fa-regular fa-user"></i><span>Perfil</span>
+    </a>
+</nav>
 
 <?php include '../perfil/vlibras.php'; ?>
 <?php include '../interface/footer.php'; ?>

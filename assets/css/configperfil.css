@@ -1,6 +1,8 @@
 /* assets/css/configperfil.css */
 
-/* Reset básico e Fontes */
+/* =======================================================
+   RESET E BASE
+   ======================================================= */
 * {
     margin: 0;
     padding: 0;
@@ -9,8 +11,8 @@
 }
 
 body {
-    background-color: #d6c6f7; /* Fundo lilás da página */
-    min-height: 100vh; /* Permite expansão do body sem quebrar a estrutura */
+    background-color: #d6c6f7;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,18 +23,20 @@ body {
 .main-wrapper {
     display: flex;
     width: 95%;
-    height: 90vh; /* Mantém a janela proporcional ao viewport */
+    height: 90vh;
     gap: 20px;
 }
 
-/* --- ELEMENTOS MÓVEIS (Escondidos por padrão no Desktop) --- */
+/* Elementos móveis (escondidos no desktop) */
 .mobile-header,
 .sidebar-header-mobile,
 .sidebar-overlay {
     display: none;
 }
 
-/* --- SIDEBAR (Esquerda) --- */
+/* =======================================================
+   SIDEBAR (igual à página de acessibilidade)
+   ======================================================= */
 .sidebar {
     width: 250px;
     background-color: #ffffff;
@@ -40,11 +44,11 @@ body {
     padding: 30px 15px;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0; /* Impede que a sidebar amasse */
+    flex-shrink: 0;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.logo {
+.sidebar-header {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,7 +56,14 @@ body {
     margin-bottom: 40px;
 }
 
-/* Visibilidade padrão das logos (Modo Claro) */
+.sidebar-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Logos (modo claro por padrão) */
 .logo-light {
     display: block;
     width: 220px;
@@ -67,7 +78,7 @@ body {
 .nav-title {
     font-weight: bold;
     font-size: 0.85rem;
-    color: #9274ff; 
+    color: #9274ff;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-top: 25px;
@@ -98,69 +109,72 @@ body {
     font-size: 1rem !important;
 }
 
-.sidebar ul li a:hover, 
+.sidebar ul li a:hover,
 .sidebar ul li a.active {
-    background-color: #f0ecff; 
-    color: #7B61FF; 
-    transform: translateX(5px); 
+    background-color: #f0ecff;
+    color: #7B61FF;
+    transform: translateX(5px);
     font-weight: 600;
 }
 
 .sidebar ul li a span {
     margin-right: 12px;
     font-size: 1.2rem;
-    filter: grayscale(100%); 
+    filter: grayscale(100%);
     transition: 0.3s;
 }
 
 .sidebar ul li a:hover span,
 .sidebar ul li a.active span {
-    filter: grayscale(0%); 
+    filter: grayscale(0%);
 }
 
 .icon-acessibilidade {
-    width: 18px; 
+    width: 18px;
     height: 18px;
-    margin-right: 12px; 
+    margin-right: 12px;
     vertical-align: middle;
-    border-radius: 3px; 
-    object-fit: cover; 
+    border-radius: 3px;
+    object-fit: cover;
     display: inline-block;
     filter: grayscale(100%);
     opacity: 0.8;
     transition: all 0.3s ease;
 }
 
-.sidebar ul li a:hover .icon-acessibilidade {
+.sidebar ul li a:hover .icon-acessibilidade,
+.sidebar ul li a.active .icon-acessibilidade {
     filter: grayscale(0%);
     opacity: 1;
 }
 
-/* --- CONTEÚDO PRINCIPAL (Direita com Rolagem Interna) --- */
+/* =======================================================
+   CONTEÚDO PRINCIPAL
+   ======================================================= */
 .content {
     flex: 1;
     background-color: #ffffff;
     border-radius: 15px;
-    overflow-y: auto; /* Permite rolagem apenas dentro do painel de dados */
-    overflow-x: hidden; /* Corta vazamentos horizontais */
+    overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     width: 100%;
     transition: background-color 0.3s ease;
 }
 
-/* --- BANNER COMPORTAMENTO (Modo Claro) --- */
+/* Banner */
 .profile-banner {
     width: 100%;
-    padding: 20px 30px 0 30px; 
+    padding: 20px 30px 0 30px;
     box-sizing: border-box;
 }
 
 .banner {
-    width: 100%; 
-    max-width: 1650px; 
-    height: 160px;       
-    margin: 0 auto; 
+    width: 100%;
+    max-width: 1650px;
+    height: 160px;
+    margin: 0 auto;
     display: block;
     overflow: hidden;
 }
@@ -174,14 +188,14 @@ body {
 }
 
 .banner-light { display: block; }
-.banner-dark { display: none; }
+.banner-dark  { display: none; }
 
 /* Seção de dados */
 .container-dados {
     padding: 40px !important;
     display: flex;
     flex-direction: column;
-    flex: 1; /* Garante ocupação total do espaço interno */
+    flex: 1;
 }
 
 /* Alerta de conta gerenciada */
@@ -234,7 +248,11 @@ body {
     filter: brightness(0.95);
 }
 
-/* Rótulos e botões */
+.avatar-wrapper img:focus-visible {
+    outline: 3px solid #7B61FF;
+    outline-offset: 3px;
+}
+
 .upload-info h3 {
     font-size: 1.1rem;
     margin-bottom: 5px;
@@ -257,6 +275,11 @@ body {
     cursor: pointer;
 }
 
+.upload-info button.btn-remove-foto {
+    color: #FF4D4D;
+    margin-left: 15px;
+}
+
 /* Campos de texto */
 .user-info-fields .field {
     margin-bottom: 25px !important;
@@ -274,7 +297,41 @@ body {
     color: #333333;
 }
 
-/* Botão Desconectar */
+/* Zona de perigo */
+.danger-zone {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #FF4D4D;
+    border-radius: 8px;
+}
+
+.danger-zone h3 {
+    color: #FF4D4D;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.danger-zone p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    color: #666666;
+}
+
+.btn-delete-open {
+    background-color: #FF4D4D;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-delete-open:hover {
+    background-color: #e03e3e;
+}
+
+/* Desconectar */
 .footer-actions {
     margin-top: auto;
     padding-top: 20px;
@@ -292,9 +349,142 @@ body {
 }
 
 /* =======================================================
-   ESTILOS DO PREVIEW / EXPANSÃO DA FOTO DE PERFIL
+   MODAIS (corte de foto e exclusão de conta)
    ======================================================= */
+.modal-crop {
+    display: none;
+    position: fixed;
+    z-index: 1500;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
 
+.modal-crop-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    text-align: center;
+}
+
+/* Área de recorte com tamanho fixo (quadrada) */
+.img-container {
+    width: 100%;
+    max-width: 360px;
+    height: 360px;
+    max-height: 60vh;
+    margin: 0 auto 20px auto;
+    background-color: #111111;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.img-container .cropper-bg {
+    background-image: none;
+}
+
+.img-container img {
+    max-width: 100%;
+    display: block;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-crop-confirm {
+    background-color: #7B61FF;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-crop-cancel {
+    background-color: #e0e0e0;
+    color: #222222;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-crop-confirm.btn-delete-confirm {
+    background-color: #FF4D4D;
+    color: #ffffff;
+}
+
+.cropper-view-box,
+.cropper-face {
+    border-radius: 50%;
+    outline: none !important;
+}
+
+/* Conteúdo do modal de exclusão */
+.delete-title {
+    color: #FF4D4D;
+    margin-top: 0;
+}
+
+.delete-text {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.delete-warning {
+    background-color: #FFF3CD;
+    color: #856404;
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px solid #ffeeba;
+}
+
+.delete-note {
+    font-size: 13px;
+    color: #666666;
+    margin-top: 10px;
+}
+
+.delete-password-box {
+    margin-top: 15px;
+    text-align: left;
+}
+
+.delete-password-box label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.input-delete-pass {
+    width: 100%;
+    padding: 10px;
+    margin-top: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* =======================================================
+   PREVIEW / ZOOM DA FOTO DE PERFIL
+   ======================================================= */
 .modal-preview {
     display: none;
     position: fixed;
@@ -349,7 +539,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Zoom dentro do preview */
 .preview-stage {
     display: flex;
     align-items: center;
@@ -380,7 +569,6 @@ body {
     cursor: grabbing;
 }
 
-/* Barra de controles */
 .preview-controls {
     position: absolute;
     bottom: 25px;
@@ -424,52 +612,44 @@ body {
 }
 
 /* =======================================================
-   REGRAS GLOBAIS DE ESCALA DE FONTES
+   ESCALA DE FONTES (AFETA O SITE TODO)
    ======================================================= */
-html, 
-html.font-normal {
-    font-size: 100%;
-}
-
-html.font-media {
-    font-size: 115%;
-}
-
-html.font-grande {
-    font-size: 130%;
-}
+html,
+html.font-normal { font-size: 100%; }
+html.font-media  { font-size: 115%; }
+html.font-grande { font-size: 130%; }
 
 /* =======================================================
-   ESTILOS DO MODO ESCURO (DARK THEME)
+   MODO ESCURO
    ======================================================= */
 html.dark-theme body {
-    background-color: #1a1824; 
+    background-color: #1a1824;
 }
 
-html.dark-theme .content, 
+html.dark-theme .content,
 html.dark-theme .sidebar {
-    background-color: #272530; 
+    background-color: #272530;
 }
 
 html.dark-theme .banner-light { display: none !important; }
-html.dark-theme .banner-dark { display: block !important; }
+html.dark-theme .banner-dark  { display: block !important; }
 
 html.dark-theme .logo-light { display: none !important; }
-html.dark-theme .logo-dark { 
-    display: block !important; 
-    width: 220px; 
-    max-width: 95%; 
-    height: auto; 
+html.dark-theme .logo-dark {
+    display: block !important;
+    width: 220px;
+    max-width: 95%;
+    height: auto;
 }
 
 html.dark-theme .sidebar ul li a {
     color: #b0aec2;
 }
 
-html.dark-theme .sidebar ul li a:hover, 
+html.dark-theme .sidebar ul li a:hover,
 html.dark-theme .sidebar ul li a.active {
-    background-color: #2d2940; 
-    color: #bfa2ff; 
+    background-color: #2d2940;
+    color: #bfa2ff;
 }
 
 html.dark-theme .nav-title {
@@ -477,19 +657,16 @@ html.dark-theme .nav-title {
 }
 
 html.dark-theme .alert-info,
-html.dark-theme .alert-info strong {
+html.dark-theme .alert-info strong,
+html.dark-theme .upload-info h3,
+html.dark-theme .user-info-fields label,
+html.dark-theme .user-info-fields label strong {
     color: #ffffff;
 }
 
-html.dark-theme .alert-info p {
-    color: #a5a3b3;
-}
-
-html.dark-theme .upload-info h3 {
-    color: #ffffff;
-}
-
-html.dark-theme .upload-info p {
+html.dark-theme .alert-info p,
+html.dark-theme .upload-info p,
+html.dark-theme .danger-zone p {
     color: #a5a3b3;
 }
 
@@ -497,19 +674,12 @@ html.dark-theme .upload-info button {
     color: #bfa2ff;
 }
 
-html.dark-theme .user-info-fields label,
-html.dark-theme .user-info-fields label strong,
-html.dark-theme .sidebar ul li a:hover span,
-html.dark-theme .sidebar ul li a.active span {
-    color: #ffffff; 
+html.dark-theme .upload-info button.btn-remove-foto {
+    color: #FF4D4D;
 }
 
 html.dark-theme .user-info-fields p.user-value {
-    color: #b0aec2; 
-}
-
-html.dark-theme .danger-zone p {
-    color: #a5a3b3;
+    color: #b0aec2;
 }
 
 html.dark-theme .danger-zone h3 {
@@ -524,15 +694,35 @@ html.dark-theme .close-preview:hover {
     color: #7B61FF;
 }
 
+html.dark-theme .modal-crop-content {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+html.dark-theme .btn-crop-cancel {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+html.dark-theme .delete-note {
+    color: #a5a3b3;
+}
+
+html.dark-theme .input-delete-pass {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid #444444;
+}
+
 /* =======================================================
-   ESTILIZAÇÃO DA BARRA DE ROLAGEM (SCROLLBAR)
+   SCROLLBAR
    ======================================================= */
 .content::-webkit-scrollbar {
     width: 8px;
 }
 
 .content::-webkit-scrollbar-track {
-    background: #f0ecff; 
+    background: #f0ecff;
     border-radius: 0 15px 15px 0;
 }
 
@@ -559,23 +749,47 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
     background-color: #a385f0;
 }
 
-
 /* =======================================================
    NAVEGAÇÃO INFERIOR (só celular)
    ======================================================= */
 .bottom-nav { display: none; }
 
-@media (max-width: 768px) {
-    body { padding-bottom: 84px; } /* espaço para a barra fixa */
+/* =======================================================
+   TRAVA DE SCROLL COM O MENU ABERTO
+   ======================================================= */
+body.menu-open {
+    overflow: hidden !important;
+}
 
+/* =======================================================
+   RESPONSIVO (CELULAR E TABLET ATÉ 768px)
+   ======================================================= */
+@media (max-width: 768px) {
+    body {
+        padding: 0 0 calc(84px + env(safe-area-inset-bottom, 0px)) 0;
+        align-items: flex-start;
+        background-color: #f8f7fc;
+    }
+
+    .main-wrapper {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Barra inferior */
     .bottom-nav {
         display: flex;
         position: fixed;
-        left: 0; right: 0; bottom: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         z-index: 900;
         background: #ffffff;
         border-top: 1px solid #d3bff5;
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, .12);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
         padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
         justify-content: space-around;
     }
@@ -592,43 +806,17 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         font-weight: 700;
         padding: 4px 0;
     }
+
     .bn-item i { font-size: 1.15rem; }
     .bn-item.ativo { color: #8654f3; }
 
-    /* Modo escuro */
-    html.dark-theme .bottom-nav {
-        background: #272530;
-        border-top-color: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, .4);
-    }
-    html.dark-theme .bn-item { color: #b0aec2; }
-    html.dark-theme .bn-item.ativo { color: #bfa2ff; }
-}
-
-/* =======================================================
-   RESPONSIVIDADE MÓVEL (TELAS ATÉ 768px)
-   ======================================================= */
-@media (max-width: 768px) {
-    body {
-        padding: 0;
-        align-items: flex-start;
-        background-color: #f8f7fc;
-    }
-
-    .main-wrapper {
-        width: 100%;
-        height: auto;
-        min-height: 100vh;
-        flex-direction: column;
-        gap: 0;
-    }
-
+    /* Header fixo no topo */
     .mobile-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 12px 20px;
-        background-color: #8c52ff;;
+        background-color: #8c52ff;
         width: 100%;
         position: sticky;
         top: 0;
@@ -662,6 +850,7 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         border-radius: 2px;
     }
 
+    /* Overlay */
     .sidebar-overlay {
         position: fixed;
         top: 0;
@@ -681,6 +870,7 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         opacity: 1;
     }
 
+    /* Sidebar vira drawer lateral */
     .sidebar {
         position: fixed;
         top: 0;
@@ -701,36 +891,11 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         transform: translateX(0);
     }
 
-    .sidebar .logo {
-        display: none;
-    }
-
-    .sidebar-header-mobile {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
+    .sidebar-header {
         margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #f0ecff;
     }
 
-    .sidebar-header-mobile .logo-light,
-    .sidebar-header-mobile .logo-dark {
-        width: 130px;
-        margin-bottom: 0;
-    }
-
-    .btn-close-sidebar {
-        background: none;
-        border: none;
-        font-size: 28px;
-        color: #7B61FF;
-        cursor: pointer;
-        line-height: 1;
-        padding: 0 5px;
-    }
-
+    /* Conteúdo rola com a página */
     .content {
         border-radius: 0;
         overflow-y: visible;
@@ -776,10 +941,8 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         padding-top: 25px;
         margin-top: 10px;
     }
-}
 
-/* Ajustes de Modo Escuro no Mobile */
-@media (max-width: 768px) {
+    /* Modo escuro no mobile */
     html.dark-theme body {
         background-color: #1a1824;
     }
@@ -787,6 +950,10 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
     html.dark-theme .mobile-header {
         background-color: #272530;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    html.dark-theme .mobile-header .logo-dark {
+        width: 140px;
     }
 
     html.dark-theme .mobile-menu-toggle {
@@ -797,170 +964,12 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         background-color: #ffffff;
     }
 
-    html.dark-theme .sidebar-header-mobile {
-        border-bottom-color: #2d2940;
+    html.dark-theme .bottom-nav {
+        background: #272530;
+        border-top-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
     }
 
-    html.dark-theme .btn-close-sidebar {
-        color: #bfa2ff;
-    }
-}
-
-/* =======================================================
-   REGRAS DE TRAVA DE SCROLL NO MOBILE
-   ======================================================= */
-body.menu-open {
-    overflow: hidden !important;
-}
-
-/* =======================================================
-   ESTILOS DOS MODAIS (Corte de Foto e Exclusão de Conta)
-   ======================================================= */
-.modal-custom {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    z-index: 1500;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.modal-custom-content {
-    background-color: #ffffff;
-    border-radius: 15px;
-    padding: 25px;
-    width: 100%;
-    max-width: 480px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.modal-custom-content h3 {
-    font-size: 1.2rem;
-    color: #111827;
-}
-
-.modal-custom-content p {
-    font-size: 0.95rem;
-    color: #4b5563;
-    line-height: 1.4;
-}
-
-/* Container de visualização da imagem no Cropper */
-.crop-container {
-    width: 100%;
-    max-height: 350px;
-    overflow: hidden;
-    border-radius: 10px;
-    background-color: #000000;
-}
-
-.crop-container img {
-    max-width: 100%;
-    display: block;
-}
-
-/* Inputs dentro de modais */
-.modal-custom input[type="password"] {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.modal-custom input[type="password"]:focus {
-    border-color: #7B61FF;
-}
-
-/* Ações / Botões do Modal */
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.btn-secondary {
-    background-color: #e5e7eb;
-    color: #374151;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-secondary:hover {
-    background-color: #d1d5db;
-}
-
-.btn-primary {
-    background-color: #7B61FF;
-    color: #ffffff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-primary:hover {
-    background-color: #6346eb;
-}
-
-.btn-danger {
-    background-color: #FF4D4D;
-    color: #ffffff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-danger:hover {
-    background-color: #e03e3e;
-}
-
-/* Tema Escuro para Modais Genericos */
-html.dark-theme .modal-custom-content {
-    background-color: #272530;
-    color: #ffffff;
-}
-
-html.dark-theme .modal-custom-content h3 {
-    color: #ffffff;
-}
-
-html.dark-theme .modal-custom-content p {
-    color: #b0aec2;
-}
-
-html.dark-theme .modal-custom input[type="password"] {
-    background-color: #1a1824;
-    border-color: #3a364d;
-    color: #ffffff;
-}
-
-html.dark-theme .btn-secondary {
-    background-color: #3a364d;
-    color: #ffffff;
-}
-
-html.dark-theme .btn-secondary:hover {
-    background-color: #4a4661;
+    html.dark-theme .bn-item { color: #b0aec2; }
+    html.dark-theme .bn-item.ativo { color: #bfa2ff; }
 }

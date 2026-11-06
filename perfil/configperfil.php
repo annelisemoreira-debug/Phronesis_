@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 1. Verifica se a variável de sessão existe
+// 1. Verifica se a sessão existe
 if (!isset($_SESSION['id'])) {
     header("Location: ../login.php");
     exit();
@@ -9,44 +9,56 @@ if (!isset($_SESSION['id'])) {
 
 include '../conexao.php';
 
-$id_usuario = $_SESSION['id'];
+$id_usuario = (int) $_SESSION['id'];
+$fotoPadraoBanco = 'assets/img/default-user.webp';
 
-// 2. Verifica se o ID da sessão ainda é válido no banco de dados
-$res = $conn->query("SELECT foto, email, senha, tipo FROM usuario WHERE id_usuario = $id_usuario");
-$dadosUser = $res->fetch_assoc();
+// 2. Verifica se o usuário da sessão ainda existe no banco
+$stmtUser = $conn->prepare("SELECT nome, email, foto, senha, tipo FROM usuario WHERE id_usuario = ?");
+$stmtUser->bind_param("i", $id_usuario);
+$stmtUser->execute();
+$user = $stmtUser->get_result()->fetch_assoc();
 
-if (!$dadosUser) {
+if (!$user) {
     session_destroy();
     header("Location: ../login.php");
     exit();
 }
 
-// =========================================================================
-// 3. LÓGICA DE PROCESSAMENTO DO BACK-END (REQUISIÇÕES POST / AJAX)
-// =========================================================================
+$isGoogleUser = (isset($_SESSION['login_google']) && $_SESSION['login_google'] === true)
+    || filter_var($user['foto'], FILTER_VALIDATE_URL);
 
-$isGoogleUser = (isset($_SESSION['login_google']) && $_SESSION['login_google'] === true) || filter_var($dadosUser['foto'], FILTER_VALIDATE_URL);
+/**
+ * Apaga do disco a foto antiga (ignora foto padrão e URLs do Google).
+ */
+function apagarFotoAntiga($foto, $fotoPadraoBanco)
+{
+    if ($foto && $foto != $fotoPadraoBanco && !filter_var($foto, FILTER_VALIDATE_URL)) {
+        $caminho = "../" . $foto;
+        if (file_exists($caminho)) {
+            @unlink($caminho);
+        }
+    }
+}
 
+// =========================================================================
+// 3. PROCESSAMENTO DAS REQUISIÇÕES POST / AJAX
+// =========================================================================
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
-    ob_clean(); 
+    if (ob_get_length()) { ob_clean(); }
     header('Content-Type: application/json');
 
-    if (($_POST['action'] == 'delete_image' || $_POST['action'] == 'crop_image') && $isGoogleUser) {
+    $action = $_POST['action'];
+
+    // Usuários do Google não alteram a foto
+    if (($action == 'delete_image' || $action == 'crop_image') && $isGoogleUser) {
         echo json_encode(['status' => 'error', 'message' => 'Usuários do Google não podem alterar a foto de perfil.']);
         exit();
     }
 
-    if ($_POST['action'] == 'delete_image') {
+    // ---- Remover foto ----
+    if ($action == 'delete_image') {
         try {
-            $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
-            $busca->bind_param("i", $id_usuario);
-            $busca->execute();
-            $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
-
-            if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
-                $caminhoArquivoAntigo = "../" . $fotoAntiga;
-                if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
-            }
+            apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
 
             $upd = $conn->prepare("UPDATE usuario SET foto = NULL WHERE id_usuario = ?");
             $upd->bind_param("i", $id_usuario);
@@ -59,33 +71,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    if ($_POST['action'] == 'crop_image') {
+    // ---- Salvar foto cortada ----
+    if ($action == 'crop_image') {
         try {
             $diretorioFisico = "../assets/img/perfis/";
-            $diretorioBanco = "assets/img/perfis/";
-            
-            if (!file_exists($diretorioFisico)) { 
-                mkdir($diretorioFisico, 0777, true); 
+            $diretorioBanco  = "assets/img/perfis/";
+
+            if (!file_exists($diretorioFisico)) {
+                mkdir($diretorioFisico, 0755, true);
             }
 
-            $base64_image = $_POST['image_data']; 
-            $data = explode(',', $base64_image);
-            $image_content = base64_decode($data[1]);
+            $base64_image = $_POST['image_data'] ?? '';
+
+            // Aceita apenas imagem em data URL
+            if (!preg_match('/^data:image\/(webp|png|jpeg);base64,/', $base64_image)) {
+                echo json_encode(['status' => 'error', 'message' => 'Formato de imagem inválido.']);
+                exit();
+            }
+
+            $data = explode(',', $base64_image, 2);
+            $image_content = base64_decode($data[1], true);
+
+            if ($image_content === false || strlen($image_content) > 5 * 1024 * 1024) {
+                echo json_encode(['status' => 'error', 'message' => 'Imagem inválida ou maior que 5 MB.']);
+                exit();
+            }
 
             $nomeArquivo = "user_" . $id_usuario . "_" . time() . ".webp";
-            $caminhoCompletoFisico = $diretorioFisico . $nomeArquivo;
-            $caminhoBanco = $diretorioBanco . $nomeArquivo;
+            $caminhoFisico = $diretorioFisico . $nomeArquivo;
+            $caminhoBanco  = $diretorioBanco . $nomeArquivo;
 
-            if (file_put_contents($caminhoCompletoFisico, $image_content)) {
-                $busca = $conn->prepare("SELECT foto FROM usuario WHERE id_usuario = ?");
-                $busca->bind_param("i", $id_usuario);
-                $busca->execute();
-                $fotoAntiga = $busca->get_result()->fetch_assoc()['foto'];
-
-                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
-                    $caminhoArquivoAntigo = "../" . $fotoAntiga;
-                    if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
-                }
+            if (file_put_contents($caminhoFisico, $image_content)) {
+                apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
 
                 $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
                 $upd->bind_param("si", $caminhoBanco, $id_usuario);
@@ -101,46 +118,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         exit();
     }
 
-    if ($_POST['action'] == 'delete_account') {
+    // ---- Excluir conta (com senha) ----
+    if ($action == 'delete_account') {
         try {
             $password = $_POST['password'] ?? '';
 
-            if (password_verify($password, $dadosUser['senha'])) {
-                $fotoAntiga = $dadosUser['foto'];
-                if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
-                    $caminhoArquivoAntigo = "../" . $fotoAntiga;
-                    if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
-                }
-
-                $del = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
-                $del->bind_param("i", $id_usuario);
-                
-                if ($del->execute()) {
-                    session_destroy();
-                    echo json_encode(['status' => 'success', 'redirect' => '../index.php']);
-                } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Erro ao deletar dados do banco.']);
-                }
-            } else {
+            if (!password_verify($password, $user['senha'])) {
                 echo json_encode(['status' => 'error', 'message' => 'Senha incorreta!']);
+                exit();
             }
-        } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-        exit();
-    }
 
-    if ($_POST['action'] == 'delete_account_google') {
-        try {
-            $fotoAntiga = $dadosUser['foto'];
-            if ($fotoAntiga && $fotoAntiga != 'assets/img/default-user.webp' && !filter_var($fotoAntiga, FILTER_VALIDATE_URL)) {
-                $caminhoArquivoAntigo = "../" . $fotoAntiga;
-                if (file_exists($caminhoArquivoAntigo)) { @unlink($caminhoArquivoAntigo); }
-            }
+            apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
 
             $del = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
             $del->bind_param("i", $id_usuario);
-            
+
             if ($del->execute()) {
                 session_destroy();
                 echo json_encode(['status' => 'success', 'redirect' => '../index.php']);
@@ -152,19 +144,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
         exit();
     }
+
+    // ---- Excluir conta (usuário Google) ----
+    if ($action == 'delete_account_google') {
+        try {
+            if (!$isGoogleUser) {
+                echo json_encode(['status' => 'error', 'message' => 'Esta conta exige confirmação por senha.']);
+                exit();
+            }
+
+            apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
+
+            $del = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
+            $del->bind_param("i", $id_usuario);
+
+            if ($del->execute()) {
+                session_destroy();
+                echo json_encode(['status' => 'success', 'redirect' => '../index.php']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Erro ao deletar dados do banco.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit();
+    }
+
+    echo json_encode(['status' => 'error', 'message' => 'Ação desconhecida.']);
+    exit();
 }
 
 // =========================================================================
-// 4. BUSCA DADOS PARA EXIBIÇÃO ATUALIZADA
+// 4. DADOS PARA EXIBIÇÃO
 // =========================================================================
-$stmt = $conn->prepare("SELECT nome, email, foto, senha, tipo FROM usuario WHERE id_usuario = ?");
-$stmt->bind_param("i", $id_usuario);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
-
 $caminhoPadrao = "../assets/img/default-user.webp";
 
-function otimizarFotoGoogle($url, $tamanho = 192) {
+function otimizarFotoGoogle($url, $tamanho = 192)
+{
     if (strpos($url, 'googleusercontent.com') === false) {
         return $url;
     }
@@ -175,22 +191,29 @@ function otimizarFotoGoogle($url, $tamanho = 192) {
 if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     $fotoExibicao = otimizarFotoGoogle($user['foto']);
     $temFotoPersonalizada = false;
+    $fotoEhUrl = true;
 } else {
-    $temFotoPersonalizada = (!empty($user['foto']) && $user['foto'] != 'assets/img/default-user.webp' && file_exists("../" . $user['foto']));
+    $temFotoPersonalizada = (!empty($user['foto'])
+        && $user['foto'] != $fotoPadraoBanco
+        && file_exists("../" . $user['foto']));
     $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
+    $fotoEhUrl = false;
 }
-?>
 
+$ehAdmin = isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1);
+
+$verCss    = @filemtime(__DIR__ . '/../assets/css/configperfil.css') ?: time();
+$verJs     = @filemtime(__DIR__ . '/../assets/js/lib/configperfil.js') ?: time();
+$verAcessJs = @filemtime(__DIR__ . '/../assets/js/lib/acessibilidade.js') ?: time();
+$verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Phronesis</title>
-    <?php
-        $verCss    = @filemtime(__DIR__ . '/../assets/css/configperfil.css') ?: time();
-        $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
-    ?>
+
     <link rel="stylesheet" href="../assets/css/configperfil.css?v=<?php echo $verCss; ?>">
     <link rel="stylesheet" href="../assets/css/banner.css?v=<?php echo $verBanner; ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
@@ -198,50 +221,9 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
     <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
-    
-    <!-- Aplicação Imediata de Tema e Escala de Fontes de Acessibilidade -->
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem('site-theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-theme');
-            }
-            const savedFont = localStorage.getItem('site-font-size') || 'normal';
-            if (savedFont === 'media') {
-                document.documentElement.classList.add('font-media');
-            } else if (savedFont === 'grande') {
-                document.documentElement.classList.add('font-grande');
-            } else {
-                document.documentElement.classList.add('font-normal');
-            }
-        })();
-    </script>
-    <script src="../assets/js/lib/acessibilidade.js"></script>
 
-    <style>
-        .modal-crop {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.8); align-items: center; justify-content: center;
-        }
-        .modal-crop-content {
-            background-color: #fff; padding: 20px; border-radius: 8px; width: 90%; max-width: 500px; text-align: center;
-        }
-        .img-container { max-height: 400px; margin-bottom: 20px; }
-        .img-container img { max-width: 100%; display: block; }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
-        .btn-crop-confirm { background-color: #7B61FF; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-crop-cancel { background-color: #e0e0e0; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
-        .cropper-view-box, .cropper-face { border-radius: 50%; outline: none !important; }
-        .btn-remove-foto { color: #FF4D4D !important; margin-left: 15px; }
-        
-        .dark-theme .modal-crop-content { background-color: #1e1e1e; color: #fff; }
-        .dark-theme .btn-crop-cancel { background-color: #333; color: #fff; }
-        
-        .input-delete-pass {
-            width: 100%; padding: 10px; margin-top: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
-        }
-        .dark-theme .input-delete-pass { background-color: #2a2a2a; color: #fff; border: 1px solid #444; }
-    </style>
+    <!-- Tema, escala de fonte e menu lateral (compartilhado com a página de acessibilidade) -->
+    <script src="../assets/js/lib/acessibilidade.js?v=<?php echo $verAcessJs; ?>"></script>
 </head>
 <body>
     <div class="main-wrapper">
@@ -249,8 +231,8 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
         <!-- Header topo (Celular e Tablet) -->
         <header class="mobile-header">
             <div class="mobile-logo-container">
-                 <a href="../index.php"><img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light"></a>
-                 <a href="../index.php"><img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark"></a>
+                <a href="../index.php"><img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light"></a>
+                <a href="../index.php"><img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark"></a>
             </div>
             <button type="button" class="mobile-menu-toggle" id="btnOpenSidebar"
                     aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
@@ -272,11 +254,12 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                 </div>
             </div>
 
-                <p class="nav-title">CONTA PESSOAL</p>
+            <nav class="sidebar-nav">
+                <p class="nav-title">Conta Pessoal</p>
                 <ul>
                     <li>
                         <a href="configperfil.php" class="active">
-                            <span class="nav-icon">👤</span> 
+                            <span class="nav-icon">👤</span>
                             <span class="nav-text">Meu perfil</span>
                         </a>
                     </li>
@@ -288,8 +271,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                     </li>
                 </ul>
 
-                            <nav class="sidebar-nav">
-                <!-- Navegação entre páginas (só PC) -->
+                <!-- Navegação entre páginas -->
                 <div class="nav-desktop">
                     <p class="nav-title">Navegação</p>
                     <ul>
@@ -320,26 +302,23 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                     </ul>
                 </div>
 
-
-                <?php if (isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1)): ?>
+                <?php if ($ehAdmin): ?>
                     <p class="nav-title">ADMINISTRAÇÃO</p>
                     <ul>
                         <li>
                             <a href="../pages/admin_materias.php">
-                                <span class="nav-icon">🛠️</span> 
+                                <span class="nav-icon">🛠️</span>
                                 <span class="nav-text">Painel ADM</span>
                             </a>
                         </li>
                     </ul>
                 <?php endif; ?>
-                
-                </ul>
             </nav>
         </aside>
 
         <!-- Conteúdo Principal -->
         <main class="content">
-            <!-- BANNER (MODO CLARO E ESCURO · PC / TABLET / CELULAR) -->
+            <!-- BANNER (claro e escuro · PC / tablet / celular) -->
             <header class="profile-banner">
                 <picture class="banner-light">
                     <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/perfilCelularClaro.webp">
@@ -363,13 +342,15 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
 
                 <div class="profile-upload">
                     <div class="avatar-wrapper">
-                        <img src="<?php echo htmlspecialchars($fotoExibicao); ?><?php echo !filter_var($fotoExibicao, FILTER_VALIDATE_URL) ? '?t='.time() : ''; ?>"
-                            id="currentAvatar"
-                            referrerpolicy="no-referrer"
-                            decoding="async"
-                            fetchpriority="high"
-                            alt="Foto de perfil"
-                            onerror="this.onerror=null; this.src='../assets/img/default-user.webp';">
+                        <img src="<?php echo htmlspecialchars($fotoExibicao); ?><?php echo $fotoEhUrl ? '' : '?t=' . time(); ?>"
+                             id="currentAvatar"
+                             tabindex="0"
+                             role="button"
+                             referrerpolicy="no-referrer"
+                             decoding="async"
+                             fetchpriority="high"
+                             alt="Foto de perfil (clique para ampliar)"
+                             onerror="this.onerror=null; this.src='../assets/img/default-user.webp';">
                     </div>
                     <div class="upload-info">
                         <?php if ($isGoogleUser): ?>
@@ -381,7 +362,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                             <form id="formFotoPerfil">
                                 <input type="file" id="foto_perfil" hidden accept="image/*">
                                 <button type="button" id="btnSelectFoto">Selecionar Nova Foto</button>
-                                
+
                                 <?php if ($temFotoPersonalizada): ?>
                                     <button type="button" id="btnRemoveFoto" class="btn-remove-foto">Remover Foto</button>
                                 <?php endif; ?>
@@ -401,10 +382,10 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
                     </div>
                 </div>
 
-                <div class="danger-zone" style="margin-top: 30px; padding: 20px; border: 1px solid #FF4D4D; border-radius: 8px;">
-                    <h3 style="color: #FF4D4D; margin-top: 0;">Excluir Conta</h3>
-                    <p style="font-size: 14px; margin-bottom: 15px;">Excluir sua conta é um caminho sem volta. Todos os seus dados serão apagados permanentemente e você perderá o acesso imediato.</p>
-                    <button type="button" id="btnOpenDeleteModal" style="background-color: #FF4D4D; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">EXCLUIR CONTA</button>
+                <div class="danger-zone">
+                    <h3>Excluir Conta</h3>
+                    <p>Excluir sua conta é um caminho sem volta. Todos os seus dados serão apagados permanentemente e você perderá o acesso imediato.</p>
+                    <button type="button" id="btnOpenDeleteModal" class="btn-delete-open">EXCLUIR CONTA</button>
                 </div>
 
                 <div class="footer-actions">
@@ -434,7 +415,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <div id="cropModal" class="modal-crop">
         <div class="modal-crop-content">
             <h3>Ajuste sua foto</h3>
-            <div class="img-container"><img id="imageToCrop"></div>
+            <div class="img-container"><img id="imageToCrop" alt="Imagem para recorte"></div>
             <div class="modal-footer">
                 <button type="button" class="btn-crop-cancel" id="btnCancelCrop">Cancelar</button>
                 <button type="button" class="btn-crop-confirm" id="btnConfirmCrop">Salvar</button>
@@ -445,32 +426,32 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
     <!-- Modal de Exclusão de Conta -->
     <div id="deleteAccountModal" class="modal-crop">
         <div class="modal-crop-content">
-            <h3 style="color: #FF4D4D; margin-top: 0;">Confirmar Exclusão</h3>
-            
-            <p style="font-size: 15px; line-height: 1.5; margin-bottom: 15px;">
+            <h3 class="delete-title">Confirmar Exclusão</h3>
+
+            <p class="delete-text">
                 <strong>Atenção:</strong> Esta ação apagará permanentemente todos os seus dados, cronogramas e registros do nosso sistema (Phronesis).
             </p>
-            
-            <p style="background-color: #FFF3CD; color: #856404; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 14px; border: 1px solid #ffeeba;">
+
+            <p class="delete-warning">
                 ⚠️ VOCÊ É O ÚNICO RESPONSÁVEL POR ESTA AÇÃO. Tem certeza absoluta que deseja prosseguir?
             </p>
 
             <?php if ($isGoogleUser): ?>
-                <p style="font-size: 13px; color: #666; margin-top: 10px;">
+                <p class="delete-note">
                     Sua conta foi criada via Google. Seus dados locais serão limpos, mas sua conta Google continuará intocada.
                 </p>
-                <div class="modal-footer" style="margin-top: 20px;">
+                <div class="modal-footer">
                     <button type="button" class="btn-crop-cancel" id="btnCancelDelete">Cancelar</button>
-                    <button type="button" class="btn-crop-confirm" id="btnConfirmDeleteGoogle" style="background-color: #FF4D4D; color: white;">Sim, sou responsável e quero excluir</button>
+                    <button type="button" class="btn-crop-confirm btn-delete-confirm" id="btnConfirmDeleteGoogle">Sim, sou responsável e quero excluir</button>
                 </div>
             <?php else: ?>
-                <div style="margin-top: 15px; text-align: left;">
-                    <label for="confirmDeletePassword" style="font-weight: bold; font-size: 14px;">Confirme sua senha atual para prosseguir:</label>
-                    <input type="password" id="confirmDeletePassword" class="input-delete-pass" placeholder="Digite sua senha">
+                <div class="delete-password-box">
+                    <label for="confirmDeletePassword">Confirme sua senha atual para prosseguir:</label>
+                    <input type="password" id="confirmDeletePassword" class="input-delete-pass" placeholder="Digite sua senha" autocomplete="current-password">
                 </div>
-                <div class="modal-footer" style="margin-top: 20px;">
+                <div class="modal-footer">
                     <button type="button" class="btn-crop-cancel" id="btnCancelDelete">Cancelar</button>
-                    <button type="button" class="btn-crop-confirm" id="btnConfirmDelete" style="background-color: #FF4D4D; color: white;">Confirmar com Senha e Excluir</button>
+                    <button type="button" class="btn-crop-confirm btn-delete-confirm" id="btnConfirmDelete">Confirmar com Senha e Excluir</button>
                 </div>
             <?php endif; ?>
         </div>
@@ -478,11 +459,7 @@ if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    
-    <script>
-        var isGoogleUser = <?php echo $isGoogleUser ? 'true' : 'false'; ?>;
-    </script>
-    <script src="../assets/js/lib/configperfil.js" defer></script>
+    <script src="../assets/js/lib/configperfil.js?v=<?php echo $verJs; ?>" defer></script>
 
     <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
     <nav class="bottom-nav" aria-label="Navegação principal">

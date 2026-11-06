@@ -1,5 +1,6 @@
 // assets/js/lib/admin_materias.js
 
+// === INJEÇÃO IMEDIATA (EVITA FLASH BRANCO E DE FONTE) ===
 // Executa imediatamente para aplicar o tema escuro antes de renderizar a página
 (function () {
     const savedTheme = localStorage.getItem('site-theme');
@@ -7,6 +8,11 @@
         document.documentElement.classList.add('dark-theme');
         document.body.classList.add('dark-theme');
     }
+
+    // Tamanho de fonte escolhido na página de acessibilidade
+    const tamanhoSalvo = localStorage.getItem('site-font-size') || 'normal';
+    document.documentElement.classList.remove('font-normal', 'font-media', 'font-grande');
+    document.documentElement.classList.add(`font-${tamanhoSalvo}`);
 })();
 
 // === 1. EXIBIR/OCULTAR PAINEL DE TÓPICOS ===

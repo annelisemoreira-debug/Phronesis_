@@ -1,35 +1,60 @@
 /* ==========================================================================
+   assets/css/admin_materias.css
    ADMIN: LEITURAS OBRIGATÓRIAS + MATÉRIAS E TÓPICOS
+   Padronizado com o livros.css (variáveis, body em coluna, banner, barra
+   inferior e rolagem).
+
    Sumário:
    1. Variáveis (claro / escuro)
-   2. Reset e base
-   3. Layout: container, cards, cabeçalho, alerta
-   4. Botões
-   5. Formulário de matéria
-   6. Formulário de livro (campos, chips, upload)
-   7. Tabelas (base, ações, edição inline)
-   8. Livros: miniatura, tags, rolagem
-   9. Matérias: rolagem e painel de tópicos
-   10. Estado vazio
-   11. Janela de edição (dialog)
-   12. Link "Voltar"
-   13. Responsivo
+   2. Reset e base (body em coluna)
+   3. Banner
+   4. Layout: container, cards, cabeçalho, alerta
+   5. Botões
+   6. Formulário de matéria
+   7. Formulário de livro (campos, chips, upload)
+   8. Tabelas (base, ações, edição inline)
+   9. Livros: miniatura, tags, rolagem
+   10. Matérias: rolagem e painel de tópicos
+   11. Estado vazio
+   12. Janela de edição (dialog)
+   13. Link "Voltar"
+   14. Escala de fontes e barra inferior (base)
+   15. Tablet e celular (até 1024px)
+   16. Celular (até 768px)
+   17. Acessibilidade
    ========================================================================== */
 
-/* 1. VARIÁVEIS */
+
+/* ==========================================================================
+   1. VARIÁVEIS
+   As primeiras são as mesmas do livros.css; as seguintes são específicas
+   da área de administração.
+   ========================================================================== */
 :root {
-    --bg-system: #d6c6f7;
-    --card-bg: #fbf9ff;
-    --text-primary: #4c1d95;
-    --text-body: #475569;
-    --text-muted: #94a3b8;
-    --purple-main: #7c3aed;
-    --purple-hover: #6d28d9;
+    /* --- Padrão do site (igual ao livros.css) --- */
+    --bg: #d6c6f7;
+    --panel: #ffffff;
+    --ink: #3b0f7a;
+    --ink-soft: #7a4fd6;
+    --line: #d3bff5;
+    --capa: #c4a3ff;
+    --purple: #8654f3;
+    --gold: #f5b100;
+    --shadow: 0 4px 18px rgba(80, 40, 160, 0.10);
+
+    /* --- Admin (derivadas das variáveis acima) --- */
+    --bg-system: var(--bg);
+    --card-bg: var(--panel);
+    --text-primary: var(--ink);
+    --text-body: var(--ink);
+    --text-muted: var(--ink-soft);
+    --purple-main: var(--purple);
+    --purple-hover: #6d3fd9;
     --icon-box-bg: #f3e8ff;
     --icon-box-color: #9b51e0;
     --input-bg: #f8fafc;
     --input-bg-focus: #ffffff;
-    --input-border: #e2e8f0;
+    --input-border: var(--line);
     --btn-del-color: #dc2626;
     --btn-del-bg: #fee2e2;
     --btn-del-hover: #fecaca;
@@ -41,18 +66,21 @@
     --table-border: #f1f5f9;
 }
 
-html.dark-theme,
-body.dark-theme {
-    --bg-system: #121118;
-    --card-bg: #1e1b26;
-    --text-primary: #ffffff;
-    --text-body: #cbd5e1;
-    --text-muted: #64748b;
+html.dark-theme {
+    /* --- Padrão do site (igual ao livros.css) --- */
+    --bg: #1a1824;
+    --panel: #1d1b26;
+    --ink: #f1ecff;
+    --ink-soft: #c3a9ff;
+    --line: #38334a;
+    --capa: #6f4ec2;
+    --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+
+    /* --- Admin --- */
     --icon-box-bg: #2d263f;
     --icon-box-color: #b77eff;
-    --input-bg: #16141d;
+    --input-bg: #17151f;
     --input-bg-focus: #1a1824;
-    --input-border: #312e3f;
     --btn-del-color: #f87171;
     --btn-del-bg: #3b1818;
     --btn-del-hover: #582323;
@@ -64,7 +92,13 @@ body.dark-theme {
     --table-border: #23202e;
 }
 
-/* 2. RESET E BASE */
+
+/* ==========================================================================
+   2. RESET E BASE
+   Body em coluna: header em cima, footer embaixo. No PC, o espaço livre é
+   dividido entre o topo e a base do miolo (banner + conteúdo), deixando-o
+   centralizado quando a página é curta.
+   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -72,29 +106,108 @@ body.dark-theme {
 }
 
 body {
-    background-color: var(--bg-system);
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s ease;
     min-height: 100vh;
-    padding-bottom: 50px;
-    font-family: 'Poppins', sans-serif;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* 3. LAYOUT */
+body > * {
+    flex-shrink: 0;
+}
+
+/* Footer sem margin-top automático (o espaço livre vai para o miolo) */
+body > footer,
+body > .footer,
+body > #footer,
+body > .rodape {
+    margin-top: 0;
+    width: 100%;
+}
+
+/* PC: centraliza o miolo entre o header e o footer */
+@media (min-width: 1025px) {
+    body > .banner {
+        margin-top: auto;
+        padding-top: clamp(16px, 4vh, 40px);   /* respiro mínimo do header */
+    }
+
+    body > .main-container {
+        margin: 0 auto auto;
+    }
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+button {
+    color: inherit;
+    cursor: pointer;
+}
+
+:focus-visible {
+    outline: 3px solid var(--purple);
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================================
+   3. BANNER
+   Mesma base do livros.css. A largura no PC e o tema claro/escuro vêm
+   do banner.css (carregado depois deste arquivo).
+   ========================================================================== */
+.banner {
+    width: 100%;
+    max-width: 1600px;
+    margin: 20px auto 0 auto;
+    display: block;
+}
+
+.banner img {
+    display: block;
+    width: 100%;
+    height: auto;              /* a altura vem da proporção real da imagem */
+    border-radius: 15px;
+}
+
+.banner .banner-dark  { display: none; }
+.banner .banner-light { display: block; }
+
+html.dark-theme .banner .banner-light { display: none; }
+html.dark-theme .banner .banner-dark  { display: block; }
+
+
+/* ==========================================================================
+   4. LAYOUT
+   O container usa a mesma largura e as mesmas margens do .wrapper do
+   livros.css, para alinhar com o banner.
+   ========================================================================== */
 .main-container {
-    max-width: 1200px;
-    margin: 50px auto 0 auto;
-    padding: 0 20px;
+    width: 100%;
+    max-width: 1670px;
+    margin: 0 auto;
+    padding: 20px 40px 40px;
 }
 
 .card-principal {
     background-color: var(--card-bg);
-    border-radius: 20px;
-    padding: 35px;
-    box-shadow: 0 10px 25px rgba(121, 40, 202, 0.15);
+    border-radius: 14px;
+    padding: 28px 30px;
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease;
 }
 
 /* Cards separados, com respiro entre eles */
 .card-principal + .card-principal {
-    margin-top: 32px;
+    margin-top: 24px;
 }
 
 .card-header {
@@ -103,18 +216,18 @@ body {
     gap: 15px;
     padding-bottom: 20px;
     margin-bottom: 25px;
-    border-bottom: 1px solid var(--input-border);
+    border-bottom: 2px solid var(--line);
 }
 
 .card-header h2 {
     color: var(--text-primary);
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 1.3rem;
+    font-weight: 800;
 }
 
 .card-header p {
     color: var(--icon-box-color);
-    font-size: 12px;
+    font-size: 0.78rem;
     font-weight: 400;
 }
 
@@ -139,10 +252,13 @@ body {
     border-radius: 10px;
     margin-bottom: 25px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* 4. BOTÕES */
+
+/* ==========================================================================
+   5. BOTÕES
+   ========================================================================== */
 .btn-adicionar {
     background-color: var(--purple-main);
     color: #fff;
@@ -150,7 +266,7 @@ body {
     padding: 12px 30px;
     border-radius: 10px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -171,12 +287,16 @@ body {
     border-radius: 6px;
     cursor: pointer;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
 }
-.btn-salvar { background: #0284c7; }
+
+.btn-salvar   { background: #0284c7; }
 .btn-cancelar { background: #64748b; }
 
-/* 5. FORMULÁRIO DE MATÉRIA */
+
+/* ==========================================================================
+   6. FORMULÁRIO DE MATÉRIA
+   ========================================================================== */
 .input-group-append {
     display: flex;
     gap: 15px;
@@ -196,13 +316,21 @@ input[type="text"].input-materia {
     transition: all 0.2s ease;
 }
 
+input[type="text"].input-materia::placeholder {
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
 input[type="text"].input-materia:focus {
     border-color: var(--purple-main);
     background-color: var(--input-bg-focus);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 0 3px rgba(134, 84, 243, 0.2);
 }
 
-/* 6. FORMULÁRIO DE LIVRO */
+
+/* ==========================================================================
+   7. FORMULÁRIO DE LIVRO
+   ========================================================================== */
 .form-livro {
     display: flex;
     flex-direction: column;
@@ -223,17 +351,21 @@ input[type="text"].input-materia:focus {
     background-color: var(--input-bg);
     border-radius: 10px;
     color: var(--text-body);
-    font-family: inherit;
     font-size: 14px;
     outline: none;
     resize: vertical;
     transition: all 0.2s ease;
 }
 
+.campo-livro::placeholder {
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
 .campo-livro:focus {
     border-color: var(--purple-main);
     background-color: var(--input-bg-focus);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 0 3px rgba(134, 84, 243, 0.2);
 }
 
 /* Vestibulares como chips marcáveis */
@@ -257,7 +389,7 @@ input[type="text"].input-materia:focus {
     background: var(--input-bg);
     color: var(--text-body);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -289,14 +421,21 @@ input[type="text"].input-materia:focus {
     color: var(--text-body);
     cursor: pointer;
 }
-.upload-capa i { color: var(--icon-box-color); }
+
+.upload-capa i {
+    color: var(--icon-box-color);
+}
+
 .upload-capa input[type="file"] {
     font-size: 12px;
     color: var(--text-muted);
     max-width: 260px;
 }
 
-/* 7. TABELAS */
+
+/* ==========================================================================
+   8. TABELAS
+   ========================================================================== */
 .table-wrapper {
     background: var(--input-bg-focus);
     border: 1px solid var(--input-border);
@@ -313,7 +452,7 @@ table {
 th {
     background-color: var(--table-th-bg);
     color: var(--table-th-color);
-    font-weight: 700;
+    font-weight: 800;
     font-size: 13px;
     padding: 14px 20px;
     text-transform: uppercase;
@@ -328,7 +467,9 @@ td {
     vertical-align: middle;
 }
 
-tr:last-child td { border-bottom: none; }
+tr:last-child td {
+    border-bottom: none;
+}
 
 /* Botões de ação */
 .action-buttons {
@@ -350,8 +491,14 @@ tr:last-child td { border-bottom: none; }
     transition: all 0.2s ease;
 }
 
-.btn-table-edit { background-color: var(--btn-edit-bg); color: var(--btn-edit-color); }
-.btn-table-edit:hover { background-color: var(--btn-edit-hover); }
+.btn-table-edit {
+    background-color: var(--btn-edit-bg);
+    color: var(--btn-edit-color);
+}
+
+.btn-table-edit:hover {
+    background-color: var(--btn-edit-hover);
+}
 
 .btn-table-del {
     background-color: var(--btn-del-bg);
@@ -359,13 +506,19 @@ tr:last-child td { border-bottom: none; }
     font-weight: bold;
     font-size: 16px;
 }
-.btn-table-del:hover { background-color: var(--btn-del-hover); }
+
+.btn-table-del:hover {
+    background-color: var(--btn-del-hover);
+}
 
 .btn-table-topicos {
     background-color: var(--icon-box-bg);
     color: var(--icon-box-color);
 }
-.btn-table-topicos:hover { opacity: 0.8; }
+
+.btn-table-topicos:hover {
+    opacity: 0.8;
+}
 
 /* Edição inline */
 .input-inline {
@@ -380,7 +533,10 @@ tr:last-child td { border-bottom: none; }
     outline: none;
 }
 
-/* 8. LIVROS */
+
+/* ==========================================================================
+   9. LIVROS
+   ========================================================================== */
 .thumb-livro {
     width: 44px;
     height: 62px;
@@ -397,64 +553,86 @@ tr:last-child td { border-bottom: none; }
     justify-content: center;
 }
 
+/* Tags de vestibular (mesmas cores do livros.css) */
 .tag-adm {
     display: inline-block;
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 800;
     padding: 3px 10px;
     margin: 2px 4px 2px 0;
     border-radius: 6px;
     border: 1.5px solid;
 }
+
 .tag-adm-fuvest  { background: #d8f0ff; border-color: #3e93c9; color: #1d5f8a; }
 .tag-adm-unicamp { background: #fff6c9; border-color: #f0cf4a; color: #b08800; }
 .tag-adm-vunesp  { background: #d9f9e5; border-color: #1db97a; color: #0f7a4d; }
 .tag-adm-enem    { background: #ffd5cc; border-color: #c8402a; color: #9a2a17; }
+
 html.dark-theme .tag-adm-fuvest  { background: #17364a; color: #8dd4ff; }
 html.dark-theme .tag-adm-unicamp { background: #3d3510; color: #ffe066; }
 html.dark-theme .tag-adm-vunesp  { background: #123a29; color: #5fe0a6; }
 html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
 
-/* Rolagem da lista de livros (após o 5º) */
-.tabela-livros.rolagem {
-    overflow-y: auto;
-    max-height: 510px; /* fallback; o JS ajusta para a altura exata de 5 linhas */
-    scrollbar-width: thin;
-    scrollbar-color: var(--purple-main) transparent;
-}
-
-.tabela-livros.rolagem thead th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-
-.tabela-livros.rolagem::-webkit-scrollbar { width: 8px; }
-.tabela-livros.rolagem::-webkit-scrollbar-track { background: transparent; }
-.tabela-livros.rolagem::-webkit-scrollbar-thumb { background: var(--purple-main); border-radius: 999px; }
-.tabela-livros.rolagem::-webkit-scrollbar-thumb:hover { background: var(--purple-hover); }
-
-/* 9. MATÉRIAS */
-
-/* Rolagem da lista de matérias (após a 15ª) — o JS define o max-height exato */
+/* Rolagem das listas (mesma barra do livros.css: amarela no claro, roxa no escuro) */
+.tabela-livros.rolagem,
 .tabela-materias.rolagem {
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--purple-main) transparent;
+    scrollbar-color: #ffca28 #fffae6;
 }
 
+html.dark-theme .tabela-livros.rolagem,
+html.dark-theme .tabela-materias.rolagem {
+    scrollbar-color: #8654f3 #252230;
+}
+
+.tabela-livros.rolagem {
+    max-height: 510px; /* provisório; o JS ajusta para a altura exata de 5 linhas */
+}
+
+.tabela-livros.rolagem thead th,
 .tabela-materias.rolagem thead th {
     position: sticky;
     top: 0;
     z-index: 2;
 }
 
-.tabela-materias.rolagem::-webkit-scrollbar { width: 8px; }
-.tabela-materias.rolagem::-webkit-scrollbar-track { background: transparent; }
-.tabela-materias.rolagem::-webkit-scrollbar-thumb { background: var(--purple-main); border-radius: 999px; }
-.tabela-materias.rolagem::-webkit-scrollbar-thumb:hover { background: var(--purple-hover); }
+.tabela-livros.rolagem::-webkit-scrollbar,
+.tabela-materias.rolagem::-webkit-scrollbar {
+    width: 9px;
+}
 
-/* Painel de tópicos */
+.tabela-livros.rolagem::-webkit-scrollbar-track,
+.tabela-materias.rolagem::-webkit-scrollbar-track {
+    background: #fffae6;
+    border-radius: 20px;
+}
+
+.tabela-livros.rolagem::-webkit-scrollbar-thumb,
+.tabela-materias.rolagem::-webkit-scrollbar-thumb {
+    background: #ffca28;
+    border-radius: 20px;
+    border: 2px solid #fffae6;
+}
+
+html.dark-theme .tabela-livros.rolagem::-webkit-scrollbar-track,
+html.dark-theme .tabela-materias.rolagem::-webkit-scrollbar-track {
+    background: #252230;
+}
+
+html.dark-theme .tabela-livros.rolagem::-webkit-scrollbar-thumb,
+html.dark-theme .tabela-materias.rolagem::-webkit-scrollbar-thumb {
+    background: #8654f3;
+    border-color: #252230;
+}
+
+
+/* ==========================================================================
+   10. MATÉRIAS: PAINEL DE TÓPICOS
+   (A rolagem da lista de matérias, após a 15ª, está na seção 9.
+   O JS define o max-height exato.)
+   ========================================================================== */
 .sub-row-topicos {
     display: none;
     background-color: var(--input-bg);
@@ -522,7 +700,10 @@ html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
     outline: none;
 }
 
-/* 10. ESTADO VAZIO */
+
+/* ==========================================================================
+   11. ESTADO VAZIO
+   ========================================================================== */
 .empty-table-state {
     display: flex;
     flex-direction: column;
@@ -533,8 +714,17 @@ html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
     background: var(--input-bg-focus);
 }
 
-.empty-table-state h4 { color: var(--text-primary); font-size: 15px; font-weight: 700; }
-.empty-table-state p  { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+.empty-table-state h4 {
+    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.empty-table-state p {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
 
 .book-purple-icon {
     background-color: #9b51e0;
@@ -554,7 +744,10 @@ html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
 .sparkle-1 { position: absolute; top: -15px; right: -15px; color: #fcd34d; font-size: 18px; }
 .sparkle-2 { position: absolute; top: 15px; left: -20px; color: #fcd34d; font-size: 14px; }
 
-/* 11. JANELA DE EDIÇÃO */
+
+/* ==========================================================================
+   12. JANELA DE EDIÇÃO (mesmo estilo do modal do livros.css)
+   ========================================================================== */
 .dlg-livro {
     position: fixed;
     inset: 0;
@@ -566,15 +759,28 @@ html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
     border: none;
     border-radius: 16px;
     padding: 28px;
-    background: var(--card-bg);
-    color: var(--text-body);
+    background: var(--panel);
+    color: var(--ink);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
-.dlg-livro::backdrop { background: rgba(0, 0, 0, 0.45); }
-.dlg-livro h3 { color: var(--text-primary); font-size: 18px; }
-.dlg-livro .form-livro { margin-bottom: 0; }
 
-/* 12. LINK VOLTAR */
+.dlg-livro::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.dlg-livro h3 {
+    color: var(--text-primary);
+    font-size: 18px;
+}
+
+.dlg-livro .form-livro {
+    margin-bottom: 0;
+}
+
+
+/* ==========================================================================
+   13. LINK "VOLTAR"
+   ========================================================================== */
 .btn-back-home {
     display: inline-flex;
     align-items: center;
@@ -583,20 +789,180 @@ html.dark-theme .tag-adm-enem    { background: #451e18; color: #ff9b88; }
     text-decoration: none;
     color: var(--purple-main);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     transition: color 0.2s;
 }
-.btn-back-home:hover { color: var(--purple-hover); }
 
-/* 13. RESPONSIVO */
+.btn-back-home:hover {
+    color: var(--purple-hover);
+}
+
+
+/* ==========================================================================
+   14. ESCALA DE FONTES E BARRA INFERIOR (BASE)
+   ========================================================================== */
+
+/* Escala de fontes (global) */
+html,
+html.font-normal { font-size: 100%; }
+html.font-media  { font-size: 115%; }
+html.font-grande { font-size: 130%; }
+
+/* Barra inferior: escondida no PC */
+.bottom-nav {
+    display: none;
+}
+
+
+/* ==========================================================================
+   15. TABLET E CELULAR (até 1024px)
+   O header perde o menu de navegação (a navegação passa para a barra
+   inferior) e os espaçamentos ficam iguais aos do livros.css.
+   ========================================================================== */
+@media (max-width: 1024px) {
+
+    .main-container {
+        padding: 16px 20px 30px;
+    }
+
+    .card-principal {
+        padding: 24px 22px;
+    }
+
+    .banner {
+        padding: 0 20px;
+        margin-top: 14px;
+    }
+
+    /* Header: some o menu de botões e o hambúrguer */
+    header .menuNav,
+    header .hamburger-btn {
+        display: none !important;
+    }
+
+    /* Espaço para a barra inferior não cobrir o fim da página */
+    body {
+        padding-bottom: 84px;
+    }
+
+    /* ---------- Barra de navegação inferior (modo claro) ---------- */
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 900;
+        justify-content: space-around;
+        background: #ffffff;
+        border-top: 1px solid #d3bff5;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+        padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .bn-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 0;
+        text-decoration: none;
+        color: #7a4fd6;
+        font-size: 0.66rem;
+        font-weight: 700;
+    }
+
+    .bn-item i {
+        font-size: 1.15rem;
+    }
+
+    .bn-item.ativo {
+        color: #8654f3;
+    }
+
+    /* ---------- Barra de navegação inferior (modo escuro) ---------- */
+    html.dark-theme .bottom-nav {
+        background: #272530;
+        border-top-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    html.dark-theme .bn-item {
+        color: #b0aec2;
+    }
+
+    html.dark-theme .bn-item.ativo {
+        color: #bfa2ff;
+    }
+}
+
+
+/* ==========================================================================
+   16. CELULAR (até 768px)
+   ========================================================================== */
 @media (max-width: 768px) {
-    .main-container { margin-top: 20px; padding: 0 14px; }
-    .card-principal { padding: 22px 16px; }
-    .grid-livro { grid-template-columns: 1fr; }
-    .input-group-append { flex-direction: column; }
-    .btn-adicionar { justify-content: center; padding: 12px 20px; }
-    .table-wrapper { overflow-x: auto; }
-    .table-wrapper table { min-width: 520px; }
-    .linha-envio { flex-direction: column; align-items: stretch; }
-    .linha-envio .btn-adicionar { width: 100%; }
+
+    /* Evita rolagem lateral sem quebrar o header sticky */
+    html,
+    body {
+        overflow-x: clip;
+    }
+
+    .banner {
+        margin-top: 10px;
+        padding: 0 12px;
+    }
+
+    .banner img {
+        border-radius: 12px;
+    }
+
+    .main-container {
+        padding: 12px 12px 24px;
+    }
+
+    .card-principal {
+        padding: 22px 16px;
+    }
+
+    .grid-livro {
+        grid-template-columns: 1fr;
+    }
+
+    .input-group-append {
+        flex-direction: column;
+    }
+
+    .btn-adicionar {
+        justify-content: center;
+        padding: 12px 20px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .table-wrapper table {
+        min-width: 520px;
+    }
+
+    .linha-envio {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .linha-envio .btn-adicionar {
+        width: 100%;
+    }
+}
+
+
+/* ==========================================================================
+   17. ACESSIBILIDADE
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
 }

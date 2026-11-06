@@ -20,7 +20,7 @@ $pagina = basename($script_name);
 
 // Páginas que têm a barra de navegação inferior no tablet/celular:
 // nelas o header não mostra nenhum menu (hambúrguer nem botões de navegação)
-$semMenuTopo = in_array($pagina, ['meu_calendario.php'], true);
+$semMenuTopo = in_array($pagina, ['meu_calendario.php', 'admin_materias.php'], true);
 
 // No index o menu hambúrguer não tem função (a navegação fica na barra inferior)
 $semHamburger = ($pagina === 'index.php') || $semMenuTopo;

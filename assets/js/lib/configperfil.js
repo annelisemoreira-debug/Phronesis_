@@ -1,50 +1,13 @@
 // assets/js/lib/configperfil.js
+//
+// Tema, tamanho de fonte e menu lateral (drawer) mobile são tratados por
+// acessibilidade.js, carregado no <head> da página. Aqui ficam apenas as
+// funções específicas do perfil: ampliar foto, recortar/remover foto e
+// excluir conta.
 
-// Garante a aplicação do tema escuro no topo imediatamente para evitar o "flash" branco
-if (localStorage.getItem('site-theme') === 'dark') {
-    document.documentElement.classList.add('dark-theme');
-}
+$(document).ready(function () {
 
-$(document).ready(function() {
-    var $modal = $('#cropModal'), $image = $('#imageToCrop'), cropper;
-
-        // =========================================================================
-    // --- MENU LATERAL MOBILE / TABLET (DRAWER) ---
     // =========================================================================
-    var $sidebar = $('#sidebar');
-    var $overlay = $('#sidebarOverlay');
-    var $btnOpenSidebar = $('#btnOpenSidebar');
-
-    function abrirMenu() {
-        $sidebar.addClass('active');
-        $overlay.addClass('active');
-        $('body').addClass('menu-open');
-        $btnOpenSidebar.attr('aria-expanded', 'true');
-    }
-
-    function fecharMenu() {
-        $sidebar.removeClass('active');
-        $overlay.removeClass('active');
-        $('body').removeClass('menu-open');
-        $btnOpenSidebar.attr('aria-expanded', 'false');
-    }
-
-    $btnOpenSidebar.on('click', abrirMenu);
-    $('#btnCloseSidebar').on('click', fecharMenu);
-    $overlay.on('click', fecharMenu);
-    $sidebar.find('a').on('click', fecharMenu);
-
-    // ESC fecha o menu
-    $(document).on('keydown', function(e) {
-        if (e.key === 'Escape' && $sidebar.hasClass('active')) fecharMenu();
-    });
-
-    // Se girar o tablet / aumentar a janela até o modo desktop, fecha o menu
-    $(window).on('resize', function() {
-        if (window.innerWidth > 1024) fecharMenu();
-    });
-
-      // =========================================================================
     // --- EXPANDIR FOTO DE PERFIL (LIGHTBOX COM ZOOM) ---
     // =========================================================================
     var $preview = $('#previewModal');
@@ -88,15 +51,15 @@ $(document).ready(function() {
         var srcOriginal = $('#currentAvatar').attr('src');
         var src = srcOriginal;
 
-        // Foto do Google vem pequena (192px); pede uma versão maior para não ficar borrada
+        // Foto do Google vem pequena (192px); pede uma versão maior
         if (src.indexOf('googleusercontent.com') !== -1) {
             src = src.replace(/=s\d+-c$/, '=s800-c');
         }
 
         resetZoom();
 
-        // Se a versão grande falhar, usa a mesma imagem que já está no avatar
-        $previewImg.off('error').on('error', function() {
+        // Se a versão grande falhar, usa a imagem que já está no avatar
+        $previewImg.off('error').on('error', function () {
             $previewImg.off('error');
             if ($previewImg.attr('src') !== srcOriginal) {
                 $previewImg.attr('src', srcOriginal);
@@ -105,14 +68,14 @@ $(document).ready(function() {
 
         $previewImg.attr('src', src);
         $preview.css('display', 'flex');
-        setTimeout(function() { $preview.addClass('show'); }, 10);
+        setTimeout(function () { $preview.addClass('show'); }, 10);
         $preview.attr('aria-hidden', 'false');
     }
 
     function fecharPreview() {
         $preview.removeClass('show');
         $preview.attr('aria-hidden', 'true');
-        setTimeout(function() {
+        setTimeout(function () {
             $preview.css('display', 'none');
             resetZoom();
         }, 250);
@@ -120,39 +83,39 @@ $(document).ready(function() {
 
     // Abrir: clique ou Enter/Espaço na foto
     $('#currentAvatar').on('click', abrirPreview);
-    $('#currentAvatar').on('keydown', function(e) {
+    $('#currentAvatar').on('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             abrirPreview();
         }
     });
 
-    // Fechar: X, fundo escuro ou ESC
+    // Fechar: X ou fundo escuro
     $('#btnClosePreview').on('click', fecharPreview);
-    $preview.on('click', function(e) {
+    $preview.on('click', function (e) {
         if (e.target === this) fecharPreview();
     });
 
     // Botões de zoom
-    $('#btnZoomIn').on('click', function() { setZoom(zoom + 0.5); });
-    $('#btnZoomOut').on('click', function() { setZoom(zoom - 0.5); });
+    $('#btnZoomIn').on('click', function () { setZoom(zoom + 0.5); });
+    $('#btnZoomOut').on('click', function () { setZoom(zoom - 0.5); });
     $('#btnZoomReset').on('click', resetZoom);
 
-    // Clique na imagem alterna entre normal e ampliada (ignora se foi um arraste)
-    $previewImg.on('click', function() {
+    // Clique na imagem alterna entre normal e ampliada (ignora arraste)
+    $previewImg.on('click', function () {
         if (dragMoved) { dragMoved = false; return; }
         setZoom(zoom > ZOOM_MIN ? ZOOM_MIN : ZOOM_CLIQUE);
     });
 
-    // Roda do mouse (precisa ser listener nativo para poder usar preventDefault)
-    $preview[0].addEventListener('wheel', function(e) {
+    // Roda do mouse (listener nativo para poder usar preventDefault)
+    $preview[0].addEventListener('wheel', function (e) {
         if (!$preview.hasClass('show')) return;
         e.preventDefault();
         setZoom(zoom * (e.deltaY < 0 ? 1.15 : 1 / 1.15));
     }, { passive: false });
 
     // Arrastar (1 dedo/mouse) e pinça (2 dedos)
-    $previewImg.on('pointerdown', function(e) {
+    $previewImg.on('pointerdown', function (e) {
         var ev = e.originalEvent;
         this.setPointerCapture(ev.pointerId);
         pointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
@@ -162,7 +125,7 @@ $(document).ready(function() {
         $stage.addClass('dragging');
     });
 
-    $previewImg.on('pointermove', function(e) {
+    $previewImg.on('pointermove', function (e) {
         var ev = e.originalEvent;
         if (!pointers[ev.pointerId]) return;
         pointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
@@ -199,72 +162,90 @@ $(document).ready(function() {
     }
     $previewImg.on('pointerup pointercancel', soltarPointer);
 
-    // Teclado: ESC fecha, + e - dão zoom, 0 redefine
-    $(document).on('keydown', function(e) {
-        if (!$preview.hasClass('show')) return;
-        if (e.key === 'Escape') fecharPreview();
-        else if (e.key === '+' || e.key === '=') setZoom(zoom + 0.5);
-        else if (e.key === '-') setZoom(zoom - 0.5);
-        else if (e.key === '0') resetZoom();
-    });
+    // =========================================================================
+    // --- FOTO DE PERFIL: SELECIONAR, RECORTAR, REMOVER ---
+    // =========================================================================
+    var $cropModal = $('#cropModal');
+    var $imageToCrop = $('#imageToCrop');
+    var cropper = null;
 
-    // AÇÃO DO BOTÃO SELECIONAR FOTO
-    $('#btnSelectFoto').on('click', function() { 
-        $('#foto_perfil').click(); 
-    });
-
-    // AÇÃO DO BOTÃO REMOVER FOTO
-    $('#btnRemoveFoto').on('click', function() {
-        if(confirm("Tem certeza que deseja remover sua foto de perfil e usar a padrão?")) {
-            $.ajax({
-                type: 'POST',
-                url: 'configperfil.php',
-                data: { action: 'delete_image' },
-                dataType: 'json',
-                success: function(response) {
-                    if(response.status === 'success') {
-                        window.location.reload();
-                    } else {
-                        alert("Erro ao remover: " + response.message);
-                    }
-                }
-            });
-        }
-    });
-
-    // QUANDO ADICIONA UMA IMAGEM NO INPUT FILE
-    $('#foto_perfil').on('change', function(e) {
-        var files = e.target.files;
-        if (files && files.length > 0) {
-            var reader = new FileReader();
-            reader.onload = function(event) {
-                $image.attr('src', event.target.result);
-                $modal.css('display', 'flex');
-                
-                if (cropper) cropper.destroy();
-                
-                cropper = new Cropper($image[0], { 
-                    aspectRatio: 1, 
-                    viewMode: 1, 
-                    dragMode: 'move',
-                    autoCropArea: 0.8
-                });
-            };
-            reader.readAsDataURL(files[0]);
-        }
-    });
-
-    // CANCELAR O CORTE DA FOTO
-    $('#btnCancelCrop').on('click', function() { 
-        $modal.hide(); 
-        if (cropper) cropper.destroy(); 
+    function fecharCrop() {
+        $cropModal.hide();
+        if (cropper) { cropper.destroy(); cropper = null; }
         $('#foto_perfil').val('');
+    }
+
+    $('#btnSelectFoto').on('click', function () {
+        $('#foto_perfil').click();
     });
 
-    // CONFIRMAR E SALVAR FOTO CORTADA
-    $('#btnConfirmCrop').on('click', function() {
-        var canvas = cropper.getCroppedCanvas({ 
-            width: 400, 
+    // Remover foto
+    $('#btnRemoveFoto').on('click', function () {
+        if (!confirm('Tem certeza que deseja remover sua foto de perfil e usar a padrão?')) return;
+
+        $.ajax({
+            type: 'POST',
+            url: 'configperfil.php',
+            data: { action: 'delete_image' },
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    window.location.reload();
+                } else {
+                    alert('Erro ao remover: ' + response.message);
+                }
+            },
+            error: function () {
+                alert('Erro técnico ao remover a foto.');
+            }
+        });
+    });
+
+    // Ao escolher um arquivo, abre o recorte
+    $('#foto_perfil').on('change', function (e) {
+        var files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        if (files[0].type.indexOf('image/') !== 0) {
+            alert('Selecione um arquivo de imagem.');
+            $(this).val('');
+            return;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            $imageToCrop.attr('src', event.target.result);
+            $cropModal.css('display', 'flex');
+
+            if (cropper) cropper.destroy();
+
+            // Moldura quadrada fixa; a imagem sempre preenche a área
+            // (viewMode 3), então nunca sobra espaço vazio ou achatado.
+            cropper = new Cropper($imageToCrop[0], {
+                aspectRatio: 1,
+                viewMode: 3,
+                dragMode: 'move',
+                autoCropArea: 1,
+                cropBoxMovable: false,
+                cropBoxResizable: false,
+                toggleDragModeOnDblclick: false,
+                guides: false,
+                center: false,
+                highlight: false,
+                background: false
+            });
+        };
+        reader.readAsDataURL(files[0]);
+    });
+
+    $('#btnCancelCrop').on('click', fecharCrop);
+
+    // Confirmar e salvar foto recortada
+    $('#btnConfirmCrop').on('click', function () {
+        if (!cropper) return;
+
+        var canvas = cropper.getCroppedCanvas({
+            width: 400,
             height: 400,
             imageSmoothingEnabled: true,
             imageSmoothingQuality: 'high'
@@ -276,99 +257,100 @@ $(document).ready(function() {
             url: 'configperfil.php',
             data: { action: 'crop_image', image_data: base64data },
             dataType: 'json',
-            success: function(response) { 
-                if(response.status === 'success') {
+            success: function (response) {
+                if (response.status === 'success') {
                     window.location.reload();
                 } else {
-                    alert("Erro: " + response.message);
+                    alert('Erro: ' + response.message);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.log(xhr.responseText);
-                alert("Erro técnico ao salvar a imagem.");
+                alert('Erro técnico ao salvar a imagem.');
             }
         });
     });
 
     // =========================================================================
-    // --- LÓGICA DO MODAL DE EXCLUSÃO DE CONTA (GERAL) ---
+    // --- EXCLUSÃO DE CONTA ---
     // =========================================================================
     var $deleteModal = $('#deleteAccountModal');
 
-    // Abre o modal de exclusão para qualquer tipo de usuário
-    $('#btnOpenDeleteModal').on('click', function() {
-        $('#confirmDeletePassword').val(''); 
+    $('#btnOpenDeleteModal').on('click', function () {
+        $('#confirmDeletePassword').val('');
         $deleteModal.css('display', 'flex');
     });
 
-    // Fecha o modal ao clicar em Cancelar
-    $('#btnCancelDelete').on('click', function() {
+    $('#btnCancelDelete').on('click', function () {
         $deleteModal.hide();
     });
 
-    // FLUXO 1: Envia a senha via AJAX (Apenas para contas comuns com senha)
-    $('#btnConfirmDelete').on('click', function() {
+    // Conta comum: confirma com senha
+    $('#btnConfirmDelete').on('click', function () {
         var password = $('#confirmDeletePassword').val();
 
         if (!password) {
-            alert("Por favor, digite sua senha.");
+            alert('Por favor, digite sua senha.');
             return;
         }
 
         $.ajax({
             type: 'POST',
             url: 'configperfil.php',
-            data: { 
-                action: 'delete_account', 
-                password: password 
-            },
+            data: { action: 'delete_account', password: password },
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 'success') {
-                    alert("Sua conta e todos os dados foram excluídos com sucesso.");
+                    alert('Sua conta e todos os dados foram excluídos com sucesso.');
                     window.location.href = response.redirect;
                 } else {
                     alert(response.message);
                 }
             },
-            error: function() {
-                alert("Erro técnico ao tentar processar a solicitação.");
+            error: function () {
+                alert('Erro técnico ao tentar processar a solicitação.');
             }
         });
     });
 
-    // FLUXO 2: Envia a exclusão direta via AJAX (Apenas para contas conectadas pelo Google)
-    $('#btnConfirmDeleteGoogle').on('click', function() {
+    // Conta Google: exclusão direta
+    $('#btnConfirmDeleteGoogle').on('click', function () {
         $.ajax({
             type: 'POST',
             url: 'configperfil.php',
-            data: { 
-                action: 'delete_account_google' 
-            },
+            data: { action: 'delete_account_google' },
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 'success') {
-                    alert("Seus dados foram removidos com sucesso do nosso sistema.");
+                    alert('Seus dados foram removidos com sucesso do nosso sistema.');
                     window.location.href = response.redirect;
                 } else {
                     alert(response.message);
                 }
             },
-            error: function() {
-                alert("Erro técnico ao tentar apagar os dados.");
+            error: function () {
+                alert('Erro técnico ao tentar apagar os dados.');
             }
         });
     });
+
+    // =========================================================================
+    // --- TECLADO (um único listener para os modais) ---
+    // =========================================================================
+    $(document).on('keydown', function (e) {
+        // Lightbox da foto
+        if ($preview.hasClass('show')) {
+            if (e.key === 'Escape') fecharPreview();
+            else if (e.key === '+' || e.key === '=') setZoom(zoom + 0.5);
+            else if (e.key === '-') setZoom(zoom - 0.5);
+            else if (e.key === '0') resetZoom();
+            return;
+        }
+
+        // Demais modais
+        if (e.key === 'Escape') {
+            if ($cropModal.is(':visible')) fecharCrop();
+            if ($deleteModal.is(':visible')) $deleteModal.hide();
+        }
+    });
 });
-
-// Configurações adicionais de acessibilidade e tema carregadas imediatamente
-(function () {
-    const savedTheme = localStorage.getItem('site-theme') || 'light';
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark-theme');
-    }
-
-    const savedSize = localStorage.getItem('site-font-size') || 'normal';
-    document.documentElement.classList.add('font-' + savedSize);
-})();
-
