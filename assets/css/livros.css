@@ -33,8 +33,9 @@ html.dark-theme {
 }
 
 /* ==========================================================================
-   BODY EM COLUNA: o footer sempre fica por último (colado no fim da tela
-   quando o conteúdo é curto, e depois de tudo quando o conteúdo é longo)
+   BODY EM COLUNA: header em cima, footer embaixo.
+   O espaço livre é dividido entre o topo e a base do miolo (banner + wrapper)
+   no PC, deixando o conteúdo centralizado (regra mais abaixo).
    ========================================================================== */
 body {
     background-color: var(--bg);
@@ -49,12 +50,24 @@ body {
 
 body > * { flex-shrink: 0; }
 
+/* Footer sem margin-top automático (o espaço livre vai para o miolo) */
 body > footer,
 body > .footer,
 body > #footer,
 body > .rodape {
-    margin-top: auto;
+    margin-top: 0;
     width: 100%;
+}
+
+/* PC: centraliza o miolo (banner + wrapper) entre o header e o footer.
+   "body > .banner" tem mais especificidade que o ".banner" do banner.css,
+   então não é sobrescrito. */
+@media (min-width: 1025px) {
+    body > .banner {
+        margin-top: auto;
+        padding-top: clamp(16px, 4vh, 40px);   /* respiro mínimo do header */
+    }
+    body > .wrapper { margin: 0 auto auto; }
 }
 
 button { font-family: inherit; color: inherit; cursor: pointer; }
@@ -306,7 +319,10 @@ html.font-grande { font-size: 130%; }
     .sidebar { position: static; height: auto; }
     .side-bloco { padding: 14px 16px; }
     .areaContent { padding: 18px 20px; }
-    .lista-obras { max-height: none; overflow: visible; padding-right: 0; }
+    /* Tablet: a lista rola por dentro a partir do 5º livro.
+       A altura exata (4 cards) é calculada pelo livros.js; 620px é só o
+       valor provisório até o JS carregar. */
+    .lista-obras { max-height: 620px; overflow-y: auto; padding: 4px 12px 4px 0; }
     .toolbar { gap: 20px; }
     .banner { padding: 0 20px; margin-top: 14px; }
 }

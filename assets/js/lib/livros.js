@@ -13,7 +13,27 @@ document.addEventListener('DOMContentLoaded', function () {
     const cards = [...document.querySelectorAll('.livro-card')];
     const vazio = document.getElementById('semResultados');
     const campoBusca = document.getElementById('busca');
+    const listaObras = document.getElementById('listaObras');
     const filtros = { status: 'todas', vest: 'todos', q: '' };
+
+    // === 0. TABLET: A LISTA ROLA A PARTIR DO 5º LIVRO ===
+    const CARDS_VISIVEIS_TABLET = 4;
+    const ehTablet = () => window.matchMedia('(min-width: 769px) and (max-width: 1024px)').matches;
+
+    function ajustarAlturaLista() {
+        listaObras.style.maxHeight = '';          // volta ao valor do CSS
+        if (!ehTablet()) return;                  // PC e celular: não mexe
+        listaObras.scrollTop = 0;
+        const visiveis = cards.filter(c => !c.hidden);
+        if (visiveis.length <= CARDS_VISIVEIS_TABLET) {
+            listaObras.style.maxHeight = 'none';  // cabem todos: sem rolagem
+            return;
+        }
+        const ref = visiveis[CARDS_VISIVEIS_TABLET - 1];
+        const altura = ref.getBoundingClientRect().bottom
+                     - listaObras.getBoundingClientRect().top + 4;
+        listaObras.style.maxHeight = altura + 'px';
+    }
 
     // === 1. FILTROS (status, vestibular, busca) ===
     function passaStatus(card) {
@@ -40,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
             vazio.hidden = visiveis > 0;
             vazio.textContent = 'Nenhuma obra encontrada com esses filtros.';
         }
+        ajustarAlturaLista();
     }
 
     document.querySelectorAll('[data-status-filter]').forEach(btn => {
@@ -65,6 +86,15 @@ document.addEventListener('DOMContentLoaded', function () {
         filtros.q = campoBusca.value.trim().toLowerCase();
         aplicarFiltros();
     });
+
+    // Recalcula a altura ao redimensionar a tela e quando tudo terminar de carregar
+    let tRedim;
+    window.addEventListener('resize', () => {
+        clearTimeout(tRedim);
+        tRedim = setTimeout(ajustarAlturaLista, 150);
+    });
+    window.addEventListener('load', ajustarAlturaLista);
+    ajustarAlturaLista();
 
     // === 2. COMUNICAÇÃO COM O SERVIDOR ===
     async function enviar(dados) {
