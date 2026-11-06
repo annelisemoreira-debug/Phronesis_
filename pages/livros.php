@@ -65,6 +65,7 @@ $videosFav = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
 // Versiona o CSS dos banners pela data de modificação (evita cache antigo)
+$paginaAtual = 'livros';
 $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 ?>
 <!DOCTYPE html>
@@ -75,6 +76,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     <title>Biblioteca – Leituras obrigatórias</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/livros.css">
+    <link rel="stylesheet" href="../assets/css/bottom-nav.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
@@ -243,21 +245,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 
     <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
     <nav class="bottom-nav" aria-label="Navegação principal">
-        <a href="../index.php" class="bn-item">
-            <i class="fa-solid fa-house"></i><span>Início</span>
-        </a>
-        <a href="livros.php" class="bn-item ativo" aria-current="page">
-            <i class="fa-solid fa-book"></i><span>Biblioteca</span>
-        </a>
-        <a href="material.php" class="bn-item">
-            <i class="fa-solid fa-tv"></i><span>Material</span>
-        </a>
-        <a href="cronograma.php" class="bn-item">
-            <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
-        </a>
-        <a href="../perfil/configperfil.php" class="bn-item">
-            <i class="fa-regular fa-user"></i><span>Perfil</span>
-        </a>
+        <?php include __DIR__ . '/_bottom_nav.php'; ?>
     </nav>
 
 <?php include '../perfil/vlibras.php'; ?>

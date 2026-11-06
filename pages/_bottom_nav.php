@@ -1,19 +1,21 @@
-<?php // pages/_bottom_nav.php — espera $paginaAtual ?>
+<?php
+// pages/_bottom_nav.php — espera $paginaAtual
+// Valores: 'inicio' | 'livros' | 'material' | 'favoritos' | 'cronograma' | 'perfil'
+$paginaAtual = $paginaAtual ?? '';
+
+$itensNav = [
+    ['../index.php',                 'fa-solid fa-house',            'Início',      ['inicio']],
+    ['livros.php',                   'fa-solid fa-book',             'Biblioteca',  ['livros']],
+    ['material.php',                 'fa-solid fa-tv',               'Material',    ['material', 'favoritos']],
+    ['cronograma.php',               'fa-regular fa-calendar-days',  'Cronogramas', ['cronograma']],
+    ['../perfil/configperfil.php',   'fa-regular fa-user',           'Perfil',      ['perfil']],
+];
+?>
 <nav class="bottom-nav" aria-label="Navegação principal">
-    <a href="../index.php" class="bn-item">
-        <i class="fa-solid fa-house"></i><span>Início</span>
-    </a>
-    <a href="livros.php" class="bn-item">
-        <i class="fa-solid fa-book"></i><span>Biblioteca</span>
-    </a>
-    <a href="material.php" class="bn-item <?= in_array($paginaAtual, ['material', 'favoritos'], true) ? 'ativo' : '' ?>"
-       <?= in_array($paginaAtual, ['material', 'favoritos'], true) ? 'aria-current="page"' : '' ?>>
-        <i class="fa-solid fa-tv"></i><span>Material</span>
-    </a>
-    <a href="cronograma.php" class="bn-item">
-        <i class="fa-regular fa-calendar-days"></i><span>Cronogramas</span>
-    </a>
-    <a href="../perfil/configperfil.php" class="bn-item">
-        <i class="fa-regular fa-user"></i><span>Perfil</span>
-    </a>
+    <?php foreach ($itensNav as [$href, $icone, $rotulo, $paginas]):
+        $ativo = in_array($paginaAtual, $paginas, true); ?>
+        <a href="<?= $href ?>" class="bn-item<?= $ativo ? ' ativo' : '' ?>"<?= $ativo ? ' aria-current="page"' : '' ?>>
+            <i class="<?= $icone ?>"></i><span><?= $rotulo ?></span>
+        </a>
+    <?php endforeach; ?>
 </nav>
