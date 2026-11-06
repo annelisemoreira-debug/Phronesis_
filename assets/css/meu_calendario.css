@@ -1,0 +1,381 @@
+/* ==========================================================================
+   assets/css/meu_calendario.css
+   Tela "Conectar para criar!" (vínculo com o Google Agenda)
+   Estrutura do arquivo:
+     1. Reset e variáveis (tema claro / escuro)
+     2. Layout da página (body, ondas de fundo, área central)
+     3. Card (título, textos, "Google Agenda" colorido)
+     4. Botão e link inferior
+     5. Utilidades (foco, escala de fonte)
+     6. Responsivo: tablet e celular (até 1024px)
+     7. Responsivo: celular (até 768px)
+     8. Acessibilidade (movimento reduzido)
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. RESET E VARIÁVEIS
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tema claro (padrão) */
+:root {
+    --bg: #d6c6f7;          /* fundo da página */
+    --panel: #ffffff;       /* fundo do card */
+    --ink: #3b0f7a;         /* cor dos textos */
+    --ink-soft: #7a4fd6;    /* textos secundários */
+    --purple: #8654f3;      /* destaque (links, foco) */
+    --btn: #3b0f7a;         /* botão do Google */
+    --btn-hover: #4f1ca3;   /* botão ao passar o mouse */
+    --shadow: 0 20px 50px rgba(110, 60, 210, 0.22);
+}
+
+/* Tema escuro (classe aplicada no <html> pelo JS) */
+html.dark-theme {
+    --bg: #1a1824;
+    --panel: #271451;
+    --ink: #f1ecff;
+    --ink-soft: #cfc6e8;
+    --purple: #bfa2ff;
+    --btn: #470086;
+    --btn-hover: #6b2fc4;
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+
+/* ==========================================================================
+   2. LAYOUT DA PÁGINA
+   Body em coluna: header em cima, footer embaixo e o card centralizado
+   no espaço que sobra entre os dois.
+   ========================================================================== */
+body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.3s ease;
+}
+
+/* Header e footer mantêm o tamanho natural */
+body > * {
+    flex-shrink: 0;
+}
+
+/* Footer sem margem automática (o espaço livre vai para a área central) */
+body > footer,
+body > .footer,
+body > #footer,
+body > .rodape {
+    margin-top: 0;
+    width: 100%;
+}
+
+/* ---------- Ondas decorativas do fundo ---------- */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+/* Onda do canto superior esquerdo */
+body::before {
+    top: 0;
+    left: 0;
+    width: min(32vw, 460px);
+    height: min(26vw, 380px);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' preserveAspectRatio='none'%3E%3Cpath fill='rgba(134,84,243,0.14)' d='M0 0H300C250 70 150 100 0 240Z'/%3E%3C/svg%3E");
+}
+
+/* Onda do canto inferior direito */
+body::after {
+    bottom: 0;
+    right: 0;
+    width: min(38vw, 560px);
+    height: min(24vw, 360px);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 300' preserveAspectRatio='none'%3E%3Cpath fill='rgba(134,84,243,0.20)' d='M500 40C400 60 330 150 200 300H500Z'/%3E%3C/svg%3E");
+}
+
+/* No modo escuro as ondas ficam mais discretas */
+html.dark-theme body::before,
+html.dark-theme body::after {
+    opacity: 0.35;
+}
+
+/* ---------- Área central (ocupa o espaço entre header e footer) ---------- */
+.conectar {
+    flex: 1;
+    display: flex;
+    align-items: center;        /* centraliza o card na vertical */
+    justify-content: center;    /* centraliza o card na horizontal */
+    padding: 40px 20px;
+}
+
+
+/* ==========================================================================
+   3. CARD
+   ========================================================================== */
+.login-card {
+    width: 100%;
+    max-width: 540px;
+    background: var(--panel);
+    border-radius: 24px;
+    padding: 32px 40px 28px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+/* Borda sutil no modo escuro */
+html.dark-theme .login-card {
+    border: 1px solid #2a292e;
+}
+
+/* Título */
+.login-card h2 {
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 16px;
+}
+
+/* Parágrafos */
+.login-card p {
+    font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 16px;
+}
+
+.login-card p b {
+    font-weight: 700;
+}
+
+/* "Google Agenda" com as cores do Google, letra por letra */
+.google-brand {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.c-b { color: #4285F4; }   /* azul */
+.c-r { color: #EA4335; }   /* vermelho */
+.c-y { color: #FBBC05; }   /* amarelo */
+.c-g { color: #34A853; }   /* verde */
+
+
+/* ==========================================================================
+   4. BOTÃO E LINK INFERIOR
+   ========================================================================== */
+
+/* Botão "Vincular Google Agenda" */
+.btn-google {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--btn);
+    color: #ffffff;
+    padding: 11px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(59, 15, 122, 0.3);
+    margin-top: 2px;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-google:hover {
+    background-color: var(--btn-hover);
+    transform: translateY(-2px);
+}
+
+/* Logo colorido do Google (SVG dentro do botão) */
+.g-logo {
+    width: 1.45rem;
+    height: 1.45rem;
+    flex: none;
+}
+
+/* Link "Voltar ao Início" */
+.footer-link {
+    margin-top: 14px;
+}
+
+.footer-link a {
+    color: var(--purple);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 700;
+    border-bottom: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.footer-link a:hover {
+    border-bottom-color: var(--purple);
+}
+
+
+/* ==========================================================================
+   5. UTILIDADES
+   ========================================================================== */
+
+/* Contorno visível ao navegar pelo teclado */
+:focus-visible {
+    outline: 3px solid var(--purple);
+    outline-offset: 3px;
+}
+
+/* Escala de fontes global (controlada pela página de acessibilidade) */
+html,
+html.font-normal { font-size: 100%; }
+html.font-media  { font-size: 115%; }
+html.font-grande { font-size: 130%; }
+
+/* Barra de navegação inferior: escondida no PC */
+.bottom-nav {
+    display: none;
+}
+
+
+/* ==========================================================================
+   6. TABLET E CELULAR (até 1024px)
+   O menu do header some (regra no header.css) e a navegação
+   passa a ser feita só pela barra inferior.
+   ========================================================================== */
+@media (max-width: 1024px) {
+
+    /* Card um pouco mais estreito */
+    .login-card {
+        max-width: 500px;
+        padding: 30px 32px 26px;
+    }
+
+    /* Espaço para a barra inferior não cobrir o footer */
+    body {
+        padding-bottom: 84px;
+    }
+
+    /* ---------- Barra de navegação inferior (modo claro) ---------- */
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 900;
+        justify-content: space-around;
+        background: #ffffff;
+        border-top: 1px solid #d3bff5;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+        padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .bn-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 0;
+        text-decoration: none;
+        color: #7a4fd6;
+        font-size: 0.66rem;
+        font-weight: 700;
+    }
+
+    .bn-item i {
+        font-size: 1.15rem;
+    }
+
+    .bn-item.ativo {
+        color: #8654f3;
+    }
+
+    /* ---------- Barra de navegação inferior (modo escuro) ---------- */
+    html.dark-theme .bottom-nav {
+        background: #272530;
+        border-top-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    html.dark-theme .bn-item {
+        color: #b0aec2;
+    }
+
+    html.dark-theme .bn-item.ativo {
+        color: #bfa2ff;
+    }
+}
+
+
+/* ==========================================================================
+   7. CELULAR (até 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+    /* Evita rolagem lateral sem quebrar o header sticky */
+    html,
+    body {
+        overflow-x: clip;
+    }
+
+    /* Área central: mantém o card centralizado, com margem menor nas laterais */
+    .conectar {
+        padding: 24px 14px;
+    }
+
+    /* Card compacto */
+    .login-card {
+        padding: 24px 18px 22px;
+        border-radius: 20px;
+    }
+
+    .login-card p {
+        margin-bottom: 14px;
+    }
+
+    /* Botão ocupa a largura toda do card */
+    .btn-google {
+        width: 100%;
+        padding: 12px 18px;
+    }
+
+    .g-logo {
+        width: 1.35rem;
+        height: 1.35rem;
+    }
+}
+
+
+/* ==========================================================================
+   8. ACESSIBILIDADE
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* ==========================================================================
+   9. HEADER SEM MENU DE NAVEGAÇÃO (tablet e celular)
+   Nesta página a navegação fica só na barra inferior, então o header
+   mostra apenas a logo e o perfil. Fica aqui no fim para vencer o header.css.
+   ========================================================================== */
+@media (max-width: 1024px) {
+    header .menuNav,
+    header .hamburger-btn {
+        display: none !important;
+    }
+}

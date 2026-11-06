@@ -1,31 +1,35 @@
 /* assets/css/footer.css */
+
 :root {
-    --footer-text:  #5a30b5;
-    --footer-name:  #3b0f7a;
-    --footer-line:  #b89cf5;
+    --footer-text: #5a30b5;
+    --footer-name: #3b0f7a;
+    --footer-line: #b89cf5;
 }
 
 html.dark-theme {
-    --footer-text:  #c3a9ff;
-    --footer-name:  #f1ecff;
-    --footer-line:  #38334a;
+    --footer-text: #c3a9ff;
+    --footer-name: #f1ecff;
+    --footer-line: #38334a;
 }
 
+/* =======================================================
+   RODAPÉ
+   ======================================================= */
 .site-footer {
-    margin-top: auto;                 /* empurra o rodapé para o fim da página */
+    margin-top: auto; /* empurra o rodapé para o fim da página */
     width: 100%;
     padding: 24px clamp(16px, 5vw, 88px) 28px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 14px;
-    background: transparent;          /* usa o fundo da própria página */
+    background: transparent; /* usa o fundo da própria página */
     color: var(--footer-text);
     font-size: 0.85rem;
     transition: color 0.3s ease;
 }
 
-/* Integrantes: centralizados */
+/* Integrantes: centralizados, separados por "•" */
 .footer-team {
     list-style: none;
     display: flex;
@@ -64,6 +68,7 @@ html.dark-theme {
     font-style: italic;
 }
 
+/* Traços ao redor do slogan */
 .footer-slogan::before,
 .footer-slogan::after {
     content: "";
@@ -72,6 +77,13 @@ html.dark-theme {
     background-color: var(--footer-line);
 }
 
+/* =======================================================
+   RESPONSIVIDADE
+   ======================================================= */
 @media (max-width: 768px) {
-    .footer-bottom { flex-direction: column; justify-content: center; text-align: center; }
+    .footer-bottom {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
 }

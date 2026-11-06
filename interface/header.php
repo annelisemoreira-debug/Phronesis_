@@ -1,20 +1,35 @@
 <?php
+/**
+ * interface/header.php
+ * Cabeçalho do site (logo, menu de navegação e perfil do usuário).
+ * Incluído por todas as páginas via: include '../interface/header.php';
+ */
+
 include __DIR__ . '/../conexao.php';
 
 $script_name = $_SERVER['SCRIPT_NAME'];
 
+// Caminho relativo até a raiz do site (páginas dentro de /pages/ e /perfil/ precisam subir um nível)
 if (strpos($script_name, '/pages/') !== false || strpos($script_name, '/perfil/') !== false) {
     $path = "../";
 } else {
     $path = "";
 }
 
-// No index o menu hambúrguer não tem função (a navegação fica na barra inferior)
-$semHamburger = (basename($script_name) === 'index.php');
+$pagina = basename($script_name);
 
-$fotoPerfil = $path . "assets/img/default-user.webp";
+// Páginas que têm a barra de navegação inferior no tablet/celular:
+// nelas o header não mostra nenhum menu (hambúrguer nem botões de navegação)
+$semMenuTopo = in_array($pagina, ['meu_calendario.php'], true);
+
+// No index o menu hambúrguer não tem função (a navegação fica na barra inferior)
+$semHamburger = ($pagina === 'index.php') || $semMenuTopo;
+
+// Valores padrão (usuário sem foto ou não logado)
+$fotoPerfil  = $path . "assets/img/default-user.webp";
 $usuarioTipo = 'user';
 
+// Busca foto e tipo (user/admin) do usuário logado
 if (isset($_SESSION['id'])) {
     $id_usuario = $_SESSION['id'];
     $stmt = $conn->prepare("SELECT foto, tipo FROM usuario WHERE id_usuario = ?");
@@ -26,9 +41,11 @@ if (isset($_SESSION['id'])) {
         $usuarioTipo = $res['tipo'];
         if (!empty($res['foto'])) {
             if (filter_var($res['foto'], FILTER_VALIDATE_URL)) {
+                // Foto vinda de uma URL externa (ex.: conta Google)
                 $fotoPerfil = $res['foto'];
             } else {
-                $fotoLimpa = ltrim($res['foto'], '/');
+                // Foto salva no servidor
+                $fotoLimpa  = ltrim($res['foto'], '/');
                 $fotoPerfil = $path . $fotoLimpa;
             }
         }
@@ -36,8 +53,9 @@ if (isset($_SESSION['id'])) {
 }
 ?>
 
-<header>
-    <!-- CONTAINER DA LOGO (Com todas as 4 variações) -->
+<header class="<?= $semMenuTopo ? 'sem-menu-topo' : '' ?>">
+
+    <!-- CONTAINER DA LOGO (com as 4 variações) -->
     <a href="<?= $path ?>index.php" class="logoMarca">
         <!-- VERSÕES DESKTOP (PC) -->
         <img src="<?= $path ?>assets/img/logos/logoSite.webp" class="logo-desktop logo-light" alt="Phronesis">
@@ -57,9 +75,10 @@ if (isset($_SESSION['id'])) {
         </ul>
     </nav>
 
-    <!-- ÁREA DIREITA (Hambúrguer + Painel + Perfil) -->
+    <!-- ÁREA DIREITA (hambúrguer + painel + perfil) -->
     <div class="perfil-wrapper">
         <?php if (isset($_SESSION['id'])): ?>
+
             <?php if ($usuarioTipo === 'admin'): ?>
                 <a href="<?= $path ?>pages/admin_materias.php" class="botao-nav-adm">ADM</a>
             <?php else: ?>
@@ -67,7 +86,7 @@ if (isset($_SESSION['id'])) {
             <?php endif; ?>
 
             <?php if (!$semHamburger): ?>
-            <!-- Botão Hambúrguer (Mobile) -->
+            <!-- Botão hambúrguer (mobile) -->
             <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -83,6 +102,7 @@ if (isset($_SESSION['id'])) {
                     referrerpolicy="no-referrer"
                     onerror="this.onerror=null; this.src='<?= $path ?>assets/img/default-user.webp';">
 
+                <!-- Menu suspenso do perfil -->
                 <div class="menu-dropdown" id="menuDropdown">
                     <a href="<?= $path ?>perfil/configperfil.php">Meu Perfil</a>
                     <?php if ($usuarioTipo === 'admin'): ?>
@@ -91,7 +111,9 @@ if (isset($_SESSION['id'])) {
                     <a href="<?= $path ?>logout.php" style="color: red;">Sair</a>
                 </div>
             </div>
+
         <?php else: ?>
+
             <!-- SE O USUÁRIO NÃO ESTIVER LOGADO -->
             <?php if (!$semHamburger): ?>
             <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Menu">
@@ -100,19 +122,21 @@ if (isset($_SESSION['id'])) {
                 <span></span>
             </button>
             <?php endif; ?>
+
             <div class="menu">
                 <div class="entrar"><a href="<?= $path ?>login.php">Entrar</a></div>
             </div>
+
         <?php endif; ?>
     </div>
 </header>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const hamburgerBtn = document.getElementById("hamburgerBtn");
-    const menuNav = document.getElementById("menuNav");
+    const hamburgerBtn    = document.getElementById("hamburgerBtn");
+    const menuNav         = document.getElementById("menuNav");
     const perfilContainer = document.querySelector(".perfil-container");
-    const dropdown = document.getElementById("menuDropdown");
+    const dropdown        = document.getElementById("menuDropdown");
 
     // Abre/fecha o menu hambúrguer (mobile)
     if (hamburgerBtn && menuNav) {

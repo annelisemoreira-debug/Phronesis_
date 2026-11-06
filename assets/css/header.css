@@ -1,8 +1,75 @@
+/* assets/css/header.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Cores base (padrão do site) */
+    --purple: #8654f3;
+    --header-bg: #8c52ff;
+    --header-shadow: rgba(0, 0, 0, 0.1);
+    --header-line: transparent;
+
+    /* Logo */
+    --logo-box: #ffffff;
+
+    /* Botões do menu (fundo no claro / borda e texto no escuro) */
+    --menu-cronogramas: #c0a5fc;
+    --menu-materiais: #8dd4ff;
+    --menu-livros: #ffe57e;
+    --menu-text: #000000;
+
+    /* Botão Entrar */
+    --entrar-bg: #ffffff;
+    --entrar-text: #3f007d;
+    --entrar-hover-bg: #6000c0;
+    --entrar-hover-text: #ffffff;
+
+    /* Menu suspenso do perfil */
+    --dropdown-bg: #ffffff;
+    --dropdown-text: #333333;
+    --dropdown-line: #eeeeee;
+    --dropdown-hover: #f5f3ff;
+
+    /* Textos de apoio */
+    --painel-text: #ffffff;
+    --adm-text: #ff3636;
+    --adm-hover: #ff1414;
+
+    /* Menu do celular */
+    --mobile-menu-bg: #8c52ff;
+}
+
+html.dark-theme {
+    --header-bg: #272530;
+    --header-shadow: rgba(0, 0, 0, 0.4);
+    --header-line: rgba(255, 255, 255, 0.05);
+
+    --menu-cronogramas: #caa2ff;
+
+    --dropdown-bg: #272530;
+    --dropdown-text: #b0aec2;
+    --dropdown-line: rgba(255, 255, 255, 0.05);
+    --dropdown-hover: rgba(123, 97, 255, 0.1);
+
+    --painel-text: #8dd4ff;
+    --adm-text: #ff6b6b;
+    --adm-hover: #ff8e8e;
+
+    --mobile-menu-bg: #272530;
+}
+
+/* =======================================================
+   HEADER (grid de 3 colunas: logo | menu | perfil)
+   ======================================================= */
 header {
-    background-color: #8c52ff;
+    background-color: var(--header-bg);
     padding: 10px 4%;
 
-    /* Layout CSS Grid em 3 colunas simétricas */
+    /* Layout em 3 colunas simétricas */
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
@@ -11,17 +78,19 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
+    box-shadow: 0 4px 12px var(--header-shadow);
+    border-bottom: 1px solid var(--header-line);
     transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* Coluna 1: Logo */
+/* =======================================================
+   COLUNA 1: LOGO
+   ======================================================= */
 .logoMarca {
     grid-column: 1;
     justify-self: start;
 
-    background: white !important;
+    background: var(--logo-box) !important;
     padding: 6px 20px !important;
     border-radius: 8px !important;
     display: flex !important;
@@ -40,21 +109,29 @@ header {
     object-fit: contain !important;
 }
 
-/* ==========================================================================
-   VISIBILIDADE DAS LOGOS
-   ========================================================================== */
-/* Oculta todas as logos por padrão */
-.logoMarca img { display: none !important; }
-
-/* DESKTOP / TABLET: acima de 768px */
-@media (min-width: 769px) {
-    .logoMarca .logo-desktop.logo-light { display: block !important; }
-
-    html.dark-theme .logoMarca .logo-desktop.logo-light { display: none !important; }
-    html.dark-theme .logoMarca .logo-desktop.logo-dark { display: block !important; }
+/* Todas as logos começam escondidas; cada breakpoint mostra a sua */
+.logoMarca img {
+    display: none !important;
 }
 
-/* Coluna 2: Menu Centralizado */
+/* PC / tablet (acima de 768px) */
+@media (min-width: 769px) {
+    .logoMarca .logo-desktop.logo-light {
+        display: block !important;
+    }
+
+    html.dark-theme .logoMarca .logo-desktop.logo-light {
+        display: none !important;
+    }
+
+    html.dark-theme .logoMarca .logo-desktop.logo-dark {
+        display: block !important;
+    }
+}
+
+/* =======================================================
+   COLUNA 2: MENU CENTRALIZADO
+   ======================================================= */
 .menuNav {
     grid-column: 2;
     justify-self: center;
@@ -82,38 +159,50 @@ header {
     text-decoration: none;
     display: block;
     padding: 8px 18px;
-    color: black;
+    color: var(--menu-text);
     font-weight: bold;
     font-size: 14px;
     transition: color 0.3s ease;
 }
 
-/* Cores dos botões do menu */
-.menu li.cronogramas { background-color: #c0a5fc; }
-.menu li.materiais { background-color: #8dd4ff; }
-.menu li.livros { background-color: #ffe57e; }
+/* Cores de cada botão do menu */
+.menu li.cronogramas {
+    background-color: var(--menu-cronogramas);
+}
 
-/* Botão Entrar */
+.menu li.materiais {
+    background-color: var(--menu-materiais);
+}
+
+.menu li.livros {
+    background-color: var(--menu-livros);
+}
+
+/* Botão "Entrar" */
 .entrar {
-    background-color: #ffffff;
+    background-color: var(--entrar-bg);
     border-radius: 25px;
     overflow: hidden;
 }
+
 .entrar a {
     text-decoration: none;
     display: block;
     padding: 8px 22px;
-    color: #3f007d;
+    color: var(--entrar-text);
     font-weight: bold;
     font-size: 14px;
 }
+
 .entrar a:hover {
-    background-color: #6000c0;
-    color: #ffffff;
+    background-color: var(--entrar-hover-bg);
+    color: var(--entrar-hover-text);
     transition: 0.3s;
 }
 
-/* Coluna 3: Perfil */
+/* =======================================================
+   COLUNA 3: PERFIL
+   ======================================================= */
 .perfil-wrapper {
     grid-column: 3;
     justify-self: end;
@@ -132,43 +221,53 @@ header {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 2px solid white;
+    border: 2px solid #ffffff;
     object-fit: cover;
     display: block;
     transition: border-color 0.3s ease;
 }
 
+/* Menu suspenso do perfil */
 .menu-dropdown {
     display: none;
     position: absolute;
     right: 0;
     top: 50px;
-    background: white;
+    background: var(--dropdown-bg);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
     min-width: 160px;
     z-index: 99999 !important;
-    border: 1px solid #eee;
+    border: 1px solid var(--dropdown-line);
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.menu-dropdown.show { display: block !important; }
+.menu-dropdown.show {
+    display: block !important;
+}
 
 .menu-dropdown a {
     display: block;
     padding: 12px 16px;
-    color: #333;
+    color: var(--dropdown-text);
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--dropdown-line);
     transition: background 0.2s ease, color 0.2s ease;
 }
-.menu-dropdown a:last-child { border-bottom: none; }
-.menu-dropdown a:hover { background: #f5f3ff; }
 
+.menu-dropdown a:last-child {
+    border-bottom: none;
+}
+
+.menu-dropdown a:hover {
+    background: var(--dropdown-hover);
+}
+
+/* Texto "PAINEL DO ESTUDANTE" */
 .texto-painel {
-    color: #ffffff;
+    color: var(--painel-text);
     font-size: 13px;
     font-weight: 600;
     margin-right: 12px;
@@ -179,9 +278,10 @@ header {
     user-select: none;
 }
 
+/* Link "ADM" (só para administradores) */
 .botao-nav-adm {
     text-decoration: none;
-    color: #ff3636;
+    color: var(--adm-text);
     font-weight: bold;
     font-size: 14px;
     margin-right: 16px;
@@ -189,25 +289,21 @@ header {
     text-transform: uppercase;
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
+
 .botao-nav-adm:hover {
-    color: #ff1414;
+    color: var(--adm-hover);
     text-shadow: 0 0 8px rgba(136, 16, 16, 0.6);
 }
 
-/* ==========================================================================
-   MODO ESCURO (DARK THEME - PC / TABLET)
-   ========================================================================== */
-html.dark-theme header {
-    background-color: #272530;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
+/* =======================================================
+   MODO ESCURO (PC / TABLET) — ajustes que não são só cor
+   ======================================================= */
 html.dark-theme .logoMarca {
     background: transparent !important;
     padding: 0 !important;
 }
 
+/* Botões do menu: sem fundo, com borda e texto coloridos */
 html.dark-theme .menu li {
     background-color: transparent !important;
     border-radius: 6px;
@@ -218,55 +314,79 @@ html.dark-theme .menu li a {
     padding: 6px 16px;
 }
 
-html.dark-theme .menu li.materiais { border: 1.5px solid #8dd4ff; }
-html.dark-theme .menu li.materiais a { color: #8dd4ff; }
-html.dark-theme .menu li.materiais:hover { background-color: rgba(141, 212, 255, 0.1) !important; }
+html.dark-theme .menu li.materiais {
+    border: 1.5px solid var(--menu-materiais);
+}
 
-html.dark-theme .menu li.livros { border: 1.5px solid #ffe57e; }
-html.dark-theme .menu li.livros a { color: #ffe57e; }
-html.dark-theme .menu li.livros:hover { background-color: rgba(255, 229, 126, 0.1) !important; }
+html.dark-theme .menu li.materiais a {
+    color: var(--menu-materiais);
+}
 
-html.dark-theme .menu li.cronogramas { border: 1.5px solid #caa2ff; }
-html.dark-theme .menu li.cronogramas a { color: #caa2ff; }
-html.dark-theme .menu li.cronogramas:hover { background-color: rgba(162, 213, 255, 0.1) !important; }
+html.dark-theme .menu li.materiais:hover {
+    background-color: rgba(141, 212, 255, 0.1) !important;
+}
 
+html.dark-theme .menu li.livros {
+    border: 1.5px solid var(--menu-livros);
+}
+
+html.dark-theme .menu li.livros a {
+    color: var(--menu-livros);
+}
+
+html.dark-theme .menu li.livros:hover {
+    background-color: rgba(255, 229, 126, 0.1) !important;
+}
+
+html.dark-theme .menu li.cronogramas {
+    border: 1.5px solid var(--menu-cronogramas);
+}
+
+html.dark-theme .menu li.cronogramas a {
+    color: var(--menu-cronogramas);
+}
+
+html.dark-theme .menu li.cronogramas:hover {
+    background-color: rgba(162, 213, 255, 0.1) !important;
+}
+
+/* Botão "Entrar" no escuro */
 html.dark-theme .entrar {
     border: 1.5px solid #ffffff;
     background-color: transparent !important;
 }
-html.dark-theme .entrar a { color: #ffffff; }
-html.dark-theme .entrar:hover { background-color: #ffffff !important; }
-html.dark-theme .entrar a:hover { color: #1a1824 !important; }
 
-html.dark-theme .foto-perfil { border-color: #ffffff !important; }
-
-html.dark-theme .menu-dropdown {
-    background-color: #272530;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-html.dark-theme .menu-dropdown a {
-    color: #b0aec2;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-html.dark-theme .menu-dropdown a:hover {
-    background-color: rgba(123, 97, 255, 0.1);
+html.dark-theme .entrar a {
     color: #ffffff;
 }
 
-html.dark-theme .texto-painel { color: #8dd4ff; }
+html.dark-theme .entrar:hover {
+    background-color: #ffffff !important;
+}
 
-html.dark-theme .botao-nav-adm { color: #ff6b6b; }
+html.dark-theme .entrar a:hover {
+    color: #1a1824 !important;
+}
+
+html.dark-theme .foto-perfil {
+    border-color: #ffffff !important;
+}
+
+html.dark-theme .menu-dropdown {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+html.dark-theme .menu-dropdown a:hover {
+    color: #ffffff;
+}
+
 html.dark-theme .botao-nav-adm:hover {
-    color: #ff8e8e;
     text-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
 }
 
-/* ==========================================================================
-   BOTÃO HAMBÚRGUER (escondido por padrão; aparece só no celular)
-   ========================================================================== */
+/* =======================================================
+   BOTÃO HAMBÚRGUER (escondido por padrão; aparece no celular)
+   ======================================================= */
 .hamburger-btn {
     display: none;
     flex-direction: column;
@@ -288,16 +408,26 @@ html.dark-theme .botao-nav-adm:hover {
     transition: all 0.3s ease;
 }
 
-.hamburger-btn.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
-.hamburger-btn.active span:nth-child(2) { opacity: 0; }
-.hamburger-btn.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+/* Animação: vira um "X" quando aberto */
+.hamburger-btn.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
 
-/* ==========================================================================
-   TABLET / NOTEBOOK PEQUENO (769px a 1100px)
-   Com o grid simétrico (1fr auto 1fr) a logo ficava maior que a coluna da
-   esquerda e invadia o botão "Materiais". Aqui as colunas passam a se ajustar
-   ao conteúdo e a logo e os botões ficam um pouco mais compactos.
-   ========================================================================== */
+.hamburger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* =======================================================
+   RESPONSIVIDADE
+   ======================================================= */
+
+/* ---------- Tablet / notebook pequeno (769px a 1100px) ----------
+   Com o grid simétrico a logo invadia o botão "Materiais".
+   Aqui as colunas se ajustam ao conteúdo e tudo fica mais compacto. */
 @media (min-width: 769px) and (max-width: 1100px) {
     header {
         grid-template-columns: auto 1fr auto;
@@ -309,45 +439,74 @@ html.dark-theme .botao-nav-adm:hover {
         padding: 4px 14px !important;
         height: 36px !important;
     }
-    .logoMarca img { height: 28px !important; }
 
-    .menu { gap: 10px; }
-    .menu li a { padding: 7px 12px; font-size: 13px; }
+    .logoMarca img {
+        height: 28px !important;
+    }
 
-    .texto-painel { font-size: 11px; margin-right: 8px; }
-    .botao-nav-adm { font-size: 13px; margin-right: 10px; }
+    .menu {
+        gap: 10px;
+    }
+
+    .menu li a {
+        padding: 7px 12px;
+        font-size: 13px;
+    }
+
+    .texto-painel {
+        font-size: 11px;
+        margin-right: 8px;
+    }
+
+    .botao-nav-adm {
+        font-size: 13px;
+        margin-right: 10px;
+    }
 
     /* Modo escuro: a logo não tem fundo nem padding */
-    html.dark-theme .logoMarca { padding: 0 !important; }
-    html.dark-theme .menu li a { padding: 6px 12px; font-size: 12px; }
+    html.dark-theme .logoMarca {
+        padding: 0 !important;
+    }
+
+    html.dark-theme .menu li a {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
-/* ==========================================================================
-   NOTEBOOK (1101px a 1280px)
-   Mantém o menu centralizado (3 colunas simétricas), mas com a logo e os
-   botões um pouco menores para a logo não ficar "colada" no menu.
-   ========================================================================== */
+/* ---------- Notebook (1101px a 1280px) ----------
+   Mantém o menu centralizado, com logo e botões um pouco menores. */
 @media (min-width: 1101px) and (max-width: 1280px) {
     .logoMarca {
         padding: 5px 16px !important;
         height: 40px !important;
     }
-    .logoMarca img { height: 34px !important; }
 
-    .menu { gap: 14px; }
-    .menu li a { padding: 8px 14px; }
+    .logoMarca img {
+        height: 34px !important;
+    }
 
-    html.dark-theme .menu li a { padding: 6px 13px; }
+    .menu {
+        gap: 14px;
+    }
+
+    .menu li a {
+        padding: 8px 14px;
+    }
+
+    html.dark-theme .menu li a {
+        padding: 6px 13px;
+    }
 }
 
-/* Abaixo de 900px o texto "PAINEL DO ESTUDANTE" é escondido para dar espaço */
+/* ---------- Abaixo de 900px: esconde "PAINEL DO ESTUDANTE" ---------- */
 @media (min-width: 769px) and (max-width: 900px) {
-    .texto-painel { display: none; }
+    .texto-painel {
+        display: none;
+    }
 }
 
-/* ==========================================================================
-   CELULAR (até 768px)  -- tudo daqui até o final fica DENTRO do @media
-   ========================================================================== */
+/* ---------- Celular (até 768px) ---------- */
 @media (max-width: 768px) {
     header {
         display: flex !important;
@@ -357,18 +516,25 @@ html.dark-theme .botao-nav-adm:hover {
         position: relative !important;
     }
 
-    /* Logos MOBILE */
-    .logoMarca .logo-mobile.logo-light { display: block !important; }
+    /* Logos do celular */
+    .logoMarca .logo-mobile.logo-light {
+        display: block !important;
+    }
 
-    html.dark-theme .logoMarca .logo-mobile.logo-light { display: none !important; }
-    html.dark-theme .logoMarca .logo-mobile.logo-dark { display: block !important; }
+    html.dark-theme .logoMarca .logo-mobile.logo-light {
+        display: none !important;
+    }
+
+    html.dark-theme .logoMarca .logo-mobile.logo-dark {
+        display: block !important;
+    }
 
     .logoMarca {
         background: transparent !important;
         padding: 0 !important;
     }
 
-    /* Oculta texto e alinha ícones à direita */
+    /* Esconde o texto e alinha os ícones à direita */
     .texto-painel {
         display: none !important;
     }
@@ -395,7 +561,7 @@ html.dark-theme .botao-nav-adm:hover {
         top: 100% !important;
         left: 0 !important;
         width: 100% !important;
-        background-color: #8c52ff !important;
+        background-color: var(--mobile-menu-bg) !important;
         padding: 15px 0 !important;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
         z-index: 99999 !important;
@@ -423,11 +589,9 @@ html.dark-theme .botao-nav-adm:hover {
         padding: 12px !important;
         width: 100% !important;
         display: block !important;
-        box-sizing: border-box !important;
     }
 
     html.dark-theme .menuNav {
-        background-color: #272530 !important;
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 }
