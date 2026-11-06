@@ -9,20 +9,25 @@
 }
 
 body {
-    background-color: #d6c6f7; /* Fundo lilás da página */
-    min-height: 100vh; /* Permite expansão do body sem quebrar a estrutura */
+    background-color: #d6c6f7;
+    min-height: 100vh;
+
     display: flex;
+    flex-direction: column; /* Elementos um abaixo do outro */
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+
     padding: 20px 0;
     transition: background-color 0.3s ease;
 }
 
 .main-wrapper {
     display: flex;
+    flex-direction: row;
     width: 95%;
-    height: 90vh; /* Mantém a janela proporcional ao viewport */
+    height: 90vh;
     gap: 20px;
+    flex-shrink: 0;
 }
 
 /* --- ELEMENTOS MÓVEIS (Escondidos por padrão no Desktop) --- */
