@@ -479,6 +479,13 @@ $materias_json = array_map(fn($m) => [
     'nome' => $m['nome_materia'],
     'cor'  => $m['cor_hex'] ?? '#7c3aed'
 ], $lista_materias_db);
+
+// Banner só aparece na tela do cronograma já criado (agenda aberta).
+// Para mostrar também no formulário, troque por: $mostrarBanner = true;
+$mostrarBanner = ($calendar_id_exibir && !isset($_GET['editar']));
+
+// Versiona o CSS dos banners pela data de modificação (igual ao livros.php)
+$verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -491,6 +498,7 @@ $materias_json = array_map(fn($m) => [
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/cronograma.css">
     <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -509,6 +517,24 @@ $materias_json = array_map(fn($m) => [
 <body>
 
     <?php include '../interface/header.php'; ?>
+
+    <?php if ($mostrarBanner): ?>
+    <!-- ================= BANNER (MODO CLARO E ESCURO · PC / TABLET / CELULAR) ================= -->
+    <!-- Troque os nomes dos arquivos abaixo pelos banners reais de Cronogramas -->
+    <section class="banner">
+        <picture class="banner-light">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/cronogramaCelularClaro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/cronogramaTabletClaro.webp">
+            <img src="../assets/img/banners/pc/cronogramaClaro.webp" alt="Banner Cronogramas">
+        </picture>
+        <picture class="banner-dark">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/cronogramaCelularEscuro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/cronogramaTabletEscuro.webp">
+            <img src="../assets/img/banners/pc/cronogramaEscuro.webp" alt="Banner Cronogramas Escuro">
+        </picture>
+    </section>
+    <?php endif; ?>
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div id="confirmModal" class="modal" style="<?= $mostrar_modal ? 'display:flex;' : '' ?>">

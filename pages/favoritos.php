@@ -70,14 +70,14 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     <!-- ================= BANNER (MODO CLARO E ESCURO · PC / TABLET / CELULAR) ================= -->
     <section class="banner">
         <picture class="banner-light">
-            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/materiasCelularClaro.webp">
-            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/materiaisTabletClaro.webp">
-            <img src="../assets/img/banners/pc/claroMaterial.webp" alt="Banner Materiais">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/favoritosCelularClaro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/favoritosTabletClaro.webp">
+            <img src="../assets/img/banners/pc/favoritosClaro.webp" alt="Banner Materiais">
         </picture>
         <picture class="banner-dark">
-            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/materiasCelularEscuro.webp">
-            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/materiaisTabletEscuro.webp">
-            <img src="../assets/img/banners/pc/escuroMaterial.webp" alt="Banner Materiais Escuro">
+            <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/favoritosCelularEscuro.webp">
+            <source media="(max-width: 1024px)" srcset="../assets/img/banners/tablet/favoritosTabletEscuro.webp">
+            <img src="../assets/img/banners/pc/favoritosEscuro.webp" alt="Banner Materiais Escuro">
         </picture>
     </section>
 
