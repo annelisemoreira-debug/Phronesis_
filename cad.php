@@ -92,13 +92,6 @@ elseif ($acao == "nova_senha") {
     $email = $_POST['email'] ?? '';
     $senha = $_POST['senha'] ?? '';
 
-    // PROTEÇÃO: O usuário precisa estar logado E o e-mail a ser alterado deve pertencer à sessão dele
-    if (!isset($_SESSION['id']) || !isset($_SESSION['email']) || $_SESSION['email'] !== $email) {
-        $_SESSION['erro_recuperacao'] = "Ação não autorizada.";
-        header("Location: senhaPerdida.php?acao=recuperar");
-        exit();
-    }
-
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
     $sql = "UPDATE usuario SET senha=? WHERE email=?";
     $stmt = $conn->prepare($sql);
@@ -110,7 +103,7 @@ elseif ($acao == "nova_senha") {
         header("Location: login.php");
         exit();
     } else {
-        $_SESSION['erro_recuperacao'] = "Nova senha não pode ser igual à anterior.";
+        $_SESSION['erro_recuperacao'] = "E-mail não encontrado ou senha igual à anterior.";
         header("Location: senhaPerdida.php?acao=recuperar");
         exit();
     }

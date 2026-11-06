@@ -243,11 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Intercepta o hambúrguer do header (só no celular) e abre a sidebar
-    document.addEventListener('click', (e) => {
-        if (!ehCelular() || !e.target.closest('#hamburgerBtn')) return;
-        e.stopPropagation();
-        sidebar.classList.contains('active') ? fecharMenu() : abrirMenu();
-    }, true);
+    document.getElementById('btnAbrirSidebar')?.addEventListener('click', abrirMenu);
 
     overlay.addEventListener('click', fecharMenu);
     btnFechar.addEventListener('click', fecharMenu);

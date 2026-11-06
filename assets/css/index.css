@@ -108,13 +108,12 @@ body {
     overflow: hidden;
 }
 
-/* Ilustração de fundo (PC) */
 .hero::before {
     content: "";
     position: absolute;
     top: 50%;
-    right: 8%;
-    width: 50%;
+    right: 4%;
+    width: 46%;
     height: 430px;
     transform: translateY(-50%);
     background-image: url('../img/index/fundo_index_livro_claro.webp');
@@ -134,7 +133,7 @@ html.dark-theme .hero::before {
 }
 
 .hero-text {
-    max-width: 560px;
+    max-width: min(680px, 40vw);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -142,7 +141,7 @@ html.dark-theme .hero::before {
 
 .hero-text h1 {
     color: var(--ink);
-    font-size: 3.4rem;
+    font-size: clamp(2.4rem, 3.4vw, 3.4rem);
     font-weight: 800;
     line-height: 1.02;
     letter-spacing: -1px;
@@ -160,12 +159,13 @@ html.dark-theme .hero::before {
 
 .hero-text .hero-sub {
     color: var(--hero-sub);
-    font-size: 1.05rem;
+    font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.5;
-    max-width: 420px;
-    margin-bottom: 22px;
+    max-width: 520px;
+    margin-bottom: 30px;
 }
+
 
 /* Botão "Criar conta" */
 .btn-hero {

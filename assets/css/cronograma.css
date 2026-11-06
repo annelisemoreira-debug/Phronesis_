@@ -24,10 +24,10 @@
     --row-hover:    #f5f3ff;
     --row-line:     #f1f5f9;
     --icon-bg:      #f3e8ff;
-    --icon-color:   #9b51e0;
+    --icon-color:   #8654f3;
     --shadow:       rgba(121, 40, 202, 0.15);
 
-    --purple:       #9b51e0;
+    --purple:       #8654f3;
     --purple-hover: #7c3aed;
     --del-bg:       #fee2e2;
     --del-color:    #dc2626;
@@ -44,7 +44,7 @@
 
 html.dark-theme {
     --bg:           #12101a;
-    --panel:        #1a1824;
+    --panel:        #1d1b26;
     --ink:          #f3e8ff;
     --ink-soft:     #a78bfa;
     --text:         #cbd5e1;
@@ -61,7 +61,7 @@ html.dark-theme {
     --edit-bg:      #0c2331;
     --edit-color:   #38bdf8;
 
-    --nav-bg:       #272530;
+    --nav-bg:       #1d1b26;
     --nav-border:   rgba(255, 255, 255, 0.08);
     --nav-item:     #b0aec2;
     --nav-item-on:  #bfa2ff;
@@ -89,6 +89,27 @@ body {
 .bottom-nav,
 .sidebar-close,
 .sidebar-overlay { display: none; }
+
+body > * { flex-shrink: 0; }
+
+/* Footer sem margin-top automático (o espaço livre vai para o miolo) */
+body > footer,
+body > .footer,
+body > #footer,
+body > .rodape {
+    margin-top: 0;
+    width: 100%;
+}
+
+/* PC: centraliza o miolo (banner + wrapper) entre o header e o footer.
+   "body > .banner" tem mais especificidade que o ".banner" do banner.css,
+   então não é sobrescrito. */
+@media (min-width: 1025px) {
+    body > .banner {
+        margin-top: auto;
+        padding-top: clamp(16px, 4vh, 40px);   /* respiro mínimo do header */
+    }
+}
 
 /* ==========================================================================
    2. LAYOUT PRINCIPAL (mesmas medidas do livros.css)
@@ -182,6 +203,7 @@ html.dark-theme .title-left p { color: #b0aeb8; }
     transition: opacity 0.2s;
 }
 .btn-desconectar:hover { opacity: .8; }
+
 
 /* ==========================================================================
    4. FORMULÁRIO
@@ -825,6 +847,8 @@ html.dark-theme .materia-accordion-content li { color: var(--text) !important; }
     .view-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
 }
 
+
+
 /* ---------- CELULAR (até 768px): drawer + barra inferior ---------- */
 @media (max-width: 768px) {
     html, body { overflow-x: clip; }
@@ -834,6 +858,14 @@ html.dark-theme .materia-accordion-content li { color: var(--text) !important; }
     .banner { margin-top: 10px; padding: 0 12px; }
     .banner img { border-radius: 12px; }
     .main-layout { padding: 12px 12px 24px; margin-top: 0; }
+
+    .btn-abrir-sidebar {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; margin-bottom: 14px; padding: 12px;
+    border: 1.5px solid var(--purple); border-radius: 14px;
+    background: var(--panel); color: var(--ink);
+    font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+}
 
     /* Histórico vira menu lateral (abre pelo hambúrguer do header) */
     .sidebar-historico {

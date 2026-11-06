@@ -80,8 +80,12 @@ header {
     z-index: 1000;
     box-shadow: 0 4px 12px var(--header-shadow);
     border-bottom: 1px solid var(--header-line);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.2;
     transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
+
+    header a, header button, header span { font-family: inherit; line-height: inherit; }
 
 /* =======================================================
    COLUNA 1: LOGO
@@ -502,6 +506,15 @@ html.dark-theme .botao-nav-adm:hover {
 /* ---------- Abaixo de 900px: esconde "PAINEL DO ESTUDANTE" ---------- */
 @media (min-width: 769px) and (max-width: 900px) {
     .texto-painel {
+        display: none;
+    }
+}
+
+/* ---------- Páginas com barra inferior (index, livros, cronograma) ----------
+   No tablet a navegação fica na barra inferior, então o menu de pílulas
+   do header sai da tela (no celular ele já fica escondido). */
+@media (min-width: 769px) and (max-width: 1024px) {
+    header.com-bottom-nav .menuNav {
         display: none;
     }
 }

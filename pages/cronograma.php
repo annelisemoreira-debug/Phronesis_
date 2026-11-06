@@ -482,7 +482,7 @@ $materias_json = array_map(fn($m) => [
 
 // Banner só aparece na tela do cronograma já criado (agenda aberta).
 // Para mostrar também no formulário, troque por: $mostrarBanner = true;
-$mostrarBanner = ($calendar_id_exibir && !isset($_GET['editar']));
+$mostrarBanner = true;
 
 // Versiona o CSS dos banners pela data de modificação (igual ao livros.php)
 $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
@@ -561,6 +561,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     <main class="main-layout">
 
         <section class="container-principal">
+            
             <?php if ($msg_feedback): ?>
                 <div class="alert-message"><?= htmlspecialchars($msg_feedback) ?></div>
             <?php endif; ?>

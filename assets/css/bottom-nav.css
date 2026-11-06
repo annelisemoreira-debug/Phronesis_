@@ -1,0 +1,55 @@
+/* assets/css/bottom-nav.css — barra de navegação inferior (tablet + celular)
+   Fonte única das cores e do comportamento. Carregue DEPOIS do CSS da página. */
+
+:root {
+    --bn-bg: #ffffff;
+    --bn-border: #d3bff5;
+    --bn-item: #7a4fd6;
+    --bn-item-on: #8654f3;
+    --bn-shadow: rgba(0, 0, 0, .12);
+}
+
+html.dark-theme {
+    --bn-bg: #272530;
+    --bn-border: rgba(255, 255, 255, .08);
+    --bn-item: #b0aec2;
+    --bn-item-on: #bfa2ff;
+    --bn-shadow: rgba(0, 0, 0, .4);
+}
+
+/* PC: escondida */
+.bottom-nav { display: none; }
+
+/* Tablet e celular (até 1024px) */
+@media (max-width: 1024px) {
+    /* espaço para o footer não ficar escondido atrás da barra */
+    body { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 900;
+        background: var(--bn-bg);
+        border-top: 1px solid var(--bn-border);
+        box-shadow: 0 -4px 16px var(--bn-shadow);
+        padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+        justify-content: space-around;
+        transition: background-color .3s ease;
+    }
+
+    .bn-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        text-decoration: none;
+        color: var(--bn-item);
+        font-size: 0.66rem;
+        font-weight: 700;
+        padding: 4px 0;
+    }
+    .bn-item i { font-size: 1.15rem; }
+    .bn-item.ativo { color: var(--bn-item-on); }
+}

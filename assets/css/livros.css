@@ -348,6 +348,14 @@ html.font-grande { font-size: 130%; }
     }
     .principalContent, .areaContent, .toolbar { min-width: 0; max-width: 100%; }
 
+    .btn-abrir-sidebar {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; margin-bottom: 14px; padding: 12px;
+    border: 1.5px solid var(--purple); border-radius: 14px;
+    background: var(--panel); color: var(--ink);
+    font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+}
+
     /* Sidebar vira menu lateral (abre pelo hambúrguer do header) */
     .sidebar {
         position: fixed;

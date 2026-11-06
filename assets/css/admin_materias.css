@@ -49,9 +49,9 @@
     --text-body: var(--ink);
     --text-muted: var(--ink-soft);
     --purple-main: var(--purple);
-    --purple-hover: #6d3fd9;
+    --purple-hover: #6d3fe0;
     --icon-box-bg: #f3e8ff;
-    --icon-box-color: #9b51e0;
+    --icon-box-color: #8654f3;
     --input-bg: #f8fafc;
     --input-bg-focus: #ffffff;
     --input-border: var(--line);

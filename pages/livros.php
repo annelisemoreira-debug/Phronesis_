@@ -150,6 +150,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 
             <main class="areaContent">
                 <div class="toolbar">
+                    
                     <nav class="abas" aria-label="Filtrar por status">
                         <button type="button" class="aba ativo" data-status-filter="todas">Todas as obras</button>
                         <button type="button" class="aba" data-status-filter="andamento">Em andamento</button>
