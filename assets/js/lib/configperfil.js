@@ -2,29 +2,49 @@
 //
 // Tema, tamanho de fonte e menu lateral (drawer) mobile são tratados por
 // acessibilidade.js, carregado no <head> da página. Aqui ficam apenas as
-// funções específicas do perfil: ampliar foto, recortar/remover foto e
-// excluir conta.
+// funções específicas do perfil: ampliar foto (lightbox com zoom),
+// recortar/remover foto e excluir conta.
 
-$(document).ready(function () {
+$(function () {
+    'use strict';
+
+    var ENDPOINT = 'configperfil.php';
+
+    // Envia uma ação ao PHP e devolve a promise do $.ajax (resposta JSON).
+    function enviarAcao(dados) {
+        return $.ajax({
+            type: 'POST',
+            url: ENDPOINT,
+            data: dados,
+            dataType: 'json'
+        });
+    }
 
     // =========================================================================
-    // --- EXPANDIR FOTO DE PERFIL (LIGHTBOX COM ZOOM) ---
+    // FOTO DE PERFIL: LIGHTBOX COM ZOOM
     // =========================================================================
-    var $preview = $('#previewModal');
+    var $preview   = $('#previewModal');
     var $previewImg = $('#previewImage');
-    var $stage = $('#previewStage');
+    var $stage     = $('#previewStage');
     var $zoomLabel = $('#zoomLevel');
+    var $avatar    = $('#currentAvatar');
 
-    var ZOOM_MIN = 1, ZOOM_MAX = 5, ZOOM_CLIQUE = 2.5;
+    var ZOOM_MIN = 1;
+    var ZOOM_MAX = 5;
+    var ZOOM_CLIQUE = 2.5;
+    var ZOOM_PASSO = 0.5;
+
     var zoom = 1, panX = 0, panY = 0;
-    var pointers = {}, startPan = null, lastPinchDist = 0, dragMoved = false;
+    var pointers = {};
+    var startPan = null;
+    var lastPinchDist = 0;
+    var dragMoved = false;
+    var fecharTimer = null;
 
-    // Impede arrastar a foto para fora da área visível
     function limitarPan() {
-        var w = $previewImg[0].offsetWidth;
-        var h = $previewImg[0].offsetHeight;
-        var maxX = w * (zoom - 1) / 2;
-        var maxY = h * (zoom - 1) / 2;
+        var img = $previewImg[0];
+        var maxX = img.offsetWidth * (zoom - 1) / 2;
+        var maxY = img.offsetHeight * (zoom - 1) / 2;
         panX = Math.max(-maxX, Math.min(maxX, panX));
         panY = Math.max(-maxY, Math.min(maxY, panY));
     }
@@ -48,14 +68,15 @@ $(document).ready(function () {
     }
 
     function abrirPreview() {
-        var srcOriginal = $('#currentAvatar').attr('src');
+        var srcOriginal = $avatar.attr('src');
         var src = srcOriginal;
 
-        // Foto do Google vem pequena (192px); pede uma versão maior
+        // Foto do Google vem pequena (192px): pede uma versão maior
         if (src.indexOf('googleusercontent.com') !== -1) {
             src = src.replace(/=s\d+-c$/, '=s800-c');
         }
 
+        clearTimeout(fecharTimer);
         resetZoom();
 
         // Se a versão grande falhar, usa a imagem que já está no avatar
@@ -67,23 +88,21 @@ $(document).ready(function () {
         });
 
         $previewImg.attr('src', src);
-        $preview.css('display', 'flex');
+        $preview.css('display', 'flex').attr('aria-hidden', 'false');
         setTimeout(function () { $preview.addClass('show'); }, 10);
-        $preview.attr('aria-hidden', 'false');
     }
 
     function fecharPreview() {
-        $preview.removeClass('show');
-        $preview.attr('aria-hidden', 'true');
-        setTimeout(function () {
+        $preview.removeClass('show').attr('aria-hidden', 'true');
+        fecharTimer = setTimeout(function () {
             $preview.css('display', 'none');
             resetZoom();
         }, 250);
     }
 
     // Abrir: clique ou Enter/Espaço na foto
-    $('#currentAvatar').on('click', abrirPreview);
-    $('#currentAvatar').on('keydown', function (e) {
+    $avatar.on('click', abrirPreview);
+    $avatar.on('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             abrirPreview();
@@ -97,8 +116,8 @@ $(document).ready(function () {
     });
 
     // Botões de zoom
-    $('#btnZoomIn').on('click', function () { setZoom(zoom + 0.5); });
-    $('#btnZoomOut').on('click', function () { setZoom(zoom - 0.5); });
+    $('#btnZoomIn').on('click', function () { setZoom(zoom + ZOOM_PASSO); });
+    $('#btnZoomOut').on('click', function () { setZoom(zoom - ZOOM_PASSO); });
     $('#btnZoomReset').on('click', resetZoom);
 
     // Clique na imagem alterna entre normal e ampliada (ignora arraste)
@@ -147,11 +166,11 @@ $(document).ready(function () {
         }
     });
 
-    function soltarPointer(e) {
-        var ev = e.originalEvent;
-        delete pointers[ev.pointerId];
+    $previewImg.on('pointerup pointercancel', function (e) {
+        delete pointers[e.originalEvent.pointerId];
         lastPinchDist = 0;
         var ids = Object.keys(pointers);
+
         if (ids.length === 1) {
             // sobrou um dedo: recomeça o arraste a partir dele
             var p = pointers[ids[0]];
@@ -159,52 +178,48 @@ $(document).ready(function () {
         } else if (ids.length === 0) {
             $stage.removeClass('dragging');
         }
-    }
-    $previewImg.on('pointerup pointercancel', soltarPointer);
+    });
 
     // =========================================================================
-    // --- FOTO DE PERFIL: SELECIONAR, RECORTAR, REMOVER ---
+    // FOTO DE PERFIL: SELECIONAR, RECORTAR, REMOVER
     // =========================================================================
     var $cropModal = $('#cropModal');
     var $imageToCrop = $('#imageToCrop');
+    var $inputFoto = $('#foto_perfil');
     var cropper = null;
+
+    function destruirCropper() {
+        if (cropper) { cropper.destroy(); cropper = null; }
+    }
 
     function fecharCrop() {
         $cropModal.hide();
-        if (cropper) { cropper.destroy(); cropper = null; }
-        $('#foto_perfil').val('');
+        destruirCropper();
+        $inputFoto.val('');
     }
 
     $('#btnSelectFoto').on('click', function () {
-        $('#foto_perfil').click();
+        $inputFoto.trigger('click');
     });
 
     // Remover foto
     $('#btnRemoveFoto').on('click', function () {
         if (!confirm('Tem certeza que deseja remover sua foto de perfil e usar a padrão?')) return;
 
-        $.ajax({
-            type: 'POST',
-            url: 'configperfil.php',
-            data: { action: 'delete_image' },
-            dataType: 'json',
-            success: function (response) {
-                if (response.status === 'success') {
-                    window.location.reload();
-                } else {
-                    alert('Erro ao remover: ' + response.message);
-                }
-            },
-            error: function () {
+        enviarAcao({ action: 'delete_image' })
+            .done(function (r) {
+                if (r.status === 'success') window.location.reload();
+                else alert('Erro ao remover: ' + r.message);
+            })
+            .fail(function () {
                 alert('Erro técnico ao remover a foto.');
-            }
-        });
+            });
     });
 
     // Ao escolher um arquivo, abre o recorte
-    $('#foto_perfil').on('change', function (e) {
+    $inputFoto.on('change', function (e) {
         var files = e.target.files;
-        if (!files || files.length === 0) return;
+        if (!files || !files.length) return;
 
         if (files[0].type.indexOf('image/') !== 0) {
             alert('Selecione um arquivo de imagem.');
@@ -213,14 +228,12 @@ $(document).ready(function () {
         }
 
         var reader = new FileReader();
-        reader.onload = function (event) {
-            $imageToCrop.attr('src', event.target.result);
+        reader.onload = function (ev) {
+            $imageToCrop.attr('src', ev.target.result);
             $cropModal.css('display', 'flex');
+            destruirCropper();
 
-            if (cropper) cropper.destroy();
-
-            // Moldura quadrada fixa; a imagem sempre preenche a área
-            // (viewMode 3), então nunca sobra espaço vazio ou achatado.
+            // Moldura quadrada fixa; a imagem sempre preenche a área (viewMode 3)
             cropper = new Cropper($imageToCrop[0], {
                 aspectRatio: 1,
                 viewMode: 3,
@@ -250,107 +263,89 @@ $(document).ready(function () {
             imageSmoothingEnabled: true,
             imageSmoothingQuality: 'high'
         });
-        var base64data = canvas.toDataURL('image/webp');
 
-        $.ajax({
-            type: 'POST',
-            url: 'configperfil.php',
-            data: { action: 'crop_image', image_data: base64data },
-            dataType: 'json',
-            success: function (response) {
-                if (response.status === 'success') {
-                    window.location.reload();
-                } else {
-                    alert('Erro: ' + response.message);
-                }
-            },
-            error: function (xhr) {
-                console.log(xhr.responseText);
+        enviarAcao({ action: 'crop_image', image_data: canvas.toDataURL('image/webp') })
+            .done(function (r) {
+                if (r.status === 'success') window.location.reload();
+                else alert('Erro: ' + r.message);
+            })
+            .fail(function () {
                 alert('Erro técnico ao salvar a imagem.');
-            }
-        });
+            });
     });
 
     // =========================================================================
-    // --- EXCLUSÃO DE CONTA ---
+    // EXCLUSÃO DE CONTA (sem alert de sucesso: redireciona direto)
     // =========================================================================
     var $deleteModal = $('#deleteAccountModal');
+    var $senha = $('#confirmDeletePassword');
+
+    function fecharDelete() {
+        $deleteModal.hide();
+    }
+
+    function excluirConta(dados, $botao) {
+        $botao.prop('disabled', true);
+
+        enviarAcao(dados)
+            .done(function (r) {
+                if (r.status === 'success') {
+                    window.location.href = r.redirect;
+                } else {
+                    $botao.prop('disabled', false);
+                    alert(r.message);
+                }
+            })
+            .fail(function () {
+                $botao.prop('disabled', false);
+                alert('Erro técnico ao tentar processar a solicitação.');
+            });
+    }
 
     $('#btnOpenDeleteModal').on('click', function () {
-        $('#confirmDeletePassword').val('');
+        $senha.val('');
         $deleteModal.css('display', 'flex');
+        $senha.trigger('focus');
     });
 
-    $('#btnCancelDelete').on('click', function () {
-        $deleteModal.hide();
-    });
+    $('#btnCancelDelete').on('click', fecharDelete);
 
     // Conta comum: confirma com senha
-    $('#btnConfirmDelete').on('click', function () {
-        var password = $('#confirmDeletePassword').val();
-
+    function confirmarComSenha() {
+        var password = $senha.val();
         if (!password) {
             alert('Por favor, digite sua senha.');
             return;
         }
+        excluirConta({ action: 'delete_account', password: password }, $('#btnConfirmDelete'));
+    }
 
-        $.ajax({
-            type: 'POST',
-            url: 'configperfil.php',
-            data: { action: 'delete_account', password: password },
-            dataType: 'json',
-            success: function (response) {
-                if (response.status === 'success') {
-                    alert('Sua conta e todos os dados foram excluídos com sucesso.');
-                    window.location.href = response.redirect;
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function () {
-                alert('Erro técnico ao tentar processar a solicitação.');
-            }
-        });
+    $('#btnConfirmDelete').on('click', confirmarComSenha);
+    $senha.on('keydown', function (e) {
+        if (e.key === 'Enter') confirmarComSenha();
     });
 
     // Conta Google: exclusão direta
     $('#btnConfirmDeleteGoogle').on('click', function () {
-        $.ajax({
-            type: 'POST',
-            url: 'configperfil.php',
-            data: { action: 'delete_account_google' },
-            dataType: 'json',
-            success: function (response) {
-                if (response.status === 'success') {
-                    alert('Seus dados foram removidos com sucesso do nosso sistema.');
-                    window.location.href = response.redirect;
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function () {
-                alert('Erro técnico ao tentar apagar os dados.');
-            }
-        });
+        excluirConta({ action: 'delete_account_google' }, $(this));
     });
 
     // =========================================================================
-    // --- TECLADO (um único listener para os modais) ---
+    // TECLADO (um único listener para os modais)
     // =========================================================================
     $(document).on('keydown', function (e) {
         // Lightbox da foto
         if ($preview.hasClass('show')) {
             if (e.key === 'Escape') fecharPreview();
-            else if (e.key === '+' || e.key === '=') setZoom(zoom + 0.5);
-            else if (e.key === '-') setZoom(zoom - 0.5);
+            else if (e.key === '+' || e.key === '=') setZoom(zoom + ZOOM_PASSO);
+            else if (e.key === '-') setZoom(zoom - ZOOM_PASSO);
             else if (e.key === '0') resetZoom();
             return;
         }
 
-        // Demais modais
         if (e.key === 'Escape') {
             if ($cropModal.is(':visible')) fecharCrop();
-            if ($deleteModal.is(':visible')) $deleteModal.hide();
+            if ($deleteModal.is(':visible')) fecharDelete();
         }
     });
 });

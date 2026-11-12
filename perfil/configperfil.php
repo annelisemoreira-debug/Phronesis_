@@ -1,185 +1,77 @@
 <?php
 session_start();
 
-// 1. Verifica se a sessão existe
+// =========================================================================
+// 1. SESSÃO E USUÁRIO
+// =========================================================================
 if (!isset($_SESSION['id'])) {
-    header("Location: ../login.php");
+    header('Location: ../login.php');
     exit();
 }
 
 include '../conexao.php';
 
-$id_usuario = (int) $_SESSION['id'];
-$fotoPadraoBanco = 'assets/img/default-user.webp';
+const FOTO_PADRAO_BANCO = 'assets/img/default-user.webp';
+const FOTO_PADRAO_URL   = '../assets/img/default-user.webp';
+const TAMANHO_MAX_FOTO  = 5 * 1024 * 1024; // 5 MB
 
-// 2. Verifica se o usuário da sessão ainda existe no banco
-$stmtUser = $conn->prepare("SELECT nome, email, foto, senha, tipo FROM usuario WHERE id_usuario = ?");
-$stmtUser->bind_param("i", $id_usuario);
+$id_usuario = (int) $_SESSION['id'];
+
+$stmtUser = $conn->prepare('SELECT nome, email, foto, senha, tipo FROM usuario WHERE id_usuario = ?');
+$stmtUser->bind_param('i', $id_usuario);
 $stmtUser->execute();
 $user = $stmtUser->get_result()->fetch_assoc();
 
 if (!$user) {
     session_destroy();
-    header("Location: ../login.php");
+    header('Location: ../login.php');
     exit();
 }
 
-$isGoogleUser = (isset($_SESSION['login_google']) && $_SESSION['login_google'] === true)
-    || filter_var($user['foto'], FILTER_VALIDATE_URL);
+$fotoEhUrl    = (bool) filter_var($user['foto'], FILTER_VALIDATE_URL);
+$isGoogleUser = (isset($_SESSION['login_google']) && $_SESSION['login_google'] === true) || $fotoEhUrl;
 
-/**
- * Apaga do disco a foto antiga (ignora foto padrão e URLs do Google).
- */
-function apagarFotoAntiga($foto, $fotoPadraoBanco)
+// =========================================================================
+// 2. FUNÇÕES AUXILIARES
+// =========================================================================
+
+/** Responde em JSON e encerra a execução. */
+function responderJson(array $dados): void
 {
-    if ($foto && $foto != $fotoPadraoBanco && !filter_var($foto, FILTER_VALIDATE_URL)) {
-        $caminho = "../" . $foto;
-        if (file_exists($caminho)) {
-            @unlink($caminho);
-        }
-    }
-}
-
-// =========================================================================
-// 3. PROCESSAMENTO DAS REQUISIÇÕES POST / AJAX
-// =========================================================================
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
-    if (ob_get_length()) { ob_clean(); }
-    header('Content-Type: application/json');
-
-    $action = $_POST['action'];
-
-    // Usuários do Google não alteram a foto
-    if (($action == 'delete_image' || $action == 'crop_image') && $isGoogleUser) {
-        echo json_encode(['status' => 'error', 'message' => 'Usuários do Google não podem alterar a foto de perfil.']);
-        exit();
-    }
-
-    // ---- Remover foto ----
-    if ($action == 'delete_image') {
-        try {
-            apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
-
-            $upd = $conn->prepare("UPDATE usuario SET foto = NULL WHERE id_usuario = ?");
-            $upd->bind_param("i", $id_usuario);
-            $upd->execute();
-
-            echo json_encode(['status' => 'success']);
-        } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-        exit();
-    }
-
-    // ---- Salvar foto cortada ----
-    if ($action == 'crop_image') {
-        try {
-            $diretorioFisico = "../assets/img/perfis/";
-            $diretorioBanco  = "assets/img/perfis/";
-
-            if (!file_exists($diretorioFisico)) {
-                mkdir($diretorioFisico, 0755, true);
-            }
-
-            $base64_image = $_POST['image_data'] ?? '';
-
-            // Aceita apenas imagem em data URL
-            if (!preg_match('/^data:image\/(webp|png|jpeg);base64,/', $base64_image)) {
-                echo json_encode(['status' => 'error', 'message' => 'Formato de imagem inválido.']);
-                exit();
-            }
-
-            $data = explode(',', $base64_image, 2);
-            $image_content = base64_decode($data[1], true);
-
-            if ($image_content === false || strlen($image_content) > 5 * 1024 * 1024) {
-                echo json_encode(['status' => 'error', 'message' => 'Imagem inválida ou maior que 5 MB.']);
-                exit();
-            }
-
-            $nomeArquivo = "user_" . $id_usuario . "_" . time() . ".webp";
-            $caminhoFisico = $diretorioFisico . $nomeArquivo;
-            $caminhoBanco  = $diretorioBanco . $nomeArquivo;
-
-            if (file_put_contents($caminhoFisico, $image_content)) {
-                apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
-
-                $upd = $conn->prepare("UPDATE usuario SET foto = ? WHERE id_usuario = ?");
-                $upd->bind_param("si", $caminhoBanco, $id_usuario);
-                $upd->execute();
-
-                echo json_encode(['status' => 'success', 'redirect' => 'configperfil.php']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Não foi possível escrever o arquivo na pasta perfis.']);
-            }
-        } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-        exit();
-    }
-
-    // ---- Excluir conta (com senha) ----
-    if ($action == 'delete_account') {
-        try {
-            $password = $_POST['password'] ?? '';
-
-            if (!password_verify($password, $user['senha'])) {
-                echo json_encode(['status' => 'error', 'message' => 'Senha incorreta!']);
-                exit();
-            }
-
-            apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
-
-            $del = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
-            $del->bind_param("i", $id_usuario);
-
-            if ($del->execute()) {
-                session_destroy();
-                echo json_encode(['status' => 'success', 'redirect' => '../index.php']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Erro ao deletar dados do banco.']);
-            }
-        } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-        exit();
-    }
-
-    // ---- Excluir conta (usuário Google) ----
-    if ($action == 'delete_account_google') {
-        try {
-            if (!$isGoogleUser) {
-                echo json_encode(['status' => 'error', 'message' => 'Esta conta exige confirmação por senha.']);
-                exit();
-            }
-
-            apagarFotoAntiga($user['foto'], $fotoPadraoBanco);
-
-            $del = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
-            $del->bind_param("i", $id_usuario);
-
-            if ($del->execute()) {
-                session_destroy();
-                echo json_encode(['status' => 'success', 'redirect' => '../index.php']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Erro ao deletar dados do banco.']);
-            }
-        } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-        exit();
-    }
-
-    echo json_encode(['status' => 'error', 'message' => 'Ação desconhecida.']);
+    echo json_encode($dados);
     exit();
 }
 
-// =========================================================================
-// 4. DADOS PARA EXIBIÇÃO
-// =========================================================================
-$caminhoPadrao = "../assets/img/default-user.webp";
+/** Apaga do disco a foto antiga (ignora foto padrão e URLs do Google). */
+function apagarFotoAntiga(?string $foto): void
+{
+    if (!$foto || $foto === FOTO_PADRAO_BANCO || filter_var($foto, FILTER_VALIDATE_URL)) {
+        return;
+    }
+    $caminho = '../' . $foto;
+    if (file_exists($caminho)) {
+        @unlink($caminho);
+    }
+}
 
-function otimizarFotoGoogle($url, $tamanho = 192)
+/** Exclui o usuário (e a foto) e encerra a sessão. */
+function excluirUsuario(mysqli $conn, int $idUsuario, ?string $foto): void
+{
+    apagarFotoAntiga($foto);
+
+    $del = $conn->prepare('DELETE FROM usuario WHERE id_usuario = ?');
+    $del->bind_param('i', $idUsuario);
+
+    if (!$del->execute()) {
+        responderJson(['status' => 'error', 'message' => 'Erro ao deletar dados do banco.']);
+    }
+
+    session_destroy();
+    responderJson(['status' => 'success', 'redirect' => '../index.php']);
+}
+
+/** Pede ao Google uma versão da foto no tamanho desejado. */
+function otimizarFotoGoogle(string $url, int $tamanho = 192): string
 {
     if (strpos($url, 'googleusercontent.com') === false) {
         return $url;
@@ -188,24 +80,131 @@ function otimizarFotoGoogle($url, $tamanho = 192)
     return $url . '=s' . $tamanho . '-c';
 }
 
-if (filter_var($user['foto'], FILTER_VALIDATE_URL)) {
-    $fotoExibicao = otimizarFotoGoogle($user['foto']);
-    $temFotoPersonalizada = false;
-    $fotoEhUrl = true;
-} else {
-    $temFotoPersonalizada = (!empty($user['foto'])
-        && $user['foto'] != $fotoPadraoBanco
-        && file_exists("../" . $user['foto']));
-    $fotoExibicao = $temFotoPersonalizada ? "../" . $user['foto'] : $caminhoPadrao;
-    $fotoEhUrl = false;
+// =========================================================================
+// 3. REQUISIÇÕES POST / AJAX
+// =========================================================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if (ob_get_length()) {
+        ob_clean();
+    }
+    header('Content-Type: application/json');
+
+    $action = $_POST['action'];
+
+    try {
+        switch ($action) {
+
+            // ---- Remover foto ----
+            case 'delete_image':
+                if ($isGoogleUser) {
+                    responderJson(['status' => 'error', 'message' => 'Usuários do Google não podem alterar a foto de perfil.']);
+                }
+
+                apagarFotoAntiga($user['foto']);
+
+                $upd = $conn->prepare('UPDATE usuario SET foto = NULL WHERE id_usuario = ?');
+                $upd->bind_param('i', $id_usuario);
+                $upd->execute();
+
+                responderJson(['status' => 'success']);
+                break;
+
+            // ---- Salvar foto recortada ----
+            case 'crop_image':
+                if ($isGoogleUser) {
+                    responderJson(['status' => 'error', 'message' => 'Usuários do Google não podem alterar a foto de perfil.']);
+                }
+
+                $base64 = $_POST['image_data'] ?? '';
+
+                // Aceita apenas imagem em data URL
+                if (!preg_match('/^data:image\/(webp|png|jpeg);base64,/', $base64)) {
+                    responderJson(['status' => 'error', 'message' => 'Formato de imagem inválido.']);
+                }
+
+                $partes   = explode(',', $base64, 2);
+                $conteudo = base64_decode($partes[1], true);
+
+                if ($conteudo === false || strlen($conteudo) > TAMANHO_MAX_FOTO) {
+                    responderJson(['status' => 'error', 'message' => 'Imagem inválida ou maior que 5 MB.']);
+                }
+
+                // Garante que o conteúdo é mesmo uma imagem
+                if (@getimagesizefromstring($conteudo) === false) {
+                    responderJson(['status' => 'error', 'message' => 'O arquivo enviado não é uma imagem válida.']);
+                }
+
+                $diretorioFisico = '../assets/img/perfis/';
+                $diretorioBanco  = 'assets/img/perfis/';
+
+                if (!is_dir($diretorioFisico)) {
+                    mkdir($diretorioFisico, 0755, true);
+                }
+
+                $nomeArquivo = 'user_' . $id_usuario . '_' . time() . '.webp';
+
+                if (!file_put_contents($diretorioFisico . $nomeArquivo, $conteudo)) {
+                    responderJson(['status' => 'error', 'message' => 'Não foi possível escrever o arquivo na pasta perfis.']);
+                }
+
+                apagarFotoAntiga($user['foto']);
+
+                $caminhoBanco = $diretorioBanco . $nomeArquivo;
+                $upd = $conn->prepare('UPDATE usuario SET foto = ? WHERE id_usuario = ?');
+                $upd->bind_param('si', $caminhoBanco, $id_usuario);
+                $upd->execute();
+
+                responderJson(['status' => 'success', 'redirect' => 'configperfil.php']);
+                break;
+
+            // ---- Excluir conta (com senha) ----
+            case 'delete_account':
+                $password = $_POST['password'] ?? '';
+
+                if (!password_verify($password, (string) $user['senha'])) {
+                    responderJson(['status' => 'error', 'message' => 'Senha incorreta!']);
+                }
+
+                excluirUsuario($conn, $id_usuario, $user['foto']);
+                break;
+
+            // ---- Excluir conta (usuário Google) ----
+            case 'delete_account_google':
+                if (!$isGoogleUser) {
+                    responderJson(['status' => 'error', 'message' => 'Esta conta exige confirmação por senha.']);
+                }
+
+                excluirUsuario($conn, $id_usuario, $user['foto']);
+                break;
+
+            default:
+                responderJson(['status' => 'error', 'message' => 'Ação desconhecida.']);
+        }
+    } catch (Exception $e) {
+        responderJson(['status' => 'error', 'message' => $e->getMessage()]);
+    }
 }
 
-$ehAdmin = isset($user['tipo']) && ($user['tipo'] === 'admin' || $user['tipo'] === '1' || $user['tipo'] === 1);
+// =========================================================================
+// 4. DADOS PARA EXIBIÇÃO
+// =========================================================================
+if ($fotoEhUrl) {
+    $fotoExibicao         = otimizarFotoGoogle($user['foto']);
+    $temFotoPersonalizada = false;
+} else {
+    $temFotoPersonalizada = !empty($user['foto'])
+        && $user['foto'] !== FOTO_PADRAO_BANCO
+        && file_exists('../' . $user['foto']);
+    $fotoExibicao = $temFotoPersonalizada ? '../' . $user['foto'] : FOTO_PADRAO_URL;
+}
 
-$verCss    = @filemtime(__DIR__ . '/../assets/css/configperfil.css') ?: time();
-$verJs     = @filemtime(__DIR__ . '/../assets/js/lib/configperfil.js') ?: time();
+$ehAdmin = isset($user['tipo']) && in_array($user['tipo'], ['admin', '1', 1], true);
+
+// Versão dos arquivos (evita cache antigo)
+$verCss     = @filemtime(__DIR__ . '/../assets/css/configperfil.css') ?: time();
+$verJs      = @filemtime(__DIR__ . '/../assets/js/lib/configperfil.js') ?: time();
 $verAcessJs = @filemtime(__DIR__ . '/../assets/js/lib/acessibilidade.js') ?: time();
-$verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
+$verBanner  = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -228,7 +227,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 <body>
     <div class="main-wrapper">
 
-        <!-- Header topo (Celular e Tablet) — mesma logo do header.php -->
+        <!-- Header topo (celular e tablet) -->
         <header class="mobile-header">
             <div class="mobile-logo-container">
                 <a href="../index.php"><img src="../assets/img/logos/logoCelularClaro.webp" alt="Phronesis" class="logo-light"></a>
@@ -242,10 +241,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
             </button>
         </header>
 
-        <!-- Fundo escurecido (Overlay) -->
+        <!-- Fundo escurecido -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- Sidebar / Menu Drawer -->
+        <!-- Sidebar / drawer -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-brand">
@@ -271,7 +270,6 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                     </li>
                 </ul>
 
-                <!-- Navegação entre páginas -->
                 <div class="nav-desktop">
                     <p class="nav-title">Navegação</p>
                     <ul>
@@ -315,15 +313,13 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                 <?php endif; ?>
             </nav>
 
-            <!-- Direitos autorais -->
             <div class="sidebar-copyright">
                 <p>© <?php echo date('Y'); ?> Phronesis_ • Todos os direitos reservados</p>
             </div>
         </aside>
 
-        <!-- Conteúdo Principal -->
+        <!-- Conteúdo principal -->
         <main class="content">
-            <!-- BANNER (claro e escuro · PC / tablet / celular) -->
             <header class="profile-banner">
                 <picture class="banner-light">
                     <source media="(max-width: 600px)"  srcset="../assets/img/banners/cellphone/perfilCelularClaro.webp">
@@ -355,7 +351,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                              decoding="async"
                              fetchpriority="high"
                              alt="Foto de perfil (clique para ampliar)"
-                             onerror="this.onerror=null; this.src='../assets/img/default-user.webp';">
+                             onerror="this.onerror=null; this.src='<?php echo FOTO_PADRAO_URL; ?>';">
                     </div>
                     <div class="upload-info">
                         <?php if ($isGoogleUser): ?>
@@ -399,8 +395,8 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
             </section>
         </main>
     </div>
-    
-    <!-- Modal de visualização ampliada da foto -->
+
+    <!-- Modal: foto ampliada -->
     <div id="previewModal" class="modal-preview" aria-hidden="true">
         <span class="close-preview" id="btnClosePreview" title="Fechar" role="button" aria-label="Fechar visualização">&times;</span>
 
@@ -416,7 +412,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
         </div>
     </div>
 
-    <!-- Modal de Crop da Imagem -->
+    <!-- Modal: recorte da imagem -->
     <div id="cropModal" class="modal-crop">
         <div class="modal-crop-content">
             <h3>Ajuste sua foto</h3>
@@ -428,7 +424,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
         </div>
     </div>
 
-    <!-- Modal de Exclusão de Conta -->
+    <!-- Modal: exclusão de conta -->
     <div id="deleteAccountModal" class="modal-crop">
         <div class="modal-crop-content">
             <h3 class="delete-title">Confirmar Exclusão</h3>
@@ -462,11 +458,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="../assets/js/lib/configperfil.js?v=<?php echo $verJs; ?>" defer></script>
-
-    <!-- ================= NAVEGAÇÃO INFERIOR (só celular) ================= -->
+    <!-- Navegação inferior (só celular) -->
     <nav class="bottom-nav" aria-label="Navegação principal">
         <a href="../index.php" class="bn-item">
             <i class="fa-solid fa-house"></i><span>Início</span>
@@ -484,6 +476,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
             <i class="fa-regular fa-user"></i><span>Perfil</span>
         </a>
     </nav>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="../assets/js/lib/configperfil.js?v=<?php echo $verJs; ?>" defer></script>
 
     <?php include 'vlibras.php'; ?>
 </body>
