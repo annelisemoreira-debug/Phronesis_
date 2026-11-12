@@ -149,6 +149,29 @@ body {
 }
 
 /* =======================================================
+   DIREITOS AUTORAIS (rodapé da sidebar)
+   ======================================================= */
+.sidebar-copyright {
+    margin-top: auto;          /* empurra para o fim da sidebar */
+    padding-top: 20px;
+}
+
+.sidebar-copyright p {
+    background-color: #f0ecff;
+    color: #6d3fe0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    text-align: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+html.dark-theme .sidebar-copyright p {
+    background-color: #2d2940;
+    color: #bfa2ff;
+}
+
+/* =======================================================
    CONTEÚDO PRINCIPAL
    ======================================================= */
 .content {
@@ -810,12 +833,12 @@ body.menu-open {
     .bn-item i { font-size: 1.15rem; }
     .bn-item.ativo { color: #8654f3; }
 
-    /* Header fixo no topo */
+    /* Header fixo no topo (mesmo padrão do header.css) */
     .mobile-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 20px;
+        padding: 10px 16px;
         background-color: #8c52ff;
         width: 100%;
         position: sticky;
@@ -824,9 +847,16 @@ body.menu-open {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
+    .mobile-logo-container a {
+        display: flex;
+        align-items: center;
+    }
+
     .mobile-header .logo-light,
     .mobile-header .logo-dark {
-        width: 140px;
+        width: auto;
+        max-width: none;
+        height: 40px;
         margin-bottom: 0;
     }
 
@@ -953,7 +983,9 @@ body.menu-open {
     }
 
     html.dark-theme .mobile-header .logo-dark {
-        width: 140px;
+        width: auto;
+        max-width: none;
+        height: 40px;
     }
 
     html.dark-theme .mobile-menu-toggle {

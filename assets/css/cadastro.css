@@ -5,6 +5,21 @@
     box-sizing: border-box;
 }
 
+/* Footer sempre no fim da página */
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Imagem de Fundo */
 .bg-html {
     position: fixed;
@@ -18,10 +33,12 @@
 }
 
 .container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
     padding: 60px;
 }
 
@@ -80,13 +97,12 @@
 }
 
 .mainContainer input {
-    border: 2px solid transparent; /* Adiciona uma borda invisível de 2px no estado normal */
-    /* Padding ajustado para acomodar o ícone à direita */
-    padding: 12px 40px 12px 15px; /* Direita agora tem 40px */
+    border: 2px solid transparent;
+    padding: 12px 40px 12px 15px;
     border-radius: 25px;
     width: 100%;
     font-size: 16px;
-    background-color: white; /* Garante que o fundo seja branco */
+    background-color: white;
     transition: all 0.3s ease;
 }
 
@@ -110,13 +126,13 @@
 .input-group-password {
     position: relative;
     display: flex;
-    align-items: center; /* Centraliza o ícone verticalmente em relação ao input */
+    align-items: center;
     margin-top: 5px;
 }
 
 .input-group-password input {
-    padding-right: 45px !important; /* Espaço aumentado para o texto nunca bater no olho */
-    margin-top: 0 !important; /* Reseta margem para não quebrar o flex */
+    padding-right: 45px !important;
+    margin-top: 0 !important;
 }
 
 .toggle-password {
@@ -124,10 +140,8 @@
     right: 15px;
     cursor: pointer;
     color: #001a8b;
-    font-size: 16px; /* Tamanho levemente ajustado para encaixar melhor com o fundo */
+    font-size: 16px;
     z-index: 10;
-    
-    /* --- ADICIONADO: Fundo branco protetor --- */
     background-color: #ffffff;
     border-radius: 10%;
     padding: 4px;
@@ -185,7 +199,7 @@
 }
 
 /* =======================================================
-   PAINEL LATERAL DE PREENCHIMENTO RÁPIDO (ADICIONADO)
+   PAINEL LATERAL DE PREENCHIMENTO RÁPIDO
    ======================================================= */
 .quick-fill-sidebar {
     position: fixed;
@@ -220,7 +234,31 @@
     transform: scale(1.05);
 }
 
-/* Responsividade Geral e Ajustes do Painel */
+/* =======================================================
+   FOOTER DESTA TELA
+   ======================================================= */
+body .site-footer {
+    background-color: #ffffff;          /* --panel */
+    font-family: Arial, Helvetica, sans-serif;
+    --footer-text: #7a4fd6;             /* --ink-soft */
+    --footer-name: #3b0f7a;             /* --ink */
+    --footer-line: #d3bff5;             /* --line */
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 18px rgba(80, 40, 160, 0.12);
+}
+
+html.dark-theme body .site-footer {
+    background-color: #1d1b26;
+    --footer-text: #c3a9ff;
+    --footer-name: #f1ecff;
+    --footer-line: #38334a;
+}
+
+/* =======================================================
+   RESPONSIVIDADE
+   ======================================================= */
+
+/* Painel de preenchimento rápido sai do lado e vira uma fileira */
 @media (max-width: 1200px) {
     .quick-fill-sidebar {
         position: static;
@@ -238,10 +276,59 @@
     }
 }
 
+/* TABLET deitado: duas colunas, mais compacto */
+@media (max-width: 1024px) {
+    .container {
+        padding: 32px 24px;
+    }
+    .glass-card {
+        height: auto;
+        min-height: 520px;
+        max-width: 900px;
+    }
+    .logo-section {
+        padding: 32px;
+    }
+    .logo-section img {
+        max-width: 260px;
+    }
+    .mainContainer {
+        padding: 32px 28px;
+    }
+    .mainContainer h1 {
+        font-size: 32px;
+    }
+}
+
+/* TABLET em pé e CELULAR: logo em cima, formulário embaixo */
 @media (max-width: 850px) {
+    .container {
+        padding: 24px 16px;
+    }
     .glass-card {
         flex-direction: column;
         height: auto;
+        min-height: 0;
+        max-width: 560px;
+    }
+    .logo-section {
+        flex: none;
+        padding: 28px 20px;
+    }
+    .logo-section img {
+        max-width: 220px;
+    }
+    .mainContainer {
+        flex: none;
+        padding: 28px 32px 32px;
+        gap: 14px;
+    }
+    .mainContainer h1 {
+        font-size: 30px;
+        text-align: center;
+    }
+    .mainContainer p {
+        text-align: center;
     }
     .linha_dupla {
         flex-direction: column;
@@ -249,8 +336,50 @@
     }
 }
 
+/* CELULAR */
 @media (max-width: 600px) {
+    .container {
+        padding: 16px 12px;
+    }
+    .glass-card {
+        max-width: 420px;
+        border-radius: 18px;
+    }
+    .logo-section {
+        padding: 22px 16px;
+    }
+    .logo-section img {
+        max-width: 180px;
+    }
+    .mainContainer {
+        padding: 22px 20px 26px;
+    }
+    .mainContainer h1 {
+        font-size: 26px;
+    }
+    .entrarLogin {
+        font-size: 17px;
+    }
+    .quick-fill-sidebar {
+        gap: 6px;
+        padding: 0 12px;
+    }
     .quick-fill-btn {
-        width: calc(50% - 8px);
+        width: calc(33.33% - 6px);
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+}
+
+/* Celulares bem pequenos (320–380px) */
+@media (max-width: 380px) {
+    .container {
+        padding: 12px 8px;
+    }
+    .mainContainer {
+        padding: 20px 14px 24px;
+    }
+    .mainContainer h1 {
+        font-size: 24px;
     }
 }

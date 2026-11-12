@@ -141,6 +141,29 @@ body {
     opacity: 1;
 }
 
+/* =======================================================
+   DIREITOS AUTORAIS (rodapé da sidebar)
+   ======================================================= */
+.sidebar-copyright {
+    margin-top: auto;          /* empurra para o fim da sidebar */
+    padding-top: 20px;
+}
+
+.sidebar-copyright p {
+    background-color: #f0ecff;
+    color: #6d3fe0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    text-align: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+html.dark-theme .sidebar-copyright p {
+    background-color: #2d2940;
+    color: #bfa2ff;
+}
+
 /* --- CONTEÚDO PRINCIPAL (Direita com Rolagem Interna) --- */
 .content {
     flex: 1;
@@ -705,13 +728,13 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         gap: 0;
     }
 
-    /* Header fixo no topo */
+    /* Header fixo no topo (mesmo padrão do header.css) */
     .mobile-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 20px;
-        background-color: #8c52ff;;
+        padding: 10px 16px;
+        background-color: #8c52ff;
         width: 100%;
         position: sticky;
         top: 0;
@@ -719,9 +742,16 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
+    .mobile-logo-container a {
+        display: flex;
+        align-items: center;
+    }
+
     .mobile-header .logo-light,
     .mobile-header .logo-dark {
-        width: 140px;
+        width: auto;
+        max-width: none;
+        height: 40px;
         margin-bottom: 0;
     }
 
@@ -954,7 +984,13 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         color: #bfa2ff;
     }
 
-    html.dark-theme .mobile-header .logo-dark,
+    /* Logo do header mobile (mesmo tamanho do header.css) */
+    html.dark-theme .mobile-header .logo-dark {
+        width: auto;
+        max-width: none;
+        height: 40px;
+    }
+
     html.dark-theme .sidebar-header-mobile .logo-dark {
         width: 140px;
     }

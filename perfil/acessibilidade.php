@@ -99,11 +99,11 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
 
     <div class="main-wrapper">
 
-        <!-- Header topo (Celular e Tablet) -->
+        <!-- Header topo (Celular e Tablet) — mesma logo do header.php -->
         <header class="mobile-header">
             <div class="mobile-logo-container">
-                <a href="../index.php"><img src="../assets/img/logos/logoSite.webp" alt="Phronesis" class="logo-light"></a>
-                <a href="../index.php"><img src="../assets/img/logos/logoescuro.webp" alt="Phronesis" class="logo-dark"></a>
+                <a href="../index.php"><img src="../assets/img/logos/logoCelularClaro.webp" alt="Phronesis" class="logo-light"></a>
+                <a href="../index.php"><img src="../assets/img/logos/logoCelularEscuro.webp" alt="Phronesis" class="logo-dark"></a>
             </div>
             <button type="button" class="mobile-menu-toggle" id="btnOpenSidebar"
                     aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
@@ -186,6 +186,11 @@ $fotoExibicao = (!empty($user['foto']) && file_exists("../" . $user['foto'])) ? 
                     </ul>
                 <?php endif; ?>
             </nav>
+
+            <!-- Direitos autorais -->
+            <div class="sidebar-copyright">
+                <p>© <?php echo date('Y'); ?> Phronesis_ • Todos os direitos reservados</p>
+            </div>
         </aside>
 
         <!-- Conteúdo Principal -->

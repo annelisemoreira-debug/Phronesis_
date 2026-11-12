@@ -9,7 +9,7 @@ $__base = str_replace($__root, '', str_replace('\\', '/', realpath(__DIR__ . '/.
 ?>
 <link rel="stylesheet" href="<?= $__base ?>/assets/css/footer.css">
 
-<footer class="site-footer">
+<footer class="site-footer<?= !empty($footerAuth) ? ' footer-auth' : '' ?>">
 
     <!-- Integrantes do projeto -->
     <ul class="footer-team" aria-label="Integrantes do projeto">

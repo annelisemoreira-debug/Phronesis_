@@ -78,6 +78,18 @@ html.dark-theme {
 }
 
 /* =======================================================
+   VARIAÇÃO: telas de login / cadastro / recuperar senha
+   (fundo lilás como na referência)
+   ======================================================= */
+.site-footer.footer-auth {
+    background-color: #d7c5f4;
+}
+
+html.dark-theme .site-footer.footer-auth {
+    background-color: #1b1727;
+}
+
+/* =======================================================
    RESPONSIVIDADE
    ======================================================= */
 @media (max-width: 768px) {
@@ -85,5 +97,16 @@ html.dark-theme {
         flex-direction: column;
         justify-content: center;
         text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-footer {
+        font-size: 0.8rem;
+        padding-top: 20px;
+    }
+
+    .footer-team li + li::before {
+        margin: 0 8px;
     }
 }
