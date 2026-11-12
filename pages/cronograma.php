@@ -503,7 +503,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
     <script>
         // Aplica o tema salvo antes de renderizar (evita "flash" branco)
         (function () {

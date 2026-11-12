@@ -191,7 +191,7 @@ $googleLogado = 'false';
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
 
     <!-- SweetAlert (avisos do meu_calendario.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
 
     <!-- Aplica o tema escuro antes de renderizar (evita flash branco) -->
     <script>

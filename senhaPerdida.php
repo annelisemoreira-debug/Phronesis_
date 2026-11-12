@@ -14,7 +14,7 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
     <title>Recuperar Senha</title>
     <link rel="stylesheet" href="assets/css/senha.css">
     <link rel="icon" type="image/png" href="assets/img/logos/favicon.webp">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
 </head>
 <body>
     <img src="assets/img/fundos/fundoRoxo.webp" class="bg-html" alt="Fundo">
