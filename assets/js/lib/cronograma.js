@@ -18,14 +18,14 @@ const DIAS_MAP = [
     }
 })();
 
-// ===== MENU LATERAL (DRAWER) NO CELULAR =====
+// ===== MENU LATERAL (DRAWER) NO CELULAR E TABLET =====
 (function () {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     const btnFechar = document.getElementById('btnFecharSidebar');
     if (!sidebar || !overlay || !btnFechar) return;
 
-    const ehCelular = () => window.matchMedia('(max-width: 768px)').matches;
+    const ehTelaMenor = () => window.matchMedia('(max-width: 1024px)').matches; // celular + tablet
 
     function abrirMenu() {
         sidebar.classList.add('active');
@@ -38,7 +38,14 @@ const DIAS_MAP = [
         document.body.classList.remove('menu-open');
     }
 
-document.getElementById('btnAbrirSidebar')?.addEventListener('click', abrirMenu);
+    // Intercepta o hambúrguer do header (celular/tablet) e abre a sidebar
+    document.addEventListener('click', (e) => {
+        if (!ehTelaMenor() || !e.target.closest('#hamburgerBtn')) return;
+        e.stopPropagation();
+        sidebar.classList.contains('active') ? fecharMenu() : abrirMenu();
+    }, true);
+
+    document.getElementById('btnAbrirSidebar')?.addEventListener('click', abrirMenu);
 
     overlay.addEventListener('click', fecharMenu);
     btnFechar.addEventListener('click', fecharMenu);
@@ -46,7 +53,7 @@ document.getElementById('btnAbrirSidebar')?.addEventListener('click', abrirMenu)
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && sidebar.classList.contains('active')) fecharMenu();
     });
-    window.addEventListener('resize', () => { if (!ehCelular()) fecharMenu(); });
+    window.addEventListener('resize', () => { if (!ehTelaMenor()) fecharMenu(); });
 })();
 
 // ===== DIAS DA SEMANA + MATÉRIAS POR DIA =====

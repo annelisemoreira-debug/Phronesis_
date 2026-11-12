@@ -15,13 +15,22 @@ if (strpos($script_name, '/pages/') !== false || strpos($script_name, '/perfil/'
     $path = "";
 }
 
-// No index o menu hambúrguer não tem função (a navegação fica na barra inferior)
-// Páginas que usam a barra inferior e não precisam do hambúrguer
-$paginasSemHamburger = ['index.php', 'livros.php', 'cronograma.php'];
-$semHamburger = in_array(basename($script_name), $paginasSemHamburger, true);
+// -------------------------------------------------------------------------
+// 2. BARRA INFERIOR x HAMBÚRGUER
+// -------------------------------------------------------------------------
+$paginaAtualArquivo = basename($script_name);
+
+// Páginas que usam a barra inferior (escondem as pílulas do menu no tablet)
+$paginasComBottomNav = ['index.php', 'livros.php', 'cronograma.php'];
+$comBottomNav = in_array($paginaAtualArquivo, $paginasComBottomNav, true);
+
+// Páginas em que o hambúrguer NÃO tem função.
+// O cronograma NÃO entra aqui: nele o hambúrguer abre o histórico de cronogramas.
+$paginasSemHamburger = ['index.php', 'livros.php'];
+$semHamburger = in_array($paginaAtualArquivo, $paginasSemHamburger, true);
 
 // -------------------------------------------------------------------------
-// 2. DADOS DO USUÁRIO LOGADO (foto de perfil e tipo de conta)
+// 3. DADOS DO USUÁRIO LOGADO (foto de perfil e tipo de conta)
 // -------------------------------------------------------------------------
 $fotoPerfil  = $path . "assets/img/default-user.webp";
 $usuarioTipo = 'user';
@@ -51,7 +60,7 @@ if (isset($_SESSION['id'])) {
 }
 ?>
 
-<header class="<?= $semHamburger ? 'com-bottom-nav' : '' ?>">
+<header class="<?= $comBottomNav ? 'com-bottom-nav' : '' ?>">
 
     <!-- ================= LOGO (4 variações: PC/celular × claro/escuro) ================= -->
     <a href="<?= $path ?>index.php" class="logoMarca">
@@ -84,7 +93,7 @@ if (isset($_SESSION['id'])) {
                 <span class="texto-painel">PAINEL DO ESTUDANTE</span>
             <?php endif; ?>
 
-            <!-- Botão hambúrguer (celular) -->
+            <!-- Botão hambúrguer (celular/tablet) -->
             <?php if (!$semHamburger): ?>
                 <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Menu">
                     <span></span>
@@ -137,7 +146,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const perfilContainer = document.querySelector(".perfil-container");
     const dropdown        = document.getElementById("menuDropdown");
 
-    // Abre/fecha o menu hambúrguer (celular)
+    // Abre/fecha o menu hambúrguer.
+    // Obs.: no cronograma.php o cronograma.js intercepta este clique (fase de captura)
+    // e abre o menu lateral do histórico no lugar deste menu.
     if (hamburgerBtn && menuNav) {
         hamburgerBtn.addEventListener("click", function (e) {
             e.stopPropagation();
