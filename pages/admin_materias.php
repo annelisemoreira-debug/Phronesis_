@@ -296,6 +296,9 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
     <link rel="icon" type="image/png" href="../assets/img/logos/favicon.webp">
 
+    <!-- SweetAlert2 (alerta de confirmação de exclusão) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
+
     <script>
         (function () {
             if ((localStorage.getItem('site-theme') || 'light') === 'dark') {
@@ -411,8 +414,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                                         data-vests="<?= htmlspecialchars(implode(',', $vl), ENT_QUOTES, 'UTF-8') ?>">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    <a href="?del_livro=<?= (int)$l['id_livro'] ?>" class="btn-table-action btn-table-del"
-                                       onclick="return confirm('Excluir este livro? Favoritos e progresso dos usuários nele também serão apagados.')" title="Excluir">×</a>
+                                    <a href="?del_livro=<?= (int)$l['id_livro'] ?>" class="btn-table-action btn-table-del js-confirmar-exclusao"
+                                       data-titulo="Excluir livro?"
+                                       data-texto="<?= htmlspecialchars('O livro "' . $l['titulo'] . '" será removido. Favoritos e progresso dos usuários nele também serão apagados.', ENT_QUOTES, 'UTF-8') ?>"
+                                       title="Excluir">×</a>
                                 </div>
                             </td>
                         </tr>
@@ -516,7 +521,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
 
-                                    <a href="?del=<?= $id_m ?>" class="btn-table-action btn-table-del" onclick="return confirm('Tem certeza que deseja excluir esta matéria? Todos os tópicos dela sumirão.')" title="Excluir">×</a>
+                                    <a href="?del=<?= $id_m ?>" class="btn-table-action btn-table-del js-confirmar-exclusao"
+                                       data-titulo="Excluir matéria?"
+                                       data-texto="<?= htmlspecialchars('A matéria "' . $m['nome_materia'] . '" e todos os tópicos dela serão removidos.', ENT_QUOTES, 'UTF-8') ?>"
+                                       title="Excluir">×</a>
                                 </div>
                             </td>
                         </tr>
@@ -531,7 +539,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                                                 <li class="tag-topico-adm" id="tag-topico-<?= $t['id_topico'] ?>">
                                                     <span class="nome-topico-texto"><?= htmlspecialchars($t['nome_topico']) ?></span>
                                                     <i class="fa-solid fa-pen btn-topic-edit" onclick='ativarEdicaoTopico(<?= (int)$t['id_topico'] ?>, <?= htmlspecialchars(json_encode($t['nome_topico']), ENT_QUOTES, 'UTF-8') ?>)' title="Editar Tópico"></i>
-                                                    <a href="?del_topico=<?= $t['id_topico'] ?>" class="btn-topic-del" onclick="return confirm('Apagar este tópico?')" title="Remover Tópico">×</a>
+                                                    <a href="?del_topico=<?= $t['id_topico'] ?>" class="btn-topic-del js-confirmar-exclusao"
+                                                       data-titulo="Excluir tópico?"
+                                                       data-texto="<?= htmlspecialchars('O tópico "' . $t['nome_topico'] . '" será removido.', ENT_QUOTES, 'UTF-8') ?>"
+                                                       title="Remover Tópico">×</a>
                                                 </li>
                                             <?php endforeach; ?>
                                         <?php else: ?>

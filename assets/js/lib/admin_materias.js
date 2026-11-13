@@ -222,3 +222,41 @@ function filtrarMateriasETopicos() {
 
     ajustarRolagemMaterias();
 }
+
+// === 10. CONFIRMAÇÃO DE EXCLUSÃO (SweetAlert2) ===
+// Alerta padrão do site: "Tem certeza?" + descrição do item + botões roxo/vermelho.
+// Usa delegação de eventos: funciona também nos botões recriados pela edição inline.
+document.addEventListener('click', function (e) {
+    const link = e.target.closest('.js-confirmar-exclusao');
+    if (!link) return;
+
+    const texto = link.dataset.texto || 'Esta ação não pode ser desfeita.';
+
+    // Plano B: se o SweetAlert2 não carregar, usa o confirm padrão
+    if (typeof Swal === 'undefined') {
+        if (!confirm(texto)) e.preventDefault();
+        return;
+    }
+
+    e.preventDefault();
+
+    Swal.fire({
+        icon: 'warning',
+        title: 'Tem certeza?',
+        text: texto,
+        showCancelButton: true,
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar',
+        focusCancel: true,          // evita excluir por engano com Enter
+        buttonsStyling: false,      // usa o estilo do nosso CSS
+        customClass: {
+            popup: 'swal-phronesis',
+            confirmButton: 'swal-btn-excluir',
+            cancelButton: 'swal-btn-cancelar'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = link.href;
+        }
+    });
+});
