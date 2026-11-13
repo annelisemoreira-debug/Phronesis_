@@ -200,6 +200,12 @@ elseif ($acao == "self_delete") {
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
         if (password_verify($senha, $user['senha'])) {
+
+            // Apaga os cronogramas na agenda do Google ANTES de excluir o usuário
+            // (o token do Google está na linha dele)
+            require_once __DIR__ . '/google_helper.php';
+            apagarCronogramasDoUsuario($conn, (int) $user['id_usuario']);
+
             $sql_del = "DELETE FROM usuario WHERE id_usuario=?";
             $stmt_del = $conn->prepare($sql_del);
             $stmt_del->bind_param("i", $user['id_usuario']);

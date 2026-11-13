@@ -298,7 +298,9 @@ $(function () {
     });
 
     // =========================================================================
-    // EXCLUSÃO DE CONTA (sem alert de sucesso: redireciona direto)
+    // EXCLUSÃO DE CONTA
+    // Apaga também os cronogramas na agenda do Google (pode levar alguns
+    // segundos, por isso mostra um loading). Sem alert de sucesso: redireciona.
     // =========================================================================
     var $deleteModal = $('#deleteAccountModal');
     var $senha = $('#confirmDeletePassword');
@@ -307,8 +309,21 @@ $(function () {
         $deleteModal.hide();
     }
 
+    function reabrirDelete() {
+        $deleteModal.css('display', 'flex');
+    }
+
     function excluirConta(dados, $botao) {
         $botao.prop('disabled', true);
+        fecharDelete();
+
+        Swal.fire({
+            title: 'Excluindo sua conta...',
+            text: 'Estamos removendo seus cronogramas do Google Agenda. Isso pode levar alguns segundos.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: function () { Swal.showLoading(); }
+        });
 
         enviarAcao(dados)
             .done(function (r) {
@@ -317,13 +332,17 @@ $(function () {
                     try { sessionStorage.setItem('conta_excluida', '1'); } catch (e) {}
                     window.location.href = r.redirect;
                 } else {
+                    Swal.close();
                     $botao.prop('disabled', false);
+                    reabrirDelete();
                     aviso('error', r.message); // ex.: "Senha incorreta!"
                     $senha.val('').trigger('focus');
                 }
             })
             .fail(function () {
+                Swal.close();
                 $botao.prop('disabled', false);
+                reabrirDelete();
                 aviso('error', 'Erro técnico ao tentar processar a solicitação.');
             });
     }

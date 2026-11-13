@@ -54,9 +54,14 @@ function apagarFotoAntiga(?string $foto): void
     }
 }
 
-/** Exclui o usuário (e a foto) e encerra a sessão. */
+/** Exclui o usuário (cronogramas no Google, foto e conta) e encerra a sessão. */
 function excluirUsuario(mysqli $conn, int $idUsuario, ?string $foto): void
 {
+    // 1º: apaga os cronogramas no Google Agenda (precisa do token que está
+    // na linha do usuário, por isso vem ANTES do DELETE da conta)
+    require_once __DIR__ . '/../google_helper.php';
+    apagarCronogramasDoUsuario($conn, $idUsuario);
+
     apagarFotoAntiga($foto);
 
     $del = $conn->prepare('DELETE FROM usuario WHERE id_usuario = ?');
