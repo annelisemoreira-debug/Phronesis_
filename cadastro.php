@@ -18,14 +18,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    <div class="quick-fill-sidebar">
-        <button class="quick-fill-btn" onclick="preencherCampos(1)">João</button>
-        <button class="quick-fill-btn" onclick="preencherCampos(2)">Manuella</button>
-        <button class="quick-fill-btn" onclick="preencherCampos(3)">Annelise</button>
-        <button class="quick-fill-btn" onclick="preencherCampos(4)">Dukye</button>
-        <button class="quick-fill-btn" onclick="preencherCampos(5)">Narutomig</button>
-        <button class="quick-fill-btn" onclick="preencherCampos(6)">Raoni</button>
-    </div>
 
     <img src="assets/img/fundos/fundoRoxo.webp" class="bg-html" alt="Fundo">
 
