@@ -109,7 +109,7 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
 
                         <!-- Card 3: Cronogramas -->
                         <article class="servico-card">
-                            <div class="servico-icone icone-roxo">
+                            <div class="servico-icone icone-azul">
                                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
                             </div>
                             <h2>Cronogramas</h2>
@@ -126,7 +126,7 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
                             </div>
                             <h2>Perfil</h2>
                             <p>Gira as suas informações pessoais, acompanhe o seu progresso e personalize a sua área de estudo.</p>
-                            <a href="perfil/configperfil.php" class="servico-link">Aceder ao perfil →</a>
+                            <a href="perfil/configperfil.php" class="servico-link">Acessar o perfil →</a>
                         </article>
 
                     </div>
