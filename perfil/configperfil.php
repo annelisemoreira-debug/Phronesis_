@@ -221,6 +221,9 @@ $verBanner  = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     <link rel="preconnect" href="https://lh3.googleusercontent.com">
     <link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
 
+    <!-- SweetAlert2 (mesma biblioteca da página de login) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
+
     <!-- Tema, escala de fonte e menu lateral (compartilhado com a página de acessibilidade) -->
     <script src="../assets/js/lib/acessibilidade.js?v=<?php echo $verAcessJs; ?>"></script>
 </head>

@@ -605,6 +605,27 @@ body {
 }
 
 /* =======================================================
+   SWEETALERT2 (acima dos modais da página)
+   ======================================================= */
+.swal2-container {
+    z-index: 3000 !important;
+}
+
+.swal2-popup {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html.dark-theme .swal2-popup {
+    background: #272530;
+    color: #ffffff;
+}
+
+html.dark-theme .swal2-title,
+html.dark-theme .swal2-html-container {
+    color: #ffffff;
+}
+
+/* =======================================================
    ESCALA DE FONTES (afeta o site todo)
    ======================================================= */
 html,

@@ -380,6 +380,27 @@ html.dark-theme .hero::before {
 }
 
 /* =======================================================
+   AVISOS (SweetAlert2)
+   ======================================================= */
+.swal2-container {
+    z-index: 3000 !important;
+}
+
+.swal2-popup {
+    font-family: 'Open Sans', 'Segoe UI', Roboto, sans-serif;
+}
+
+html.dark-theme .swal2-popup {
+    background: #272530;
+    color: #ffffff;
+}
+
+html.dark-theme .swal2-title,
+html.dark-theme .swal2-html-container {
+    color: #ffffff;
+}
+
+/* =======================================================
    ESCALA DE FONTE GLOBAL (acessibilidade)
    ======================================================= */
 html,

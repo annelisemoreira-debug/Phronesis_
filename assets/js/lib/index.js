@@ -16,7 +16,31 @@
 })();
 
 // =========================================================================
-// 2. CARROSSEL (só roda se existir na página)
+// 2. AVISO DE CONTA EXCLUÍDA (vem da página de perfil via sessionStorage)
+// =========================================================================
+document.addEventListener('DOMContentLoaded', function () {
+    let excluida = false;
+
+    try {
+        excluida = sessionStorage.getItem('conta_excluida') === '1';
+        sessionStorage.removeItem('conta_excluida'); // mostra só uma vez
+    } catch (e) {}
+
+    if (!excluida || typeof Swal === 'undefined') return;
+
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Conta excluída com sucesso.',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true
+    });
+});
+
+// =========================================================================
+// 3. CARROSSEL (só roda se existir na página)
 // =========================================================================
 document.addEventListener('DOMContentLoaded', function () {
     const track = document.querySelector('.carousel-track');

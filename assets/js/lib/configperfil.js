@@ -20,6 +20,19 @@ $(function () {
         });
     }
 
+    // Avisos com SweetAlert2 (mesmo estilo de toast do login)
+    var Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true
+    });
+
+    function aviso(icon, titulo) {
+        return Toast.fire({ icon: icon, title: titulo });
+    }
+
     // =========================================================================
     // FOTO DE PERFIL: LIGHTBOX COM ZOOM
     // =========================================================================
@@ -204,16 +217,26 @@ $(function () {
 
     // Remover foto
     $('#btnRemoveFoto').on('click', function () {
-        if (!confirm('Tem certeza que deseja remover sua foto de perfil e usar a padrão?')) return;
+        Swal.fire({
+            icon: 'question',
+            title: 'Remover foto de perfil?',
+            text: 'Sua foto será removida e a imagem padrão será usada.',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, remover',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#FF4D4D'
+        }).then(function (res) {
+            if (!res.isConfirmed) return;
 
-        enviarAcao({ action: 'delete_image' })
-            .done(function (r) {
-                if (r.status === 'success') window.location.reload();
-                else alert('Erro ao remover: ' + r.message);
-            })
-            .fail(function () {
-                alert('Erro técnico ao remover a foto.');
-            });
+            enviarAcao({ action: 'delete_image' })
+                .done(function (r) {
+                    if (r.status === 'success') window.location.reload();
+                    else aviso('error', 'Erro ao remover: ' + r.message);
+                })
+                .fail(function () {
+                    aviso('error', 'Erro técnico ao remover a foto.');
+                });
+        });
     });
 
     // Ao escolher um arquivo, abre o recorte
@@ -222,7 +245,7 @@ $(function () {
         if (!files || !files.length) return;
 
         if (files[0].type.indexOf('image/') !== 0) {
-            alert('Selecione um arquivo de imagem.');
+            aviso('warning', 'Selecione um arquivo de imagem.');
             $(this).val('');
             return;
         }
@@ -267,10 +290,10 @@ $(function () {
         enviarAcao({ action: 'crop_image', image_data: canvas.toDataURL('image/webp') })
             .done(function (r) {
                 if (r.status === 'success') window.location.reload();
-                else alert('Erro: ' + r.message);
+                else aviso('error', r.message);
             })
             .fail(function () {
-                alert('Erro técnico ao salvar a imagem.');
+                aviso('error', 'Erro técnico ao salvar a imagem.');
             });
     });
 
@@ -290,15 +313,18 @@ $(function () {
         enviarAcao(dados)
             .done(function (r) {
                 if (r.status === 'success') {
+                    // O aviso de confirmação aparece na página inicial (index.js)
+                    try { sessionStorage.setItem('conta_excluida', '1'); } catch (e) {}
                     window.location.href = r.redirect;
                 } else {
                     $botao.prop('disabled', false);
-                    alert(r.message);
+                    aviso('error', r.message); // ex.: "Senha incorreta!"
+                    $senha.val('').trigger('focus');
                 }
             })
             .fail(function () {
                 $botao.prop('disabled', false);
-                alert('Erro técnico ao tentar processar a solicitação.');
+                aviso('error', 'Erro técnico ao tentar processar a solicitação.');
             });
     }
 
@@ -314,7 +340,7 @@ $(function () {
     function confirmarComSenha() {
         var password = $senha.val();
         if (!password) {
-            alert('Por favor, digite sua senha.');
+            aviso('warning', 'Por favor, digite sua senha.');
             return;
         }
         excluirConta({ action: 'delete_account', password: password }, $('#btnConfirmDelete'));

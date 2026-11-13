@@ -24,6 +24,9 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
     <link rel="stylesheet" href="assets/css/bottom-nav.css">
     <link rel="icon" type="image/png" href="assets/img/logos/favicon.webp">
 
+    <!-- SweetAlert2 (avisos, mesma biblioteca do login e do perfil) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
+
     <!-- Anti-flicker: aplica tema e tamanho de fonte antes de pintar a página -->
     <script>
         (function () {
