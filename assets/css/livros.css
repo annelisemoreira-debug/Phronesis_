@@ -283,8 +283,25 @@ html.dark-theme .tag-enem { background: #451e18; color: #ff9b88; }
 .modal-texto h2 { font-size: 1.25rem; padding-right: 30px; }
 .modal-autor { font-weight: 700; color: var(--ink-soft); font-size: 0.9rem; }
 .modal-texto .livro-tags { justify-content: flex-start; margin: 4px 0 6px; padding: 0; }
-.modal-resumo { font-size: 0.9rem; line-height: 1.7; }
+/* Descrição: altura limitada, rola por dentro */
+.modal-resumo {
+    max-height: 150px;          /* ~ altura da capa menos título/autor/tags */
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.modal-resumo::-webkit-scrollbar { width: 8px; }
+.modal-resumo::-webkit-scrollbar-track { background: transparent; }
+.modal-resumo::-webkit-scrollbar-thumb { background: var(--capa); border-radius: 20px; }
 
+/* Título e autor: no máximo 3 e 2 linhas (o nome completo continua no card) */
+.modal-texto h2 {
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+}
+.modal-autor {
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
 .modal-acoes { margin-top: 24px; padding-top: 18px; border-top: 2px solid var(--line); display: flex; gap: 14px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
 .seg { display: flex; border: 1.5px solid var(--purple); border-radius: 10px; overflow: hidden; }
 .seg button { background: none; border: none; padding: 8px 14px; font-size: 0.78rem; font-weight: 700; color: var(--ink); display: flex; gap: 6px; align-items: center; }
