@@ -298,6 +298,23 @@ html.dark-theme .tag-enem { background: #451e18; color: #ff9b88; }
 .modal-erro { margin-top: 12px; color: #c0392b; font-size: 0.8rem; font-weight: 600; }
 .modal-erro[hidden] { display: none; }
 
+/* Evita rolagem lateral e quebra textos longos sem espaço */
+.modal-livro { overflow-x: hidden; }
+.modal-corpo { min-width: 0; }
+
+.modal-texto h2,
+.modal-autor,
+.modal-resumo {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.livro-titulo,
+.livro-autor,
+.livro-desc {
+    overflow-wrap: anywhere;
+}
+
 /* ---------- Escala de fontes (global) ---------- */
 html, html.font-normal { font-size: 100%; }
 html.font-media { font-size: 115%; }

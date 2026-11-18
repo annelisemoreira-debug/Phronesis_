@@ -54,8 +54,7 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
 
                         <!-- VISÃO: USUÁRIO LOGADO -->
                         <div class="hero-text is-logado">
-                            <h1>Bem-vindo(a), <?= htmlspecialchars($_SESSION['nome']) ?>!</h1>
-                            <p class="hero-desc">
+                                <h1 title="Bem-vindo(a), <?= htmlspecialchars($_SESSION['nome']) ?>!">Bem-vindo(a), <?= htmlspecialchars($_SESSION['nome']) ?>!</h1>                            <p class="hero-desc">
                                 <strong>Que bom ter você de volta!</strong> Aproveite nossos recursos para
                                 organizar seu cronograma de estudos e revisar as leituras obrigatórias.
                             </p>

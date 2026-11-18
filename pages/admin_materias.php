@@ -24,10 +24,19 @@ if (!$user_data || $user_data['tipo'] !== 'admin') {
 
 $msg = "";
 
+// Limites de caracteres (mesmos valores usados no maxlength do HTML)
+const LIM_TITULO  = 100;
+const LIM_AUTOR   = 60;
+const LIM_RESUMO  = 1000;
+const LIM_MATERIA = 50;
+const LIM_TOPICO  = 100;
+
 // Lógica de Inserção de Matéria
 if (isset($_POST['add_materia'])) {
     $nome = trim($_POST['nome_materia']);
-    if (!empty($nome)) {
+    if (mb_strlen($nome) > LIM_MATERIA) {
+        $msg = "❌ O nome da matéria deve ter no máximo " . LIM_MATERIA . " caracteres.";
+    } elseif (!empty($nome)) {
         $stmt = $conn->prepare("INSERT INTO materia (nome_materia) VALUES (?)");
         $stmt->bind_param("s", $nome);
         if ($stmt->execute()) {
@@ -43,7 +52,9 @@ if (isset($_POST['add_materia'])) {
 if (isset($_POST['edit_materia'])) {
     $id_edit = $_POST['id_materia'];
     $nome_edit = trim($_POST['novo_nome']);
-    if (!empty($nome_edit) && !empty($id_edit)) {
+    if (mb_strlen($nome_edit) > LIM_MATERIA) {
+        $msg = "❌ O nome da matéria deve ter no máximo " . LIM_MATERIA . " caracteres.";
+    } elseif (!empty($nome_edit) && !empty($id_edit)) {
         $stmt = $conn->prepare("UPDATE materia SET nome_materia = ? WHERE id_materia = ?");
         $stmt->bind_param("si", $nome_edit, $id_edit);
         if ($stmt->execute()) {
@@ -76,7 +87,9 @@ if (isset($_GET['del'])) {
 if (isset($_POST['add_topico'])) {
     $id_materia_topico = $_POST['id_materia'];
     $nome_topico = trim($_POST['nome_topico']);
-    if (!empty($nome_topico) && !empty($id_materia_topico)) {
+    if (mb_strlen($nome_topico) > LIM_TOPICO) {
+        $msg = "❌ O tópico deve ter no máximo " . LIM_TOPICO . " caracteres.";
+    } elseif (!empty($nome_topico) && !empty($id_materia_topico)) {
         $stmt = $conn->prepare("INSERT INTO materia_topico (id_materia, nome_topico) VALUES (?, ?)");
         $stmt->bind_param("is", $id_materia_topico, $nome_topico);
         if ($stmt->execute()) {
@@ -87,12 +100,13 @@ if (isset($_POST['add_topico'])) {
         $stmt->close();
     }
 }
-
 // Lógica de Edição de Tópico
 if (isset($_POST['edit_topico'])) {
     $id_topico = $_POST['id_topico'];
     $novo_nome_topico = trim($_POST['novo_nome_topico']);
-    if (!empty($id_topico) && !empty($novo_nome_topico)) {
+    if (mb_strlen($novo_nome_topico) > LIM_TOPICO) {
+        $msg = "❌ O tópico deve ter no máximo " . LIM_TOPICO . " caracteres.";
+    } elseif (!empty($id_topico) && !empty($novo_nome_topico)) {
         $stmt = $conn->prepare("UPDATE materia_topico SET nome_topico = ? WHERE id_topico = ?");
         $stmt->bind_param("si", $novo_nome_topico, $id_topico);
         if ($stmt->execute()) {
@@ -174,7 +188,10 @@ if (isset($_POST['add_livro'])) {
 
     if ($titulo === '' || $autor === '' || $resumo === '') {
         $msg = "❌ Preencha título, autor e resumo.";
+    } elseif (mb_strlen($titulo) > LIM_TITULO || mb_strlen($autor) > LIM_AUTOR || mb_strlen($resumo) > LIM_RESUMO) {
+        $msg = "❌ Limite de caracteres excedido (título: " . LIM_TITULO . ", autor: " . LIM_AUTOR . ", resumo: " . LIM_RESUMO . ").";
     } else {
+
         $erroCapa = '';
         $capa = salvarCapa($_FILES['capa'] ?? [], $erroCapa);
         if ($capa === false) {
@@ -202,7 +219,10 @@ if (isset($_POST['edit_livro'])) {
 
     if ($idLivro <= 0 || $titulo === '' || $autor === '' || $resumo === '') {
         $msg = "❌ Preencha título, autor e resumo.";
+    } elseif (mb_strlen($titulo) > LIM_TITULO || mb_strlen($autor) > LIM_AUTOR || mb_strlen($resumo) > LIM_RESUMO) {
+        $msg = "❌ Limite de caracteres excedido (título: " . LIM_TITULO . ", autor: " . LIM_AUTOR . ", resumo: " . LIM_RESUMO . ").";
     } else {
+        // ... (restante igual)
         $erroCapa = '';
         $capaNova = salvarCapa($_FILES['capa'] ?? [], $erroCapa);
         if ($capaNova === false) {
@@ -343,11 +363,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 
         <form method="POST" enctype="multipart/form-data" class="form-livro">
             <div class="grid-livro">
-                <input type="text" name="titulo" class="campo-livro" placeholder="Título da obra" maxlength="255" required>
-                <input type="text" name="autor" class="campo-livro" placeholder="Autor(a)" maxlength="255" required>
+               <input type="text" name="titulo" class="campo-livro" placeholder="Título da obra" maxlength="100" required>
+               <input type="text" name="autor" class="campo-livro" placeholder="Autor(a)" maxlength="60" required>
             </div>
-            <textarea name="resumo" class="campo-livro" rows="4" placeholder="Breve resumo da obra" required></textarea>
-
+               <textarea name="resumo" class="campo-livro" rows="4" placeholder="Breve resumo da obra" maxlength="1000" required></textarea>
             <div class="vest-checks">
                 <?php foreach ($VESTIBULARES as $k => $nomeV): ?>
                     <label class="chip-check">
@@ -433,11 +452,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                 <h3>Editar livro</h3>
                 <input type="hidden" name="id_livro">
                 <div class="grid-livro">
-                    <input type="text" name="titulo" class="campo-livro" maxlength="255" required>
-                    <input type="text" name="autor" class="campo-livro" maxlength="255" required>
+                    <input type="text" name="titulo" class="campo-livro" maxlength="100" required>
+                    <input type="text" name="autor" class="campo-livro" maxlength="60" required>
                 </div>
-                <textarea name="resumo" class="campo-livro" rows="6" required></textarea>
-                <div class="vest-checks">
+                    <textarea name="resumo" class="campo-livro" rows="6" maxlength="1000" required></textarea>                <div class="vest-checks">
                     <?php foreach ($VESTIBULARES as $k => $nomeV): ?>
                         <label class="chip-check">
                             <input type="checkbox" name="vestibulares[]" value="<?= $k ?>">
@@ -475,7 +493,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
         </div>
 
         <form method="POST" class="input-group-append">
-            <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" required>
+            <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" maxlength="50" required>
             <button type="submit" name="add_materia" class="btn-adicionar">
                 Adicionar <i class="fa-solid fa-plus"></i>
             </button>
@@ -552,8 +570,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 
                                     <form method="POST" class="form-add-topico-inline">
                                         <input type="hidden" name="id_materia" value="<?= $id_m ?>">
-                                        <input type="text" name="nome_topico" placeholder="Adicionar novo tópico (ex: Estequiometria)" required>
-                                        <button type="submit" name="add_topico" style="background-color: var(--purple-main); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600;">
+                                        <input type="text" name="nome_topico" placeholder="Adicionar novo tópico (ex: Estequiometria)" maxlength="100" required>                                        <button type="submit" name="add_topico" style="background-color: var(--purple-main); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600;">
                                             Adicionar
                                         </button>
                                     </form>

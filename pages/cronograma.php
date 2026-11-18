@@ -318,6 +318,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gerar'])) {
 
     if (empty($dias_permitidos)) {
         $msg_feedback = "❌ Erro: Selecione ao menos um dia da semana.";
+    } elseif (mb_strlen(trim($_POST['nome_cronograma'] ?? '')) > 60) {
+        $msg_feedback = "❌ Erro: O nome do cronograma deve ter no máximo 60 caracteres.";
     } elseif ($dia_sem_materia !== null) {
         $msg_feedback = "❌ Erro: Escolha ao menos uma matéria para " . ($nomes_dias[$dia_sem_materia] ?? 'o dia selecionado') . ".";
     } elseif ($data_inicio < $data_hoje_obj) {
@@ -660,8 +662,8 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                 <form method="POST" id="formCronograma" class="form-grid">
                     <div class="full-width field-group">
                         <label>Nome do seu Cronograma:</label>
-                        <input type="text" name="nome_cronograma" placeholder="Ex: Maratona ENEM 2026"
-                            value="<?= htmlspecialchars($form_dados['nome_cronograma'] ?? '') ?>" required>
+                        <input type="text" name="nome_cronograma" placeholder="Ex: Maratona ENEM 2026" maxlength="60"
+                        value="<?= htmlspecialchars($form_dados['nome_cronograma'] ?? '') ?>" required>
                     </div>
 
                     <div class="field-group input-icon-wrapper">
@@ -699,7 +701,8 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 
                     <div class="field-group">
                         <label>Duração por matéria (horas):</label>
-                        <input type="number" name="horas_estudo" step="any" value="<?= htmlspecialchars($form_dados['horas_estudo'] ?? '2') ?>" required>
+                        <input type="text" name="horas_estudo" inputmode="decimal" maxlength="5" autocomplete="off"
+                        value="<?= htmlspecialchars($form_dados['horas_estudo'] ?? '2') ?>" required>
                     </div>
 
                     <div class="full-width dicas-box">

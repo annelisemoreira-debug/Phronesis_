@@ -1,4 +1,4 @@
-// assets/js/lib/index.js
+// assets/js/lib/login.js
 
 // Configuração global do SweetAlert2 (Toast)
 const Toast = Swal.mixin({
@@ -8,6 +8,8 @@ const Toast = Swal.mixin({
     timer: 4000,
     timerProgressBar: true
 });
+
+const LIMITES = { email: 254, senhaMax: 64 };
 
 document.addEventListener("DOMContentLoaded", function() {
     const formLogin = document.getElementById('formLogin');
@@ -37,34 +39,43 @@ document.addEventListener("DOMContentLoaded", function() {
     // === 2. MUDAR VISIBILIDADE DA SENHA (OLHO) ===
     if (btnSenha && inputSenha) {
         btnSenha.addEventListener('click', () => {
-            if (inputSenha.type === 'password') {
-                inputSenha.setAttribute('type', 'text');
-                btnSenha.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                inputSenha.setAttribute('type', 'password');
-                btnSenha.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+            const oculto = inputSenha.type === 'password';
+            inputSenha.type = oculto ? 'text' : 'password';
+            btnSenha.classList.replace(oculto ? 'fa-eye' : 'fa-eye-slash',
+                                       oculto ? 'fa-eye-slash' : 'fa-eye');
         });
     }
 
     // === 3. VALIDAÇÕES DE SUBMIT DO FORMULÁRIO ===
     if (formLogin) {
         formLogin.addEventListener('submit', function(e) {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const senha = inputSenha ? inputSenha.value : '';
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
             if (!email || !senha) {
-                e.preventDefault(); // Impede o envio do form
+                e.preventDefault();
                 Toast.fire({
                     icon: 'warning',
                     title: "Por favor, preencha todos os campos."
                 });
+            } else if (email.length > LIMITES.email) {
+                e.preventDefault();
+                Toast.fire({
+                    icon: 'warning',
+                    title: `O e-mail deve ter no máximo ${LIMITES.email} caracteres.`
+                });
             } else if (!emailRegex.test(email)) {
-                e.preventDefault(); // Impede o envio do form
+                e.preventDefault();
                 Toast.fire({
                     icon: 'warning',
                     title: "Formato de e-mail inválido."
+                });
+            } else if (senha.length > LIMITES.senhaMax) {
+                e.preventDefault();
+                Toast.fire({
+                    icon: 'warning',
+                    title: `A senha deve ter no máximo ${LIMITES.senhaMax} caracteres.`
                 });
             }
         });

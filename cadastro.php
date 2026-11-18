@@ -1,8 +1,11 @@
 <?php 
-// Garante que a sessão está iniciada para ler os alertas vindo do cad.php
 if (session_status() === PHP_SESSION_NONE) {
     session_start(); 
 }
+
+// Lê o status uma única vez e limpa da sessão
+$statusCadastro = $_SESSION['status_cadastro'] ?? '';
+unset($_SESSION['status_cadastro']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,7 +17,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="assets/img/logos/favicon.webp">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
-    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -32,31 +34,37 @@ if (session_status() === PHP_SESSION_NONE) {
                     <h1 class="mainTitulo">Faça seu cadastro!</h1>
                     <p style="color: #031768; margin-bottom: 2px;">Já possui uma conta? <a class="botaoLogin" href="login.php"> Entrar </a></p>
 
-                    <form id="formCadastro" method="POST" action="cad.php" novalidate style="display: flex; flex-direction: column; gap: 5px;">
+                    <form id="formCadastro" method="POST" action="cad.php" novalidate
+                          data-status="<?= htmlspecialchars($statusCadastro, ENT_QUOTES, 'UTF-8') ?>"
+                          style="display: flex; flex-direction: column; gap: 5px;">
                         <input type="hidden" name="acao" value="cadastro">
 
                         <div class="inserirInfo">
                             <label>Nome: </label>
-                            <input type="text" name="nome" id="nome" placeholder="Digite seu nome completo" required style="padding: 8px 15px;">
+                            <input type="text" name="nome" id="nome" placeholder="Digite seu nome completo"
+                                   maxlength="100" required style="padding: 8px 15px;">
                         </div>
 
                         <div class="inserirInfo">
                             <label>E-mail: </label>
-                            <input type="email" name="email" id="email" placeholder="exemplo@email.com" required style="padding: 8px 15px;">
+                            <input type="email" name="email" id="email" placeholder="exemplo@email.com"
+                                   maxlength="254" required style="padding: 8px 15px;">
                         </div>
 
                         <div class="linha_dupla" style="gap: 10px;">
                             <div class="inserirInfo">
                                 <label>Senha: </label>
                                 <div class="input-group-password">
-                                    <input type="password" name="senha" id="senha" placeholder="Mínimo 6 caracteres" required style="padding: 8px 15px;">
+                                    <input type="password" name="senha" id="senha" placeholder="Mínimo 6 caracteres"
+                                           minlength="6" maxlength="64" required style="padding: 8px 15px;">
                                     <i class="fa-solid fa-eye toggle-password" id="btn-senha"></i>
                                 </div>
                             </div>
 
                             <div class="inserirInfo">
                                 <label>Telefone: </label>
-                                <input type="text" name="telefone" id="telefone" placeholder="(00) 00000-0000" maxlength="15" oninput="handleTelefone(event)" required style="padding: 8px 15px;">
+                                <input type="text" name="telefone" id="telefone" placeholder="(00) 00000-0000"
+                                       maxlength="15" required style="padding: 8px 15px;">
                             </div>
                         </div>
 
@@ -95,71 +103,6 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="assets/js/lib/cadastro.js" defer></script>
 
     <?php include 'perfil/vlibras.php'; ?>
-
-    <script>
-        // Mantendo sua função de máscara original
-        function handleTelefone(event) {
-            let input = event.target;
-            input.value = telefoneMask(input.value);
-        }
-
-        function telefoneMask(value) {
-            if (!value) return "";
-            value = value.replace(/\D/g, "");
-            if (value.length > 0) value = "(" + value;
-            if (value.length > 3) value = value.substring(0, 3) + ") " + value.substring(3);
-            if (value.length > 10) value = value.substring(0, 10) + "- " + value.substring(10, 14);
-            return value;
-        }
-
-        // Substitua o bloco de alertas do seu cadastro.php por este:
-
-<?php if(isset($_SESSION['status_cadastro'])): ?>
-    // Configuração do Toast no canto superior direito
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 4000,
-        timerProgressBar: true
-    });
-
-    const status = "<?php echo $_SESSION['status_cadastro']; ?>";
-    
-    if (status === "email_duplicado") {
-        Toast.fire({
-            icon: 'error',
-            title: 'Este e-mail já está cadastrado!'
-        });
-    } else if (status === "senha_incorreta" || status === "erro_senha") {
-        // Mantemos a janela grande para a senha porque ela tem a listinha HTML explicativa
-        Swal.fire({
-            icon: 'error',
-            title: 'Ops! Algo deu errado com a senha.',
-            html: `
-                <div style="text-align: left;">
-                    <p>A senha digitada não cumpre os requisitos mínimos:</p>
-                    <ul>
-                        <li>6 dígitos;</li>
-                        <li>uma letra;</li>
-                        <li>um número;</li>
-                        <li>um símbolo.</li>
-                    </ul>
-                </div>
-            `,
-            confirmButtonColor: '#001a8b'
-        });
-    } else if (status === "erro_geral") {
-        Toast.fire({
-            icon: 'error',
-            title: 'Não foi possível concluir a ação. Tente novamente.'
-        });
-    }
-
-    <?php unset($_SESSION['status_cadastro']); ?>
-<?php endif; ?>
-    </script>
-
-    <?php include 'interface/footer.php';?>
+    <?php include 'interface/footer.php'; ?>
 </body>
 </html>

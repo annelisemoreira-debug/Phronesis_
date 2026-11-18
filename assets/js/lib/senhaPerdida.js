@@ -1,4 +1,4 @@
-// assets/js/lib/recuperar.js
+// assets/js/lib/senhaPerdida.js
 
 // Configuração padrão do Toast (SweetAlert2)
 const Toast = Swal.mixin({
@@ -9,8 +9,12 @@ const Toast = Swal.mixin({
     timerProgressBar: true
 });
 
+const LIMITES = { email: 254, senhaMax: 64 };
+
 document.addEventListener("DOMContentLoaded", function() {
     const formRecuperar = document.getElementById('formRecuperar');
+    const btnSenha = document.getElementById('btn-senha');
+    const inputSenha = document.getElementById('senha');
 
     // === 1. CAPTURA ERROS VINDOS DA SESSION PHP ===
     if (formRecuperar) {
@@ -23,15 +27,25 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // === 2. VALIDAÇÃO MANUAL DO FORMULÁRIO ===
+    // === 2. MOSTRAR / OCULTAR SENHA (OLHO) ===
+    if (btnSenha && inputSenha) {
+        btnSenha.addEventListener('click', () => {
+            const oculto = inputSenha.type === 'password';
+            inputSenha.type = oculto ? 'text' : 'password';
+            btnSenha.classList.replace(oculto ? 'fa-eye' : 'fa-eye-slash',
+                                       oculto ? 'fa-eye-slash' : 'fa-eye');
+        });
+    }
+
+    // === 3. VALIDAÇÃO MANUAL DO FORMULÁRIO ===
     if (formRecuperar) {
         formRecuperar.addEventListener('submit', function(e) {
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            // Regra de senha forte (Mínimo 6 caracteres, letra, número e símbolo)
-            const senhaRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+            const email = document.getElementById('email').value.trim();
+            const senha = inputSenha ? inputSenha.value : '';
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+            // Regra de senha forte (6 a 64 caracteres, letra, número e símbolo)
+            const senhaRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,64}$/;
 
             if (!email || !senha) {
                 e.preventDefault();
@@ -39,11 +53,23 @@ document.addEventListener("DOMContentLoaded", function() {
                     icon: 'warning',
                     title: "Por favor, preencha todos os campos."
                 });
+            } else if (email.length > LIMITES.email) {
+                e.preventDefault();
+                Toast.fire({
+                    icon: 'warning',
+                    title: `O e-mail deve ter no máximo ${LIMITES.email} caracteres.`
+                });
             } else if (!emailRegex.test(email)) {
                 e.preventDefault();
                 Toast.fire({
                     icon: 'warning',
                     title: "Formato de e-mail inválido."
+                });
+            } else if (senha.length > LIMITES.senhaMax) {
+                e.preventDefault();
+                Toast.fire({
+                    icon: 'warning',
+                    title: `A senha deve ter no máximo ${LIMITES.senhaMax} caracteres.`
                 });
             } else if (!senhaRegex.test(senha)) {
                 e.preventDefault();

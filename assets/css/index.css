@@ -206,6 +206,17 @@ html.dark-theme .hero::before {
 .hero-text.is-logado h1 {
     font-size: 3.6rem;
     margin-bottom: 22px;
+
+    /* NOVO: quebra como o texto "Que bom ter você de volta!", máx. 2 linhas */
+    max-width: min(620px, 100%);
+    min-width: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;          /* a partir da 3ª linha vira "..." */
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;        /* quebra até palavras sem espaço (aaaa...) */
+    padding-bottom: 0.1em;          /* evita cortar letras como g, p, q */
 }
 
 .hero-text .hero-desc {

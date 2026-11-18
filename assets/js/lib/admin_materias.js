@@ -60,6 +60,7 @@ function activarEdicao(id, nomeOriginal) {
     document.getElementById(`cancelar-${id}`).addEventListener('click', () => {
         colNome.innerHTML = htmlOriginalNome;
         colAcoes.innerHTML = htmlOriginalAcoes;
+        colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}" maxlength="50">`;
     });
 }
 
@@ -77,7 +78,7 @@ function ativarEdicaoTopico(idTopico, nomeOriginal) {
     tag.innerHTML = `
         <form method="POST" style="display: flex; align-items: center; gap: 5px;">
             <input type="hidden" name="id_topico" value="${idTopico}">
-            <input type="text" name="novo_nome_topico" id="input-topico-${idTopico}" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
+            <input type="text" name="novo_nome_topico" id="input-topico-${idTopico}" maxlength="100" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
             <button type="submit" name="edit_topico" class="btn-salvar" style="padding: 4px 8px;">✔</button>
             <button type="button" class="btn-cancelar" id="cancel-topico-${idTopico}" style="padding: 4px 8px; background: #ef4444;">X</button>
         </form>

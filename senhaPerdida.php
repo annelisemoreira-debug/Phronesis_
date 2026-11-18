@@ -4,6 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 // Verifica se o parâmetro de ação existe na URL
 if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){ 
+
+// Lê o erro uma única vez e limpa da sessão
+$erroRecuperacao = $_SESSION['erro_recuperacao'] ?? '';
+unset($_SESSION['erro_recuperacao']);
 ?>
 
 <!DOCTYPE html>
@@ -13,8 +17,21 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha</title>
     <link rel="stylesheet" href="assets/css/senha.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="assets/img/logos/favicon.webp">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25"></script>
+
+    <style>
+        .inserirInfo { position: relative; }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 65%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #031768;
+        }
+    </style>
 </head>
 <body>
     <img src="assets/img/fundos/fundoRoxo.webp" class="bg-html" alt="Fundo">
@@ -29,17 +46,19 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
                 <h1 class="mainTitulo">Recuperar Senha</h1>
                 <p><a class="botaoVoltar" href="login.php" style="text-decoration:none">Pronto para voltar?</a></p>
 
-                <form id="formRecuperar" method="POST" action="cad.php" novalidate>
+                <form id="formRecuperar" method="POST" action="cad.php" novalidate
+                      data-erro="<?= htmlspecialchars($erroRecuperacao, ENT_QUOTES, 'UTF-8') ?>">
                     <input type="hidden" name="acao" value="nova_senha">
 
                     <div class="inserirInfo">
                         <label>Email:</label>
-                        <input type="email" name="email" id="email" placeholder="exemplo@email.com" required>
+                        <input type="email" name="email" id="email" placeholder="exemplo@email.com" maxlength="254" required>
                     </div>
 
                     <div class="inserirInfo">
                         <label>Nova senha:</label>
-                        <input type="password" name="senha" id="senha" placeholder="Digite sua nova senha" required>
+                        <input type="password" name="senha" id="senha" placeholder="Digite sua nova senha" minlength="6" maxlength="64" required>
+                        <i class="fa-solid fa-eye toggle-password" id="btn-senha"></i>
                     </div>
 
                     <button class="entrarLogin" type="submit">Atualizar</button>
@@ -52,70 +71,6 @@ if(isset($_GET['acao']) && $_GET['acao'] == "recuperar"){
 
     <?php include 'perfil/vlibras.php'; ?>
     <?php include 'interface/footer.php';?>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configuração padrão do Toast antigo
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true
-            });
-
-            // 1. Captura mensagens vindas da SESSION PHP (Erros do servidor)
-            <?php if(isset($_SESSION['erro_recuperacao'])): ?>
-                Toast.fire({
-                    icon: 'error',
-                    title: '<?php echo $_SESSION['erro_recuperacao']; ?>'
-                });
-            <?php unset($_SESSION['erro_recuperacao']); endif; ?>
-
-            // 2. Validação Manual para substituir os avisos padrão do navegador
-            const formRecuperar = document.getElementById('formRecuperar');
-            if (formRecuperar) {
-                formRecuperar.addEventListener('submit', function(e) {
-                    const email = document.getElementById('email').value.trim();
-                    const senha = document.getElementById('senha').value.trim();
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    
-                    // Regra de senha forte antiga (Mínimo 6 caracteres, letra, número e símbolo)
-                    const senhaRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{6,}$/;
-
-                    if (!email || !senha) {
-                        e.preventDefault();
-                        Toast.fire({
-                            icon: 'warning',
-                            title: "Por favor, preencha todos os campos."
-                        });
-                    } else if (!emailRegex.test(email)) {
-                        e.preventDefault();
-                        Toast.fire({
-                            icon: 'warning',
-                            title: "Formato de e-mail inválido."
-                        });
-                    } else if (!senhaRegex.test(senha)) {
-                        e.preventDefault();
-                        Toast.fire({
-                            icon: 'warning',
-                            html: `
-                                <div style="text-align: left; font-family: Arial, sans-serif;">
-                                    <b style="display: block; margin-bottom: 8px;">A nova senha deve ter no mínimo:</b>
-                                    <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-                                        <li>6 dígitos;</li>
-                                        <li>uma letra;</li>
-                                        <li>um número;</li>
-                                        <li>um símbolo.</li>
-                                    </ul>
-                                </div>
-                            `
-                        });
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
 

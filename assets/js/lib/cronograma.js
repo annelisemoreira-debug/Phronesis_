@@ -603,6 +603,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ----- Duração por matéria: só números, 1 ponto decimal, máx. 5 caracteres -----
+    const inputHoras = document.querySelector('[name="horas_estudo"]');
+    if (inputHoras) {
+        inputHoras.addEventListener('input', () => {
+            let v = inputHoras.value.replace(/,/g, '.').replace(/[^\d.]/g, '');
+            const i = v.indexOf('.');
+            if (i !== -1) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/\./g, '');
+            inputHoras.value = v.slice(0, 5);
+        });
+    }
+
     // Vincula elementos com classe .check-topico à função unificada de progresso
     document.querySelectorAll(".check-topico").forEach(checkbox => {
         checkbox.addEventListener("change", function () {
