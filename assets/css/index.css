@@ -199,24 +199,27 @@ html.dark-theme .hero::before {
 }
 
 /* Variante: usuário logado */
+/* Variante: usuário logado */
 .hero-text.is-logado {
-    max-width: 680px;
+    max-width: min(680px, 40vw);   /* não passa da metade da tela, onde começa a ilustração */
 }
 
 .hero-text.is-logado h1 {
-    font-size: 3.6rem;
+    font-size: clamp(2.2rem, 3.4vw, 3.4rem);
     margin-bottom: 22px;
-
-    /* NOVO: quebra como o texto "Que bom ter você de volta!", máx. 2 linhas */
-    max-width: min(620px, 100%);
+    width: 100%;
     min-width: 0;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;          /* a partir da 3ª linha vira "..." */
-    line-clamp: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-text.is-logado .nome-usuario {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;           /* nome em uma linha só */
     overflow: hidden;
-    overflow-wrap: anywhere;        /* quebra até palavras sem espaço (aaaa...) */
-    padding-bottom: 0.1em;          /* evita cortar letras como g, p, q */
+    text-overflow: ellipsis;       /* nome muito longo vira "..." */
+    padding-bottom: 0.1em;         /* não corta g, p, q */
 }
 
 .hero-text .hero-desc {
@@ -440,10 +443,6 @@ html.font-grande {
 @media (max-width: 1200px) {
     .hero-text h1 {
         font-size: 3rem;
-    }
-
-    .hero-text.is-logado h1 {
-        font-size: 3.1rem;
     }
 }
 

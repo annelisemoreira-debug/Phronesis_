@@ -159,6 +159,34 @@ body {
     border-radius: 10px;
 }
 
+/* PC: logo fixa no topo, direitos fixos embaixo e só o menu rola no meio */
+@media (min-width: 769px) {
+    .sidebar {
+        min-height: 0;
+        overflow: hidden;              /* nada escapa do card */
+    }
+
+    .sidebar-header,
+    .sidebar-copyright {
+        flex-shrink: 0;                /* não encolhem quando falta altura */
+    }
+
+    .sidebar-header { margin-bottom: 20px; }   /* antes: 40px, economiza espaço */
+
+    .sidebar-nav {
+        flex: 1 1 0;
+        min-height: 0;                 /* permite encolher abaixo do conteúdo */
+        overflow-y: auto;
+        overflow-x: hidden;            /* o translateX(5px) do hover não cria rolagem lateral */
+        padding-right: 6px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar { width: 6px; }
+    .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: #cdbfff; border-radius: 10px; }
+    html.dark-theme .sidebar-nav::-webkit-scrollbar-thumb { background: #4a4468; }
+}
+
 html.dark-theme .sidebar-copyright p {
     background-color: #2d2940;
     color: #bfa2ff;

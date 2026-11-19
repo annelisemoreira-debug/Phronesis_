@@ -50,6 +50,57 @@
         try { localStorage.setItem(KEY, valor ? 'true' : 'false'); } catch (e) {}
     }
 
+        // --- Mantém a posição de rolagem (janela + card .content) ---
+    var SCROLL_KEY = 'phronesis-libras-scroll';
+
+    function posicaoAtual() {
+        var c = document.querySelector('.content');
+        return { w: window.scrollY, c: c ? c.scrollTop : 0 };
+    }
+
+    function aplicarPosicao(pos) {
+        var c = document.querySelector('.content');
+        if (c && Math.abs(c.scrollTop - pos.c) > 1) c.scrollTop = pos.c;
+        if (Math.abs(window.scrollY - pos.w) > 1) window.scrollTo(window.scrollX, pos.w);
+    }
+
+    // Restaura várias vezes durante ~2s (o widget e as imagens mudam a altura
+    // da página); para assim que a pessoa rolar por conta própria.
+    function manterPosicao(pos) {
+        var cancelado = false;
+        var parar = function () { cancelado = true; };
+        ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) {
+            window.addEventListener(ev, parar, { once: true, passive: true });
+        });
+
+        [0, 50, 150, 400, 800, 1400, 2000].forEach(function (ms) {
+            setTimeout(function () {
+                if (!cancelado) aplicarPosicao(pos);
+            }, ms);
+        });
+    }
+
+    // Depois de um reload: restaura a posição guardada antes dele
+    (function restaurarAposReload() {
+        var salva = null;
+        try {
+            salva = sessionStorage.getItem(SCROLL_KEY);
+            sessionStorage.removeItem(SCROLL_KEY);
+        } catch (e) {}
+        if (!salva) return;
+
+        var pos;
+        try { pos = JSON.parse(salva); } catch (e) { return; }
+
+        var iniciar = function () { manterPosicao(pos); };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', iniciar);
+        } else {
+            iniciar();
+        }
+        window.addEventListener('load', iniciar);
+    })();
+    
     // 3. Plugin: só é carregado se estiver ligado
     function pluginJaNaPagina() {
         return !!document.querySelector('script[src*="vlibras-plugin.js"]');
@@ -100,16 +151,20 @@
 
         toggle.addEventListener('change', function (e) {
             var ativo = e.target.checked;
+            var pos = posicaoAtual();          // guarda onde a pessoa está
             salvar(ativo);
             log('switch alterado para:', ativo ? 'LIGADO' : 'DESLIGADO');
 
             // Plugin já carregado não dá para descarregar: recarrega a página.
-            // Com a preferência desligada, ele nem é baixado.
+            // Antes do reload, guarda a posição para restaurar depois.
             if (!ativo && pluginJaNaPagina()) {
+                try { sessionStorage.setItem(SCROLL_KEY, JSON.stringify(pos)); } catch (err) {}
                 window.location.reload();
                 return;
             }
+
             aplicar();
+            manterPosicao(pos);                // evita o pulo ao iniciar o widget
         });
     }
 

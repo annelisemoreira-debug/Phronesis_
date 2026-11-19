@@ -178,6 +178,7 @@ html.dark-theme .banner .banner-dark { display: block; }
 
 /* ---------- Área principal ---------- */
 .areaContent {
+    flex: 1;
     background: var(--panel); border-radius: 14px; padding: 22px 26px 18px;
     box-shadow: var(--shadow); transition: background-color .3s ease;
 }
@@ -205,6 +206,19 @@ html.dark-theme .banner .banner-dark { display: block; }
     display: flex; flex-direction: column; gap: 14px;
     max-height: var(--lista-altura); overflow-y: auto; padding-right: 14px;
 }
+
+/* PC: o card preenche a altura da sidebar e a lista ocupa o espaço restante */
+@media (min-width: 1025px) {
+    .areaContent { display: flex; flex-direction: column; min-height: 0; }
+    .toolbar { flex: none; }
+    .lista-obras {
+        flex: 1 1 0;       /* base 0: a lista não "empurra" a altura do card */
+        min-height: 320px; /* piso para não ficar minúscula em telas muito baixas */
+        max-height: none;  /* remove o limite de 68vh */
+        overflow-y: auto;
+    }
+}
+
 .lista-obras::-webkit-scrollbar { width: 9px; }
 .lista-obras::-webkit-scrollbar-track { background: #fffae6; border-radius: 20px; }
 .lista-obras::-webkit-scrollbar-thumb { background: #ffca28; border-radius: 20px; border: 2px solid #fffae6; }
