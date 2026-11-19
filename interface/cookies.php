@@ -232,7 +232,6 @@
         <p id="cookieTexto">
             O Phronesis usa cookies e armazenamento do navegador para manter você conectado,
             lembrar o tema escuro e o tamanho da fonte e melhorar a sua experiência de estudo.
-            Você pode aceitar ou recusar: em ambos os casos, o site funciona normalmente.
         </p>
         <div class="cookie-acoes">
             <button type="button" class="cookie-btn cookie-btn-sec" data-cookie="refused">Recusar</button>
