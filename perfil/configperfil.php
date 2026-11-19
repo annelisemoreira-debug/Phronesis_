@@ -383,11 +383,11 @@ $verBanner  = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                 <div class="user-info-fields">
                     <div class="field">
                         <label><strong>Nome:</strong></label>
-                        <p class="user-value"><?php echo htmlspecialchars($user['nome']); ?></p>
+                        <p class="user-value" title="<?php echo htmlspecialchars($user['nome']); ?>"><?php echo htmlspecialchars($user['nome']); ?></p>
                     </div>
                     <div class="field">
                         <label><strong>Endereço de e-mail:</strong></label>
-                        <p class="user-value"><?php echo htmlspecialchars($user['email']); ?></p>
+                        <p class="user-value" title="<?php echo htmlspecialchars($user['email']); ?>"><?php echo htmlspecialchars($user['email']); ?></p>
                     </div>
                 </div>
 

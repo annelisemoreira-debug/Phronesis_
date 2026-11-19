@@ -973,3 +973,25 @@ html.dark-theme .content::-webkit-scrollbar-thumb:hover {
         height: 40px;
     }
 }
+
+
+
+/* =======================================================
+   NOME E E-MAIL LONGOS (uma linha, com "...")
+   ======================================================= */
+.main-wrapper,
+.content,
+.container-dados,
+.user-info-fields,
+.user-info-fields .field {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.user-info-fields p.user-value {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
