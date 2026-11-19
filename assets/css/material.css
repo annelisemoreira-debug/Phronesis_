@@ -226,6 +226,13 @@ html.dark-theme .banner .banner-dark { display: block; }
     .video-scroll { max-height: var(--lista-altura); }
 }
 
+/* PC: afasta os vídeos do cabeçalho e centraliza a grade no espaço do card */
+@media (min-width: 1025px) {
+    .areaContent { display: flex; flex-direction: column; }
+    .video-header { flex: none; margin-bottom: 28px; }   /* antes: 16px */
+    .video-scroll { margin-block: auto; }                /* divide o espaço livre em cima e embaixo */
+}
+
 .video-scroll::-webkit-scrollbar { width: 9px; }
 .video-scroll::-webkit-scrollbar-track { background: #fffae6; border-radius: 20px; }
 .video-scroll::-webkit-scrollbar-thumb { background: #ffca28; border-radius: 20px; border: 2px solid #fffae6; }
