@@ -9,7 +9,7 @@ const Toast = Swal.mixin({
     timerProgressBar: true
 });
 
-const LIMITES = { nome: 100, email: 254, senhaMin: 6, senhaMax: 64 };
+const LIMITES = { nome: 100, email: 100, senhaMin: 6, senhaMax: 64 };
 
 // === MÁSCARA DO TELEFONE ===
 function telefoneMask(value) {

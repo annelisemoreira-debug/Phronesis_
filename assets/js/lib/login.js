@@ -9,7 +9,7 @@ const Toast = Swal.mixin({
     timerProgressBar: true
 });
 
-const LIMITES = { email: 254, senhaMax: 64 };
+const LIMITES = { email: 100, senhaMax: 64 };
 
 document.addEventListener("DOMContentLoaded", function() {
     const formLogin = document.getElementById('formLogin');
