@@ -35,9 +35,9 @@ $VEST = [
 // AJUSTE AQUI: datas das provas para a contagem regressiva (ISO 8601, fuso -03:00)
 $PROVAS = [
     ['rotulo' => 'ENEM 2026',    'data' => '2026-11-08T13:30:00-03:00', 'cor' => 'amarelo'],
-    ['rotulo' => 'FUVEST 2027',  'data' => '2026-11-22T13:00:00-03:00', 'cor' => 'vermelho'],
+    ['rotulo' => 'FUVEST 2027',  'data' => '2026-11-01T13:00:00-03:00', 'cor' => 'vermelho'],
     ['rotulo' => 'UNICAMP 2026', 'data' => '2026-10-25T13:30:00-03:00', 'cor' => 'verde'],
-    ['rotulo' => 'UNESP 2027',   'data' => '2026-11-29T14:00:00-03:00', 'cor' => 'roxo'],
+    ['rotulo' => 'UNESP 2027',   'data' => '2026-11-22T14:00:00-03:00', 'cor' => 'roxo'],
 ];
 
 // Livros + vestibulares + progresso e favorito do usuário logado
