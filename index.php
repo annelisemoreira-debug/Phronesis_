@@ -42,6 +42,7 @@ $logado = isset($_SESSION['id']) && isset($_SESSION['nome']);
 </head>
 
 <body>
+    <?php include 'interface/cookies.php'; ?>
     <?php include 'interface/header.php'; ?>
 
     <div class="wrapper">
