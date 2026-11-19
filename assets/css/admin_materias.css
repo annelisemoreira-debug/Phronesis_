@@ -619,6 +619,27 @@ html.dark-theme .tabela-materias.rolagem::-webkit-scrollbar-thumb {
     border-color: #252230;
 }
 
+/* Textos longos sem espaço quebram em vez de estourar a tabela */
+.texto-nome,
+.nome-topico-texto,
+.tabela-livros td b,
+.tabela-livros td small {
+    overflow-wrap: anywhere;
+}
+
+.tag-topico-adm {
+    max-width: 100%;
+}
+
+/* Contador de caracteres (resumo do livro) */
+.contador-caracteres {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--text-muted);
+}
+
 
 /* ==========================================================================
    10. MATÉRIAS: PAINEL DE TÓPICOS

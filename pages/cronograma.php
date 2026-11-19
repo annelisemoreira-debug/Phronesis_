@@ -489,6 +489,8 @@ $mostrarBanner = true;
 // Versiona o CSS dos banners pela data de modificação (igual ao livros.php)
 $paginaAtual = 'cronograma';
 $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
+$verCss = @filemtime(__DIR__ . '/../assets/css/cronograma.css') ?: time();
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -499,7 +501,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
     <title>Phronesis - Cronograma</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/cronograma.css">
+    <link rel="stylesheet" href="../assets/css/cronograma.css?v=<?= $verCss ?>">
     <link rel="stylesheet" href="../assets/css/bottom-nav.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="stylesheet" href="../assets/css/banner.css?v=<?= $verBanner ?>">
@@ -779,7 +781,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                         <?php foreach ($materias_com_conteudos as $materia_nome => $conteudos): ?>
                             <div class="materia-accordion-item">
                                 <div class="materia-accordion-header">
-                                    <span><i class="fa-regular fa-folder"></i> <?= htmlspecialchars($materia_nome) ?></span>
+                                    <span class="materia-nome-wrap">
+                                        <i class="fa-regular fa-folder"></i>
+                                        <span class="materia-nome-texto"><?= htmlspecialchars($materia_nome) ?></span>
+                                    </span>
                                     <i class="fa-solid fa-chevron-down chevron"></i>
                                 </div>
                                 <div class="materia-accordion-content">

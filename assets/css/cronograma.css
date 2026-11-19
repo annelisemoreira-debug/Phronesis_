@@ -993,3 +993,83 @@ html.dark-theme .swal2-icon.swal2-success .swal2-success-ring {
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
 }
+
+/* ==========================================================================
+   QUEBRA DE LINHA EM TEXTOS LONGOS
+   ========================================================================== */
+
+/* Cadeia de contêineres: permite que o texto encolha em vez de empurrar a largura */
+.sidebar-header,
+.bloco-navegar,
+.conteiner-materias-expansivel,
+.materia-accordion-item,
+.materia-accordion-content {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Accordion: [pasta + nome] à esquerda, seta à direita */
+.materia-accordion-header > .materia-nome-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+.materia-nome-wrap i.fa-folder {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.materia-nome-texto {
+    min-width: 0;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+.materia-accordion-header i.chevron {
+    flex-shrink: 0;
+}
+
+/* Tópicos dentro do accordion */
+.materia-accordion-content li {
+    min-width: 0;
+    align-items: flex-start !important;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Checklist de conteúdos concluídos */
+.checklist-folder-header > div:first-child {
+    min-width: 0;
+    flex: 1;
+}
+.checklist-folder-header span,
+.checklist-topico-row > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+.checklist-folder-header .fa-folder,
+.checklist-folder-header .fold-chevron,
+.checklist-topico-row .custom-checkbox {
+    flex-shrink: 0;
+}
+
+/* Lista de dias e matérias do formulário */
+.materia-dia-row > span,
+.mm-nome {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Títulos e avisos */
+.agenda-header h3,
+.crono-title,
+.modal-content b,
+.modal-content p,
+.title-left h2,
+.alert-message {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}

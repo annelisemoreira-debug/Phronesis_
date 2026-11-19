@@ -15,6 +15,12 @@
     document.documentElement.classList.add(`font-${tamanhoSalvo}`);
 })();
 
+// === LIMITES DE CARACTERES ===
+// Mesmos valores das constantes do admin_materias.php (o servidor valida de novo).
+// Usados nos campos criados via JavaScript (edição inline).
+const LIM_MATERIA = 30;
+const LIM_TOPICO  = 100;
+
 // === 1. EXIBIR/OCULTAR PAINEL DE TÓPICOS ===
 function toggleTopicosPanel(id) {
     const painel = document.getElementById(`painel-topicos-${id}`);
@@ -42,9 +48,10 @@ function activarEdicao(id, nomeOriginal) {
     const htmlOriginalNome = colNome.innerHTML;
     const htmlOriginalAcoes = colAcoes.innerHTML;
 
-    colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}">`;
-    document.getElementById(`input-${id}`).value = nomeOriginal;
-    document.getElementById(`input-${id}`).focus();
+    colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}" maxlength="${LIM_MATERIA}">`;
+    const input = document.getElementById(`input-${id}`);
+    input.value = nomeOriginal;
+    input.focus();
 
     colAcoes.innerHTML = `
         <div class="action-buttons" style="justify-content: center;">
@@ -57,10 +64,10 @@ function activarEdicao(id, nomeOriginal) {
         </div>
     `;
 
+    // Cancelar: volta exatamente ao estado original (nome e botões)
     document.getElementById(`cancelar-${id}`).addEventListener('click', () => {
         colNome.innerHTML = htmlOriginalNome;
         colAcoes.innerHTML = htmlOriginalAcoes;
-        colNome.innerHTML = `<input type="text" class="input-inline" id="input-${id}" maxlength="50">`;
     });
 }
 
@@ -78,7 +85,7 @@ function ativarEdicaoTopico(idTopico, nomeOriginal) {
     tag.innerHTML = `
         <form method="POST" style="display: flex; align-items: center; gap: 5px;">
             <input type="hidden" name="id_topico" value="${idTopico}">
-            <input type="text" name="novo_nome_topico" id="input-topico-${idTopico}" maxlength="100" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
+            <input type="text" name="novo_nome_topico" id="input-topico-${idTopico}" maxlength="${LIM_TOPICO}" style="padding: 4px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #0284c7; outline:none;">
             <button type="submit" name="edit_topico" class="btn-salvar" style="padding: 4px 8px;">✔</button>
             <button type="button" class="btn-cancelar" id="cancel-topico-${idTopico}" style="padding: 4px 8px; background: #ef4444;">X</button>
         </form>
@@ -122,6 +129,8 @@ document.addEventListener('DOMContentLoaded', function () {
             dlg.querySelectorAll('input[name="vestibulares[]"]').forEach(c => {
                 c.checked = marcados.includes(c.value);
             });
+
+            atualizarContador(dlg.querySelector('[name="resumo"]'));
             dlg.showModal();
         });
     });
@@ -260,4 +269,33 @@ document.addEventListener('click', function (e) {
             window.location.href = link.href;
         }
     });
+});
+
+// === 11. CONTADOR DE CARACTERES (resumo do livro) ===
+// Mostra "n/máximo" abaixo do campo; fica vermelho ao atingir o limite.
+function atualizarContador(campo) {
+    if (!campo) return;
+    const max = parseInt(campo.getAttribute('maxlength'), 10);
+    if (!max) return;
+
+    let span = campo.nextElementSibling;
+    if (!span || !span.classList.contains('contador-caracteres')) {
+        span = document.createElement('small');
+        span.className = 'contador-caracteres';
+        span.style.cssText = 'display:block;text-align:right;font-size:12px;margin-top:4px;';
+        campo.insertAdjacentElement('afterend', span);
+    }
+
+    const n = campo.value.length;
+    span.textContent = `${n}/${max}`;
+    span.style.color = n >= max ? '#ef4444' : '';
+    span.style.opacity = n >= max * 0.8 ? '1' : '.65';
+}
+
+document.addEventListener('input', (e) => {
+    if (e.target.matches('textarea[name="resumo"][maxlength]')) atualizarContador(e.target);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('textarea[name="resumo"][maxlength]').forEach(atualizarContador);
 });

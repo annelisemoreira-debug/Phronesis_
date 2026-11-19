@@ -10,11 +10,12 @@ if (!isset($_SESSION['id'])) {
 }
 
 // BUSCA O TIPO DIRETO NO BANCO PARA GARANTIR
-$id_usuario = $_SESSION['id'];
+$id_usuario = (int) $_SESSION['id'];
 $stmt_check = $conn->prepare("SELECT tipo, foto FROM usuario WHERE id_usuario = ?");
 $stmt_check->bind_param("i", $id_usuario);
 $stmt_check->execute();
 $user_data = $stmt_check->get_result()->fetch_assoc();
+$stmt_check->close();
 
 // Se não for admin, volta para a index
 if (!$user_data || $user_data['tipo'] !== 'admin') {
@@ -24,51 +25,81 @@ if (!$user_data || $user_data['tipo'] !== 'admin') {
 
 $msg = "";
 
-// Limites de caracteres (mesmos valores usados no maxlength do HTML)
+// =========================================================================
+// LIMITES DE CARACTERES
+// Fonte única: usados na validação do servidor E no maxlength do HTML.
+// (O admin_materias.js tem os mesmos valores para os campos criados via JS.)
+// =========================================================================
 const LIM_TITULO  = 100;
 const LIM_AUTOR   = 60;
 const LIM_RESUMO  = 1000;
-const LIM_MATERIA = 50;
+const LIM_MATERIA = 30;
 const LIM_TOPICO  = 100;
 
-// Lógica de Inserção de Matéria
+// Verifica se já existe um registro (usado para avisar sobre duplicados)
+function jaExiste($conn, $sql, $tipos, ...$params) {
+    $st = $conn->prepare($sql);
+    $st->bind_param($tipos, ...$params);
+    $st->execute();
+    $existe = $st->get_result()->num_rows > 0;
+    $st->close();
+    return $existe;
+}
+
+// ===================== MATÉRIAS =====================
+
+// Inserção de matéria
 if (isset($_POST['add_materia'])) {
-    $nome = trim($_POST['nome_materia']);
+    $nome = trim($_POST['nome_materia'] ?? '');
     if (mb_strlen($nome) > LIM_MATERIA) {
         $msg = "❌ O nome da matéria deve ter no máximo " . LIM_MATERIA . " caracteres.";
-    } elseif (!empty($nome)) {
-        $stmt = $conn->prepare("INSERT INTO materia (nome_materia) VALUES (?)");
-        $stmt->bind_param("s", $nome);
-        if ($stmt->execute()) {
-            $msg = "✅ Matéria '$nome' adicionada!";
+    } elseif ($nome !== '') {
+        if (jaExiste($conn, "SELECT 1 FROM materia WHERE nome_materia = ?", "s", $nome)) {
+            $msg = "⚠️ Não foi possível criar: a matéria '$nome' já existe.";
         } else {
-            $msg = "❌ Erro: Matéria já existe ou falha no banco.";
+            try {
+                $stmt = $conn->prepare("INSERT INTO materia (nome_materia) VALUES (?)");
+                $stmt->bind_param("s", $nome);
+                $stmt->execute();
+                $stmt->close();
+                $msg = "✅ Matéria '$nome' adicionada!";
+            } catch (mysqli_sql_exception $e) {
+                $msg = ($e->getCode() === 1062)
+                    ? "⚠️ Não foi possível criar: a matéria '$nome' já existe."
+                    : "❌ Erro ao adicionar matéria.";
+            }
         }
-        $stmt->close();
     }
 }
 
-// Lógica de Edição de Matéria
+// Edição de matéria
 if (isset($_POST['edit_materia'])) {
-    $id_edit = $_POST['id_materia'];
-    $nome_edit = trim($_POST['novo_nome']);
+    $id_edit   = (int) ($_POST['id_materia'] ?? 0);
+    $nome_edit = trim($_POST['novo_nome'] ?? '');
     if (mb_strlen($nome_edit) > LIM_MATERIA) {
         $msg = "❌ O nome da matéria deve ter no máximo " . LIM_MATERIA . " caracteres.";
-    } elseif (!empty($nome_edit) && !empty($id_edit)) {
-        $stmt = $conn->prepare("UPDATE materia SET nome_materia = ? WHERE id_materia = ?");
-        $stmt->bind_param("si", $nome_edit, $id_edit);
-        if ($stmt->execute()) {
-            $msg = "📝 Matéria atualizada com sucesso!";
+    } elseif ($nome_edit !== '' && $id_edit > 0) {
+        if (jaExiste($conn, "SELECT 1 FROM materia WHERE nome_materia = ? AND id_materia <> ?", "si", $nome_edit, $id_edit)) {
+            $msg = "⚠️ Não foi possível salvar: já existe uma matéria chamada '$nome_edit'.";
         } else {
-            $msg = "❌ Erro ao editar matéria.";
+            try {
+                $stmt = $conn->prepare("UPDATE materia SET nome_materia = ? WHERE id_materia = ?");
+                $stmt->bind_param("si", $nome_edit, $id_edit);
+                $stmt->execute();
+                $stmt->close();
+                $msg = "📝 Matéria atualizada com sucesso!";
+            } catch (mysqli_sql_exception $e) {
+                $msg = ($e->getCode() === 1062)
+                    ? "⚠️ Não foi possível salvar: já existe uma matéria chamada '$nome_edit'."
+                    : "❌ Erro ao editar matéria.";
+            }
         }
-        $stmt->close();
     }
 }
 
-// Lógica de Exclusão de Matéria
+// Exclusão de matéria
 if (isset($_GET['del'])) {
-    $id_del = $_GET['del'];
+    $id_del = (int) $_GET['del'];
     try {
         $stmt = $conn->prepare("DELETE FROM materia WHERE id_materia = ?");
         $stmt->bind_param("i", $id_del);
@@ -83,44 +114,67 @@ if (isset($_GET['del'])) {
     }
 }
 
-// Lógica de Inserção de Tópico
+// ===================== TÓPICOS =====================
+
+// Inserção de tópico
 if (isset($_POST['add_topico'])) {
-    $id_materia_topico = $_POST['id_materia'];
-    $nome_topico = trim($_POST['nome_topico']);
+    $id_materia_topico = (int) ($_POST['id_materia'] ?? 0);
+    $nome_topico       = trim($_POST['nome_topico'] ?? '');
     if (mb_strlen($nome_topico) > LIM_TOPICO) {
         $msg = "❌ O tópico deve ter no máximo " . LIM_TOPICO . " caracteres.";
-    } elseif (!empty($nome_topico) && !empty($id_materia_topico)) {
-        $stmt = $conn->prepare("INSERT INTO materia_topico (id_materia, nome_topico) VALUES (?, ?)");
-        $stmt->bind_param("is", $id_materia_topico, $nome_topico);
-        if ($stmt->execute()) {
-            $msg = "📌 Tópico adicionado com sucesso!";
+    } elseif ($nome_topico !== '' && $id_materia_topico > 0) {
+        if (jaExiste($conn, "SELECT 1 FROM materia_topico WHERE id_materia = ? AND nome_topico = ?", "is", $id_materia_topico, $nome_topico)) {
+            $msg = "⚠️ Não foi possível criar: o tópico '$nome_topico' já existe nesta matéria.";
         } else {
-            $msg = "❌ Erro ao adicionar tópico.";
+            try {
+                $stmt = $conn->prepare("INSERT INTO materia_topico (id_materia, nome_topico) VALUES (?, ?)");
+                $stmt->bind_param("is", $id_materia_topico, $nome_topico);
+                $stmt->execute();
+                $stmt->close();
+                $msg = "📌 Tópico adicionado com sucesso!";
+            } catch (mysqli_sql_exception $e) {
+                $msg = ($e->getCode() === 1062)
+                    ? "⚠️ Não foi possível criar: o tópico '$nome_topico' já existe nesta matéria."
+                    : "❌ Erro ao adicionar tópico.";
+            }
         }
-        $stmt->close();
-    }
-}
-// Lógica de Edição de Tópico
-if (isset($_POST['edit_topico'])) {
-    $id_topico = $_POST['id_topico'];
-    $novo_nome_topico = trim($_POST['novo_nome_topico']);
-    if (mb_strlen($novo_nome_topico) > LIM_TOPICO) {
-        $msg = "❌ O tópico deve ter no máximo " . LIM_TOPICO . " caracteres.";
-    } elseif (!empty($id_topico) && !empty($novo_nome_topico)) {
-        $stmt = $conn->prepare("UPDATE materia_topico SET nome_topico = ? WHERE id_topico = ?");
-        $stmt->bind_param("si", $novo_nome_topico, $id_topico);
-        if ($stmt->execute()) {
-            $msg = "📝 Tópico atualizado com sucesso!";
-        } else {
-            $msg = "❌ Erro ao editar tópico.";
-        }
-        $stmt->close();
     }
 }
 
-// Lógica de Exclusão de Tópico
+// Edição de tópico
+if (isset($_POST['edit_topico'])) {
+    $id_topico        = (int) ($_POST['id_topico'] ?? 0);
+    $novo_nome_topico = trim($_POST['novo_nome_topico'] ?? '');
+    if (mb_strlen($novo_nome_topico) > LIM_TOPICO) {
+        $msg = "❌ O tópico deve ter no máximo " . LIM_TOPICO . " caracteres.";
+    } elseif ($id_topico > 0 && $novo_nome_topico !== '') {
+        if (jaExiste(
+            $conn,
+            "SELECT 1 FROM materia_topico
+              WHERE nome_topico = ? AND id_topico <> ?
+                AND id_materia = (SELECT id_materia FROM materia_topico WHERE id_topico = ?)",
+            "sii", $novo_nome_topico, $id_topico, $id_topico
+        )) {
+            $msg = "⚠️ Não foi possível salvar: o tópico '$novo_nome_topico' já existe nesta matéria.";
+        } else {
+            try {
+                $stmt = $conn->prepare("UPDATE materia_topico SET nome_topico = ? WHERE id_topico = ?");
+                $stmt->bind_param("si", $novo_nome_topico, $id_topico);
+                $stmt->execute();
+                $stmt->close();
+                $msg = "📝 Tópico atualizado com sucesso!";
+            } catch (mysqli_sql_exception $e) {
+                $msg = ($e->getCode() === 1062)
+                    ? "⚠️ Não foi possível salvar: o tópico '$novo_nome_topico' já existe nesta matéria."
+                    : "❌ Erro ao editar tópico.";
+            }
+        }
+    }
+}
+
+// Exclusão de tópico
 if (isset($_GET['del_topico'])) {
-    $id_del_topico = $_GET['del_topico'];
+    $id_del_topico = (int) $_GET['del_topico'];
     $stmt = $conn->prepare("DELETE FROM materia_topico WHERE id_topico = ?");
     $stmt->bind_param("i", $id_del_topico);
     if ($stmt->execute()) {
@@ -191,7 +245,6 @@ if (isset($_POST['add_livro'])) {
     } elseif (mb_strlen($titulo) > LIM_TITULO || mb_strlen($autor) > LIM_AUTOR || mb_strlen($resumo) > LIM_RESUMO) {
         $msg = "❌ Limite de caracteres excedido (título: " . LIM_TITULO . ", autor: " . LIM_AUTOR . ", resumo: " . LIM_RESUMO . ").";
     } else {
-
         $erroCapa = '';
         $capa = salvarCapa($_FILES['capa'] ?? [], $erroCapa);
         if ($capa === false) {
@@ -222,7 +275,6 @@ if (isset($_POST['edit_livro'])) {
     } elseif (mb_strlen($titulo) > LIM_TITULO || mb_strlen($autor) > LIM_AUTOR || mb_strlen($resumo) > LIM_RESUMO) {
         $msg = "❌ Limite de caracteres excedido (título: " . LIM_TITULO . ", autor: " . LIM_AUTOR . ", resumo: " . LIM_RESUMO . ").";
     } else {
-        // ... (restante igual)
         $erroCapa = '';
         $capaNova = salvarCapa($_FILES['capa'] ?? [], $erroCapa);
         if ($capaNova === false) {
@@ -269,7 +321,9 @@ if (isset($_GET['del_livro'])) {
     $stmt->close();
 }
 
-// Buscar livros cadastrados
+// ===================== DADOS PARA EXIBIÇÃO =====================
+
+// Livros cadastrados
 $livros = [];
 $res_livros = $conn->query(
     "SELECT l.*, GROUP_CONCAT(lv.vestibular) AS vests
@@ -282,7 +336,7 @@ if ($res_livros) {
     while ($row = $res_livros->fetch_assoc()) { $livros[] = $row; }
 }
 
-// Buscar matérias existentes
+// Matérias existentes
 $materias = [];
 $res_materias = $conn->query("SELECT * FROM materia ORDER BY nome_materia ASC");
 if ($res_materias) {
@@ -291,7 +345,7 @@ if ($res_materias) {
     }
 }
 
-// Buscar tópicos vinculados organizados por id_materia
+// Tópicos organizados por id_materia
 $topicos = [];
 $res_topicos = $conn->query("SELECT * FROM materia_topico ORDER BY nome_topico ASC");
 if ($res_topicos) {
@@ -363,10 +417,11 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 
         <form method="POST" enctype="multipart/form-data" class="form-livro">
             <div class="grid-livro">
-               <input type="text" name="titulo" class="campo-livro" placeholder="Título da obra" maxlength="100" required>
-               <input type="text" name="autor" class="campo-livro" placeholder="Autor(a)" maxlength="60" required>
+                <input type="text" name="titulo" class="campo-livro" placeholder="Título da obra" maxlength="<?= LIM_TITULO ?>" required>
+                <input type="text" name="autor" class="campo-livro" placeholder="Autor(a)" maxlength="<?= LIM_AUTOR ?>" required>
             </div>
-               <textarea name="resumo" class="campo-livro" rows="4" placeholder="Breve resumo da obra" maxlength="1000" required></textarea>
+            <textarea name="resumo" class="campo-livro" rows="4" placeholder="Breve resumo da obra" maxlength="<?= LIM_RESUMO ?>" required></textarea>
+
             <div class="vest-checks">
                 <?php foreach ($VESTIBULARES as $k => $nomeV): ?>
                     <label class="chip-check">
@@ -452,10 +507,12 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                 <h3>Editar livro</h3>
                 <input type="hidden" name="id_livro">
                 <div class="grid-livro">
-                    <input type="text" name="titulo" class="campo-livro" maxlength="100" required>
-                    <input type="text" name="autor" class="campo-livro" maxlength="60" required>
+                    <input type="text" name="titulo" class="campo-livro" maxlength="<?= LIM_TITULO ?>" required>
+                    <input type="text" name="autor" class="campo-livro" maxlength="<?= LIM_AUTOR ?>" required>
                 </div>
-                    <textarea name="resumo" class="campo-livro" rows="6" maxlength="1000" required></textarea>                <div class="vest-checks">
+                <textarea name="resumo" class="campo-livro" rows="6" maxlength="<?= LIM_RESUMO ?>" required></textarea>
+
+                <div class="vest-checks">
                     <?php foreach ($VESTIBULARES as $k => $nomeV): ?>
                         <label class="chip-check">
                             <input type="checkbox" name="vestibulares[]" value="<?= $k ?>">
@@ -493,7 +550,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
         </div>
 
         <form method="POST" class="input-group-append">
-            <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" maxlength="50" required>
+            <input type="text" name="nome_materia" class="input-materia" placeholder="Nome da Matéria (ex: Química)" maxlength="<?= LIM_MATERIA ?>" required>
             <button type="submit" name="add_materia" class="btn-adicionar">
                 Adicionar <i class="fa-solid fa-plus"></i>
             </button>
@@ -521,7 +578,7 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($materias as $m): $id_m = $m['id_materia']; ?>
+                        <?php foreach ($materias as $m): $id_m = (int) $m['id_materia']; ?>
                         <tr id="linha-<?= $id_m ?>">
                             <td><b>#<?= $id_m ?></b></td>
                             <td class="col-nome">
@@ -554,10 +611,10 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
                                     <ul class="lista-topicos-atuais">
                                         <?php if (isset($topicos[$id_m])): ?>
                                             <?php foreach ($topicos[$id_m] as $t): ?>
-                                                <li class="tag-topico-adm" id="tag-topico-<?= $t['id_topico'] ?>">
+                                                <li class="tag-topico-adm" id="tag-topico-<?= (int)$t['id_topico'] ?>">
                                                     <span class="nome-topico-texto"><?= htmlspecialchars($t['nome_topico']) ?></span>
                                                     <i class="fa-solid fa-pen btn-topic-edit" onclick='ativarEdicaoTopico(<?= (int)$t['id_topico'] ?>, <?= htmlspecialchars(json_encode($t['nome_topico']), ENT_QUOTES, 'UTF-8') ?>)' title="Editar Tópico"></i>
-                                                    <a href="?del_topico=<?= $t['id_topico'] ?>" class="btn-topic-del js-confirmar-exclusao"
+                                                    <a href="?del_topico=<?= (int)$t['id_topico'] ?>" class="btn-topic-del js-confirmar-exclusao"
                                                        data-titulo="Excluir tópico?"
                                                        data-texto="<?= htmlspecialchars('O tópico "' . $t['nome_topico'] . '" será removido.', ENT_QUOTES, 'UTF-8') ?>"
                                                        title="Remover Tópico">×</a>
@@ -570,7 +627,8 @@ $verBanner = @filemtime(__DIR__ . '/../assets/css/banner.css') ?: time();
 
                                     <form method="POST" class="form-add-topico-inline">
                                         <input type="hidden" name="id_materia" value="<?= $id_m ?>">
-                                        <input type="text" name="nome_topico" placeholder="Adicionar novo tópico (ex: Estequiometria)" maxlength="100" required>                                        <button type="submit" name="add_topico" style="background-color: var(--purple-main); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600;">
+                                        <input type="text" name="nome_topico" placeholder="Adicionar novo tópico (ex: Estequiometria)" maxlength="<?= LIM_TOPICO ?>" required>
+                                        <button type="submit" name="add_topico" style="background-color: var(--purple-main); color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600;">
                                             Adicionar
                                         </button>
                                     </form>
