@@ -20,10 +20,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const CARDS_VISIVEIS_TABLET = 4;
     const ehTablet = () => window.matchMedia('(min-width: 769px) and (max-width: 1024px)').matches;
 
-    function ajustarAlturaLista() {
+    function ajustarAlturaLista(manterRolagem = false) {
+        const posicao = listaObras.scrollTop;
         listaObras.style.maxHeight = '';          // volta ao valor do CSS
         if (!ehTablet()) return;                  // PC e celular: não mexe
-        listaObras.scrollTop = 0;
+        if (!manterRolagem) listaObras.scrollTop = 0;
         const visiveis = cards.filter(c => !c.hidden);
         if (visiveis.length <= CARDS_VISIVEIS_TABLET) {
             listaObras.style.maxHeight = 'none';  // cabem todos: sem rolagem
@@ -31,8 +32,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         const ref = visiveis[CARDS_VISIVEIS_TABLET - 1];
         const altura = ref.getBoundingClientRect().bottom
-                     - listaObras.getBoundingClientRect().top + 4;
+                    - listaObras.getBoundingClientRect().top + 4;
         listaObras.style.maxHeight = altura + 'px';
+        if (manterRolagem) listaObras.scrollTop = posicao;
     }
 
     // === 1. FILTROS (status, vestibular, busca) ===
@@ -47,7 +49,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function aplicarFiltros() {
+    function aplicarFiltros(manterRolagem = false) {
+        const yPagina = window.scrollY;
+        const yLista = listaObras.scrollTop;
+
         let visiveis = 0;
         cards.forEach(card => {
             const okVest = filtros.vest === 'todos' || card.dataset.vests.split(' ').includes(filtros.vest);
@@ -60,7 +65,12 @@ document.addEventListener('DOMContentLoaded', function () {
             vazio.hidden = visiveis > 0;
             vazio.textContent = 'Nenhuma obra encontrada com esses filtros.';
         }
-        ajustarAlturaLista();
+        ajustarAlturaLista(manterRolagem);
+
+        if (manterRolagem) {
+            listaObras.scrollTop = yLista;
+            window.scrollTo(window.scrollX, yPagina);
+        }
     }
 
     document.querySelectorAll('[data-status-filter]').forEach(btn => {
@@ -93,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTimeout(tRedim);
         tRedim = setTimeout(ajustarAlturaLista, 150);
     });
-    window.addEventListener('load', ajustarAlturaLista);
+    window.addEventListener('load', () => ajustarAlturaLista());
     ajustarAlturaLista();
 
     // === 2. COMUNICAÇÃO COM O SERVIDOR ===
@@ -116,14 +126,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const r = await enviar({ acao: 'favoritar', id_livro: card.dataset.id });
         card.dataset.fav = r.favorito ? '1' : '0';
         atualizarCard(card);
-        aplicarFiltros(); // se estiver na aba Favoritos, o card some ao desfavoritar
+        aplicarFiltros(true); // mantém a posição; na aba Favoritos o card ainda some ao desfavoritar
     }
 
     async function definirStatus(card, status) {
         const r = await enviar({ acao: 'progresso', id_livro: card.dataset.id, status });
         card.dataset.status = r.status;
         atualizarCard(card);
-        aplicarFiltros();
+        aplicarFiltros(true);
     }
 
     // === 3. CARDS ===
